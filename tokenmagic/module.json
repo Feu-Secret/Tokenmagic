@@ -1,10 +1,9 @@
 {
   "name": "tokenmagic",
   "title": "TokenMagic",
-  "description": 
-    "<p>TokenMagic is a module for Foundry VTT which allows you to add graphic filters on your tokens and your tiles, with many possibilities of customization. Filters can be animated.</p>",
-  "version": "0.1.0",
-  "author": "HyperGalak",
+  "description": "<p>TokenMagic is a module for Foundry VTT which allows you to add graphic filters on your tokens and your tiles, with many possibilities of customization. Filters can be animated.</p>",
+  "version": "0.1.1",
+  "author": "SecretFire",
   "scripts": [
     "libs/filters/pixi-filters.js"
   ],
