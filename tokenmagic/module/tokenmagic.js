@@ -261,14 +261,20 @@ export function TokenMagic() {
         }
     };
 
-    // TODO : remove tokenmagic filters only !
     function _clearImgFiltersByPlaceable(placeable) {
+        var filters = null;
         if (placeable == null) { return; }
         // Clean up
         if (placeable instanceof Token) {
-            placeable.icon.filters = null;
+            filters = placeable.icon.filters;
         } else if (placeable instanceof Tile) {
-            placeable.tile.img.filters = null;
+            filters = placeable.tile.img.filters;
+        }
+        if (filters instanceof Array) {
+            var tmFilters = filters.filter(filter =>
+                !filter.hasOwnProperty("filterId") // TODO : to rework, not nice.
+            );
+            filters = (tmFilters.length === 0 ? null : tmFilters);
         }
     };
 
