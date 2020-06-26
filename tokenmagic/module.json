@@ -1,8 +1,10 @@
 {
   "name": "tokenmagic",
-  "title": "TokenMagic",
-  "description": "<p>TokenMagic is a module for Foundry VTT which allows you to add graphic filters on your tokens and your tiles, with many possibilities of customization. Filters can be animated.</p>",
+  "title": "Tokenmagic",
+  "description": "<p>TokenMagic is a module for Foundry VTT which allows you to add graphic filters and animations on your tokens and tiles.</p>",
   "version": "0.1.1",
+  "compatibleCoreVersion": "0.6.4",
+  "minimumCoreVersion": "0.6.0",
   "author": "SecretFire",
   "scripts": [
     "libs/filters/pixi-filters.js"
@@ -48,7 +50,5 @@
   "socket": true,
   "url": "https://github.com/Feu-Secret/Tokenmagic/tree/master/tokenmagic",
   "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json?token=AP3T5KFOONX2QYPCXICJBOK66YMWK",
-  "download": "https://github.com/Feu-Secret/Tokenmagic/blob/master/Tokenmagic.zip?raw=true",
-  "compatibleCoreVersion": "0.6.4",
-  "minimumCoreVersion": "0.6.0"
+  "download": "https://github.com/Feu-Secret/Tokenmagic/raw/master/Tokenmagic.zip"
 }
