@@ -34,7 +34,15 @@
 
   ],
   "styles": [],
-  "packs": [],
+  "packs": [
+    {
+      "name": "tmMacros",
+      "label": "TokenMagic Portfolio",
+      "path": "packs/token-magic-portfolio.db",
+      "entity": "Macro",
+      "module": "tokenmagic"
+    }
+  ],
   "languages": [
     {
       "lang": "en",

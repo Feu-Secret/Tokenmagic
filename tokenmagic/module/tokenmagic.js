@@ -189,7 +189,7 @@ export function TokenMagic() {
                 await deleteFilters(placeable);
             }
         }
-    }
+    };
 
     // Deleting all filters on a placeable in parameter
     async function deleteFilters(placeable) {
