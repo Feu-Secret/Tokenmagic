@@ -1,0 +1,55 @@
+{
+  "name": "tokenmagic",
+  "title": "TokenMagic",
+  "description": 
+    "<p>TokenMagic is a module for Foundry VTT which allows you to add graphic filters on your tokens and your tiles, with many possibilities of customization. Filters can be animated.</p>",
+  "version": "0.1.0",
+  "author": "HyperGalak",
+  "scripts": [
+    "libs/filters/pixi-filters.js"
+  ],
+  "esmodules": [
+    "module/tokenmagic.js",
+    "pixifilters/fragments/removeshadow.js",
+    "pixifilters/fragments/cosmicray.js",
+    "pixifilters/fragments/fog.js",
+    "pixifilters/Anime.js",
+    "pixifilters/FilterBevel.js",
+    "pixifilters/FilterAdjustment.js",
+    "pixifilters/FilterAdvancedBloom.js",
+    "pixifilters/FilterDistortion.js",
+    "pixifilters/FilterGlow.js",
+    "pixifilters/FilterOldFilm.js",
+    "pixifilters/FilterDropShadow.js",
+    "pixifilters/FilterOutline.js",
+    "pixifilters/FilterTwist.js",
+    "pixifilters/FilterZoomBlur.js",
+    "pixifilters/FilterBlur.js",
+    "pixifilters/FilterBulgePinch.js",
+    "pixifilters/FilterRemoveShadow.js",
+    "pixifilters/FilterRays.js",
+    "pixifilters/FilterFog.js",
+    "pixifilters/FilterShockWave.js"
+
+  ],
+  "styles": [],
+  "packs": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "fr",
+      "name": "French (FRANCE)",
+      "path": "lang/fr.json"
+    }
+  ],
+  "socket": true,
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "compatibleCoreVersion": "0.6.4",
+  "minimumCoreVersion": "0.6.0"
+}
