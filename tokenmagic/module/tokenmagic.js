@@ -262,19 +262,24 @@ export function TokenMagic() {
     };
 
     function _clearImgFiltersByPlaceable(placeable) {
-        var filters = null;
+
         if (placeable == null) { return; }
-        // Clean up
+
+        function filterTheFiltering(theFilters) {
+            if (theFilters instanceof Array) {
+                var tmFilters = theFilters.filter(filter =>
+                    !filter.hasOwnProperty("filterId") // TODO : to rework, not nice.
+                );
+                return (tmFilters.length === 0 ? null : tmFilters);
+            }
+            return theFilters;
+        };
+
+        // The clean up
         if (placeable instanceof Token) {
-            filters = placeable.icon.filters;
+            placeable.icon.filters = filterTheFiltering(placeable.icon.filters);
         } else if (placeable instanceof Tile) {
-            filters = placeable.tile.img.filters;
-        }
-        if (filters instanceof Array) {
-            var tmFilters = filters.filter(filter =>
-                !filter.hasOwnProperty("filterId") // TODO : to rework, not nice.
-            );
-            filters = (tmFilters.length === 0 ? null : tmFilters);
+            placeable.tile.img.filters = filterTheFiltering(placeable.tile.img.filters);
         }
     };
 
