@@ -48,7 +48,7 @@
   "socket": true,
   "url": "https://github.com/Feu-Secret/Tokenmagic/tree/master/tokenmagic",
   "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json?token=AP3T5KFOONX2QYPCXICJBOK66YMWK",
-  "download": "https://github.com/Feu-Secret/Tokenmagic/blob/master/Tokenmagic.zip",
+  "download": "https://github.com/Feu-Secret/Tokenmagic/blob/master/Tokenmagic.zip?raw=true",
   "compatibleCoreVersion": "0.6.4",
   "minimumCoreVersion": "0.6.0"
 }
