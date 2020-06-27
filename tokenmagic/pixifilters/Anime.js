@@ -170,6 +170,17 @@ export class Anime {
         );
     }
 
+    syncColorOscillation(effect) {
+        var rgbValue1 = Anime.valueToRgb(this.animated[effect].val1);
+        var rgbValue2 = Anime.valueToRgb(this.animated[effect].val2);
+
+        this.puppet[effect] = Anime.rgbToValue(
+            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[0], rgbValue2[0], Math.cos, true)),
+            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[1], rgbValue2[1], Math.cos, true)),
+            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[2], rgbValue2[2], Math.cos, true))
+        );
+    }
+
     cosOscillation(effect) {
         this.puppet[effect] =
             Anime.oscillation(

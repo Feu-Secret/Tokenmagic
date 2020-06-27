@@ -2,7 +2,7 @@
   "name": "tokenmagic",
   "title": "Tokenmagic",
   "description": "<p>TokenMagic is a module for Foundry VTT which allows you to add graphic filters and animations on your tokens and tiles.</p>",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "compatibleCoreVersion": "0.6.4",
   "minimumCoreVersion": "0.6.0",
   "author": "SecretFire",
