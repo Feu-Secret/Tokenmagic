@@ -72,7 +72,7 @@ To remove filters :
 `TokenMagic.deleteFiltersOnSelected()`
 `TokenMagic.deleteFilters(<placeable>)`
 
-##Animations
+## Animations
 The `animated` keyword means that you want to start the animation of a filter property, it contains its own keywords. In the above example, it is the color property that we want to animate with an animation of type `"colorOscillation"`. The cycle duration is 3000 ms and the value limits are `val1` and `val2`.
 
 ```
@@ -87,12 +87,12 @@ animated :
          val1: <value limit 1>, // used for a lot of things (oscillation, random gen, etc.)
          val2: <value limit 2>, // used for a lot of things (oscillation, random gen, etc.)
          wantInteger: <true|false(default:false)>  // used for random generation
-         speed: <value> // used with « move » animType
+         speed: <value> // used with Â« move Â» animType
          chaosFactor: <value between 0 and 1(default:0.25)> // used to create chaos
          pauseBetweenDuration: <pause between each loop(default:0)>
          syncShift: <value between 0 and 1(default:0)> // used to alter synchronicity 
       }
-	  <,<other properties to animate>…>
+	  <,<other properties to animate>â€¦>
 }
 ```
 
@@ -121,7 +121,7 @@ Same as cosOscillation or syncCosOscillation, but specific to colors. The transi
 **Keywords:** `"rotation"` `"syncRotation"`
 **Mandatory properties:** `active` `loopDuration`
 **Optional properties:** `pauseBetweenDuration` `loops` `syncShift` `clockwise`
-You need to rotate something? it's for you. A full turn in loopDuration. You can set a counter-clockwise rotation with `clockwise: false`. You want to synchronize all your rotations? Use syncRotation. You need to rotate 45 ° and return to 0 ° and vice versa? Use a cosOscillation.
+You need to rotate something? it's for you. A full turn in loopDuration. You can set a counter-clockwise rotation with `clockwise: false`. You want to synchronize all your rotations? Use syncRotation. You need to rotate 45 Â° and return to 0 Â° and vice versa? Use a cosOscillation.
 
 **Keywords:** `"randomNumber"`
 **Mandatory properties:** `active` `val1`  `val2`
