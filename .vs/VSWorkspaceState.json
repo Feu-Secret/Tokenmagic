@@ -2,12 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\tokenmagic",
-    "\\tokenmagic\\lang",
+    "\\tokenmagic\\fx",
+    "\\tokenmagic\\fx\\assets",
+    "\\tokenmagic\\fx\\filters",
+    "\\tokenmagic\\fx\\glsl",
+    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
+    "\\tokenmagic\\fx\\glsl\\vertexshaders",
     "\\tokenmagic\\libs",
-    "\\tokenmagic\\module",
-    "\\tokenmagic\\pixifilters",
-    "\\tokenmagic\\pixifilters\\assets"
+    "\\tokenmagic\\module"
   ],
-  "SelectedNode": "\\tokenmagic\\pixifilters\\FilterDistortion.js",
+  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\fire.js",
   "PreviewInSolutionExplorer": false
 }
