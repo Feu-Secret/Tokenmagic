@@ -7,7 +7,7 @@ uniform float alphaTolerance;
 void main(void) {
     vec4 pixel = texture2D(uSampler, vTextureCoord);
     if (pixel.a <= alphaTolerance) {
-        pixel = vec4(1.,1.,1.,0.);
+        pixel = vec4(0.);
     } 
     gl_FragColor = pixel;
 }
