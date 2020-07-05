@@ -12,6 +12,7 @@
   "esmodules": [
     "module/tokenmagic.js",
     "fx/Anime.js",
+    "fx/glsl/vertexshaders/customvertex2D.js",
     "fx/glsl/fragmentshaders/removeshadow.js",
     "fx/glsl/fragmentshaders/cosmicray.js",
     "fx/glsl/fragmentshaders/fog.js",
