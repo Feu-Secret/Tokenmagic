@@ -1,20 +1,24 @@
-import { FilterAdjustment } from "../pixifilters/FilterAdjustment.js";
-import { FilterXBloom } from "../pixifilters/FilterAdvancedBloom.js";
-import { FilterDistortion } from "../pixifilters/FilterDistortion.js";
-import { FilterOldFilm } from "../pixifilters/FilterOldFilm.js";
-import { FilterGlow } from "../pixifilters/FilterGlow.js";
-import { FilterOutline } from "../pixifilters/FilterOutline.js";
-import { FilterBevel } from "../pixifilters/FilterBevel.js";
-import { FilterDropShadow } from "../pixifilters/FilterDropShadow.js";
-import { FilterTwist } from "../pixifilters/FilterTwist.js";
-import { FilterZoomBlur } from "../pixifilters/FilterZoomBlur.js";
-import { FilterBlur } from "../pixifilters/FilterBlur.js";
-import { FilterShockwave } from "../pixifilters/FilterShockWave.js";
-import { FilterBulgePinch } from "../pixifilters/FilterBulgePinch.js";
-import { FilterRemoveShadow } from "../pixifilters/FilterRemoveShadow.js";
-import { FilterRays } from "../pixifilters/FilterRays.js";
-import { FilterFog } from "../pixifilters/FilterFog.js";
-import { Anime } from "../pixifilters/Anime.js";
+import { FilterAdjustment } from "../fx/filters/FilterAdjustment.js";
+import { FilterXBloom } from "../fx/filters/FilterAdvancedBloom.js";
+import { FilterDistortion } from "../fx/filters/FilterDistortion.js";
+import { FilterOldFilm } from "../fx/filters/FilterOldFilm.js";
+import { FilterGlow } from "../fx/filters/FilterGlow.js";
+import { FilterOutline } from "../fx/filters/FilterOutline.js";
+import { FilterBevel } from "../fx/filters/FilterBevel.js";
+import { FilterDropShadow } from "../fx/filters/FilterDropShadow.js";
+import { FilterTwist } from "../fx/filters/FilterTwist.js";
+import { FilterZoomBlur } from "../fx/filters/FilterZoomBlur.js";
+import { FilterBlur } from "../fx/filters/FilterBlur.js";
+import { FilterShockwave } from "../fx/filters/FilterShockWave.js";
+import { FilterBulgePinch } from "../fx/filters/FilterBulgePinch.js";
+import { FilterRemoveShadow } from "../fx/filters/FilterRemoveShadow.js";
+import { FilterRays } from "../fx/filters/FilterRays.js";
+import { FilterFog } from "../fx/filters/FilterFog.js";
+import { FilterElectric } from "../fx/filters/FilterElectric.js";
+import { FilterWaves } from "../fx/filters/FilterWaves.js";
+import { FilterFire } from "../fx/filters/FilterFire.js";
+import { FilterFumes } from "../fx/filters/FilterFumes.js";
+import { Anime } from "../fx/Anime.js";
 
 const moduleTM = "module.tokenmagic";
 
@@ -35,7 +39,11 @@ export const FilterType = {
     zapshadow: FilterRemoveShadow,
     ray: FilterRays,
     fog: FilterFog,
-    shockwave: FilterShockwave
+    electric: FilterElectric,
+    wave: FilterWaves,
+    shockwave: FilterShockwave,
+    fire: FilterFire,
+    fumes: FilterFumes
 };
 
 export function log(output) {
@@ -49,12 +57,16 @@ export function getControlledPlaceables() {
         case "TokenLayer":
             controlled = canvas.tokens.controlled;
             break;
-
         case "TilesLayer":
             controlled = canvas.tiles.controlled;
             break;
     }
     return controlled;
+}
+
+// Only for tokens
+export function getTargetedTokens() {
+    return canvas.tokens.placeables.filter(placeable => placeable.isTargeted);
 }
 
 export function getPlaceableById(id, type) {
@@ -77,19 +89,18 @@ export function getPlaceableById(id, type) {
     return placeable;
 }
 
-// For later use
-//export function broadcast(bcAction, bcPlaceable, bcFilterId) {
-
-//    var data =
-//    {
-//        tmAction: bcAction,
-//        tmPlaceableId: bcPlaceable.id,
-//        tmFilterId: bcFilterId,
-//        tmViewedScene: game.user.viewedScene
-//    };
-//    game.socket.emit(moduleTM, data, resp => { });
-//}
-
+export function objectAssign(target, ...sources) {
+    sources.forEach(source => {
+        Object.keys(source).forEach(key => {
+            const s_val = source[key]
+            const t_val = target[key]
+            target[key] = t_val && s_val && typeof t_val === 'object' && typeof s_val === 'object'
+                ? objectAssign(t_val, s_val)
+                : s_val
+        });
+    });
+    return target;
+}
 
 // NOTES FOR DEV : API will be extended in a near future, to allow more control over filters
 export function TokenMagic() {
@@ -124,6 +135,35 @@ export function TokenMagic() {
         }
     };
 
+    async function addFilterOnTargeted(params) {
+        if (params == null
+            || !params.hasOwnProperty("filterType")
+            || !FilterType.hasOwnProperty(params.filterType)) {
+            return;
+        }
+
+        var targeted = getTargetedTokens();
+
+        if (!(targeted == null) && targeted.length > 0) {
+
+            if (!params.hasOwnProperty("filterId")) {
+                params.filterId = randomID();
+            }
+
+            for (const token of targeted) {
+                await addFilter(token, params);
+            }
+        }
+    }
+
+    async function addFiltersOnTargeted(paramsArray) {
+        if (paramsArray instanceof Array && paramsArray.length > 0) {
+            for (const params of paramsArray) {
+                await addFilterOnTargeted(params);
+            }
+        }
+    }
+
     // Add a filter on a placeable
     async function addFilter(placeable, params) {
         if (placeable == null
@@ -142,6 +182,7 @@ export function TokenMagic() {
         }
 
         params.placeableId = placeable.id;
+        params.filterInternalId = randomID();
 
         // TODO : to rework
         if (placeable instanceof Token) {
@@ -155,6 +196,7 @@ export function TokenMagic() {
         var placeableNewFlag = [{
             tmFilters: {
                 tmFilterId: params.filterId,
+                tmFilterInternalId: params.filterInternalId,
                 tmFilterType: params.filterType,
                 tmParams: params
             }
@@ -176,6 +218,100 @@ export function TokenMagic() {
         if (paramsArray instanceof Array && paramsArray.length > 0) {
             for (const params of paramsArray) {
                 await addFilter(placeable, params);
+            }
+        }
+    };
+
+    async function updateFilters(paramsArray) {
+        if (paramsArray instanceof Array && paramsArray.length > 0) {
+            for (const params of paramsArray) {
+                await updateFilter(params);
+            }
+        }
+    }
+
+    async function updateFilter(params) {
+        if (params == null
+            || !params.hasOwnProperty("filterId")) {
+            return;
+        }
+        var placeableIdSet = new Set();
+        var animations = Anime.getAnimeMap();
+        if (animations.size <= 0) { return; }
+
+        animations.forEach((anime, id) => {
+            if (anime.puppet.filterId === params.filterId) {
+                placeableIdSet.add(anime.puppet.placeableId);
+            }
+        });
+
+        if (placeableIdSet.size <= 0) { return; }
+
+        for (const placeableId of placeableIdSet) {
+            // TODO : to improve
+            var placeable = getPlaceableById(placeableId, "Token");
+            if (placeable == null) {
+                placeable = getPlaceableById(placeableId, "Tile");
+            }
+            if (!(placeable == null) && placeable instanceof PlaceableObject) {
+                await updateFilterByPlaceable(params, placeable);
+            }
+        }
+    };
+
+    async function updateFiltersOnSelected(paramsArray) {
+        var placeables = getControlledPlaceables();
+
+        if (placeables == null || placeables.length < 1) { return; }
+        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+
+        for (const placeable of placeables) {
+            for (const params of paramsArray) {
+                await updateFilterByPlaceable(params, placeable);
+            }
+        }
+    }
+
+    async function updateFiltersOnTargeted(paramsArray) {
+        var placeables = getTargetedTokens();
+
+        if (placeables == null || placeables.length < 1) { return; }
+        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+
+        for (const placeable of placeables) {
+            for (const params of paramsArray) {
+                await updateFilterByPlaceable(params, placeable);
+            }
+        }
+    }
+
+    async function updateFilterByPlaceable(params, placeable) {
+        var flags = placeable.getFlag("tokenmagic", "filters");
+        if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to update...
+
+        var workingFlags = new Array();
+        flags.forEach(flag => {
+            workingFlags.push(duplicate(flag));
+        });
+
+        workingFlags.forEach(flag => {
+            if (flag.tmFilters.tmFilterId === params.filterId) {
+                if (flag.tmFilters.hasOwnProperty("tmParams")) {
+                    objectAssign(flag.tmFilters.tmParams, params);
+                }
+            }
+        });
+        await placeable.setFlag("tokenmagic", "filters", workingFlags);
+    };
+
+
+    // Deleting filters on targeted tokens
+    async function deleteFiltersOnTargeted() {
+        var targeted = getTargetedTokens();
+        if (!(targeted == null) && targeted.length > 0) {
+
+            for (const token of targeted) {
+                await deleteFilters(token);
             }
         }
     };
@@ -224,41 +360,89 @@ export function TokenMagic() {
         if (filters == null || placeable == null) { return; }
         // Assign all filters to the placeable
         filters.forEach((filterInfo) => {
-            if (filterInfo == null) { return; }
-            var filter = new FilterType[filterInfo.tmFilters.tmFilterType](filterInfo.tmFilters.tmParams);
-            setFilter(placeable, filter, filterInfo.tmFilters.tmParams);
+            _assignFilter(placeable, filterInfo);
         });
     };
+
+    function _assignFilter(placeable, filterInfo) {
+        if (filterInfo == null) { return; }
+        var workingFilterInfo = duplicate(filterInfo);
+        var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
+        setFilter(placeable, filter, filterInfo.tmFilters.tmParams);
+    }
 
     function _loadFilters(placeables) {
         if (!(placeables == null)) {
             placeables.forEach((placeable) => {
                 var filters = placeable.getFlag("tokenmagic", "filters");
                 if (!(filters == null)) {
-                    this._assignFilters(placeable, filters);
+                    _assignFilters(placeable, filters);
                 }
             });
         }
     };
 
-    function _updateFilters(data, options, placeableType) {
-        if (options.hasOwnProperty("flags") && options.flags.hasOwnProperty("tokenmagic")) {
-            if (!(data == null || !data.hasOwnProperty("_id"))) {
+    function _fxPseudoEqual(flagObject, filterObject) {
 
-                var placeable = getPlaceableById(data._id, placeableType);
-                if (!(placeable == null)) {
-                    Anime.removeAnimation(data._id);
-                    this._clearImgFiltersByPlaceable(placeable);
+        function isObject(object) {
+            return object != null && typeof object === 'object';
+        };
 
-                    if (!options.flags.tokenmagic.hasOwnProperty("-=filters")) {
-                        var filters = placeable.getFlag("tokenmagic", "filters");
-                        if (!(filters == null)) {
-                            this._assignFilters(placeable, filters);
-                        }
-                    }
-                }
+        const flagKeys = Object.keys(flagObject);
+
+        for (const flagKey of flagKeys) {
+
+            const flagValue = flagObject[flagKey];
+            const filterValue = filterObject[flagKey];
+            const areObjects = isObject(flagValue) && isObject(filterValue);
+
+            if (areObjects && !_fxPseudoEqual(flagValue, filterValue)) {
+                return false;
+            }
+
+            // handling the Infinity exception with loops... thanks to JSON serialization...
+            if (!areObjects && flagKey === "loops" && flagValue === null) {
+                flagValue = Infinity; // not nice, but works ! :-)=
+            }
+
+            if (!areObjects && flagValue !== filterValue) {
+                return false;
             }
         }
+        return true;
+    };
+
+    function _updateFilters(data, options, placeableType) {
+        if (!options.hasOwnProperty("flags") || !options.flags.hasOwnProperty("tokenmagic")) { return; }
+        if (data == null || !data.hasOwnProperty("_id")) { return; }
+
+        var placeable = getPlaceableById(data._id, placeableType);
+        if (placeable == null) { return; }
+
+        if (options.flags.tokenmagic.hasOwnProperty("-=filters")) {
+            Anime.removeAnimation(data._id);                // removing animations on this placeable
+            this._clearImgFiltersByPlaceable(placeable);    // clearing the filters (owned by tokenmagic)
+            return;
+        }
+
+        var filters = placeable.getFlag("tokenmagic", "filters");
+        if (filters == null) { return; }
+
+        filters.forEach((filterFlag) => {
+            if (filterFlag.tmFilters.hasOwnProperty("tmParams")) {
+                var puppets = Anime.getPuppetsByParams(filterFlag.tmFilters.tmParams);
+                if (puppets.length > 0) {
+                    for (const puppet of puppets) {
+                        if (!_fxPseudoEqual(filterFlag.tmFilters.tmParams, puppet)) {
+                            puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
+                            puppet.normalizeTMParams();
+                        }
+                    }
+                } else {
+                    _assignFilter(placeable, filterFlag);
+                }
+            }
+        });
     };
 
     function _clearImgFiltersByPlaceable(placeable) {
@@ -288,8 +472,15 @@ export function TokenMagic() {
         addFilters: addFilters,
         addFilterOnSelected: addFilterOnSelected,
         addFiltersOnSelected: addFiltersOnSelected,
+        addFiltersOnTargeted: addFiltersOnTargeted,
         deleteFilters: deleteFilters,
         deleteFiltersOnSelected: deleteFiltersOnSelected,
+        deleteFiltersOnTargeted: deleteFiltersOnTargeted,
+        updateFilter: updateFilter,
+        updateFilters: updateFilters,
+        updateFiltersOnSelected: updateFiltersOnSelected,
+        updateFiltersOnTargeted: updateFiltersOnTargeted,
+        updateFilterByPlaceable: updateFilterByPlaceable,
         _assignFilters: _assignFilters,
         _loadFilters: _loadFilters,
         _clearImgFiltersByPlaceable: _clearImgFiltersByPlaceable,
@@ -299,21 +490,6 @@ export function TokenMagic() {
 }
 
 export const Magic = TokenMagic();
-
-// for later use
-//function initSocket() {
-//    game.socket.on(moduleTM, data => {
-
-//        if (data == null || !data.hasOwnProperty("tmAction")) { return; }
-
-//        switch (data.action) {
-//            case "updateFilters":
-//                break;
-//            case "deleteFilters":
-//                break;
-//        }
-//    });
-//};
 
 Hooks.on("ready", () => {
     log("Hook -> ready");
