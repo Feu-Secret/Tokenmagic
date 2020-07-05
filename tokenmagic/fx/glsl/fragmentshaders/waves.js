@@ -53,12 +53,5 @@ void main() {
 `;
 
 
-//vTextureCoord // normalized filter
-//vTextureCoord * inputSize.xy // filter pixel(css)
-//vTextureCoord * inputSize.xy + outputFrame.xy // screen pixel(css) coord
-//vTextureCoord * inputSize.xy / outputFrame.zw // filter (normalized)
-//vTextureCoord * inputPixel.xy // filter pixel(physical)
-
-
 
 

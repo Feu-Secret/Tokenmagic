@@ -13,6 +13,25 @@ varying vec2 vTextureCoord;
 uniform float time;
 uniform int blend;
 
+vec4 blender(int blend, vec4 fCol, vec4 sCol)
+{
+    if ( blend == 1) { fCol = fCol * sCol; }
+    else if (blend == 2) { fCol = (1. - (1. - fCol) * (1. - sCol)); }
+    else if (blend == 3) { fCol = min(fCol, sCol); }
+    else if (blend == 4) { fCol = max(fCol, sCol); }
+    else if (blend == 5) { fCol = abs(fCol - sCol); }
+    else if (blend == 6) { fCol = 1. - abs(1. - fCol - sCol); }
+    else if (blend == 7) { fCol = fCol + sCol - (2. * fCol * sCol); }
+    else if (blend == 8) { fCol = all(lessThanEqual(fCol, vec4(0.5, 0.5, 0.5, 1.))) ? (2. * fCol * sCol) : (1. - 2. * (1. - fCol) * (1. - sCol)); }
+    else if (blend == 9) { fCol = all(lessThanEqual(sCol, vec4(0.5, 0.5, 0.5, 1.))) ? (2. * fCol * sCol) : (1. - 2. * (1. - fCol) * (1. - sCol)); }
+    else if (blend == 10) { fCol = all(lessThanEqual(sCol, vec4(0.5, 0.5, 0.5, 1.))) ? (2. * fCol * sCol + fCol * fCol * (1. - 2. * sCol)) : sqrt(fCol) * (2. * sCol - 1.) + (2. * fCol) * (1. - sCol); }
+    else if (blend == 11) { fCol = fCol / (1.0 - sCol); }
+    else if (blend == 12) { fCol = 1.0 - (1.0 - fCol) / sCol; }
+    else { fCol = fCol * sCol; }
+    
+    return fCol;
+}
+
 float Perlin(vec3 P)
 {
     vec3 Pi = floor(P);
@@ -77,33 +96,17 @@ vec4 electric() {
 void main() {
  
     vec4 pixel = texture2D(uSampler, vTextureCoord);
-    vec4 electric = electric();
-
+    
+    // to avoid computation of invisible pixels
     if (pixel.a==0.) {
        gl_FragColor = pixel;
        return;
     }
     
+    vec4 electric = electric();
     electric *= color;
 
-    vec4 result;
-
-    if (blend == 1) { result = pixel * electric; }
-    else if (blend == 2) { result = (1. - (1. - pixel) * (1. - electric)); }
-    else if (blend == 3) { result = min(pixel, electric); }
-    else if (blend == 4) { result = max(pixel, electric); }
-    else if (blend == 5) { result = abs(pixel - electric); }
-    else if (blend == 6) { result = 1. - abs(1. - pixel - electric); }
-    else if (blend == 7) { result = pixel + electric - (2. * pixel * electric); }
-    else if (blend == 8) { result = all(lessThanEqual(pixel,vec4(0.5,0.5,0.5,1.))) ? (2. * pixel * electric) : (1. - 2. * (1. - pixel) * (1. - electric)); }
-    else if (blend == 9) { result = all(lessThanEqual(electric,vec4(0.5,0.5,0.5,1.))) ? (2. * pixel * electric) : (1. - 2. * (1. - pixel) * (1. - electric)); }
-    else if (blend == 10) { result = all(lessThanEqual(electric,vec4(0.5,0.5,0.5,1.))) ? (2. * pixel * electric + pixel * pixel * (1. - 2. * electric)) : sqrt(pixel) * (2.*electric-1.) + (2.*pixel) * (1.-electric); }
-    else if (blend == 11) { result = pixel/(1.0-electric); } 
-    else if (blend == 12) { result = 1.0 - (1.0 - pixel) / electric; } 
-    else { result = pixel; }
-
-    result*=pixel.a;
-    gl_FragColor = result;
+    gl_FragColor = blender(blend,pixel,electric)*pixel.a;
 }
 `;
 

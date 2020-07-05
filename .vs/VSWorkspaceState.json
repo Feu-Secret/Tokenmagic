@@ -11,6 +11,6 @@
     "\\tokenmagic\\libs",
     "\\tokenmagic\\module"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\glsl\\vertexshaders\\vposition.js",
+  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\fire.js",
   "PreviewInSolutionExplorer": false
 }
