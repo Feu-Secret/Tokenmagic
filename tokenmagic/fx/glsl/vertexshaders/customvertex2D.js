@@ -1,8 +1,4 @@
-// this vertex shader includes a varying vec2 vPosition
-// the default PIXI vertex shader dont include it
-// vPosition is a 2D projection of the current vertex.
-// The default PIXI vertex shader dont integrate a vFilterCoord in local filter coordinates.
-// This shader do it with function filterLocalCoord() and new varying vec2 vFilterCoord.
+// Custom vertex shader with filterLocalCoord()
 
 export const customVertex2D = `
 precision mediump float;
@@ -15,6 +11,8 @@ uniform vec4 outputFrame;
 
 varying vec2 vTextureCoord;
 varying vec2 vFilterCoord;
+varying vec4 vInputSize;
+varying vec4 vOutputFrame;
 
 vec4 filterVertexPosition( void )
 {
@@ -38,5 +36,7 @@ void main(void)
     gl_Position = filterVertexPosition();
     vTextureCoord = filterTextureCoord();
     vFilterCoord = filterLocalCoord();
+    vInputSize = inputSize;
+    vOutputFrame = outputFrame;
 }
 `;

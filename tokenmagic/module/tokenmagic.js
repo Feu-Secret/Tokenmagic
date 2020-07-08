@@ -18,6 +18,8 @@ import { FilterElectric } from "../fx/filters/FilterElectric.js";
 import { FilterWaves } from "../fx/filters/FilterWaves.js";
 import { FilterFire } from "../fx/filters/FilterFire.js";
 import { FilterFumes } from "../fx/filters/FilterFumes.js";
+import { FilterFlood } from "../fx/filters/FilterFlood.js";
+import { FilterSmoke } from "../fx/filters/FilterSmoke.js";
 import { Anime } from "../fx/Anime.js";
 
 const moduleTM = "module.tokenmagic";
@@ -43,7 +45,9 @@ export const FilterType = {
     wave: FilterWaves,
     shockwave: FilterShockwave,
     fire: FilterFire,
-    fumes: FilterFumes
+    fumes: FilterFumes,
+    smoke: FilterSmoke,
+    flood: FilterFlood
 };
 
 export function log(output) {
@@ -116,11 +120,6 @@ export function TokenMagic() {
         var controlled = getControlledPlaceables();
 
         if (!(controlled == null) && controlled.length > 0) {
-
-            if (!params.hasOwnProperty("filterId")) {
-                params.filterId = randomID();
-            }
-
             for (const placeable of controlled) {
                 await addFilter(placeable, params);
             }
@@ -145,11 +144,6 @@ export function TokenMagic() {
         var targeted = getTargetedTokens();
 
         if (!(targeted == null) && targeted.length > 0) {
-
-            if (!params.hasOwnProperty("filterId")) {
-                params.filterId = randomID();
-            }
-
             for (const token of targeted) {
                 await addFilter(token, params);
             }
@@ -183,6 +177,7 @@ export function TokenMagic() {
 
         params.placeableId = placeable.id;
         params.filterInternalId = randomID();
+        params.filterOwner = game.data.userId;
 
         // TODO : to rework
         if (placeable instanceof Token) {
@@ -198,6 +193,7 @@ export function TokenMagic() {
                 tmFilterId: params.filterId,
                 tmFilterInternalId: params.filterInternalId,
                 tmFilterType: params.filterType,
+                tmFilterOwner: params.filterOwner,
                 tmParams: params
             }
         }];
@@ -306,31 +302,38 @@ export function TokenMagic() {
 
 
     // Deleting filters on targeted tokens
-    async function deleteFiltersOnTargeted() {
+    async function deleteFiltersOnTargeted(filterId = null) {
         var targeted = getTargetedTokens();
         if (!(targeted == null) && targeted.length > 0) {
 
             for (const token of targeted) {
-                await deleteFilters(token);
+                await deleteFilters(token, filterId);
             }
         }
     };
 
     // Deleting filters on selected placeable(s)
-    async function deleteFiltersOnSelected() {
+    async function deleteFiltersOnSelected(filterId = null) {
         var placeables = getControlledPlaceables();
         if (!(placeables == null) && placeables.length > 0) {
 
             for (const placeable of placeables) {
-                await deleteFilters(placeable);
+                await deleteFilters(placeable, filterId);
             }
         }
     };
 
     // Deleting all filters on a placeable in parameter
-    async function deleteFilters(placeable) {
-        if (!(placeable == null)) {
+    async function deleteFilters(placeable, filterId = null) {
+        if (placeable == null) { return; }
+
+        if (filterId == null) {
             await placeable.unsetFlag("tokenmagic", "filters");
+        } else if (typeof filterId === "string") {
+            var params = {};
+            params.filterId = filterId;
+            params.destroy = true;
+            await updateFilterByPlaceable(params, placeable);
         }
     };
 
@@ -419,6 +422,7 @@ export function TokenMagic() {
         var placeable = getPlaceableById(data._id, placeableType);
         if (placeable == null) { return; }
 
+        // Shortcut when all filters are deleted
         if (options.flags.tokenmagic.hasOwnProperty("-=filters")) {
             Anime.removeAnimation(data._id);                // removing animations on this placeable
             this._clearImgFiltersByPlaceable(placeable);    // clearing the filters (owned by tokenmagic)
@@ -430,29 +434,38 @@ export function TokenMagic() {
 
         filters.forEach((filterFlag) => {
             if (filterFlag.tmFilters.hasOwnProperty("tmParams")) {
-                var puppets = Anime.getPuppetsByParams(filterFlag.tmFilters.tmParams);
-                if (puppets.length > 0) {
-                    for (const puppet of puppets) {
-                        if (!_fxPseudoEqual(filterFlag.tmFilters.tmParams, puppet)) {
-                            puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
-                            puppet.normalizeTMParams();
-                        }
-                    }
+                if (filterFlag.tmFilters.tmParams.hasOwnProperty("destroy") && filterFlag.tmFilters.tmParams.destroy) {
+                    Anime.removeAnimationByFilterId(data._id, filterFlag.tmFilters.tmFilterId);
+                    this._clearImgFiltersByPlaceable(placeable, filterFlag.tmFilters.tmFilterId);
                 } else {
-                    _assignFilter(placeable, filterFlag);
+                    var puppets = Anime.getPuppetsByParams(filterFlag.tmFilters.tmParams);
+                    if (puppets.length > 0) {
+                        for (const puppet of puppets) {
+                            if (!_fxPseudoEqual(filterFlag.tmFilters.tmParams, puppet)) {
+                                puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
+                                puppet.normalizeTMParams();
+                            }
+                        }
+                    } else {
+                        _assignFilter(placeable, filterFlag);
+                    }
                 }
             }
         });
     };
 
-    function _clearImgFiltersByPlaceable(placeable) {
+    function _clearImgFiltersByPlaceable(placeable, filterId = null) {
 
         if (placeable == null) { return; }
+
+        var filterById = (filterId != null && typeof filterId === "string");
 
         function filterTheFiltering(theFilters) {
             if (theFilters instanceof Array) {
                 var tmFilters = theFilters.filter(filter =>
-                    !filter.hasOwnProperty("filterId") // TODO : to rework, not nice.
+                    filterById
+                        ? !(filter.hasOwnProperty("filterId") && filter.filterId === filterId)
+                        : !filter.hasOwnProperty("filterId")
                 );
                 return (tmFilters.length === 0 ? null : tmFilters);
             }

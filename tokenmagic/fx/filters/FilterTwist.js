@@ -34,14 +34,6 @@ export class FilterTwist extends PIXI.filters.TwistFilter {
         }
     }
 
-    play() {
-        this.enabled = true;
-    }
-
-    stop() {
-        this.enabled = false;
-    }
-
     handleTransform() {
         this.offset[0] = this.placeableImg.worldTransform.tx;
         this.offset[1] = this.placeableImg.worldTransform.ty;
