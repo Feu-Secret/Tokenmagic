@@ -3,14 +3,14 @@
     "",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
-    "\\tokenmagic\\fx\\assets",
     "\\tokenmagic\\fx\\filters",
+    "\\tokenmagic\\fx\\filters\\proto",
     "\\tokenmagic\\fx\\glsl",
     "\\tokenmagic\\fx\\glsl\\fragmentshaders",
     "\\tokenmagic\\fx\\glsl\\vertexshaders",
     "\\tokenmagic\\libs",
     "\\tokenmagic\\module"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\fire.js",
+  "SelectedNode": "\\tokenmagic\\module\\tokenmagic.js",
   "PreviewInSolutionExplorer": false
 }

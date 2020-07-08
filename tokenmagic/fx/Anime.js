@@ -56,6 +56,8 @@ export class Anime {
                 this.elapsedTime[effect] += frameTime;
             }
         });
+
+        this.autoDisableCheck();
     }
 
     cycleCheck(effect, frameTime) {
@@ -77,6 +79,29 @@ export class Anime {
             }
         }
         return true;
+    }
+
+    async autoDisableCheck() {
+        // Check of conscience
+        if (this.puppet == null) { return; }
+
+        // Only the owner can alter the filter parameters
+        if (!(this.puppet.filterOwner === game.data.userId
+            && (this.puppet.autoDisable || this.puppet.autoDestroy))) { return; }
+
+        if (this.puppet.enabled === false) { return; }
+
+        if (Object.values(this.animated).every(animeEffect => animeEffect.active === false)) {
+
+            let params = {};
+            params.filterId = this.puppet.filterId;
+            this.puppet.autoDestroy ? params.destroy = true : params.enabled = false;
+        
+            var placeable = this.puppet.getPlaceable();
+
+            // updating the filter trigger an update{placeable} for everyone
+            await window.TokenMagic.updateFilterByPlaceable(params, placeable);
+        }
     }
 
     isPauseBetweenLoop(effect, frametime) {
@@ -110,25 +135,25 @@ export class Anime {
     }
 
     colorOscillation(effect) {
-        var rgbValue1 = Anime.valueToRgb(this.animated[effect].val1);
-        var rgbValue2 = Anime.valueToRgb(this.animated[effect].val2);
-
-        this.puppet[effect] = Anime.rgbToValue(
-            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[0], rgbValue2[0], Math.cos, false)),
-            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[1], rgbValue2[1], Math.cos, false)),
-            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[2], rgbValue2[2], Math.cos, false))
-        );
+        this.puppet[effect] =
+            Anime.colOscillation(
+                this.elapsedTime[effect],
+                this.animated[effect].loopDuration,
+                this.animated[effect].syncShift,
+                this.animated[effect].val1,
+                this.animated[effect].val2,
+                false);
     }
 
     syncColorOscillation(effect) {
-        var rgbValue1 = Anime.valueToRgb(this.animated[effect].val1);
-        var rgbValue2 = Anime.valueToRgb(this.animated[effect].val2);
-
-        this.puppet[effect] = Anime.rgbToValue(
-            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[0], rgbValue2[0], Math.cos, true)),
-            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[1], rgbValue2[1], Math.cos, true)),
-            Math.floor(Anime.oscillation(this.elapsedTime[effect], this.animated[effect].loopDuration, this.animated[effect].syncShift, rgbValue1[2], rgbValue2[2], Math.cos, true))
-        );
+        this.puppet[effect] =
+            Anime.colOscillation(
+                this.elapsedTime[effect],
+                this.animated[effect].loopDuration,
+                this.animated[effect].syncShift,
+                this.animated[effect].val1,
+                this.animated[effect].val2,
+                true);
     }
 
     cosOscillation(effect) {
@@ -271,6 +296,17 @@ export class Anime {
                 + 1) / 2) + val2;
     }
 
+    static colOscillation(elapsed, loopDuration, syncShift, val1, val2, isSync) {
+        var rgbValue1 = Anime.valueToRgb(val1);
+        var rgbValue2 = Anime.valueToRgb(val2);
+
+        return Anime.rgbToValue(
+            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[0], rgbValue2[0], Math.cos, isSync)),
+            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[1], rgbValue2[1], Math.cos, isSync)),
+            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[2], rgbValue2[2], Math.cos, isSync))
+        );
+    }
+
     static getSynchronizedTime(loopDuration, syncShift) {
         return (Anime._lastTime / loopDuration) + syncShift;
     }
@@ -299,6 +335,17 @@ export class Anime {
     static removeAnimation(placeableId) {
         Anime._animeMap.forEach((anime, id) => {
             if (anime.puppet.placeableId === placeableId) {
+                Anime._animeMap.delete(id);
+            }
+        });
+        if (Anime._animeMap.size === 0) {
+            Anime._suspendAnimation();
+        }
+    }
+
+    static removeAnimationByFilterId(placeableId, filterId) {
+        Anime._animeMap.forEach((anime, id) => {
+            if (anime.puppet.placeableId === placeableId && anime.puppet.filterId === filterId) {
                 Anime._animeMap.delete(id);
             }
         });

@@ -1,8 +1,15 @@
-import { objectAssign } from "../../../module/tokenmagic.js";
-
+import { objectAssign, getPlaceableById } from "../../../module/tokenmagic.js";
 
 PIXI.Filter.prototype.setTMParams = function (params) {
+    this.autoDisable = false;
+    this.autoDestroy = false;
+    this.autoFit = false;
+    this.padding = 0;
     objectAssign(this, params);
+}
+
+PIXI.Filter.prototype.getPlaceable = function () {
+    return getPlaceableById(this.placeableId, this.placeableType);
 }
 
 PIXI.Filter.prototype.normalizeTMParams = function () {

@@ -24,8 +24,10 @@ vec4 colorize(in vec4 grayscale, in vec4 color)
     return (grayscale * color);
 }
 
-vec4 blender(int blend, vec4 fCol, vec4 sCol)
+vec4 blenderVec3(int blend, vec4 fColv4, vec4 sColv4)
 {
+    vec3 fCol = vec3(fColv4);
+    vec3 sCol = vec3(sColv4);
     if ( blend == 1) { fCol = fCol * sCol; }
     else if (blend == 2) { fCol = (1. - (1. - fCol) * (1. - sCol)); }
     else if (blend == 3) { fCol = min(fCol, sCol); }
@@ -33,14 +35,15 @@ vec4 blender(int blend, vec4 fCol, vec4 sCol)
     else if (blend == 5) { fCol = abs(fCol - sCol); }
     else if (blend == 6) { fCol = 1. - abs(1. - fCol - sCol); }
     else if (blend == 7) { fCol = fCol + sCol - (2. * fCol * sCol); }
-    else if (blend == 8) { fCol = all(lessThanEqual(fCol, vec4(0.5, 0.5, 0.5, 1.))) ? (2. * fCol * sCol) : (1. - 2. * (1. - fCol) * (1. - sCol)); }
-    else if (blend == 9) { fCol = all(lessThanEqual(sCol, vec4(0.5, 0.5, 0.5, 1.))) ? (2. * fCol * sCol) : (1. - 2. * (1. - fCol) * (1. - sCol)); }
-    else if (blend == 10) { fCol = all(lessThanEqual(sCol, vec4(0.5, 0.5, 0.5, 1.))) ? (2. * fCol * sCol + fCol * fCol * (1. - 2. * sCol)) : sqrt(fCol) * (2. * sCol - 1.) + (2. * fCol) * (1. - sCol); }
+    else if (blend == 8) { fCol = all(lessThanEqual(fCol, vec3(0.5, 0.5, 0.5))) ? (2. * fCol * sCol) : (1. - 2. * (1. - fCol) * (1. - sCol)); }
+    else if (blend == 9) { fCol = all(lessThanEqual(sCol, vec3(0.5, 0.5, 0.5))) ? (2. * fCol * sCol) : (1. - 2. * (1. - fCol) * (1. - sCol)); }
+    else if (blend == 10) { fCol = all(lessThanEqual(sCol, vec3(0.5, 0.5, 0.5))) ? (2. * fCol * sCol + fCol * fCol * (1. - 2. * sCol)) : sqrt(fCol) * (2. * sCol - 1.) + (2. * fCol) * (1. - sCol); }
     else if (blend == 11) { fCol = fCol / (1.0 - sCol); }
     else if (blend == 12) { fCol = 1.0 - (1.0 - fCol) / sCol; }
-    else { fCol = fCol * sCol; }
+    else if (blend == 13) { fCol = fCol + sCol; }
+    else { fCol = fCol + sCol; }
     
-    return fCol;
+    return vec4(fCol,1.0);
 }
 
 vec4 fog(vec2 fragCoord)
@@ -85,7 +88,7 @@ void main()
                     ,vec4(color/3., 1.)) * 0.9;
 
     // we put the fog and the pixel into the blender, and we serve, adjusted by the pixel alpha.
-	gl_FragColor = blender(blend, fog, pixel) * pixel.a;
+	gl_FragColor = blenderVec3(blend, fog, pixel) * pixel.a;
 }
 `;
 
