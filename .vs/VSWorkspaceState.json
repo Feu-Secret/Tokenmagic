@@ -9,8 +9,9 @@
     "\\tokenmagic\\fx\\glsl\\fragmentshaders",
     "\\tokenmagic\\fx\\glsl\\vertexshaders",
     "\\tokenmagic\\libs",
-    "\\tokenmagic\\module"
+    "\\tokenmagic\\module",
+    "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\tokenmagic\\module\\tokenmagic.js",
+  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\mirrorimages.js",
   "PreviewInSolutionExplorer": false
 }

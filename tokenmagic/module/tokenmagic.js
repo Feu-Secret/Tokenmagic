@@ -20,6 +20,8 @@ import { FilterFire } from "../fx/filters/FilterFire.js";
 import { FilterFumes } from "../fx/filters/FilterFumes.js";
 import { FilterFlood } from "../fx/filters/FilterFlood.js";
 import { FilterSmoke } from "../fx/filters/FilterSmoke.js";
+import { FilterForceField } from "../fx/filters/FilterForceField.js";
+import { FilterMirrorImages } from "../fx/filters/FilterMirrorImages.js";
 import { Anime } from "../fx/Anime.js";
 
 const moduleTM = "module.tokenmagic";
@@ -47,8 +49,26 @@ export const FilterType = {
     fire: FilterFire,
     fumes: FilterFumes,
     smoke: FilterSmoke,
-    flood: FilterFlood
+    flood: FilterFlood,
+    images: FilterMirrorImages,
+    field: FilterForceField
 };
+
+const graphics = new PIXI.Graphics();
+
+// The FilterForceField is a huge shader : when loaded for the first time, you can take a coffee break.
+// This piece of code solve the problem, while waiting for a cleaner solution.
+// There is a better solution, no doubt.
+export async function loadHeavyFilters() {
+    let params =
+    {
+        filterType: "field",
+        enabled: true,
+        dummy: true
+    };
+    var filter = new FilterForceField(params);
+    graphics.filters = [filter];
+}
 
 export function log(output) {
     let logged = "%cTokenMagic %c| " + output;
@@ -507,6 +527,7 @@ export const Magic = TokenMagic();
 Hooks.on("ready", () => {
     log("Hook -> ready");
     window.TokenMagic = Magic;
+    loadHeavyFilters();
     //initSocket();
 });
 

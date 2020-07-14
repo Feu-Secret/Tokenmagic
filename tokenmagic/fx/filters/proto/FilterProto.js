@@ -5,11 +5,91 @@ PIXI.Filter.prototype.setTMParams = function (params) {
     this.autoDestroy = false;
     this.autoFit = false;
     this.padding = 0;
+    this.gridPadding = 0;
+    this.dummy = false;
     objectAssign(this, params);
+    if (!this.dummy) {
+        this.originalPadding = this.padding;
+        this.assignPlaceable();
+        this.activateTransform();
+    }
 }
 
 PIXI.Filter.prototype.getPlaceable = function () {
-    return getPlaceableById(this.placeableId, this.placeableType);
+    return this.placeableImg;
+}
+
+PIXI.Filter.prototype.getPlaceableType = function () {
+    return this.placeableType;
+}
+
+PIXI.Filter.prototype.calculatePadding = function () {
+
+    if (this.gridPadding > 0) {
+        var imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
+        var toSize = (canvas.dimensions.size >= imgSize
+            ? canvas.dimensions.size - imgSize
+            : imgSize % canvas.dimensions.size);
+
+        this.currentPadding =
+            (this.placeableImg.parent.worldTransform.a * (this.gridPadding - 1)
+                * canvas.dimensions.size)
+            + ((toSize * this.placeableImg.parent.worldTransform.a) / 2);
+
+    } else {
+
+        this.currentPadding =
+            this.placeableImg.parent.worldTransform.a
+            * this.originalPadding;
+    }
+}
+
+PIXI.Filter.prototype.verifyPadding = function () {
+    // TODO
+    //var paddings = PIXI.Filter._paddingObject;
+    //if (paddings.hasOwnProperty(this.placeableId)) {
+    //    if (!(paddings[this.placeableId] == null) && this.currentPadding < paddings[this.placeableId]) {
+    //        this.currentPadding = 0;
+    //    } else {
+    //        paddings[this.placeableId] = this.currentPadding;
+    //    }
+    //} else {
+    //    paddings[this.placeableId] = this.currentPadding;
+    //}
+}
+
+PIXI.Filter.prototype.assignPlaceable = function () {
+    if (this.placeableType === "Token") {
+        let parent = canvas.tokens.placeables.find(n => n.id === this.placeableId);
+        if (!(parent == null)) {
+            this.placeableImg = parent.icon;
+        }
+    } else {
+        let parent = canvas.tiles.placeables.find(n => n.id === this.placeableId);
+        if (!(parent == null)) {
+            this.placeableImg = parent.tile.img;
+        }
+    }
+}
+
+PIXI.Filter.prototype.activateTransform = function () {
+    this.preComputation = this.filterTransform;
+    this.filterTransform();
+}
+
+PIXI.Filter.prototype.filterTransform = function () {
+    this.calculatePadding();
+
+    if (this.hasOwnProperty("zIndex")) {
+        this.placeableImg.parent.zIndex = this.zIndex;
+    }
+
+    //this.verifyPadding();
+    this.padding = this.currentPadding;
+
+    if ("handleTransform" in this) {
+        this.handleTransform();
+    }
 }
 
 PIXI.Filter.prototype.normalizeTMParams = function () {
@@ -83,3 +163,5 @@ PIXI.Filter.prototype.normalizeTMParams = function () {
         });
     }
 }
+
+//PIXI.Filter._paddingObject = {};

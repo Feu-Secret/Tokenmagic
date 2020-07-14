@@ -31,25 +31,9 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
         this.sprite.anchor.set(this.anchorSet);
         this.sprite.texture.baseTexture.wrapMode = this.wrapMode;
 
-        // Attaching the sprite
-        if (!(params == null) || !params.hasOwnProperty("placeableId")) {
-            var placeable = null;
-            if (params.placeableType === "Token") {
-                placeable = canvas.tokens.placeables.find(n => n.id === params.placeableId);
-                if (!(placeable == null)) {
-                    placeable.icon.addChild(this.sprite);
-                    this.sprite.x = placeable.icon.width / 2;
-                    this.sprite.y = placeable.icon.height / 2;
-                }
-            } else if (params.placeableType === "Tile") {
-                placeable = canvas.tiles.placeables.find(n => n.id === params.placeableId);
-                if (!(placeable == null)) {
-                    placeable.tile.img.addChild(this.sprite);
-                    this.sprite.x = placeable.tile.img.width / 2;
-                    this.sprite.y = placeable.tile.img.height / 2;
-                }
-            }
-        }
+        this.placeableImg.addChild(this.sprite);
+        this.sprite.x = this.placeableImg.width / 2;
+        this.sprite.y = this.placeableImg.height / 2;
     }
 
     set maskSpriteX(value) {

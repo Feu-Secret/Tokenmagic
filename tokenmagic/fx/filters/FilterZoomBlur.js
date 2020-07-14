@@ -12,33 +12,6 @@ export class FilterZoomBlur extends PIXI.filters.ZoomBlurFilter {
         this.setTMParams(params);
         this.anime = new Anime(this);
         this.normalizeTMParams();
-
-        this.placeableImg = null;
-        this.preComputation = this.handleTransform;
-
-        // Get placeable to compute center
-        if (!(params == null) || !params.hasOwnProperty("placeableId")) {
-            if (params.placeableType === "Token") {
-                let parent = canvas.tokens.placeables.find(n => n.id === params.placeableId);
-                if (!(parent == null)) {
-                    this.placeableImg = parent.icon;
-                }
-            } else {
-                let parent = canvas.tiles.placeables.find(n => n.id === params.placeableId);
-                if (!(parent == null)) {
-                    this.placeableImg = parent.tile.img;
-                }
-            }
-            this.handleTransform();
-        }
-    }
-
-    play() {
-        this.enabled = true;
-    }
-
-    stop() {
-        this.enabled = false;
     }
 
     handleTransform() {

@@ -16,7 +16,5 @@ export class FilterGlow extends PIXI.filters.GlowFilter {
         this.distance = 10;
         this.anime = new Anime(this);
         this.normalizeTMParams();
-
-        
     }
 }
