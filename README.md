@@ -1,4 +1,4 @@
-# Token Magic FX - Update v0.1.3-alpha
+# Token Magic FX - Update v0.1.3b-alpha
 
 ## FX
 
@@ -16,6 +16,7 @@ The new filters have been added to the TokenMagic macro compendium.
 *Fixed issues :*
 - The padding property value is now multiplied by the zoom factor.
 - Some internal improvements and refactoring.
+- Animations freezing with target-enhancements module
 
 # Token Magic FX - Update v0.1.2-alpha
 
