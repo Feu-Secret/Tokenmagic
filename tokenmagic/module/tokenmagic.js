@@ -555,6 +555,10 @@ Hooks.on("canvasReady", (canvas) => {
 
 Hooks.on("updateScene", (scene, data, options) => {
     log("Hook -> updateScene");
+
+    // to resolve an incompatibility with target-enhancements module
+    if (data.hasOwnProperty("flags") && data.flags.hasOwnProperty("target-enhancements")) { return; }
+
     Anime.resetAnimation();
 });
 
