@@ -553,13 +553,13 @@ Hooks.on("canvasReady", (canvas) => {
     Anime.activateAnimation();
 });
 
-Hooks.on("updateScene", (scene, data, options) => {
-    log("Hook -> updateScene");
+Hooks.on("deleteScene", (scene, data, options) => {
+    log("Hook -> deleteScene");
 
-    // to resolve an incompatibility with target-enhancements module
-    if (data.hasOwnProperty("flags") && data.flags.hasOwnProperty("target-enhancements")) { return; }
-
-    Anime.resetAnimation();
+    if (!(scene == null) && scene.id === game.user.viewedScene) {
+        Anime.desactivateAnimation();
+        Anime.resetAnimation();
+    }
 });
 
 Hooks.on("deleteToken", (parent, doc, options, userId) => {

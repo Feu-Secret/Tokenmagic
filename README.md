@@ -1,4 +1,4 @@
-# Token Magic FX - Update v0.1.3b-alpha
+# Token Magic FX - Update v0.1.3c-alpha
 
 ## FX
 
@@ -16,7 +16,8 @@ The new filters have been added to the TokenMagic macro compendium.
 *Fixed issues :*
 - The padding property value is now multiplied by the zoom factor.
 - Some internal improvements and refactoring.
-- Animations freezing with target-enhancements module
+- Freezing when a scene is updated
+- Crash when a scene with animated tokens or tiles is deleted (with active players/GM in the scene)
 
 # Token Magic FX - Update v0.1.2-alpha
 

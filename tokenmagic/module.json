@@ -2,7 +2,7 @@
   "name": "tokenmagic",
   "title": "Tokenmagic",
   "description": "<p>Add graphic filters and animations on your tokens and tiles.</p>",
-  "version": "0.1.3b",
+  "version": "0.1.3c",
   "compatibleCoreVersion": "0.6.5",
   "minimumCoreVersion": "0.6.0",
   "author": "SecretFire",
