@@ -1,4 +1,4 @@
-# Token Magic FX - Update v0.1.3c-alpha
+# Token Magic FX - Update v0.1.3d-alpha
 
 ## FX
 
@@ -18,6 +18,7 @@ The new filters have been added to the TokenMagic macro compendium.
 - Some internal improvements and refactoring.
 - Freezing when a scene is updated
 - Crash when a scene with animated tokens or tiles is deleted (with active players/GM in the scene)
+- autoDestroy and autoDisable properties not working properly.
 
 # Token Magic FX - Update v0.1.2-alpha
 

@@ -4,7 +4,6 @@
     "\\tokenmagic",
     "\\tokenmagic\\fx",
     "\\tokenmagic\\fx\\filters",
-    "\\tokenmagic\\fx\\filters\\proto",
     "\\tokenmagic\\fx\\glsl",
     "\\tokenmagic\\fx\\glsl\\fragmentshaders",
     "\\tokenmagic\\fx\\glsl\\vertexshaders",
@@ -12,6 +11,6 @@
     "\\tokenmagic\\module",
     "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\README.md",
+  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\forcefield.js",
   "PreviewInSolutionExplorer": false
 }
