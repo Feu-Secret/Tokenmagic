@@ -223,7 +223,7 @@ vec4 blenderVec3(int blend, vec4 fColv4, vec4 sColv4)
     else if (blend == 10) { fCol = all(lessThanEqual(sCol, vec3(0.5, 0.5, 0.5))) ? (2. * fCol * sCol + fCol * fCol * (1. - 2. * sCol)) : sqrt(fCol) * (2. * sCol - 1.) + (2. * fCol) * (1. - sCol); }
     else if (blend == 11) { fCol = fCol / (1.0 - sCol + 0.00001); }
     else if (blend == 12) { fCol = 1.0 - (1.0 - fCol) / sCol + 0.00001; }
-    else if (blend == 13) { fCol = fCol + sCol; }
+    else if (blend == 13) { fCol = fCol + sCol; return vec4(fCol,0.6); }
     else { fCol = fCol + sCol; }
     
     return vec4(fCol,(fColv4.a+sColv4.a)/2.);
@@ -629,11 +629,15 @@ void main()
     
     vec4 final = clamp(ambientLight(clamp(colorized, 0., 1.)*intensity, uv, posLight-vec2(0.5,0.5)),0.,1.);
 
+    //if ( r <= 1. && pixel.a < 1. ) {
+    //    pixel.rgb = vec3(1.);
+    //}
+
     gl_FragColor =
             r > 1.0
                 ? pixel*(1.-a)
                 : (pixel.a < 1. 
-                        ? mix(blenderVec3(2, pixel, final),blenderVec3(blend, pixel, final),pixel.a)
+                        ? mix(blenderVec3(13, pixel, final),blenderVec3(blend, pixel, final),pixel.a)
                         : blenderVec3(blend, pixel, final));
 }
 `;

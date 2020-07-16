@@ -16,7 +16,7 @@ PIXI.Filter.prototype.setTMParams = function (params) {
 }
 
 PIXI.Filter.prototype.getPlaceable = function () {
-    return this.placeableImg;
+    return getPlaceableById(this.placeableId, this.placeableType);
 }
 
 PIXI.Filter.prototype.getPlaceableType = function () {
