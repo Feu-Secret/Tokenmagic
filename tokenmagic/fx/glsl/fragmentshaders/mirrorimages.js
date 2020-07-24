@@ -29,6 +29,7 @@ vec4 blenderVec3(int blend, vec4 fColv4, vec4 sColv4)
     else if (blend == 11) { fCol = fCol / (1.0 - sCol); }
     else if (blend == 12) { fCol = 1.0 - (1.0 - fCol) / sCol; }
     else if (blend == 13) { fCol = fCol + sCol; }
+    else if (blend == 14) { fCol = max(fCol,sCol)-(min(fCol,sCol)*0.5)+abs(fCol-sCol);}
     else { fCol = fCol + sCol; }
     
     return vec4(fCol,max(fColv4.a,sColv4.a));

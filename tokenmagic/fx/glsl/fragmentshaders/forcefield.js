@@ -601,7 +601,7 @@ void main()
     } else if (shieldType == 11) {
         result = grid(uv*5.*scale);
     } else if (shieldType == 12) {
-        result = galaxy(uv*5.*scale)*2.;
+        result = galaxy(uv*5.*scale);
     } else if (shieldType != 1) {
         result = vec4(color,1.);
     }
@@ -628,10 +628,6 @@ void main()
                         toGray(result.rgb + glow), chromaOption), result.a) + result)/2.;
     
     vec4 final = clamp(ambientLight(clamp(colorized, 0., 1.)*intensity, uv, posLight-vec2(0.5,0.5)),0.,1.);
-
-    //if ( r <= 1. && pixel.a < 1. ) {
-    //    pixel.rgb = vec3(1.);
-    //}
 
     gl_FragColor =
             r > 1.0

@@ -1,3 +1,7 @@
-{
-  "TOKENMAGIC.TokenMagic": "TokenMagic"
+﻿{
+  "TMFX.TokenMagic": "TokenMagic",
+  "TMFX.useMaxPadding.name": "Effets en mode padding additif",
+  "TMFX.useMaxPadding.hint": "Par défaut, les effets additionnent leur padding en s'appliquant sur un objet donné. Si la case est décochée, c'est le padding maximum qui est utilisé.",
+  "TMFX.minPadding.name": "Padding minimum",
+  "TMFX.minPadding.hint": "Padding minimum appliqué aux effets."
 }

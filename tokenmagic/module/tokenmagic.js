@@ -22,7 +22,11 @@ import { FilterFlood } from "../fx/filters/FilterFlood.js";
 import { FilterSmoke } from "../fx/filters/FilterSmoke.js";
 import { FilterForceField } from "../fx/filters/FilterForceField.js";
 import { FilterMirrorImages } from "../fx/filters/FilterMirrorImages.js";
+import { FilterXRays } from "../fx/filters/FilterXRays.js";
+import { FilterLiquid } from "../fx/filters/FilterLiquid.js";
+import { FilterGleamingGlow } from "../fx/filters/FilterGleamingGlow.js";
 import { Anime } from "../fx/Anime.js";
+import "./proto/PlaceableObjectProto.js";
 
 const moduleTM = "module.tokenmagic";
 
@@ -51,23 +55,53 @@ export const FilterType = {
     smoke: FilterSmoke,
     flood: FilterFlood,
     images: FilterMirrorImages,
-    field: FilterForceField
+    field: FilterForceField,
+    xray: FilterXRays,
+    liquid: FilterLiquid,
+    xglow: FilterGleamingGlow
 };
 
-const graphics = new PIXI.Graphics();
+function i18n(key) {
+    return game.i18n.localize(key);
+}
 
-// The FilterForceField is a huge shader : when loaded for the first time, you can take a coffee break.
-// This piece of code solve the problem, while waiting for a cleaner solution.
-// There is a better solution, no doubt.
-export async function loadHeavyFilters() {
-    let params =
-    {
-        filterType: "field",
-        enabled: true,
-        dummy: true
-    };
-    var filter = new FilterForceField(params);
-    graphics.filters = [filter];
+export function registerSettings() {
+    game.settings.register("tokenmagic", "useAdditivePadding", {
+        name: i18n("TMFX.useMaxPadding.name"),
+        hint: i18n("TMFX.useMaxPadding.hint"),
+        scope: "world",
+        config: true,
+        default: true,
+        type: Boolean
+    });
+
+    game.settings.register("tokenmagic", "minPadding", {
+        name: i18n("TMFX.minPadding.name"),
+        hint: i18n("TMFX.minPadding.hint"),
+        scope: "world",
+        config: true,
+        default: 0,
+        type: Number
+    });
+}
+
+const sleep = m => new Promise(r => setTimeout(r, m));
+
+export function isActiveModule(moduleName) {
+    return game.modules.has(moduleName)
+        && game.modules.get(moduleName).active === true;
+}
+
+export function getMinPadding() {
+    return game.settings.get("tokenmagic", "minPadding");
+}
+
+export function isAdditivePaddingConfig() {
+    return game.settings.get("tokenmagic", "useAdditivePadding");
+}
+
+export function autosetPaddingMode() {
+    canvas.app.renderer.filter.useMaxPadding = !isAdditivePaddingConfig();
 }
 
 export function log(output) {
@@ -230,6 +264,29 @@ export function TokenMagic() {
         await placeable.setFlag("tokenmagic", "filters", placeableFlag);
     };
 
+    async function addUpdateFilters(placeable, paramsArray) {
+        if (paramsArray instanceof Array && paramsArray.length > 0) {
+            for (const params of paramsArray) {
+                await addUpdateFilter(placeable, params);
+            }
+        }
+    };
+
+    async function addUpdateFilter(placeable, params) {
+        if (placeable == null
+            || params == null
+            || !params.hasOwnProperty("filterType")
+            || !FilterType.hasOwnProperty(params.filterType)) {
+            return;
+        }
+
+        if (params.hasOwnProperty("filterId") && placeable.TMFXhasFilterId(params.filterId)) {
+            await updateFilterByPlaceable(params, placeable);
+        } else {
+            await addFilter(placeable, params);
+        }
+    };
+
     async function addFilters(placeable, paramsArray) {
         if (paramsArray instanceof Array && paramsArray.length > 0) {
             for (const params of paramsArray) {
@@ -301,6 +358,14 @@ export function TokenMagic() {
         }
     }
 
+    async function updateFiltersByPlaceable(placeable, paramsArray) {
+        if (paramsArray instanceof Array && paramsArray.length > 0) {
+            for (const params of paramsArray) {
+                await updateFilterByPlaceable(params, placeable);
+            }
+        }
+    }
+
     async function updateFilterByPlaceable(params, placeable) {
         var flags = placeable.getFlag("tokenmagic", "filters");
         if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to update...
@@ -350,11 +415,53 @@ export function TokenMagic() {
         if (filterId == null) {
             await placeable.unsetFlag("tokenmagic", "filters");
         } else if (typeof filterId === "string") {
-            var params = {};
-            params.filterId = filterId;
-            params.destroy = true;
-            await updateFilterByPlaceable(params, placeable);
+
+            var flags = placeable.getFlag("tokenmagic", "filters");
+            if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+
+            var workingFlags = new Array();
+            flags.forEach(flag => {
+                if (flag.tmFilters.tmFilterId != filterId) {
+                    workingFlags.push(duplicate(flag));
+                }
+            });
+
+            if (workingFlags.length > 0) {
+                await placeable.setFlag("tokenmagic", "filters", workingFlags);
+            } else {
+                await placeable.unsetFlag("tokenmagic", "filters");
+            }
         }
+    };
+
+    function hasFilterType(placeable, filterType) {
+        if (placeable == null
+            || filterType == null
+            || !(placeable instanceof PlaceableObject)) { return null; }
+
+        var flags = placeable.getFlag("tokenmagic", "filters");
+        if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+
+        const found = flags.find(flag => flag.tmFilters.tmFilterType === filterType);
+        if (found === undefined) {
+            return false;
+        }
+        return true;
+    };
+
+    function hasFilterId(placeable, filterId) {
+        if (placeable == null
+            || filterId == null
+            || !(placeable instanceof PlaceableObject)) { return null; }
+
+        var flags = placeable.getFlag("tokenmagic", "filters");
+        if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+
+        const found = flags.find(flag => flag.tmFilters.tmFilterId === filterId);
+        if (found === undefined) {
+            return false;
+        }
+        return true;
     };
 
     // TODO : to improve
@@ -390,6 +497,7 @@ export function TokenMagic() {
     function _assignFilter(placeable, filterInfo) {
         if (filterInfo == null) { return; }
         var workingFilterInfo = duplicate(filterInfo);
+        workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
         var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
         setFilter(placeable, filter, filterInfo.tmFilters.tmParams);
     }
@@ -402,6 +510,13 @@ export function TokenMagic() {
                     _assignFilters(placeable, filters);
                 }
             });
+        }
+    };
+
+    function _singleLoadFilters(placeable) {
+        var filters = placeable.getFlag("tokenmagic", "filters");
+        if (!(filters == null)) {
+            _assignFilters(placeable, filters);
         }
     };
 
@@ -452,24 +567,39 @@ export function TokenMagic() {
         var filters = placeable.getFlag("tokenmagic", "filters");
         if (filters == null) { return; }
 
+        // Handling deleted filters
+        for (let anime of Anime.getAnimeMap().values()) {
+            var foundFilter = false;
+            filters.forEach((filterFlag) => {
+                if (anime.puppet.filterId === filterFlag.tmFilters.tmFilterId
+                    && anime.puppet.filterInternalId === filterFlag.tmFilters.tmFilterInternalId
+                    && anime.puppet.placeableId === filterFlag.tmFilters.tmParams.placeableId) {
+                    foundFilter = true;
+                }
+            });
+
+            if (!foundFilter) {
+                Anime.removeAnimationByFilterId(data._id, anime.puppet.filterId);
+                this._clearImgFiltersByPlaceable(placeable, anime.puppet.filterId);
+            }
+        }
+
         filters.forEach((filterFlag) => {
             if (filterFlag.tmFilters.hasOwnProperty("tmParams")) {
-                if (filterFlag.tmFilters.tmParams.hasOwnProperty("destroy") && filterFlag.tmFilters.tmParams.destroy) {
-                    Anime.removeAnimationByFilterId(data._id, filterFlag.tmFilters.tmFilterId);
-                    this._clearImgFiltersByPlaceable(placeable, filterFlag.tmFilters.tmFilterId);
-                } else {
-                    var puppets = Anime.getPuppetsByParams(filterFlag.tmFilters.tmParams);
-                    if (puppets.length > 0) {
-                        for (const puppet of puppets) {
-                            if (!_fxPseudoEqual(filterFlag.tmFilters.tmParams, puppet)) {
-                                puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
-                                puppet.normalizeTMParams();
-                            }
+                var puppets = Anime.getPuppetsByParams(filterFlag.tmFilters.tmParams);
+                if (puppets.length > 0) {
+                    // Handling modified filters
+                    for (const puppet of puppets) {
+                        if (!_fxPseudoEqual(filterFlag.tmFilters.tmParams, puppet)) {
+                            puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
+                            puppet.normalizeTMParams();
                         }
-                    } else {
-                        _assignFilter(placeable, filterFlag);
                     }
+                } else {
+                    // Handling new filters
+                    _assignFilter(placeable, filterFlag);
                 }
+
             }
         });
     };
@@ -506,6 +636,8 @@ export function TokenMagic() {
         addFilterOnSelected: addFilterOnSelected,
         addFiltersOnSelected: addFiltersOnSelected,
         addFiltersOnTargeted: addFiltersOnTargeted,
+        addUpdateFilters: addUpdateFilters,
+        addUpdateFilter: addUpdateFilter,
         deleteFilters: deleteFilters,
         deleteFiltersOnSelected: deleteFiltersOnSelected,
         deleteFiltersOnTargeted: deleteFiltersOnTargeted,
@@ -513,26 +645,33 @@ export function TokenMagic() {
         updateFilters: updateFilters,
         updateFiltersOnSelected: updateFiltersOnSelected,
         updateFiltersOnTargeted: updateFiltersOnTargeted,
+        updateFiltersByPlaceable: updateFiltersByPlaceable,
         updateFilterByPlaceable: updateFilterByPlaceable,
+        hasFilterType: hasFilterType,
+        hasFilterId: hasFilterId,
         _assignFilters: _assignFilters,
         _loadFilters: _loadFilters,
         _clearImgFiltersByPlaceable: _clearImgFiltersByPlaceable,
         _getAnimeMap: Anime.getAnimeMap,
         _updateFilters: _updateFilters,
+        _singleLoadFilters: _singleLoadFilters,
     };
 }
 
 export const Magic = TokenMagic();
 
+Hooks.once("init", () => {
+    registerSettings();
+});
+
 Hooks.on("ready", () => {
     log("Hook -> ready");
     window.TokenMagic = Magic;
-    loadHeavyFilters();
-    //initSocket();
 });
 
 Hooks.on("canvasInit", (canvas) => {
     log("Hook -> canvasInit");
+    autosetPaddingMode();
     Anime.desactivateAnimation();
     Anime.resetAnimation();
 });
@@ -569,9 +708,46 @@ Hooks.on("deleteToken", (parent, doc, options, userId) => {
     }
 });
 
+Hooks.on("createToken", (scene, data, options) => {
+    log("Hook -> createToken");
+
+    if (!(scene == null)
+        && scene.id === game.user.viewedScene
+        && data.hasOwnProperty("flags")
+        && data.flags.hasOwnProperty("tokenmagic")
+        && data.flags.tokenmagic.hasOwnProperty("filters")) {
+
+        var placeable = getPlaceableById(data._id, "Token");
+
+        (async () => {
+            await sleep(100);
+            Magic._singleLoadFilters(placeable);
+        })();
+    }
+});
+
 Hooks.on("updateToken", (scene, data, options) => {
     log("Hook -> updateToken");
-    Magic._updateFilters(data, options, "Token");
+
+    if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")
+        || options.hasOwnProperty("height") || options.hasOwnProperty("width") ) {
+
+        var placeable = getPlaceableById(data._id, "Token");
+
+        // removing animations on this placeable
+        Anime.removeAnimation(data._id);
+
+        // clearing the filters (owned by tokenmagic)
+        Magic._clearImgFiltersByPlaceable(placeable);
+
+        (async () => {
+            await sleep(100);
+            Magic._singleLoadFilters(placeable);
+        })();
+
+    } else {
+        Magic._updateFilters(data, options, "Token");
+    }
 });
 
 Hooks.on("deleteTile", (parent, doc, options, userId) => {
@@ -583,5 +759,24 @@ Hooks.on("deleteTile", (parent, doc, options, userId) => {
 
 Hooks.on("updateTile", (scene, data, options) => {
     log("Hook -> updateTile");
-    Magic._updateFilters(data, options, "Tile");
+
+    if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")) {
+
+        var placeable = getPlaceableById(data._id, "Tile");
+
+        // removing animations on this placeable
+        Anime.removeAnimation(data._id);
+
+        (async () => {
+            await sleep(100);
+            Magic._singleLoadFilters(placeable);
+        })();
+
+    } else {
+        Magic._updateFilters(data, options, "Tile");
+    }
+});
+
+Hooks.on("closeSettingsConfig", () => {
+    autosetPaddingMode();
 });

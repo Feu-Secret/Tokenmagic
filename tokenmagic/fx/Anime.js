@@ -17,13 +17,14 @@ export class Anime {
 
         if (!(this.puppet == null)) {
             if (this.puppet.hasOwnProperty("animated")
+                && !(this.puppet.animated == null)
                 && typeof this.puppet.animated === 'object'
                 && Object.keys(this.puppet.animated).length > 0) {
 
                 this.initAnimatedInternals(this.puppet.animated);
                 this.animated = this.puppet.animated; // easy access to the puppet's animodes
-                Anime.addAnimation(self); // ready to tick
             }
+            Anime.addAnimation(self); // ready to tick
         }
     }
 
@@ -56,7 +57,6 @@ export class Anime {
                 this.elapsedTime[effect] += frameTime;
             }
         });
-
         this.autoDisableCheck();
     }
 
@@ -89,18 +89,21 @@ export class Anime {
         if (!(this.puppet.filterOwner === game.data.userId
             && (this.puppet.autoDisable || this.puppet.autoDestroy))) { return; }
 
-        if (this.puppet.enabled === false) { return; }
+        if (this.puppet.enabled === false && !this.puppet.autoDestroy) { return; }
 
         if (Object.values(this.animated).every(animeEffect => animeEffect.active === false)) {
 
-            let params = {};
-            params.filterId = this.puppet.filterId;
-            this.puppet.autoDestroy ? params.destroy = true : params.enabled = false;
-        
             var placeable = this.puppet.getPlaceable();
 
-            // updating the filter trigger an update{placeable} for everyone
-            await window.TokenMagic.updateFilterByPlaceable(params, placeable);
+            if (this.puppet.autoDestroy) {
+                await window.TokenMagic.deleteFilters(placeable, this.puppet.filterId);
+            } else {
+                let params = {};
+                params.filterId = this.puppet.filterId;
+                params.enabled = false;
+
+                await window.TokenMagic.updateFilterByPlaceable(params, placeable);
+            }
         }
     }
 
@@ -387,7 +390,9 @@ export class Anime {
                 if (anime.puppet.hasOwnProperty("preComputation")) {
                     anime.puppet.preComputation();
                 }
-                anime.animate(Anime._frameTime);
+                if (anime.puppet.hasOwnProperty("animated") && !(anime.puppet.animated == null)) {
+                    anime.animate(Anime._frameTime);
+                }
             });
             Anime._prevTime = Anime._lastTime;
         }
