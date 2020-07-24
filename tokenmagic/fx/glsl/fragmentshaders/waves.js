@@ -51,7 +51,3 @@ void main() {
     gl_FragColor = col * pixel.a;
 }
 `;
-
-
-
-

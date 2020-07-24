@@ -1,3 +1,7 @@
 {
-  "TOKENMAGIC.TokenMagic": "TokenMagic"
+  "TMFX.TokenMagic": "TokenMagic",
+  "TMFX.useMaxPadding.name": "FX in additive padding mode",
+  "TMFX.useMaxPadding.hint": "By default, FX paddings are additives when applied on a given placeable. If the checkbox is unchecked, the maximum padding is used.",
+  "TMFX.minPadding.name": "Minimum padding",
+  "TMFX.minPadding.hint": "The minimum padding applied to a FX."
 }

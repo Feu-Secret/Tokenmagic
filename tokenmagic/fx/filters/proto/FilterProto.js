@@ -1,4 +1,4 @@
-import { objectAssign, getPlaceableById } from "../../../module/tokenmagic.js";
+import { objectAssign, getPlaceableById, getMinPadding } from "../../../module/tokenmagic.js";
 
 PIXI.Filter.prototype.setTMParams = function (params) {
     this.autoDisable = false;
@@ -9,7 +9,7 @@ PIXI.Filter.prototype.setTMParams = function (params) {
     this.dummy = false;
     objectAssign(this, params);
     if (!this.dummy) {
-        this.originalPadding = this.padding;
+        this.originalPadding = Math.max(this.padding, getMinPadding());
         this.assignPlaceable();
         this.activateTransform();
     }
@@ -24,7 +24,6 @@ PIXI.Filter.prototype.getPlaceableType = function () {
 }
 
 PIXI.Filter.prototype.calculatePadding = function () {
-
     if (this.gridPadding > 0) {
         var imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
         var toSize = (canvas.dimensions.size >= imgSize
@@ -42,20 +41,6 @@ PIXI.Filter.prototype.calculatePadding = function () {
             this.placeableImg.parent.worldTransform.a
             * this.originalPadding;
     }
-}
-
-PIXI.Filter.prototype.verifyPadding = function () {
-    // TODO
-    //var paddings = PIXI.Filter._paddingObject;
-    //if (paddings.hasOwnProperty(this.placeableId)) {
-    //    if (!(paddings[this.placeableId] == null) && this.currentPadding < paddings[this.placeableId]) {
-    //        this.currentPadding = 0;
-    //    } else {
-    //        paddings[this.placeableId] = this.currentPadding;
-    //    }
-    //} else {
-    //    paddings[this.placeableId] = this.currentPadding;
-    //}
 }
 
 PIXI.Filter.prototype.assignPlaceable = function () {
@@ -84,7 +69,6 @@ PIXI.Filter.prototype.filterTransform = function () {
         this.placeableImg.parent.zIndex = this.zIndex;
     }
 
-    //this.verifyPadding();
     this.padding = this.currentPadding;
 
     if ("handleTransform" in this) {
@@ -94,7 +78,7 @@ PIXI.Filter.prototype.filterTransform = function () {
 
 PIXI.Filter.prototype.normalizeTMParams = function () {
 
-    if (this.hasOwnProperty("animated")) {
+    if (this.hasOwnProperty("animated") && !(this.animated == null) ) {
 
         // Normalize animations properties
         Object.keys(this.animated).forEach((effect) => {
@@ -160,8 +144,8 @@ PIXI.Filter.prototype.normalizeTMParams = function () {
             if (!this.anime.hasInternals(effect)) {
                 this.anime.initInternals(effect);
             }
+
+            this.anime.animated = this.animated;
         });
     }
 }
-
-//PIXI.Filter._paddingObject = {};
