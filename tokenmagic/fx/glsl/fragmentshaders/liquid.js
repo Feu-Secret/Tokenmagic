@@ -71,20 +71,20 @@ vec4 blenderVec3(int blend, vec4 fColv4, vec3 sCol)
 void main() {
     
     float distortion1 = fbm( 
-        vec2( fbm(  vFilterCoord * 2.5 * scale + time/2.),
-              fbm( (-vFilterCoord - vec2(0.01)) * 5. * scale + time/3.) )
+        vec2( fbm(  vFilterCoord * 2.5 * scale + time*0.5),
+              fbm( (-vFilterCoord - vec2(0.01)) * 5. * scale + time*0.3333334) )
                     );
     
     float distortion2 = fbm( 
-        vec2( fbm( -vFilterCoord * 5. * scale + time/2.),
-              fbm(  (vFilterCoord + vec2(0.01)) * 2.5 * scale + time/3.) )
+        vec2( fbm( -vFilterCoord * 5. * scale + time*0.5),
+              fbm(  (vFilterCoord + vec2(0.01)) * 2.5 * scale + time*0.3333334) )
                     );
     
     vec2 uv = vFilterCoord;
     
-    uv.x += 0.8*sin(min(distortion1/4.,distortion2/4.));
-    uv.y += 0.8*cos(min(distortion1/4.,distortion2/4.));
-    uv *= 1. + 0.11*(cos(sqrt(max(distortion1, distortion2))+1.)/2.);
+    uv.x += 0.8*sin(min(distortion1*0.25,distortion2*0.25));
+    uv.y += 0.8*cos(min(distortion1*0.25,distortion2*0.25));
+    uv *= 1. + 0.11*(cos(sqrt(max(distortion1, distortion2))+1.)*0.5);
     uv -= vec2(0.036,0.81); 
 
     vec2 mappedCoord = (uv*vOutputFrame.zw) / vInputSize.xy;
@@ -98,6 +98,6 @@ void main() {
 
     if (spectral) pixel.a = max(distortion1,distortion2)*3.75;
 
-    gl_FragColor = blenderVec3(blend,pixel,color/3.) * min(pixel.a,a);
+    gl_FragColor = blenderVec3(blend,pixel,color*0.3333334) * min(pixel.a,a);
 }
 `;

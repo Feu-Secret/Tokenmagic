@@ -21,10 +21,14 @@ varying vec2 vFilterCoord;
 #define SQRT5B20 0.30901699
 #define PI 3.14159265
 #define SPEED 0.01
+#define MU_TWOPI 0.15915494309
+#define MU_289 0.00346020761
+#define MU_3 0.33333333334
+#define MU_1_5 0.66666666667
 
 vec3 hsvToRgb(vec3 hsVcolor)
 {
-    vec4 K = vec4(1., 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec4 K = vec4(1., 2.0 * MU_3, 1.0 * MU_3, 3.0);
     vec3 p = abs(fract(hsVcolor.xxx + K.xyz) 
              * 6.0 - K.www);
     return hsVcolor.z 
@@ -33,7 +37,7 @@ vec3 hsvToRgb(vec3 hsVcolor)
 
 vec4 multihue(vec2 uv) 
 {
-    float h = 0.5 + atan(uv.y, uv.x) / (2. * PI);
+    float h = 0.5 + atan(uv.y, uv.x) * MU_TWOPI;
     float b2 = .5 * ((1.0 - 1.) 
                 + 1. + sqrt((1.0 - 2.) 
                 * (1.0 - 2.) + 0.01));
@@ -53,22 +57,22 @@ vec2 random2(vec2 p)
 
 float bornedCos(float minimum, float maximum)
 {
-    return (maximum-minimum)*(cos(2.*PI*time/20. + 1.)/2.)+minimum;
+    return (maximum-minimum)*(cos(2.*PI*time*0.05 + 1.)*0.5)+minimum;
 }
 
 float bornedSin(float minimum, float maximum)
 {
-    return (maximum-minimum)*(sin(2.*PI*time/20. + 1.)/2.)+minimum;
+    return (maximum-minimum)*(sin(2.*PI*time*0.05 + 1.)*0.5)+minimum;
 }
 
 vec4 mod289(vec4 x) 
 {
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
+    return x - floor(x * (1.0 * MU_289)) * 289.0;
 }
 
 float mod289(float x) 
 {
-    return x - floor(x * (1.0 / 289.0)) * 289.0;
+    return x - floor(x * (1.0 * MU_289)) * 289.0;
 }
 
 vec4 permute(vec4 x) 
@@ -181,10 +185,10 @@ float surface( vec4 coord )
 
 vec4 ambientLight(vec4 pixel, vec2 fragCoord, vec2 posLg) 
 {
-  vec3 lightColor = (color+vec3(2.))/3.;
+  vec3 lightColor = (color+vec3(2.)) * MU_3;
   vec2 position = posLg;
   
-  float maxDistance = lightSize + 0.055*sin(time*10.);
+  float maxDistance = lightSize;
   float distance = distance(fragCoord-posLg, position);
   float value = 1.0 - smoothstep(-0.2, maxDistance, distance);
   
@@ -198,7 +202,7 @@ vec4 ambientLight(vec4 pixel, vec2 fragCoord, vec2 posLg)
 
 vec3 toGray(vec3 color)
 {
-  float average = (color.r + color.g + color.b) / 3.0;
+  float average = (color.r + color.g + color.b)*0.3333333;
   return vec3(average, average, average);
 }
 
@@ -226,7 +230,7 @@ vec4 blenderVec3(int blend, vec4 fColv4, vec4 sColv4)
     else if (blend == 13) { fCol = fCol + sCol; return vec4(fCol,0.6); }
     else { fCol = fCol + sCol; }
     
-    return vec4(fCol,(fColv4.a+sColv4.a)/2.);
+    return vec4(fCol,(fColv4.a+sColv4.a)*0.5);
 }
 
 float hexDist(vec2 p) 
@@ -258,7 +262,7 @@ vec4 hexa(vec2 fragCoord)
 {
     float t = time;
     
-    vec2 uv = fragCoord/1.;
+    vec2 uv = fragCoord;
     vec2 uv1 = uv + vec2(0, sin(uv.x*1. +t)*.25);
     
     vec2 uv2 = .5*uv1 + .5*uv + vec2(sin(uv.y*5. + t)*.05, 0);
@@ -268,8 +272,8 @@ vec4 hexa(vec2 fragCoord)
     uv2 *= mat2(c, -s, s, c);
     
     vec3 col = color;
-    col += (smoothstep(abs(uv2.y)/1.5, 3.99, hexCoords(uv2*15.).y) * 40.*(sin(t)+1.));
-    col += (smoothstep(abs(uv2.x)/1.5, 3.99, hexCoords(uv2*15.).y) * 40.*(cos(t)+1.));
+    col += (smoothstep(abs(uv2.y)*MU_1_5, 3.99, hexCoords(uv2*15.).y) * 40.*(sin(t)+1.));
+    col += (smoothstep(abs(uv2.x)*MU_1_5, 3.99, hexCoords(uv2*15.).y) * 40.*(cos(t)+1.));
 
     return vec4(colorize(toGray(clamp(col,0.,2.)),color),1.);
 }
@@ -351,11 +355,11 @@ float fbm2(vec2 n)
 
 vec4 ripples(vec2 suv) 
 {
-    suv.x += time/2.;
-    vec3 c1 = ( 0.0 ) * (color / 0.1);
+    suv.x += time*0.5;
+    vec3 c1 = ( 0.0 ) * (color * 10.);
     vec3 c2 = vec3(c1);
     vec3 c3 = vec3(c1);
-    vec3 c4 = vec3( color.r/0.2, color.g/0.3, color.b/0.5 );
+    vec3 c4 = vec3(color.r*5., color.g*3.333, color.b*2.);
     vec3 c5 = vec3(c3);
     vec3 c6 = vec3(c1);
     vec2 p = suv;
@@ -372,10 +376,10 @@ vec4 ripples(vec2 suv)
 
 vec4 fire(vec2 suv) 
 {
-    vec3 c1 = color+(2.*vec3(0.1, 0.0, 0.))/3.;
-	vec3 c2 = color+(2.*vec3(0.7, 0.0, 0.))/3.;
-	vec3 c3 = color+(2.*vec3(0.2, 0.0, 0.))/3.;
-	vec3 c4 = color+(2.*vec3(1.0, 0.9, 0.))/3.;
+    vec3 c1 = color+(2.*vec3(0.1, 0.0, 0.))*0.3333333;
+	vec3 c2 = color+(2.*vec3(0.7, 0.0, 0.))*0.3333333;
+	vec3 c3 = color+(2.*vec3(0.2, 0.0, 0.))*0.3333333;
+	vec3 c4 = color+(2.*vec3(1.0, 0.9, 0.))*0.3333333;
 	vec3 c5 = vec3(0.1);
 	vec3 c6 = vec3(0.9);
     vec2 uv = suv - vec2(0.92,0.26);
@@ -391,7 +395,7 @@ vec4 surface4d(vec2 suv)
     float s = suv.x + 0.61;
     float t = suv.y + 0.5;
     
-    float multiplier = 1.0 / ( 2.0 * PI );
+    float multiplier = 1.0 * MU_TWOPI;
     float nx = cos( s * 2.0 * PI ) * multiplier;
     float ny = cos( t * 2.0 * PI ) * multiplier;
     float nz = sin( s * 2.0 * PI ) * multiplier;
@@ -404,9 +408,9 @@ vec4 surface4d(vec2 suv)
 vec4 fbmy(vec2 suv)
 {
     vec4 noiseColor;
-    noiseColor.r = (color.r * fbm(suv + time/2.));
-    noiseColor.g = (color.g * fbm(suv + time/2.));
-    noiseColor.b = (color.b * fbm(suv + time/2.));
+    noiseColor.r = (color.r * fbm(suv + time*0.5));
+    noiseColor.g = (color.g * fbm(suv + time*0.5));
+    noiseColor.b = (color.b * fbm(suv + time*0.5));
     noiseColor.a = 1.;
     return clamp(noiseColor,0.,1.);
 }
@@ -414,9 +418,9 @@ vec4 fbmy(vec2 suv)
 vec4 noisy(vec2 suv)
 {
     vec4 noiseColor;
-    noiseColor.r = (color.r * noise(suv + fbm(suv) + time/2.));
-    noiseColor.g = (color.g * noise(suv + fbm(suv) + time/2.));
-    noiseColor.b = (color.b * noise(suv + fbm(suv) + time/2.));
+    noiseColor.r = (color.r * noise(suv + fbm(suv) + time*0.5));
+    noiseColor.g = (color.g * noise(suv + fbm(suv) + time*0.5));
+    noiseColor.b = (color.b * noise(suv + fbm(suv) + time*0.5));
     noiseColor.a = 1.;
     return clamp(noiseColor,0.,1.);
 }
@@ -451,10 +455,9 @@ vec4 denseSmoke(vec2 suv)
     vec2 uv;
     uv.x = (fbm(suv*2.)-suv.x);
     uv.y = (suv.y+fbm(suv*2.));
-    uv *= 1.;
-    noiseColor.r = (color.r * min(fbm(uv - time/2.),fbm(uv)*1.5));
-    noiseColor.g = (color.g * min(fbm(uv - time/2.),fbm(uv)*1.5));
-    noiseColor.b = (color.b * min(fbm(uv - time/2.),fbm(uv)*1.5));
+    noiseColor.r = (color.r * min(fbm(uv - time*0.5),fbm(uv)*1.5));
+    noiseColor.g = (color.g * min(fbm(uv - time*0.5),fbm(uv)*1.5));
+    noiseColor.b = (color.b * min(fbm(uv - time*0.5),fbm(uv)*1.5));
     noiseColor.a = 1.0;
     return clamp(noiseColor,0.,1.);
 }
@@ -509,7 +512,7 @@ vec4 grid(vec2 suv)
 
 vec4 galaxy(vec2 suv)
 {
-    vec2 uv = suv/6. 
+    vec2 uv = suv*0.166666667 
         + vec2(bornedCos(0.0,0.7),
                bornedSin(0.0,0.7));
 
@@ -519,7 +522,7 @@ vec4 galaxy(vec2 suv)
             / ( length( uv.xy ) + 0.2 )) * 2.2;
     
     float si = sin( t * 1.5 );
-    float co = cos( t / 1.5 );
+    float co = cos( t * 0.66666667 );
     mat2 matrix = mat2( -co, si, si, co );
     
     float c;
@@ -559,9 +562,7 @@ vec2 getSphere(out float alpha, out float r)
   vec2 tc = vFilterCoord.xy;
   vec2 p = (-1.0 + 2. * tc) * (1.01 / radius+0.000001);
   r = dot(p,p);
-  alpha = 1.0;
-  if (r > 1.0) alpha = (1./r)-0.85;
-  if (alpha < 0.) alpha = 0.;
+  r > 0.943 ? alpha = max(min(40.*log(1./r),1.),0.) : alpha = 1.;
   float f = (1.0-sqrt(1.0-r))/(r);
   vec2 uv;
   uv.x = p.x*f;
@@ -573,9 +574,7 @@ void main()
 {
     float a, r;
     vec4 result;
-
     vec4 pixel = texture2D(uSampler, vTextureCoord);
-
     vec2 uv = getSphere(a, r);
 
     if (shieldType <= 1) {
@@ -606,14 +605,8 @@ void main()
         result = vec4(color,1.);
     }
    
-    float glow = 
-        0.05 / (0.015 + distance(radius + .008, 0.99));
-
-    result.a = a;
-
     vec4 colorized;
     vec3 chromaOption;
-
     if (chromatic) {
         vec2 vHue = uv;
         vHue.x -= bornedCos(-0.,+2.2);
@@ -622,18 +615,15 @@ void main()
     } else {
         chromaOption = color;
     }
-
     colorized = (vec4(
                     colorize(
-                        toGray(result.rgb + glow), chromaOption), result.a) + result)/2.;
-    
+                        toGray(result.rgb), chromaOption), result.a) + result)*0.5;
     vec4 final = clamp(ambientLight(clamp(colorized, 0., 1.)*intensity, uv, posLight-vec2(0.5,0.5)),0.,1.);
-
     gl_FragColor =
             r > 1.0
                 ? pixel*(1.-a)
                 : (pixel.a < 1. 
                         ? mix(blenderVec3(13, pixel, final),blenderVec3(blend, pixel, final),pixel.a)
-                        : blenderVec3(blend, pixel, final));
+                        : blenderVec3(blend, pixel, final)) * a;
 }
 `;

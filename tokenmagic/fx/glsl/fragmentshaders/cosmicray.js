@@ -31,7 +31,7 @@ void main() {
     	wobble = 48. + 24. * cos(time/5.),
     	white = fract((angle) * divisor + sin((sqrt(len) * wobble) - time * speed));
     
-    white  = 2.* cos(white / (PI / 10.));
+    white  = 2.* cos(white / (PI * 0.1));
     white *= floor(fract(angle * divisor + sin(time / speed - (len * 1.2) * wobble)) *subdivide) / subdivide;
     
     vec4 color1 = smoothstep(0., 1., white * color);

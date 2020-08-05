@@ -47,7 +47,7 @@ float fbm(vec2 pos)
 
 mat4 contrastMatrix(float contrast)
 {
-	float t = ( 1.0 - contrast ) / 2.0;
+	float t = ( 1.0 - contrast ) * 0.5;
     
     return mat4( contrast, 0, 0, 0,
                  0, contrast, 0, 0,
@@ -59,7 +59,7 @@ vec4 fog()
 {
 	vec2 p = (vFilterCoord.xy * 8. - vFilterCoord.xy) * dimensions;
 	
-	float time2 = 5. * (time/2000.);
+	float time2 = time * 0.0025;
 	
 	vec2 q = vec2(0.0);
 	q.x = fbm(p);

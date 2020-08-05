@@ -1,4 +1,5 @@
-import { objectAssign, getPlaceableById, getMinPadding } from "../../../module/tokenmagic.js";
+import { objectAssign, getPlaceableById, getMinPadding, PlaceableType } from "../../../module/tokenmagic.js";
+import "../../../module/proto/PlaceableObjectProto.js";
 
 PIXI.Filter.prototype.setTMParams = function (params) {
     this.autoDisable = false;
@@ -44,17 +45,11 @@ PIXI.Filter.prototype.calculatePadding = function () {
 }
 
 PIXI.Filter.prototype.assignPlaceable = function () {
-    if (this.placeableType === "Token") {
-        let parent = canvas.tokens.placeables.find(n => n.id === this.placeableId);
-        if (!(parent == null)) {
-            this.placeableImg = parent.icon;
-        }
-    } else {
-        let parent = canvas.tiles.placeables.find(n => n.id === this.placeableId);
-        if (!(parent == null)) {
-            this.placeableImg = parent.tile.img;
-        }
-    }
+
+    let placeable = this.getPlaceable();
+    placeable != null
+        ? this.placeableImg = placeable._TMFXgetSprite()
+        : this.placeableImg = null;
 }
 
 PIXI.Filter.prototype.activateTransform = function () {
@@ -78,7 +73,7 @@ PIXI.Filter.prototype.filterTransform = function () {
 
 PIXI.Filter.prototype.normalizeTMParams = function () {
 
-    if (this.hasOwnProperty("animated") && !(this.animated == null) ) {
+    if (this.hasOwnProperty("animated") && !(this.animated == null)) {
 
         // Normalize animations properties
         Object.keys(this.animated).forEach((effect) => {

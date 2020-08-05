@@ -4,14 +4,13 @@
     "\\tokenmagic",
     "\\tokenmagic\\fx",
     "\\tokenmagic\\fx\\filters",
-    "\\tokenmagic\\fx\\filters\\proto",
     "\\tokenmagic\\fx\\glsl",
     "\\tokenmagic\\fx\\glsl\\fragmentshaders",
-    "\\tokenmagic\\fx\\glsl\\vertexshaders",
-    "\\tokenmagic\\libs",
+    "\\tokenmagic\\fx\\presets",
     "\\tokenmagic\\module",
+    "\\tokenmagic\\module\\proto",
     "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\glowoh.js",
+  "SelectedNode": "\\tokenmagic\\module\\tokenmagic.js",
   "PreviewInSolutionExplorer": false
 }

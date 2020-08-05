@@ -31,8 +31,10 @@ export class FilterElectric extends PIXI.Filter {
 
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
 
         this.quality = 0.5;
     }
