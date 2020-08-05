@@ -165,8 +165,9 @@ void main()
         return;
     }
 
-    float s = vFilterCoord.x * scale.x;
-    float t = vFilterCoord.y * scale.y;
+    vec2 uv = vFilterCoord - vec2(0.375*scale.x,0.375*scale.y);
+    float s = uv.x * scale.x;
+    float t = uv.y * scale.y;
     
     float multiplier = 1.0 / ( 2.0 * PI );
     float nx = cos( s * 2.0 * PI ) * multiplier;

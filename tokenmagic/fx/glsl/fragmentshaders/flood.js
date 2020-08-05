@@ -48,7 +48,7 @@ float makeWaves(vec2 uv, float theTime, float offset)
 vec4 water( vec2 fragCoord )
 {
     vec4 fragColor;
-	vec2 uv = fragCoord.xy / 2.;
+	vec2 uv = fragCoord.xy * 0.5;
     
     vec2 uv2 = uv * scale;
     
@@ -60,7 +60,7 @@ vec4 water( vec2 fragCoord )
     result = makeWaves( uv2+vec2(time*timeSpeed,0.0), time, 0.1);
     result2 = makeWaves( uv2-vec2(time*0.8*timeSpeed,0.0), time*0.8+1.06, 0.26);
     
-    result /= 5.;
+    result *= 0.2;
     
     result = smoothstep(0.35,1.1,1.0-abs(result));
     result2 = smoothstep(0.35,1.1,1.0-abs(result2));

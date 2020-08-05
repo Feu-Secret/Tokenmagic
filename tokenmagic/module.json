@@ -1,8 +1,8 @@
 {
   "name": "tokenmagic",
-  "title": "Tokenmagic",
+  "title": "Token Magic FX",
   "description": "<p>Add graphic filters and animations on your tokens and tiles.</p>",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "compatibleCoreVersion": "0.6.5",
   "minimumCoreVersion": "0.6.0",
   "author": "SecretFire",
@@ -54,6 +54,7 @@
     "fx/filters/FilterXRays.js",
     "fx/filters/FilterLiquid.js",
     "fx/filters/FilterGleamingGlow.js",
+    "fx/filters/FilterPixelate.js",
     "fx/filters/proto/FilterProto.js"
 
   ],

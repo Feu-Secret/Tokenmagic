@@ -25,7 +25,9 @@ import { FilterMirrorImages } from "../fx/filters/FilterMirrorImages.js";
 import { FilterXRays } from "../fx/filters/FilterXRays.js";
 import { FilterLiquid } from "../fx/filters/FilterLiquid.js";
 import { FilterGleamingGlow } from "../fx/filters/FilterGleamingGlow.js";
+import { FilterPixelate } from "../fx/filters/FilterPixelate.js";
 import { Anime } from "../fx/Anime.js";
+import { presets as defaultPresets } from "../fx/presets/defaultpresets.js";
 import "./proto/PlaceableObjectProto.js";
 
 const moduleTM = "module.tokenmagic";
@@ -58,20 +60,70 @@ export const FilterType = {
     field: FilterForceField,
     xray: FilterXRays,
     liquid: FilterLiquid,
-    xglow: FilterGleamingGlow
+    xglow: FilterGleamingGlow,
+    pixel: FilterPixelate
+};
+
+var cachedFilters = {};
+
+async function cacheFilters() {
+    // Only caching filters with heavy shaders that takes time to compile
+    // https://www.html5gamedevs.com/topic/43652-shader-compile-performance/
+    let params =
+    {
+        filterType: "field",
+        enabled: true,
+        dummy: true
+    };
+    cachedFilters.filterForceField = new FilterForceField(params);
+
+    params.filterType = "electric";
+    cachedFilters.filterElectric = new FilterElectric(params);
+
+    params.filterType = "xglow";
+    cachedFilters.filterGleamingGlow = new FilterGleamingGlow(params);
+
+    params.filterType = "fire";
+    cachedFilters.filterFire = new FilterFire(params);
+
+    params.filterType = "smoke";
+    cachedFilters.filterSmoke = new FilterSmoke(params);
+
+    params.filterType = "images";
+    cachedFilters.filterImages = new FilterMirrorImages(params);
+}
+
+export const PlaceableType = {
+    TOKEN: Token.embeddedName,
+    TILE: Tile.embeddedName,
+    TEMPLATE: MeasuredTemplate.embeddedName,
+    NOT_SUPPORTED: null
 };
 
 function i18n(key) {
     return game.i18n.localize(key);
 }
 
-export function registerSettings() {
+async function exportObjectAsJson(exportObj, exportName) {
+    let jsonStr = JSON.stringify(exportObj, null, 4);
+    
+    const a = document.createElement('a');
+    const file = new Blob([jsonStr], { type: 'plain/text' });
+
+    a.href = URL.createObjectURL(file);
+    a.download = exportName + '.json';
+    a.click();
+
+    URL.revokeObjectURL(a.href);
+}
+
+function registerSettings() {
     game.settings.register("tokenmagic", "useAdditivePadding", {
         name: i18n("TMFX.useMaxPadding.name"),
         hint: i18n("TMFX.useMaxPadding.hint"),
         scope: "world",
         config: true,
-        default: true,
+        default: false,
         type: Boolean
     });
 
@@ -80,12 +132,54 @@ export function registerSettings() {
         hint: i18n("TMFX.minPadding.hint"),
         scope: "world",
         config: true,
-        default: 0,
+        default: 50,
         type: Number
+    });
+
+    game.settings.register("tokenmagic", "fxPlayerPermission", {
+        name: i18n("TMFX.fxPlayerPermission.name"),
+        hint: i18n("TMFX.fxPlayerPermission.hint"),
+        scope: "world",
+        config: true,
+        default: false,
+        type: Boolean
+    });
+
+    game.settings.register("tokenmagic", "importOverwrite", {
+        name: i18n("TMFX.importOverwrite.name"),
+        hint: i18n("TMFX.importOverwrite.hint"),
+        scope: "world",
+        config: true,
+        default: false,
+        type: Boolean
+    });
+
+    game.settings.register("tokenmagic", "presets", {
+        name: "Token Magic FX presets",
+        hint: "Token Magic FX presets",
+        scope: "world",
+        config: false,
+        default: defaultPresets,
+        type: Object
     });
 }
 
-const sleep = m => new Promise(r => setTimeout(r, m));
+export const SocketAction = {
+    SET_FLAG: "TMFXSetFlag"
+};
+
+export function broadcast(placeable, flag, socketAction) {
+
+    var data =
+    {
+        tmAction: socketAction,
+        tmPlaceableId: placeable.id,
+        tmPlaceableType: placeable._TMFXgetPlaceableType(),
+        tmFlag: flag,
+        tmViewedScene: game.user.viewedScene
+    };
+    game.socket.emit(moduleTM, data, resp => { });
+}
 
 export function isActiveModule(moduleName) {
     return game.modules.has(moduleName)
@@ -100,6 +194,17 @@ export function isAdditivePaddingConfig() {
     return game.settings.get("tokenmagic", "useAdditivePadding");
 }
 
+export function isTheOne() {
+    const theOne = game.users.find((user) => user.isGM && user.active);
+    if (theOne && game.user !== theOne) {
+        return false;
+    } else return true
+}
+
+export function mustBroadCast() {
+    return game.settings.get("tokenmagic", "fxPlayerPermission") && !isTheOne();
+}
+
 export function autosetPaddingMode() {
     canvas.app.renderer.filter.useMaxPadding = !isAdditivePaddingConfig();
 }
@@ -109,34 +214,46 @@ export function log(output) {
     console.log(logged, "color:#4BC470", "color:#B3B3B3");
 }
 
+export function warn(output) {
+    let logged = "TokenMagic | " + output;
+    console.warn(logged);
+}
+
+export function error(output) {
+    let logged = "TokenMagic | " + output;
+    console.error(logged);
+}
+
 export function getControlledPlaceables() {
     var controlled = [];
     switch (canvas.activeLayer.name) {
-        case "TokenLayer":
+        case TokenLayer.name:
             controlled = canvas.tokens.controlled;
             break;
-        case "TilesLayer":
+        case TilesLayer.name:
             controlled = canvas.tiles.controlled;
             break;
     }
     return controlled;
 }
 
-// Only for tokens
 export function getTargetedTokens() {
     return canvas.tokens.placeables.filter(placeable => placeable.isTargeted);
 }
 
 export function getPlaceableById(id, type) {
-    let placeable;
-    let placeables;
+    let placeable = null;
+    let placeables = null;
 
     switch (type) {
-        case "Token":
+        case PlaceableType.TOKEN:
             placeables = canvas.tokens.placeables;
             break;
-        case "Tile":
+        case PlaceableType.TILE:
             placeables = canvas.tiles.placeables;
+            break;
+        case PlaceableType.TEMPLATE:
+            placeables = canvas.templates.placeables;
             break;
     }
 
@@ -160,16 +277,10 @@ export function objectAssign(target, ...sources) {
     return target;
 }
 
-// NOTES FOR DEV : API will be extended in a near future, to allow more control over filters
 export function TokenMagic() {
 
-    // Add a filter on selected placeable(s)
     async function addFilterOnSelected(params) {
-        if (params == null
-            || !params.hasOwnProperty("filterType")
-            || !FilterType.hasOwnProperty(params.filterType)) {
-            return;
-        }
+        if (params == null) return;
 
         var controlled = getControlledPlaceables();
 
@@ -180,7 +291,24 @@ export function TokenMagic() {
         }
     };
 
+    async function addUpdateFilterOnSelected(params) {
+        if (params == null) return;
+
+        var controlled = getControlledPlaceables();
+
+        if (!(controlled == null) && controlled.length > 0) {
+            for (const placeable of controlled) {
+                await addUpdateFilter(placeable, params);
+            }
+        }
+    };
+
     async function addFiltersOnSelected(paramsArray) {
+
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
+        }
+
         if (paramsArray instanceof Array && paramsArray.length > 0) {
             for (const params of paramsArray) {
                 await addFilterOnSelected(params);
@@ -188,12 +316,21 @@ export function TokenMagic() {
         }
     };
 
-    async function addFilterOnTargeted(params) {
-        if (params == null
-            || !params.hasOwnProperty("filterType")
-            || !FilterType.hasOwnProperty(params.filterType)) {
-            return;
+    async function addUpdateFiltersOnSelected(paramsArray) {
+
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
         }
+
+        if (paramsArray instanceof Array && paramsArray.length > 0) {
+            for (const params of paramsArray) {
+                await addUpdateFilterOnSelected(params);
+            }
+        }
+    };
+
+    async function addFilterOnTargeted(params) {
+        if (params == null) return;
 
         var targeted = getTargetedTokens();
 
@@ -205,6 +342,11 @@ export function TokenMagic() {
     }
 
     async function addFiltersOnTargeted(paramsArray) {
+
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
+        }
+
         if (paramsArray instanceof Array && paramsArray.length > 0) {
             for (const params of paramsArray) {
                 await addFilterOnTargeted(params);
@@ -212,7 +354,6 @@ export function TokenMagic() {
         }
     }
 
-    // Add a filter on a placeable
     async function addFilter(placeable, params) {
         if (placeable == null
             || params == null
@@ -232,15 +373,7 @@ export function TokenMagic() {
         params.placeableId = placeable.id;
         params.filterInternalId = randomID();
         params.filterOwner = game.data.userId;
-
-        // TODO : to rework
-        if (placeable instanceof Token) {
-            params.placeableType = "Token";
-        } else if (placeable instanceof Tile) {
-            params.placeableType = "Tile";
-        } else {
-            params.placeableType = "";
-        }
+        params.placeableType = placeable._TMFXgetPlaceableType();
 
         var placeableNewFlag = [{
             tmFilters: {
@@ -261,7 +394,7 @@ export function TokenMagic() {
             placeableFlag = placeableActualFlag.concat(placeableNewFlag);
         }
 
-        await placeable.setFlag("tokenmagic", "filters", placeableFlag);
+        await placeable._TMFXsetFlag(placeableFlag);
     };
 
     async function addUpdateFilters(placeable, paramsArray) {
@@ -280,7 +413,8 @@ export function TokenMagic() {
             return;
         }
 
-        if (params.hasOwnProperty("filterId") && placeable.TMFXhasFilterId(params.filterId)) {
+        if (params.hasOwnProperty("filterId") && placeable.TMFXhasFilterId(params.filterId)
+            && placeable.TMFXhasFilterType(params.filterType)) {
             await updateFilterByPlaceable(params, placeable);
         } else {
             await addFilter(placeable, params);
@@ -288,6 +422,9 @@ export function TokenMagic() {
     };
 
     async function addFilters(placeable, paramsArray) {
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
+        }
         if (paramsArray instanceof Array && paramsArray.length > 0) {
             for (const params of paramsArray) {
                 await addFilter(placeable, params);
@@ -321,10 +458,14 @@ export function TokenMagic() {
         if (placeableIdSet.size <= 0) { return; }
 
         for (const placeableId of placeableIdSet) {
-            // TODO : to improve
-            var placeable = getPlaceableById(placeableId, "Token");
+            // we must browse the collection of placeables whatever their types
+            // we have just a filterId.
+            var placeable = getPlaceableById(placeableId, PlaceableType.TOKEN);
             if (placeable == null) {
-                placeable = getPlaceableById(placeableId, "Tile");
+                placeable = getPlaceableById(placeableId, PlaceableType.TILE);
+            }
+            if (placeable == null) {
+                placeable = getPlaceableById(placeableId, PlaceableType.TEMPLATE);
             }
             if (!(placeable == null) && placeable instanceof PlaceableObject) {
                 await updateFilterByPlaceable(params, placeable);
@@ -336,6 +477,9 @@ export function TokenMagic() {
         var placeables = getControlledPlaceables();
 
         if (placeables == null || placeables.length < 1) { return; }
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
+        }
         if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
 
         for (const placeable of placeables) {
@@ -349,6 +493,9 @@ export function TokenMagic() {
         var placeables = getTargetedTokens();
 
         if (placeables == null || placeables.length < 1) { return; }
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
+        }
         if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
 
         for (const placeable of placeables) {
@@ -359,6 +506,10 @@ export function TokenMagic() {
     }
 
     async function updateFiltersByPlaceable(placeable, paramsArray) {
+
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
+        }
         if (paramsArray instanceof Array && paramsArray.length > 0) {
             for (const params of paramsArray) {
                 await updateFilterByPlaceable(params, placeable);
@@ -376,13 +527,14 @@ export function TokenMagic() {
         });
 
         workingFlags.forEach(flag => {
-            if (flag.tmFilters.tmFilterId === params.filterId) {
+            if (flag.tmFilters.tmFilterId === params.filterId
+                && flag.tmFilters.tmFilterType === params.filterType) {
                 if (flag.tmFilters.hasOwnProperty("tmParams")) {
                     objectAssign(flag.tmFilters.tmParams, params);
                 }
             }
         });
-        await placeable.setFlag("tokenmagic", "filters", workingFlags);
+        await placeable._TMFXsetFlag(workingFlags);
     };
 
 
@@ -412,9 +564,8 @@ export function TokenMagic() {
     async function deleteFilters(placeable, filterId = null) {
         if (placeable == null) { return; }
 
-        if (filterId == null) {
-            await placeable.unsetFlag("tokenmagic", "filters");
-        } else if (typeof filterId === "string") {
+        if (filterId == null) await placeable._TMFXunsetFlag();
+        else if (typeof filterId === "string") {
 
             var flags = placeable.getFlag("tokenmagic", "filters");
             if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
@@ -426,11 +577,8 @@ export function TokenMagic() {
                 }
             });
 
-            if (workingFlags.length > 0) {
-                await placeable.setFlag("tokenmagic", "filters", workingFlags);
-            } else {
-                await placeable.unsetFlag("tokenmagic", "filters");
-            }
+            if (workingFlags.length > 0) await placeable._TMFXsetFlag(workingFlags);
+            else await placeable._TMFXunsetFlag();
         }
     };
 
@@ -464,26 +612,11 @@ export function TokenMagic() {
         return true;
     };
 
-    // TODO : to improve
     function setFilter(placeable, filter, params = {}) {
 
         params.placeableId = placeable.id;
-
-        if (placeable instanceof Token) {
-            params.placeableType = "Token";
-            if (placeable.icon.filters == null) {
-                placeable.icon.filters = [filter];
-            } else {
-                placeable.icon.filters.push(filter);
-            }
-        } else if (placeable instanceof Tile) {
-            params.placeableType = "Tile";
-            if (placeable.tile.img.filters == null) {
-                placeable.tile.img.filters = [filter];
-            } else {
-                placeable.tile.img.filters.push(filter);
-            }
-        }
+        params.placeableType = placeable._TMFXgetPlaceableType();
+        placeable._TMFXsetRawFilters(filter);
     };
 
     function _assignFilters(placeable, filters) {
@@ -622,12 +755,251 @@ export function TokenMagic() {
             return theFilters;
         };
 
-        // The clean up
-        if (placeable instanceof Token) {
-            placeable.icon.filters = filterTheFiltering(placeable.icon.filters);
-        } else if (placeable instanceof Tile) {
-            placeable.tile.img.filters = filterTheFiltering(placeable.tile.img.filters);
+        var sprite = placeable._TMFXgetSprite();
+        if (sprite != null) {
+            sprite.filters = filterTheFiltering(sprite.filters);
         }
+    };
+
+    async function _importContent(content, options = {}) {
+
+        options.overwrite = game.settings.get("tokenmagic", "importOverwrite");
+
+        ///////////////////////////////////////////////
+        // Checking the imported object format
+
+        log("import -> checking import file format...");
+        if (!(content instanceof Array) || content.length < 1) {
+            error("import -> file format check KO !");
+            error(i18n("TMFX.preset.import.format.failure"));
+            return false;
+        }
+        log("import -> file format check OK !");
+        // check object format end
+        /////////////////////////////////////////////////
+
+        var check = true;
+
+        ///////////////////////////////////////////////
+        // Checking the imported content
+        log("import -> checking import file content...");
+        for (const element of content) {
+            if (element.hasOwnProperty("name")
+                && typeof element.name === "string"
+                && element.hasOwnProperty("params")
+                && element.params instanceof Array) {
+
+                for (const effect of element.params) {
+                    if (!(effect.hasOwnProperty("filterType")
+                        && FilterType.hasOwnProperty(effect.filterType))) {
+                        check = false;
+                        break;
+                    }
+                }
+                if (!check) break;
+            } else {
+                check = false;
+                break;
+            }
+        }
+
+        if (!check) {
+            error("import -> file content check KO !");
+            error(i18n("TMFX.preset.import.format.failure"));
+            return false;
+        }
+        log("import -> file content check OK !");
+
+        // check content end
+        /////////////////////////////////////////////////
+
+        // The preset libray must be replaced ?
+        if (options.hasOwnProperty("replaceLibrary")
+            && options.replaceLibrary) {
+            await game.settings.set("tokenmagic", "presets", content);
+            log("import -> preset library replaced");
+            log(i18n("TMFX.preset.import.success"));
+            return true;
+        }
+
+        var pst = game.settings.get("tokenmagic", "presets");
+        var it = 0;
+        for (const element of content) {
+            const preset = pst.find(el => el.name === element.name);
+            if (preset == null) {
+                log("import -> add: " + element.name);
+                pst.push(element);
+                it++;
+            } else {
+                if (options.hasOwnProperty("overwrite")
+                    && options.overwrite) {
+                    const index = pst.indexOf(preset);
+                    if (index > -1) {
+                        log("import -> overwrite: " + element.name);
+                        pst[index] = element;
+                        it++;
+                    }
+                } else {
+                    warn("import -> ignored: " + element.name + " -> already exists");
+                }
+            }
+        }
+
+        await game.settings.set("tokenmagic", "presets", pst);
+        log("import -> " + it + " preset(s) added to the library");
+        log(i18n("TMFX.preset.import.success"));
+        return true;
+    }
+
+    async function resetPresetLibrary() {
+        if (!game.user.isGM) return;
+
+        if (confirm(i18n("TMFX.preset.reset.message"))) {
+            try {
+                await game.settings.set("tokenmagic", "presets", defaultPresets);
+                ui.notifications.info(i18n("TMFX.preset.reset.success"));
+            } catch (e) {
+                error(e.message);
+            }
+        } 
+    }
+
+    async function importPresetLibraryFromURL(url) {
+        try {
+            $.getJSON(url, async function (content) {
+                return await _importContent(content);
+            });
+        } catch (e) {
+            error(e.message);
+            error(i18n("TMFX.preset.import.failure"));
+            return false;
+        }
+    }
+
+    async function importPresetLibraryFromPath(path) {
+        try {
+            const response = await fetch(path);
+            const content = await response.json();
+
+            return await _importContent(content);
+
+        } catch (e) {
+            error(e.message);
+            error(i18n("TMFX.preset.import.failure"));
+            return false;
+        }
+    };
+
+    async function importPresetLibrary() {
+        const path = '/modules/tokenmagic/import';
+        new FilePicker({
+            type: "json",
+            current: path,
+            callback: importPresetLibraryFromPath,
+        }).browse();
+    }
+
+    function exportPresetLibrary(exportName = "token-magic-fx-presets") {
+        var pst = game.settings.get("tokenmagic", "presets");
+        if (pst == null || typeof pst !== "object") return false;
+        exportObjectAsJson(pst, exportName);
+    }
+
+    function getPreset(presetName) {
+        var pst = game.settings.get("tokenmagic", "presets");
+        if (pst == null || typeof pst !== "object") return undefined;
+
+        const preset = pst.find(el => el['name'] === presetName);
+        if (!(preset == null)
+            && preset.hasOwnProperty("params")
+            && preset.params instanceof Array) return preset.params;
+        return undefined;
+    };
+
+    async function deletePreset(presetName, silent = false) {
+        if (!game.user.isGM) {
+            if (!silent) ui.notifications.warn(i18n("TMFX.preset.delete.permission.failure"));
+            return false;
+        }
+
+        if (typeof presetName !== "string") {
+            if (!silent) ui.notifications.error(i18n("TMFX.preset.delete.params.failure"));
+            return false;
+        }
+
+        var pst = game.settings.get("tokenmagic", "presets");
+        if (pst == null) {
+            if (!silent) ui.notifications.warn(i18n("TMFX.preset.delete.empty.failure"));
+            return false;
+        }
+
+        var state = true;
+        const preset = pst.find(el => el['name'] === presetName);
+
+        if (preset == null) {
+            if (!silent) ui.notifications.warn(i18n("TMFX.preset.delete.notfound.failure"));
+            state = false;
+        } else {
+            const index = pst.indexOf(preset);
+            if (index > -1) {
+                pst.splice(index, 1);
+                try {
+                    await game.settings.set("tokenmagic", "presets", pst);
+                    if (!silent) ui.notifications.info(i18n("TMFX.preset.delete.success"));
+                } catch (e) {
+                    if (!silent) ui.notifications.error(e.message);
+                    console.error(e);
+                    state = false;
+                }
+            }
+        }
+        return state;
+    }
+
+    async function addPreset(presetName, params, silent = false) {
+        if (!game.user.isGM) {
+            if (!silent) ui.notifications.warn(i18n("TMFX.preset.add.permission.failure"));
+            return false;
+        }
+
+        if (typeof presetName !== "string"
+            && !(params instanceof Array)) {
+            if (!silent) ui.notifications.error(i18n("TMFX.preset.add.params.failure"));
+            return false;
+        }
+
+        for (const param of params) {
+            param.filterId = presetName;
+        }
+
+        var pst = game.settings.get("tokenmagic", "presets");
+        var presetObject = {};
+        presetObject.name = presetName;
+        presetObject.params = params;
+
+        var state = true;
+        if (pst == null) {
+            pst = [presetObject];
+        } else {
+            const preset = pst.find(el => el['name'] === presetName);
+            if (preset == null) pst.push(presetObject);
+            else {
+                if (!silent) ui.notifications.warn(i18n("TMFX.preset.add.duplicate.failure"));
+                state = false;
+            }
+        }
+
+        if (state) {
+            try {
+                await game.settings.set("tokenmagic", "presets", pst);
+                if (!silent) ui.notifications.info(i18n("TMFX.preset.add.success"));
+            } catch (e) {
+                if (!silent) ui.notifications.error(e.message);
+                console.error(e);
+                state = false;
+            }
+        }
+        return state;
     };
 
     return {
@@ -636,6 +1008,8 @@ export function TokenMagic() {
         addFilterOnSelected: addFilterOnSelected,
         addFiltersOnSelected: addFiltersOnSelected,
         addFiltersOnTargeted: addFiltersOnTargeted,
+        addUpdateFiltersOnSelected: addUpdateFiltersOnSelected,
+        addUpdateFilterOnSelected: addUpdateFilterOnSelected,
         addUpdateFilters: addUpdateFilters,
         addUpdateFilter: addUpdateFilter,
         deleteFilters: deleteFilters,
@@ -649,6 +1023,14 @@ export function TokenMagic() {
         updateFilterByPlaceable: updateFilterByPlaceable,
         hasFilterType: hasFilterType,
         hasFilterId: hasFilterId,
+        exportPresetLibrary: exportPresetLibrary,
+        importPresetLibrary: importPresetLibrary,
+        importPresetLibraryFromURL: importPresetLibraryFromURL,
+        importPresetLibraryFromPath: importPresetLibraryFromPath,
+        resetPresetLibrary: resetPresetLibrary,
+        getPreset: getPreset,
+        addPreset: addPreset,
+        deletePreset: deletePreset,
         _assignFilters: _assignFilters,
         _loadFilters: _loadFilters,
         _clearImgFiltersByPlaceable: _clearImgFiltersByPlaceable,
@@ -660,12 +1042,70 @@ export function TokenMagic() {
 
 export const Magic = TokenMagic();
 
+function initSocketListener() {
+
+    // Activate the listener only for the One
+    const theOne = game.users.find((user) => user.isGM && user.active);
+    if (theOne && game.user !== theOne) {
+        return;
+    }
+
+    // Listener the listening
+    game.socket.on(moduleTM, async (data) => {
+
+        if (data == null || !data.hasOwnProperty("tmAction")) { return; }
+
+        switch (data.tmAction) {
+            case SocketAction.SET_FLAG:
+                // getting the scene coming from the socket
+                var scene = game.scenes.get(data.tmViewedScene);
+                if (scene == null) return;
+
+                // preparing flag data (with -= if the data is null)
+                var updateData;
+                if (data.tmFlag == null) updateData = { [`flags.tokenmagic.-=filters`]: null }
+                else updateData = { [`flags.tokenmagic.filters`]: data.tmFlag };
+                updateData["_id"] = data.tmPlaceableId;
+
+                // updating the placeable in the scene
+                await scene.updateEmbeddedEntity(data.tmPlaceableType, updateData);
+                break;
+        }
+    });
+};
+
+async function requestLoadFilters(placeable, startTimeout = 0) {
+    var reqTimer;
+
+    function launchRequest(placeable) {
+        reqTimer = setTimeout(() => {
+            if (placeable == null) return;
+            var check = placeable._TMFXcheckSprite();
+            if (check == null) return;
+            else if (check) Magic._singleLoadFilters(placeable);
+            else launchRequest(placeable);
+        }, 35);
+    }
+
+    function setRequestTimeOut() {
+        setTimeout(() => {
+            clearTimeout(reqTimer);
+        }, 2000);
+    }
+
+    setTimeout(() => {
+        setRequestTimeOut();
+        launchRequest(placeable);
+    }, startTimeout);
+};
+
 Hooks.once("init", () => {
     registerSettings();
 });
 
 Hooks.on("ready", () => {
     log("Hook -> ready");
+    initSocketListener();
     window.TokenMagic = Magic;
 });
 
@@ -674,6 +1114,11 @@ Hooks.on("canvasInit", (canvas) => {
     autosetPaddingMode();
     Anime.desactivateAnimation();
     Anime.resetAnimation();
+});
+
+Hooks.once("canvasReady", (canvas) => {
+    log("Init -> canvasReady -> caching shaders");
+    cacheFilters();
 });
 
 Hooks.on("canvasReady", (canvas) => {
@@ -717,22 +1162,23 @@ Hooks.on("createToken", (scene, data, options) => {
         && data.flags.hasOwnProperty("tokenmagic")
         && data.flags.tokenmagic.hasOwnProperty("filters")) {
 
-        var placeable = getPlaceableById(data._id, "Token");
+        var placeable = getPlaceableById(data._id, PlaceableType.TOKEN);
 
-        (async () => {
-            await sleep(100);
-            Magic._singleLoadFilters(placeable);
-        })();
+        // request to load filters (when pixi containers are ready)
+        requestLoadFilters(placeable, 250);
     }
 });
 
 Hooks.on("updateToken", (scene, data, options) => {
     log("Hook -> updateToken");
 
-    if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")
-        || options.hasOwnProperty("height") || options.hasOwnProperty("width") ) {
+    if (scene.id !== game.user.viewedScene) return;
 
-        var placeable = getPlaceableById(data._id, "Token");
+    if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")
+        || options.hasOwnProperty("height") || options.hasOwnProperty("width")
+        || options.hasOwnProperty("name")) {
+
+        var placeable = getPlaceableById(data._id, PlaceableType.TOKEN);
 
         // removing animations on this placeable
         Anime.removeAnimation(data._id);
@@ -740,13 +1186,11 @@ Hooks.on("updateToken", (scene, data, options) => {
         // clearing the filters (owned by tokenmagic)
         Magic._clearImgFiltersByPlaceable(placeable);
 
-        (async () => {
-            await sleep(100);
-            Magic._singleLoadFilters(placeable);
-        })();
+        // querying filters reload (when pixi containers are ready)
+        requestLoadFilters(placeable, 250);
 
     } else {
-        Magic._updateFilters(data, options, "Token");
+        Magic._updateFilters(data, options, PlaceableType.TOKEN);
     }
 });
 
@@ -760,20 +1204,20 @@ Hooks.on("deleteTile", (parent, doc, options, userId) => {
 Hooks.on("updateTile", (scene, data, options) => {
     log("Hook -> updateTile");
 
+    if (scene.id !== game.user.viewedScene) return;
+
     if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")) {
 
-        var placeable = getPlaceableById(data._id, "Tile");
+        var placeable = getPlaceableById(data._id, PlaceableType.TILE);
 
         // removing animations on this placeable
         Anime.removeAnimation(data._id);
 
-        (async () => {
-            await sleep(100);
-            Magic._singleLoadFilters(placeable);
-        })();
+        // querying filters reload (when pixi containers are ready)
+        requestLoadFilters(placeable, 250);
 
     } else {
-        Magic._updateFilters(data, options, "Tile");
+        Magic._updateFilters(data, options, PlaceableType.TILE);
     }
 });
 

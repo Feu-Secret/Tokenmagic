@@ -1,7 +1,25 @@
 ﻿{
   "TMFX.TokenMagic": "TokenMagic",
-  "TMFX.useMaxPadding.name": "Effets en mode padding additif",
+  "TMFX.preset.add.success": "L'effet a été ajouté avec succès à la bibliothèque de prédéfinitions.",
+  "TMFX.preset.add.permission.failure": "Vous n'êtes pas autorisé à ajouter des effets dans la bibliothèque de prédéfinitions.",
+  "TMFX.preset.add.params.failure": "L'effet n'a pas pu être ajouté à la bibliothèque de prédéfinitions. Les paramètres sont incorrects.",
+  "TMFX.preset.add.duplicate.failure": "L'effet n'a pas pu être ajouté à la bibliothèque de prédéfinitions. Un effet avec le même nom existe déjà.",
+  "TMFX.preset.delete.success": "L'effet a été supprimé avec succès de la bibliothèque de prédéfinitions.",
+  "TMFX.preset.delete.permission.failure": "Vous n'êtes pas autorisé à supprimer des effets dans la bibliothèque de prédéfinitions.",
+  "TMFX.preset.delete.params.failure": "La suppression a échoué : le paramètre \"name\" doit être une chaîne de caractères.",
+  "TMFX.preset.delete.notfound.failure": "L'effet à supprimer n'existe pas dans la bibliothèque de prédéfinitions.",
+  "TMFX.preset.delete.empty.failure": "Echec : la bibliothèque de prédéfinitions est déjà vide !",
+  "TMFX.preset.import.format.failure": "Échec de l'importation. Objet JSON invalide.",
+  "TMFX.preset.import.success": "L'importation s'est terminée avec succès.",
+  "TMFX.preset.import.failure": "L'importation n'a pas pu aboutir.",
+  "TMFX.preset.reset.message": "Voulez-vous vraiment réinitialiser votre bibliothèque de prédéfinitions ?",
+  "TMFX.preset.reset.success": "Votre bibliothèque de prédéfinitions a été réinitialisée avec succès.",
+  "TMFX.importOverwrite.name": "Écraser lors d'une importation",
+  "TMFX.importOverwrite.hint": "Cochez cette option si vous souhaitez écraser les prédéfinitions avec le même nom pendant une importation.",
+  "TMFX.useMaxPadding.name": "Effet en mode padding additif",
   "TMFX.useMaxPadding.hint": "Par défaut, les effets additionnent leur padding en s'appliquant sur un objet donné. Si la case est décochée, c'est le padding maximum qui est utilisé.",
   "TMFX.minPadding.name": "Padding minimum",
-  "TMFX.minPadding.hint": "Padding minimum appliqué aux effets."
+  "TMFX.minPadding.hint": "Padding minimum appliqué aux effets.",
+  "TMFX.fxPlayerPermission.name": "Mode permissif",
+  "TMFX.fxPlayerPermission.hint": "Si cette option est cochée, les joueurs non-MJ peuvent ajouter, modifier et supprimer des effets sur des jetons qu'ils ne possèdent pas. Un MJ doit être connecté."
 }

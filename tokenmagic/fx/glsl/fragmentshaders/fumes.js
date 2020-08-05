@@ -15,7 +15,7 @@ varying vec2 vFilterCoord;
 
 vec4 toGray(in vec4 color)
 {
-  float average = (color.r + color.g + color.b) / 3.0;
+  float average = (color.r + color.g + color.b) * 0.33333334;
   return vec4(average, average, average, 1.0);
 }
 
@@ -62,7 +62,7 @@ vec4 fog(vec2 fragCoord)
         c += 1.0 / length(vec2(.5 * p.x / (sin(0.40 * i.x + t) / intensity), p.y / (cos(i.y + t) / intensity)));
     }
 
-    c /= 6.;
+    c *= 0.16666667;
     c = 1.17 - pow(c, 1.4);
     vec3 colour = vec3(pow(abs(c), 8.0));
 

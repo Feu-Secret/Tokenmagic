@@ -9,23 +9,26 @@ export class FilterMirrorImages extends PIXI.Filter {
         let {
             time,
             blend,
-            alpha,
+            alphaImg,
+            alphaChr,
+            nbImage,
+            ampX,
+            ampY
         } = Object.assign({}, FilterMirrorImages.defaults, params);
 
         // using specific vertex shader and fragment shader
         super(customVertex2D, mirrorImages);
 
-        //this.uniforms.color = new Float32Array([1.0, 1.0, 1.0]);
-        //this.uniforms.scale = new Float32Array([1.0, 1.0]);
-
         Object.assign(this, {
-            time, blend, alpha
+            time, blend, alphaImg, alphaChr, nbImage, ampX, ampY
         });
 
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();   
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 
     get time() {
@@ -36,12 +39,28 @@ export class FilterMirrorImages extends PIXI.Filter {
         this.uniforms.time = value;
     }
 
-    get alpha() {
-        return this.uniforms.alpha;
+    get alphaImg() {
+        return this.uniforms.alphaImg;
     }
 
-    set alpha(value) {
-        this.uniforms.alpha = value;
+    set alphaImg(value) {
+        this.uniforms.alphaImg = value;
+    }
+
+    get alphaChr() {
+        return this.uniforms.alphaChr;
+    }
+
+    set alphaChr(value) {
+        this.uniforms.alphaChr = value;
+    }
+
+    get nbImage() {
+        return this.uniforms.nbImage;
+    }
+
+    set nbImage(value) {
+        this.uniforms.nbImage = Math.floor(value);
     }
 
     get blend() {
@@ -51,12 +70,32 @@ export class FilterMirrorImages extends PIXI.Filter {
     set blend(value) {
         this.uniforms.blend = Math.floor(value);
     }
+
+    get ampX() {
+        return this.uniforms.ampX;
+    }
+
+    set ampX(value) {
+        this.uniforms.ampX = value;
+    }
+
+    get ampY() {
+        return this.uniforms.ampY;
+    }
+
+    set ampY(value) {
+        this.uniforms.ampY = value;
+    }
 }
 
 FilterMirrorImages.defaults = {
     time: 0,
-    blend: 2,
-    alpha: 0.5,
+    blend: 4,
+    alphaImg: 0.5,
+    alphaChr: 1.0,
+    nbImage: 4,
+    ampX: 0.15,
+    ampY: 0.15
 };
 
 

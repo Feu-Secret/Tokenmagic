@@ -99,7 +99,7 @@ vec4 glowing()
     float outerGlowAlpha = alphaRatio * outerStrength * (1. - curColor.a);
     float outerGlowStrength = min(1.0 - curColor.a, outerGlowAlpha);
 
-    vec4 outerGlowColor = (outerGlowStrength * (color.rgba/10.) );
+    vec4 outerGlowColor = (outerGlowStrength * (color.rgba*0.1) );
 
     float resultAlpha = outerGlowAlpha;
     return vec4(color.rgb * resultAlpha, resultAlpha);
@@ -108,15 +108,15 @@ vec4 glowing()
 vec4 ripples(vec2 suv) 
 {
     suv.x += time/2.;
-    vec3 c1 = ( 0.0 ) * (color.rgb / 0.1);
+    vec3 c1 = ( 0.0 ) * (color.rgb*10.);
     vec3 c2 = vec3(c1);
     vec3 c3 = vec3(c1);
-    vec3 c4 = vec3( color.r/0.2, color.g/0.3, color.b/0.5 );
+    vec3 c4 = vec3( color.r*5., color.g*3.3333, color.b*2. );
     vec3 c5 = vec3(c3);
     vec3 c6 = vec3(c1);
     vec2 p = suv;
-    float q = 2.*fbm(p + time/5.);
-    vec2 r = vec2(fbm(p + q + ( time/10.  ) - p.x - p.y), fbm(p + p + ( time/10. )));
+    float q = 2.*fbm(p + time*0.2);
+    vec2 r = vec2(fbm(p + q + ( time*0.1  ) - p.x - p.y), fbm(p + p + ( time*0.1 )));
     //r.x += bornedCos(-0.3,-0.2);
     //r.y += 200.*bornedSin(-1.9,1.9);
     
@@ -155,14 +155,14 @@ void main(void)
         }
 
         vec4 effect;
-        effect = ((glowlevel*subAuraIntensity)/10.) + ((outlinelevel*auraIntensity)/1.25);
+        effect = ((glowlevel*subAuraIntensity)*0.1) + ((outlinelevel*auraIntensity)*0.8);
 
         if (effect.a >= 0.) {effect.rgb = aura.rgb*(max(effect.a,0.));}
 
         float intensity = effect.r + effect.g + effect.b;
 	    if(intensity < threshold && effect.a != 0.) {
             if (holes) {discard;}
-            effect.rgb = (color.rgb)*(effect.a/2.);
+            effect.rgb = (color.rgb)*(effect.a*0.5);
         } 
 
         gl_FragColor =  pixel + effect * (1.-pixel.a);

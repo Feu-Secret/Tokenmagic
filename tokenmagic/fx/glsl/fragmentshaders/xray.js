@@ -14,7 +14,9 @@ uniform vec3 color;
 varying vec2 vFilterCoord;
 varying vec2 vTextureCoord;
 
-#define PI 3.14159265359
+const float MU_TWOPI = 0.15915494309;
+const float MU_PI5 = 1.59154943092;
+const float MU_256 = 0.00390625;
 
 vec4 blender(int blend, vec4 fColv4, vec4 sColv4)
 {
@@ -49,16 +51,16 @@ void main() {
 
     vec2 uv = (vFilterCoord - anchor) / dimensions;
 
-    float len = length(uv *0.5);
-   	float angle = atan(uv.x, uv.y) / (2. * PI);
-    float beam = fract((angle) * divisor + sin((sqrt(len) * 0.2) - (time/2.)));
+    float len = length(uv * 0.5);
+   	float angle = atan(uv.x, uv.y) * MU_TWOPI;
+    float beam = fract((angle) * divisor + sin((sqrt(len) * 0.2) - (time*0.5)));
     
-    beam  = 2.* cos(beam / (PI / 5.));
-    beam *= floor(fract(angle * divisor + sin(time - (len * 1.2) * 0.2)) *256.) / 256.;
+    beam  = 2.* cos(beam * MU_PI5);
+    beam *= floor(fract(angle * divisor + sin(time - (len * 1.2) * 0.2)) *256.) * MU_256;
     
     float fractburn = fract(beam);
 
-    vec4 color1 = smoothstep(0.0, 1., (beam*(intensity/10.) + pixel * vec4(color,1.)) / (fractburn == 0. ? fractburn+0.1 : fractburn) * 0.3 );
+    vec4 color1 = smoothstep(0.0, 1., (beam*(intensity*0.1) + pixel * vec4(color,1.)) / (fractburn == 0. ? fractburn+0.1 : fractburn) * 0.3 );
     vec4 result = blender(blend, pixel, color1);
 
     gl_FragColor = result*pixel.a;
