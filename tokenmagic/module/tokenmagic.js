@@ -97,6 +97,7 @@ export const PlaceableType = {
     TOKEN: Token.embeddedName,
     TILE: Tile.embeddedName,
     TEMPLATE: MeasuredTemplate.embeddedName,
+    DRAWING: Drawing.embeddedName, 
     NOT_SUPPORTED: null
 };
 
@@ -233,6 +234,9 @@ export function getControlledPlaceables() {
         case TilesLayer.name:
             controlled = canvas.tiles.controlled;
             break;
+        case DrawingsLayer.name:
+            controlled = canvas.drawings.controlled;
+            break;
     }
     return controlled;
 }
@@ -254,6 +258,9 @@ export function getPlaceableById(id, type) {
             break;
         case PlaceableType.TEMPLATE:
             placeables = canvas.templates.placeables;
+            break;
+        case PlaceableType.DRAWING:
+            placeables = canvas.drawings.placeables;
             break;
     }
 
@@ -1133,6 +1140,8 @@ Hooks.on("canvasReady", (canvas) => {
     Magic._loadFilters(tokens);
     var tiles = canvas.tiles.placeables;
     Magic._loadFilters(tiles);
+    var drawings = canvas.drawings.placeables;
+    Magic._loadFilters(drawings);
 
     Anime.activateAnimation();
 });
@@ -1218,6 +1227,39 @@ Hooks.on("updateTile", (scene, data, options) => {
 
     } else {
         Magic._updateFilters(data, options, PlaceableType.TILE);
+    }
+});
+
+Hooks.on("deleteDrawing", (parent, doc, options, userId) => {
+    log("Hook -> deleteDrawing");
+    if (!(doc == null || !doc.hasOwnProperty("_id"))) {
+        Anime.removeAnimation(doc._id);
+    }
+});
+
+Hooks.on("updateDrawing", (scene, data, options, action) => {
+    log("Hook -> updateDrawing");
+
+    if (scene.id !== game.user.viewedScene) return;
+
+    // hum.. let's explain. Position change do not trigger a diff:true
+    if ((action.hasOwnProperty("diff") && action.diff
+        && !(options.hasOwnProperty("flags") && options.flags.hasOwnProperty("tokenmagic")))
+        || (options.hasOwnProperty("x") || options.hasOwnProperty("y")) ) {
+
+        var placeable = getPlaceableById(data._id, PlaceableType.DRAWING);
+
+        // removing animations on this placeable
+        Anime.removeAnimation(data._id);
+
+        // clearing the filters (owned by tokenmagic)
+        Magic._clearImgFiltersByPlaceable(placeable);
+
+        // querying filters reload (when pixi containers are ready)
+        requestLoadFilters(placeable, 50);
+
+    } else {
+        Magic._updateFilters(data, options, PlaceableType.DRAWING);
     }
 });
 

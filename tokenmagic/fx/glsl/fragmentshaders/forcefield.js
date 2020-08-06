@@ -483,9 +483,7 @@ vec4 hugeSmoke(vec2 suv)
     uv.x += sin(suv.y)+fbm(suv);
     uv.y += cos(suv.x)+fbm(suv);
     uv *= 0.5;
-    noiseColor.r = (color.r * fbm((uv + suv) - time));
-    noiseColor.g = (color.g * fbm((uv + suv) - time));
-    noiseColor.b = (color.b * fbm((uv + suv) - time));
+    noiseColor.rgb = (color.rgb * fbm((uv + suv) - time));
     noiseColor.a = 1.0;
     return clamp(noiseColor,0.,1.);
 }
@@ -499,9 +497,7 @@ vec4 grid(vec2 suv)
 	vec2 dg = circuit(uv);
 	float d = dg.x;
 	vec3 col1 = (0.5-vec3(max(min(d, 2.0) - 1., 0.))) * color * 2.;
-    col1.r = sqrt(col1.r/2.);
-	col1.g = sqrt(col1.g/2.);
-	col1.b = sqrt(col1.b/2.);
+    col1.rgb = sqrt(col1.rgb*0.5);
 	vec3 col2 = vec3(max(d - 1.0, 0.0)) * color * 30. ;
 
 	float f = max(0.7 - mod(sin(-uv.y) - cos(-uv.x) + (time * 1.) + (dg.y * 0.2), 0.9), 0.0) * 1.;

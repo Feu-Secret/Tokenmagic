@@ -46,6 +46,9 @@ PlaceableObject.prototype._TMFXgetSprite = function () {
         case PlaceableType.TEMPLATE:
             return this.template;
             break;
+        case PlaceableType.DRAWING:
+            return this.drawing;
+            break;
         default:
             return null;
     }
@@ -66,6 +69,10 @@ PlaceableObject.prototype._TMFXcheckSprite = function () {
         case PlaceableType.TEMPLATE:
             return (this.hasOwnProperty("template")
                 && !(this.template == null));
+            break;
+        case PlaceableType.DRAWING:
+            return (this.hasOwnProperty("drawing")
+                && !(this.drawing == null));
             break;
         default:
             return null;
@@ -94,7 +101,7 @@ PlaceableObject.prototype._TMFXunsetRawFilters = function () {
 }
 
 PlaceableObject.prototype._TMFXgetPlaceableType = function () {
-    if ([PlaceableType.TOKEN, PlaceableType.TILE, PlaceableType.TEMPLATE]
+    if ([PlaceableType.TOKEN, PlaceableType.TILE, PlaceableType.TEMPLATE, PlaceableType.DRAWING]
         .includes(this.constructor.embeddedName)) return this.constructor.embeddedName;
 
     return PlaceableType.NOT_SUPPORTED;

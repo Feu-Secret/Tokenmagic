@@ -117,9 +117,6 @@ vec4 ripples(vec2 suv)
     vec2 p = suv;
     float q = 2.*fbm(p + time*0.2);
     vec2 r = vec2(fbm(p + q + ( time*0.1  ) - p.x - p.y), fbm(p + p + ( time*0.1 )));
-    //r.x += bornedCos(-0.3,-0.2);
-    //r.y += 200.*bornedSin(-1.9,1.9);
-    
     vec3 c = color.rgb * (
         mix( c1, c2, fbm( p + r ) ) + mix( c3, c4, r.x ) - mix( c5, c6, r.y )
     );
@@ -129,9 +126,7 @@ vec4 ripples(vec2 suv)
 vec4 noisy(vec2 suv)
 {
     vec4 noiseColor;
-    noiseColor.r = (color.r * noise(suv + fbm(suv) + time));
-    noiseColor.g = (color.g * noise(suv + fbm(suv) + time));
-    noiseColor.b = (color.b * noise(suv + fbm(suv) + time));
+    noiseColor.rgb = (color.rgb * noise(suv + fbm(suv) + time));
     noiseColor.a = 1.;
     return clamp(noiseColor,0.,1.);
 }
