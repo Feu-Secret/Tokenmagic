@@ -47,7 +47,7 @@ PlaceableObject.prototype._TMFXgetSprite = function () {
             return this.template;
             break;
         case PlaceableType.DRAWING:
-            return this.drawing;
+            return this.drawing || this.img;
             break;
         default:
             return null;
@@ -72,7 +72,9 @@ PlaceableObject.prototype._TMFXcheckSprite = function () {
             break;
         case PlaceableType.DRAWING:
             return (this.hasOwnProperty("drawing")
-                && !(this.drawing == null));
+                && !(this.drawing == null))
+                || (this.hasOwnProperty("img")
+                    && !(this.img == null));
             break;
         default:
             return null;
