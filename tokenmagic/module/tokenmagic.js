@@ -97,7 +97,7 @@ export const PlaceableType = {
     TOKEN: Token.embeddedName,
     TILE: Tile.embeddedName,
     TEMPLATE: MeasuredTemplate.embeddedName,
-    DRAWING: Drawing.embeddedName, 
+    DRAWING: Drawing.embeddedName,
     NOT_SUPPORTED: null
 };
 
@@ -107,7 +107,7 @@ function i18n(key) {
 
 async function exportObjectAsJson(exportObj, exportName) {
     let jsonStr = JSON.stringify(exportObj, null, 4);
-    
+
     const a = document.createElement('a');
     const file = new Blob([jsonStr], { type: 'plain/text' });
 
@@ -194,6 +194,15 @@ export function getMinPadding() {
 export function isAdditivePaddingConfig() {
     return game.settings.get("tokenmagic", "useAdditivePadding");
 }
+
+export var isFurnaceDrawingsActive = () => {
+    // module exeption for the Furnace by KaKaRoTo
+    if (isActiveModule("furnace")
+        && game.settings.get("furnace", "enableDrawingTools")) {
+        return true;
+    }
+    return false;
+};
 
 export function isTheOne() {
     const theOne = game.users.find((user) => user.isGM && user.active);
@@ -868,7 +877,7 @@ export function TokenMagic() {
             } catch (e) {
                 error(e.message);
             }
-        } 
+        }
     }
 
     async function importPresetLibraryFromURL(url) {
@@ -1081,6 +1090,35 @@ function initSocketListener() {
     });
 };
 
+function initFurnaceDrawingsException() {
+    if (isFurnaceDrawingsActive) {
+        DrawingConfig.prototype.refresh = (function () {
+            const cachedDCR = DrawingConfig.prototype.refresh;
+            return async function (html) {
+
+                // Clear animations and filters
+                let tmfxUpdate = false;
+                if (this.object.data.hasOwnProperty("flags")
+                    && this.object.data.flags.hasOwnProperty("tokenmagic")
+                    && this.object.data.flags.tokenmagic.hasOwnProperty("filters")) {
+                    tmfxUpdate = true;
+                    Anime.removeAnimation(this.object.id);
+                    Magic._clearImgFiltersByPlaceable(this.object);
+                }
+
+                // Furnace function apply (updating data and full redraw : destruction/reconstruction)
+                cachedDCR.apply(this, arguments);
+
+                // Reapply the filters if needed
+                if (tmfxUpdate) {
+                    Magic._singleLoadFilters(this.object);
+                }
+
+            };
+        })();
+    }
+}
+
 async function requestLoadFilters(placeable, startTimeout = 0) {
     var reqTimer;
 
@@ -1113,6 +1151,7 @@ Hooks.once("init", () => {
 Hooks.on("ready", () => {
     log("Hook -> ready");
     initSocketListener();
+    initFurnaceDrawingsException();
     window.TokenMagic = Magic;
 });
 
@@ -1242,10 +1281,9 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
 
     if (scene.id !== game.user.viewedScene) return;
 
-    // hum.. let's explain. Position change do not trigger a diff:true
     if ((action.hasOwnProperty("diff") && action.diff
         && !(options.hasOwnProperty("flags") && options.flags.hasOwnProperty("tokenmagic")))
-        || (options.hasOwnProperty("x") || options.hasOwnProperty("y")) ) {
+        || (options.hasOwnProperty("x") || options.hasOwnProperty("y"))) {
 
         var placeable = getPlaceableById(data._id, PlaceableType.DRAWING);
 
@@ -1256,7 +1294,7 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
         Magic._clearImgFiltersByPlaceable(placeable);
 
         // querying filters reload (when pixi containers are ready)
-        requestLoadFilters(placeable, 50);
+        requestLoadFilters(placeable, 250);
 
     } else {
         Magic._updateFilters(data, options, PlaceableType.DRAWING);

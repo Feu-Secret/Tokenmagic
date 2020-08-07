@@ -387,11 +387,14 @@ export class Anime {
         if (Anime._frameTime >= canvas.app.ticker.deltaMS) {
             // enough time passed : call animate for each animation
             Anime._animeMap.forEach((anime, id) => {
-                if (anime.puppet.hasOwnProperty("preComputation")) {
-                    anime.puppet.preComputation();
-                }
-                if (anime.puppet.hasOwnProperty("animated") && !(anime.puppet.animated == null)) {
-                    anime.animate(Anime._frameTime);
+                if (anime.puppet.enabled) {
+                    if (anime.puppet.hasOwnProperty("preComputation")
+                        && anime.puppet.placeableImg != null) {
+                        anime.puppet.preComputation();
+                    }
+                    if (anime.puppet.hasOwnProperty("animated") && !(anime.puppet.animated == null)) {
+                        anime.animate(Anime._frameTime);
+                    }
                 }
             });
             Anime._prevTime = Anime._lastTime;

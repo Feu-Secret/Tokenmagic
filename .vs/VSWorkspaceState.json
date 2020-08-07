@@ -4,9 +4,9 @@
     "\\tokenmagic",
     "\\tokenmagic\\fx",
     "\\tokenmagic\\fx\\filters",
+    "\\tokenmagic\\fx\\filters\\proto",
     "\\tokenmagic\\fx\\glsl",
     "\\tokenmagic\\fx\\glsl\\fragmentshaders",
-    "\\tokenmagic\\fx\\presets",
     "\\tokenmagic\\module",
     "\\tokenmagic\\module\\proto",
     "\\tokenmagic\\updates"

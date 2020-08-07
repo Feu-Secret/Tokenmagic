@@ -1,4 +1,4 @@
-import { objectAssign, getPlaceableById, getMinPadding, PlaceableType } from "../../../module/tokenmagic.js";
+import { objectAssign, getPlaceableById, getMinPadding, PlaceableType, Magic } from "../../../module/tokenmagic.js";
 import "../../../module/proto/PlaceableObjectProto.js";
 
 PIXI.Filter.prototype.setTMParams = function (params) {
@@ -50,6 +50,10 @@ PIXI.Filter.prototype.assignPlaceable = function () {
     placeable != null
         ? this.placeableImg = placeable._TMFXgetSprite()
         : this.placeableImg = null;
+}
+
+PIXI.Filter.prototype.assignPlaceable = function () {
+    this.placeableImg = this.getPlaceable();
 }
 
 PIXI.Filter.prototype.activateTransform = function () {

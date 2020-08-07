@@ -20,6 +20,7 @@ varying vec2 vFilterCoord;
 
 #define SQRT5B20 0.30901699
 #define PI 3.14159265
+#define TWOPI 6.28318531
 #define SPEED 0.01
 #define MU_TWOPI 0.15915494309
 #define MU_289 0.00346020761
@@ -394,33 +395,19 @@ vec4 surface4d(vec2 suv)
 {
     float s = suv.x + 0.61;
     float t = suv.y + 0.5;
-    
-    float multiplier = 1.0 * MU_TWOPI;
-    float nx = cos( s * 2.0 * PI ) * multiplier;
-    float ny = cos( t * 2.0 * PI ) * multiplier;
-    float nz = sin( s * 2.0 * PI ) * multiplier;
-    float nw = sin( t * 2.0 * PI ) * multiplier;
+    float nx = cos( s * TWOPI ) * MU_TWOPI;
+    float ny = cos( t * TWOPI ) * MU_TWOPI;
+    float nz = sin( s * TWOPI ) * MU_TWOPI;
+    float nw = sin( t * TWOPI ) * MU_TWOPI;
 
-    float surf = surface( vec4( nx, ny, nz, nw ) + time * SPEED * 3. );
+    float surf = surface( vec4( nx, ny, nz, nw ) + time * 0.03 );
     return vec4( color * vec3( surf ), 1.0 );
-}
-
-vec4 fbmy(vec2 suv)
-{
-    vec4 noiseColor;
-    noiseColor.r = (color.r * fbm(suv + time*0.5));
-    noiseColor.g = (color.g * fbm(suv + time*0.5));
-    noiseColor.b = (color.b * fbm(suv + time*0.5));
-    noiseColor.a = 1.;
-    return clamp(noiseColor,0.,1.);
 }
 
 vec4 noisy(vec2 suv)
 {
     vec4 noiseColor;
-    noiseColor.r = (color.r * noise(suv + fbm(suv) + time*0.5));
-    noiseColor.g = (color.g * noise(suv + fbm(suv) + time*0.5));
-    noiseColor.b = (color.b * noise(suv + fbm(suv) + time*0.5));
+    noiseColor.rgb = (color.rgb * noise(suv + fbm(suv) + time*0.5));
     noiseColor.a = 1.;
     return clamp(noiseColor,0.,1.);
 }
@@ -455,9 +442,7 @@ vec4 denseSmoke(vec2 suv)
     vec2 uv;
     uv.x = (fbm(suv*2.)-suv.x);
     uv.y = (suv.y+fbm(suv*2.));
-    noiseColor.r = (color.r * min(fbm(uv - time*0.5),fbm(uv)*1.5));
-    noiseColor.g = (color.g * min(fbm(uv - time*0.5),fbm(uv)*1.5));
-    noiseColor.b = (color.b * min(fbm(uv - time*0.5),fbm(uv)*1.5));
+    noiseColor.rgb = (color.rgb * min(fbm(uv - time*0.5),fbm(uv)*1.5));
     noiseColor.a = 1.0;
     return clamp(noiseColor,0.,1.);
 }
@@ -469,9 +454,7 @@ vec4 dancingFume(vec2 suv)
     uv.x += noise(suv)+fbm(suv);
     uv.y += noise(suv)+fbm(suv);
     uv *= 0.5;
-    noiseColor.r = (color.r * fbm((uv + suv*0.15) - time));
-    noiseColor.g = (color.g * fbm((uv + suv*0.15) - time));
-    noiseColor.b = (color.b * fbm((uv + suv*0.15) - time));
+    noiseColor.rgb = (color.rgb * fbm((uv + suv*0.15) - time));
     noiseColor.a = 1.0;
     return clamp(noiseColor,0.,1.);
 }
