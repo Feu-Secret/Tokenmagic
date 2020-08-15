@@ -30,10 +30,14 @@ The notion of preset library has been added. Token Magic FX comes with two libra
 To get an array of presets (search by default in the main library  : "tmfx-main")
 ```javascript
 TokenMagic.getPresets(optional <libraryName>)
+```
 
+```javascript
 // Example to get the main presets
 let tmfxMainPresets = TokenMagic.getPresets();
+```
 
+```javascript
 // Example to get the template presets
 let tmfxTemplatePresets = TokenMagic.getPresets("tmfx-template");
 
