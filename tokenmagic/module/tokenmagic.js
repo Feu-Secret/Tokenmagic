@@ -1069,7 +1069,7 @@ export function TokenMagic() {
             return false;
         }
 
-        let pName = null, pLibrary = null;
+        let pName = null, pLibrary = null, pDefaultTexture = null;
         if (presetName instanceof Object) {
             if (presetName.hasOwnProperty("name")) {
                 pName = presetName.name;
@@ -1077,12 +1077,19 @@ export function TokenMagic() {
             if (presetName.hasOwnProperty("library")) {
                 pLibrary = presetName.library;
             }
+            if (presetName.hasOwnProperty("defaultTexture")) {
+                pDefaultTexture = presetName.defaultTexture;
+            }
         } else {
             pName = presetName;
         }
 
         if (pLibrary == null || typeof pLibrary !== "string") {
             pLibrary = PresetsLibrary.MAIN;
+        }
+
+        if (typeof pDefaultTexture !== "string") {
+            pDefaultTexture = null;
         }
 
         if (typeof pName !== "string"
@@ -1100,6 +1107,9 @@ export function TokenMagic() {
         presetObject.name = pName;
         presetObject.library = pLibrary;
         presetObject.params = params;
+        if (pDefaultTexture != null) {
+            presetObject.defaultTexture = pDefaultTexture;
+        }
 
         var state = true;
         if (pst == null) {
