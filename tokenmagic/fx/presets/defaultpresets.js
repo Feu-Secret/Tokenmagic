@@ -1,3 +1,8 @@
+export const PresetsLibrary = {
+    MAIN: "tmfx-main",
+    TEMPLATE: "tmfx-template"
+};
+
 export var presets = [];
 
 let params =
@@ -24,6 +29,7 @@ let params =
 
 var presetObject = {};
 presetObject.name = "bevel";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -54,6 +60,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "adjustment";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -92,6 +99,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "dropshadow";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -118,6 +126,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "outline";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -145,6 +154,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "glow";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -182,6 +192,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "bloom";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -202,6 +213,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "distortion";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -246,6 +258,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "oldfilm";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -270,6 +283,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "twist";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -296,6 +310,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "bulge";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -331,6 +346,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "blur";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -357,6 +373,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "zoomblur";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -385,6 +402,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "shockwave";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -397,6 +415,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "zapshadow";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -423,6 +442,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "rays";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -448,6 +468,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "fog";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -471,6 +492,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "fumes";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -495,6 +517,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "electric";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -538,6 +561,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "fire";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -583,6 +607,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "waves";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -610,6 +635,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "flood";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -635,6 +661,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "smoke";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -662,6 +689,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "images";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -732,6 +760,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "chaos-images";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -784,6 +813,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "spectral-images";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -815,6 +845,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "hexa-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -846,6 +877,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "fire-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -877,6 +909,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "smoke-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -908,6 +941,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "earth-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -940,6 +974,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "earth-field-top";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -971,6 +1006,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "air-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1002,6 +1038,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "magic-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1033,6 +1070,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "chromatic-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1064,6 +1102,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "water-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1101,6 +1140,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "evil-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1132,6 +1172,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "grid-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1163,6 +1204,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "warp-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1194,6 +1236,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "color-field";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1230,6 +1273,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "sunburst";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1273,6 +1317,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "clover";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1302,6 +1347,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "scan";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1345,6 +1391,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "blue-rays";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1379,6 +1426,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "spectral-body";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1421,6 +1469,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "mantle-of-madness";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1493,6 +1542,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "drift-in-plans";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1535,6 +1585,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "fire-aura";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1587,6 +1638,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "glacial-aura";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1653,6 +1705,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "anti-aura";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1732,6 +1785,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "pure-fire-aura";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1810,6 +1864,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "pure-fire-aura-2";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1886,6 +1941,7 @@ params =
 
 presetObject = new Object();
 presetObject.name = "pure-ice-aura";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
 
@@ -1899,5 +1955,852 @@ params =
 
 presetObject = new Object();
 presetObject.name = "pixelate";
+presetObject.library = PresetsLibrary.MAIN;
 presetObject.params = params;
 presets.push(presetObject);
+
+export var templatePresets = [];
+
+// white : **electric , **waves, ***xrays, **liquid (normal), (clover)
+// black : **liquid (protoplasm), **smoke, **rays, outline, **fumes, **fog, **flood, **fire
+// no texture : **glow, **bulge, **blur, **bloom
+
+params =
+    [{
+        filterType: "flood",
+        filterId: "Watery Surface",
+        time: 0,
+        color: 0x0020BB,
+        billowy: 0.43,
+        tintIntensity: 0.72,
+        glint: 0.31,
+        scale: 70,
+        padding: 10,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0006,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Watery Surface";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "liquid",
+        filterId: "Protoplasm",
+        color: 0x20AAEE,
+        time: 0,
+        blend: 8,
+        intensity: 4,
+        spectral: true,
+        scale: 1.4,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0010,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Protoplasm";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "liquid",
+        filterId: "Watery Surface 2",
+        color: 0x20AAEE,
+        time: 0,
+        blend: 8,
+        intensity: 4,
+        spectral: false,
+        scale: 1.4,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0010,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Watery Surface 2";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "smoke",
+        filterId: "Smoky Area",
+        color: 0xAAAAAA,
+        time: 0,
+        blend: 2,
+        dimX: 1,
+        dimY: 1,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.002,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Smoky Area";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "electric",
+        filterId: "Shock",
+        color: 0xFFFFFF,
+        time: 0,
+        blend: 1,
+        intensity: 5,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0020,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Shock";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "xray",
+        filterId: "Annihilating Rays",
+        time: 0,
+        color: 0xFFBB00,
+        blend: 9,
+        dimX: 1,
+        dimY: 1,
+        anchorX: 0,
+        anchorY: 0,
+        divisor: 6,
+        intensity: 4,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0012,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Annihilating Rays";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "ray",
+        filterId: "Classic Rays",
+        time: 0,
+        color: 0xCF8000,
+        alpha: 0.5,
+        divisor: 32,
+        anchorX: 0,
+        anchorY: 0,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0005,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Classic Rays";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "fumes",
+        filterId: "Smoke Filaments",
+        color: 0x808080,
+        time: 0,
+        blend: 8,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.001,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Smoke Filaments";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "fire",
+        filterId: "Flames",
+        intensity: 1.5,
+        color: 0xFFFFFF,
+        amplitude: 1.3,
+        time: 0,
+        blend: 2,
+        fireBlend: 1,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: -0.0016,
+                animType: "move"
+            },
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Flames";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "xfog",
+        filterId: "Thick Fog",
+        autoFit: false,
+        color: 0x3090FF,
+        time: 0,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0006,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Thick Fog";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "glow",
+        filterId: "Glowing Outline",
+        outerStrength: 5.5,
+        innerStrength: 0,
+        color: 0x006000,
+        quality: 0.5,
+        padding: 10,
+        animated:
+        {
+            outerStrength:
+            {
+                active: true,
+                loopDuration: 3000,
+                animType: "syncCosOscillation",
+                val1: 5.5,
+                val2: 1.5
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Glowing Outline";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "wave",
+        filterId: "Waves",
+        time: 0,
+        anchorX: 0.5,
+        anchorY: 0.5,
+        strength: 0.015,
+        frequency: 120,
+        color: 0xFFFFFF,
+        maxIntensity: 2.5,
+        minIntensity: 0.9,
+        padding: 10,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0085,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Waves";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "wave",
+        filterId: "Waves 2",
+        time: 0,
+        anchorX: 0.5,
+        anchorY: 0.5,
+        strength: 0.014,
+        frequency: 400,
+        color: 0xFFFFFF,
+        maxIntensity: 2.4,
+        minIntensity: 0.8,
+        padding: 10,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0385,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Waves 2";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "wave",
+        filterId: "Waves 3",
+        time: 0,
+        anchorX: 0.5,
+        anchorY: 0.5,
+        strength: 0.017,
+        frequency: 35,
+        color: 0xFFFFFF,
+        maxIntensity: 2.6,
+        minIntensity: 0.9,
+        padding: 20,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0085,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Waves 3";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "xglow",
+        filterId: "Zone : Fire",
+        auraType: 1,
+        color: 0x903010,
+        scale: 1.5,
+        time: 0,
+        auraIntensity: 1.8,
+        subAuraIntensity: 0.25,
+        threshold: 0.6,
+        discard: false,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0027,
+                animType: "move"
+            },
+            thickness:
+            {
+                active: true,
+                loopDuration: 3000,
+                animType: "cosOscillation",
+                val1: 2,
+                val2: 5
+            }
+        }
+    },
+    {
+        filterType: "fire",
+        filterId: "Zone : Fire",
+        intensity: 1.5,
+        color: 0xFFFFFF,
+        amplitude: 1,
+        time: 0,
+        blend: 2,
+        fireBlend: 1,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: -0.0015,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Zone : Fire";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "xglow",
+        filterId: "Zone : Electricity",
+        auraType: 2,
+        color: 0x303030,
+        scale: 1.5,
+        time: 0,
+        auraIntensity: 1,
+        subAuraIntensity: 0.9,
+        threshold: 0,
+        discard: true,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0027,
+                animType: "move"
+            },
+            thickness:
+            {
+                active: true,
+                loopDuration: 3000,
+                animType: "cosOscillation",
+                val1: 1,
+                val2: 2
+            }
+        }
+    },
+    {
+        filterType: "electric",
+        filterId: "Zone : Electricity",
+        color: 0xFFFFFF,
+        time: 0,
+        blend: 1,
+        intensity: 5,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0020,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Zone : Electricity";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "xglow",
+        filterId: "Zone : Blizzard",
+        auraType: 1,
+        color: 0x5099DD,
+        thickness: 4.5,
+        scale: 5,
+        time: 0,
+        auraIntensity: 0.25,
+        subAuraIntensity: 1,
+        threshold: 0.5,
+        discard: false,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0018,
+                animType: "move"
+            },
+            thickness:
+            {
+                val1: 2, val2: 3.3,
+                animType: "cosOscillation",
+                loopDuration: 3000
+            },
+            subAuraIntensity:
+            {
+                val1: 0.05, val2: 0.1,
+                animType: "cosOscillation",
+                loopDuration: 6000
+            },
+            auraIntensity:
+            {
+                val1: 0.9, val2: 2.2,
+                animType: "cosOscillation",
+                loopDuration: 3000
+            }
+        }
+    },
+    {
+        filterType: "smoke",
+        filterId: "Zone : Blizzard",
+        color: 0x80CCFF,
+        time: 0,
+        blend: 2,
+        dimY: 1,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: -0.005,
+                animType: "move"
+            },
+            dimX:
+            {
+                val1: 0.4, val2: 0.2,
+                animType: "cosOscillation",
+                loopDuration: 3000
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Zone : Blizzard";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "bulgepinch",
+        filterId: "Bulging Out",
+        padding: 150,
+        strength: 0,
+        radiusPercent: 200,
+        animated:
+        {
+            strength:
+            {
+                active: true,
+                animType: "cosOscillation",
+                loopDuration: 2000,
+                val1: 0,
+                val2: 0.45
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Bulging Out";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "blur",
+        filterId: "Blurred Texture",
+        padding: 25,
+        quality: 4.0,
+        blur: 0,
+        blurX: 0,
+        blurY: 0,
+        animated:
+        {
+            blurX:
+            {
+                active: true,
+                animType: "syncCosOscillation",
+                loopDuration: 500,
+                val1: 0,
+                val2: 6
+            },
+            blurY:
+            {
+                active: true,
+                animType: "syncCosOscillation",
+                loopDuration: 750,
+                val1: 0,
+                val2: 6
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Blurred Texture";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "xbloom",
+        filterId: "Bloomed Texture",
+        threshold: 0.35,
+        bloomScale: 0,
+        brightness: 1,
+        blur: 0.1,
+        padding: 10,
+        quality: 15,
+        blendMode: 0,
+        animated:
+        {
+            bloomScale:
+            {
+                active: true,
+                loopDuration: 2000,
+                animType: "syncCosOscillation",
+                val1: 0,
+                val2: 2.1
+            },
+            threshold:
+            {
+                active: false,
+                loopDuration: 1000,
+                animType: "syncCosOscillation",
+                val1: 0.00,
+                val2: 1.90
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Bloomed Texture";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "liquid",
+        filterId: "Wild Magic",
+        color: 0xFF0000,
+        time: 0,
+        blend: 6,
+        intensity: 5,
+        spectral: false,
+        scale: 2.5,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0018,
+                animType: "move"
+            }
+        }
+    },
+    {
+        filterType: "wave",
+        filterId: "Wild Magic",
+        time: 0,
+        anchorX: 0.5,
+        anchorY: 0.5,
+        strength: 0.014,
+        frequency: 10,
+        color: 0xFFFFFF,
+        maxIntensity: 1.3,
+        minIntensity: 0.6,
+        padding: 10,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0065,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Wild Magic";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "web",
+        filterId: "Spider Web 1",
+        anchorX: 0.5,
+        anchorY: 0.5,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0005,
+                animType: "move"
+            }
+        }
+    },
+    {
+        filterType: "blur",
+        filterId: "Spider Web 1",
+        padding: 10,
+        quality: 5.0,
+        blur: 1.4,
+    },
+    {
+        filterType: "liquid",
+        filterId: "Spider Web 1",
+        color: 0xFF0000,
+        time: 0,
+        blend: 1,
+        intensity: 8,
+        spectral: false,
+        scale: 0.2,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0005,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Spider Web 1";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "web",
+        filterId: "Spider Web 2",
+        anchorX: 0.5,
+        anchorY: 0.5,
+        time: 100,
+    },
+    {
+        filterType: "blur",
+        filterId: "Spider Web 2",
+        padding: 10,
+        quality: 5.0,
+        blur: 1.4,
+    },
+    {
+        filterType: "xfog",
+        filterId: "Spider Web 2",
+        autoFit: false,
+        color: 0x909090,
+        time: 0,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.00020,
+                animType: "move"
+            }
+        }
+    },
+    {
+        filterType: "bulgepinch",
+        filterId: "Spider Web 2",
+        strength: 0,
+        padding: 50,
+        radiusPercent: 120,
+        animated:
+        {
+            strength:
+            {
+                active: true,
+                animType: "cosOscillation",
+                loopDuration: 3000,
+                val1: 0.45,
+                val2: 0
+            }
+        }
+    }
+    ];
+
+presetObject = {};
+presetObject.name = "Spider Web 2";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+export var allPresets = presets.concat(templatePresets);

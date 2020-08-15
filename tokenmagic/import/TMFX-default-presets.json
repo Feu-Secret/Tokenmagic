@@ -20,7 +20,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "adjustment",
@@ -46,7 +47,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "dropshadow",
@@ -79,7 +81,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "outline",
@@ -101,7 +104,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "glow",
@@ -124,7 +128,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "bloom",
@@ -156,7 +161,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "distortion",
@@ -181,7 +187,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "oldfilm",
@@ -220,7 +227,8 @@
                 "color": 0,
                 "thickness": 0
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "twist",
@@ -240,7 +248,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "bulge",
@@ -262,7 +271,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "blur",
@@ -292,7 +302,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "zoomblur",
@@ -314,7 +325,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "shockwave",
@@ -339,7 +351,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "zapshadow",
@@ -349,7 +362,8 @@
                 "filterId": "zapshadow",
                 "alphaTolerance": 0.45
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "rays",
@@ -371,7 +385,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "fog",
@@ -392,7 +407,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "fumes",
@@ -411,7 +427,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "electric",
@@ -431,7 +448,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "fire",
@@ -467,7 +485,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "waves",
@@ -506,7 +525,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "flood",
@@ -529,7 +549,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "smoke",
@@ -550,7 +571,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "images",
@@ -573,7 +595,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "chaos-images",
@@ -634,7 +657,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "spectral-images",
@@ -682,7 +706,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "hexa-field",
@@ -709,7 +734,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "fire-field",
@@ -736,7 +762,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "smoke-field",
@@ -763,7 +790,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "earth-field",
@@ -790,7 +818,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "earth-field-top",
@@ -818,7 +847,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "air-field",
@@ -845,7 +875,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "magic-field",
@@ -872,7 +903,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "chromatic-field",
@@ -899,7 +931,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "water-field",
@@ -926,7 +959,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "evil-field",
@@ -959,7 +993,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "grid-field",
@@ -986,7 +1021,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "warp-field",
@@ -1013,7 +1049,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "color-field",
@@ -1040,7 +1077,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "sunburst",
@@ -1071,7 +1109,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "clover",
@@ -1108,7 +1147,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "scan",
@@ -1133,7 +1173,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "blue-rays",
@@ -1170,7 +1211,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "spectral-body",
@@ -1199,7 +1241,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "mantle-of-madness",
@@ -1235,7 +1278,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "drift-in-plans",
@@ -1298,7 +1342,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "fire-aura",
@@ -1335,7 +1380,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "glacial-aura",
@@ -1383,7 +1429,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "anti-aura",
@@ -1441,7 +1488,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "pure-fire-aura",
@@ -1509,7 +1557,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "pure-fire-aura-2",
@@ -1577,7 +1626,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "pure-ice-aura",
@@ -1647,7 +1697,8 @@
                     }
                 }
             }
-        ]
+        ],
+        "library": "tmfx-main"
     },
     {
         "name": "pixelate",
@@ -1657,6 +1708,736 @@
                 "filterId": "pixelate",
                 "sizeX": 2.5,
                 "sizeY": 2.5
+            }
+        ],
+        "library": "tmfx-main"
+    },
+    {
+        "name": "Watery Surface",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "flood",
+                "filterId": "Watery Surface",
+                "time": 0,
+                "color": 8379,
+                "billowy": 0.43,
+                "tintIntensity": 0.72,
+                "glint": 0.31,
+                "scale": 70,
+                "padding": 10,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0006,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Protoplasm",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "liquid",
+                "filterId": "Protoplasm",
+                "color": 2140910,
+                "time": 0,
+                "blend": 8,
+                "intensity": 4,
+                "spectral": true,
+                "scale": 1.4,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.001,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Watery Surface 2",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "liquid",
+                "filterId": "Watery Surface 2",
+                "color": 2140910,
+                "time": 0,
+                "blend": 8,
+                "intensity": 4,
+                "spectral": false,
+                "scale": 1.4,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.001,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Smoky Area",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "smoke",
+                "filterId": "Smoky Area",
+                "color": 11184810,
+                "time": 0,
+                "blend": 2,
+                "dimX": 1,
+                "dimY": 1,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.002,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Shock",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "electric",
+                "filterId": "Shock",
+                "color": 16777215,
+                "time": 0,
+                "blend": 1,
+                "intensity": 5,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.002,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Annihilating Rays",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "xray",
+                "filterId": "Annihilating Rays",
+                "time": 0,
+                "color": 16759552,
+                "blend": 9,
+                "dimX": 1,
+                "dimY": 1,
+                "anchorX": 0,
+                "anchorY": 0,
+                "divisor": 6,
+                "intensity": 4,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0012,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Classic Rays",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "ray",
+                "filterId": "Classic Rays",
+                "time": 0,
+                "color": 13598720,
+                "alpha": 0.5,
+                "divisor": 32,
+                "anchorX": 0,
+                "anchorY": 0,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0005,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Smoke Filaments",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "fumes",
+                "filterId": "Smoke Filaments",
+                "color": 8421504,
+                "time": 0,
+                "blend": 8,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.001,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Flames",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "fire",
+                "filterId": "Flames",
+                "intensity": 1.5,
+                "color": 16777215,
+                "amplitude": 1.3,
+                "time": 0,
+                "blend": 2,
+                "fireBlend": 1,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": -0.0016,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Thick Fog",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+        "params": [
+            {
+                "filterType": "xfog",
+                "filterId": "Thick Fog",
+                "autoFit": false,
+                "color": 3182847,
+                "time": 0,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0006,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Glowing Outline",
+        "library": "tmfx-template",
+        "params": [
+            {
+                "filterType": "glow",
+                "filterId": "Glowing Outline",
+                "outerStrength": 5.5,
+                "innerStrength": 0,
+                "color": 24576,
+                "quality": 0.5,
+                "padding": 10,
+                "animated": {
+                    "outerStrength": {
+                        "active": true,
+                        "loopDuration": 3000,
+                        "animType": "syncCosOscillation",
+                        "val1": 5.5,
+                        "val2": 1.5
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Waves",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "wave",
+                "filterId": "Waves",
+                "time": 0,
+                "anchorX": 0.5,
+                "anchorY": 0.5,
+                "strength": 0.015,
+                "frequency": 120,
+                "color": 16777215,
+                "maxIntensity": 2.5,
+                "minIntensity": 0.9,
+                "padding": 10,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0085,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Waves 2",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "wave",
+                "filterId": "Waves 2",
+                "time": 0,
+                "anchorX": 0.5,
+                "anchorY": 0.5,
+                "strength": 0.014,
+                "frequency": 400,
+                "color": 16777215,
+                "maxIntensity": 2.4,
+                "minIntensity": 0.8,
+                "padding": 10,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0385,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Waves 3",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "wave",
+                "filterId": "Waves 3",
+                "time": 0,
+                "anchorX": 0.5,
+                "anchorY": 0.5,
+                "strength": 0.017,
+                "frequency": 35,
+                "color": 16777215,
+                "maxIntensity": 2.6,
+                "minIntensity": 0.9,
+                "padding": 20,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0085,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Zone : Fire",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "xglow",
+                "filterId": "Zone : Fire",
+                "auraType": 1,
+                "color": 9449488,
+                "scale": 1.5,
+                "time": 0,
+                "auraIntensity": 1.8,
+                "subAuraIntensity": 0.25,
+                "threshold": 0.6,
+                "discard": false,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0027,
+                        "animType": "move"
+                    },
+                    "thickness": {
+                        "active": true,
+                        "loopDuration": 3000,
+                        "animType": "cosOscillation",
+                        "val1": 2,
+                        "val2": 5
+                    }
+                }
+            },
+            {
+                "filterType": "fire",
+                "filterId": "Zone : Fire",
+                "intensity": 1.5,
+                "color": 16777215,
+                "amplitude": 1,
+                "time": 0,
+                "blend": 2,
+                "fireBlend": 1,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": -0.0015,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Zone : Electricity",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "xglow",
+                "filterId": "Zone : Electricity",
+                "auraType": 2,
+                "color": 3158064,
+                "scale": 1.5,
+                "time": 0,
+                "auraIntensity": 1,
+                "subAuraIntensity": 0.9,
+                "threshold": 0,
+                "discard": true,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0027,
+                        "animType": "move"
+                    },
+                    "thickness": {
+                        "active": true,
+                        "loopDuration": 3000,
+                        "animType": "cosOscillation",
+                        "val1": 1,
+                        "val2": 2
+                    }
+                }
+            },
+            {
+                "filterType": "electric",
+                "filterId": "Zone : Electricity",
+                "color": 16777215,
+                "time": 0,
+                "blend": 1,
+                "intensity": 5,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.002,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Zone : Blizzard",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "xglow",
+                "filterId": "Zone : Blizzard",
+                "auraType": 1,
+                "color": 5282269,
+                "thickness": 4.5,
+                "scale": 5,
+                "time": 0,
+                "auraIntensity": 0.25,
+                "subAuraIntensity": 1,
+                "threshold": 0.5,
+                "discard": false,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0018,
+                        "animType": "move"
+                    },
+                    "thickness": {
+                        "val1": 2,
+                        "val2": 3.3,
+                        "animType": "cosOscillation",
+                        "loopDuration": 3000
+                    },
+                    "subAuraIntensity": {
+                        "val1": 0.05,
+                        "val2": 0.1,
+                        "animType": "cosOscillation",
+                        "loopDuration": 6000
+                    },
+                    "auraIntensity": {
+                        "val1": 0.9,
+                        "val2": 2.2,
+                        "animType": "cosOscillation",
+                        "loopDuration": 3000
+                    }
+                }
+            },
+            {
+                "filterType": "smoke",
+                "filterId": "Zone : Blizzard",
+                "color": 8441087,
+                "time": 0,
+                "blend": 2,
+                "dimY": 1,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": -0.005,
+                        "animType": "move"
+                    },
+                    "dimX": {
+                        "val1": 0.4,
+                        "val2": 0.2,
+                        "animType": "cosOscillation",
+                        "loopDuration": 3000
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Bulging Out",
+        "library": "tmfx-template",
+        "params": [
+            {
+                "filterType": "bulgepinch",
+                "filterId": "Bulging Out",
+                "padding": 150,
+                "strength": 0,
+                "radiusPercent": 200,
+                "animated": {
+                    "strength": {
+                        "active": true,
+                        "animType": "cosOscillation",
+                        "loopDuration": 2000,
+                        "val1": 0,
+                        "val2": 0.45
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Blurred Texture",
+        "library": "tmfx-template",
+        "params": [
+            {
+                "filterType": "blur",
+                "filterId": "Blurred Texture",
+                "padding": 25,
+                "quality": 4,
+                "blur": 0,
+                "blurX": 0,
+                "blurY": 0,
+                "animated": {
+                    "blurX": {
+                        "active": true,
+                        "animType": "syncCosOscillation",
+                        "loopDuration": 500,
+                        "val1": 0,
+                        "val2": 6
+                    },
+                    "blurY": {
+                        "active": true,
+                        "animType": "syncCosOscillation",
+                        "loopDuration": 750,
+                        "val1": 0,
+                        "val2": 6
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Bloomed Texture",
+        "library": "tmfx-template",
+        "params": [
+            {
+                "filterType": "xbloom",
+                "filterId": "Bloomed Texture",
+                "threshold": 0.35,
+                "bloomScale": 0,
+                "brightness": 1,
+                "blur": 0.1,
+                "padding": 10,
+                "quality": 15,
+                "blendMode": 0,
+                "animated": {
+                    "bloomScale": {
+                        "active": true,
+                        "loopDuration": 2000,
+                        "animType": "syncCosOscillation",
+                        "val1": 0,
+                        "val2": 2.1
+                    },
+                    "threshold": {
+                        "active": false,
+                        "loopDuration": 1000,
+                        "animType": "syncCosOscillation",
+                        "val1": 0,
+                        "val2": 1.9
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Wild Magic",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "liquid",
+                "filterId": "Wild Magic",
+                "color": 16711680,
+                "time": 0,
+                "blend": 6,
+                "intensity": 5,
+                "spectral": false,
+                "scale": 2.5,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0018,
+                        "animType": "move"
+                    }
+                }
+            },
+            {
+                "filterType": "wave",
+                "filterId": "Wild Magic",
+                "time": 0,
+                "anchorX": 0.5,
+                "anchorY": 0.5,
+                "strength": 0.014,
+                "frequency": 10,
+                "color": 16777215,
+                "maxIntensity": 1.3,
+                "minIntensity": 0.6,
+                "padding": 10,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0065,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Spider Web 1",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "web",
+                "filterId": "Spider Web 1",
+                "anchorX": 0.5,
+                "anchorY": 0.5,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0005,
+                        "animType": "move"
+                    }
+                }
+            },
+            {
+                "filterType": "blur",
+                "filterId": "Spider Web 1",
+                "padding": 10,
+                "quality": 5,
+                "blur": 1.4
+            },
+            {
+                "filterType": "liquid",
+                "filterId": "Spider Web 1",
+                "color": 16711680,
+                "time": 0,
+                "blend": 1,
+                "intensity": 8,
+                "spectral": false,
+                "scale": 0.2,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0005,
+                        "animType": "move"
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "name": "Spider Web 2",
+        "library": "tmfx-template",
+        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "params": [
+            {
+                "filterType": "web",
+                "filterId": "Spider Web 2",
+                "anchorX": 0.5,
+                "anchorY": 0.5,
+                "time": 100
+            },
+            {
+                "filterType": "blur",
+                "filterId": "Spider Web 2",
+                "padding": 10,
+                "quality": 5,
+                "blur": 1.4
+            },
+            {
+                "filterType": "xfog",
+                "filterId": "Spider Web 2",
+                "autoFit": false,
+                "color": 9474192,
+                "time": 0,
+                "animated": {
+                    "time": {
+                        "active": true,
+                        "speed": 0.0002,
+                        "animType": "move"
+                    }
+                }
+            },
+            {
+                "filterType": "bulgepinch",
+                "filterId": "Spider Web 2",
+                "strength": 0,
+                "padding": 50,
+                "radiusPercent": 120,
+                "animated": {
+                    "strength": {
+                        "active": true,
+                        "animType": "cosOscillation",
+                        "loopDuration": 3000,
+                        "val1": 0.45,
+                        "val2": 0
+                    }
+                }
             }
         ]
     }

@@ -4,11 +4,11 @@ import "../../../module/proto/PlaceableObjectProto.js";
 PIXI.Filter.prototype.setTMParams = function (params) {
     this.autoDisable = false;
     this.autoDestroy = false;
-    this.autoFit = false;
     this.padding = 0;
     this.gridPadding = 0;
     this.dummy = false;
     objectAssign(this, params);
+    this.autoFit = false;
     if (!this.dummy) {
         this.originalPadding = Math.max(this.padding, getMinPadding());
         this.assignPlaceable();
@@ -50,10 +50,6 @@ PIXI.Filter.prototype.assignPlaceable = function () {
     placeable != null
         ? this.placeableImg = placeable._TMFXgetSprite()
         : this.placeableImg = null;
-}
-
-PIXI.Filter.prototype.assignPlaceable = function () {
-    this.placeableImg = this.getPlaceable();
 }
 
 PIXI.Filter.prototype.activateTransform = function () {

@@ -77,10 +77,10 @@ float Perlin(vec3 P)
 float fbm(vec3 p)
 {
     float v = 0.0;
-    v += Perlin(p * 0.9) * 1.5 * cos(1.2 * PI * (time * 0.4));
+    v += Perlin(p * 0.9) * 1.5 * cos(PI * time * 0.48);
     v += Perlin(p * 3.99) * 0.5 * sin(PI * time * 0.4);
     v += Perlin(p * 8.01) * 0.4 * cos(PI * time * 0.4);
-    v += Perlin(p * 15.05) * 0.05 * sin(0.1 * PI * time * 8.);
+    v += Perlin(p * 15.05) * 0.05 * sin(PI * time * 0.8);
 
     return v;
 }
@@ -112,5 +112,3 @@ void main() {
     gl_FragColor = blenderVec3(blend,pixel,electric)*pixel.a;
 }
 `;
-
-
