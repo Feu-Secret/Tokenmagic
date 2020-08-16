@@ -957,9 +957,9 @@ export function TokenMagic() {
         return pst.filter(preset => preset.library === libraryName);
     };
 
-    function _getPresetTemplateDefaultTexture(presetName, presetLibrary) {
+    function _getPresetTemplateDefaultTexture(presetName, presetLibrary = PresetsLibrary.TEMPLATE) {
         var pst = game.settings.get("tokenmagic", "presets");
-        const preset = pst.find(el => el['name'] === presetName && el['library'] === PresetsLibrary.TEMPLATE);
+        const preset = pst.find(el => el['name'] === presetName && el['library'] === presetLibrary);
         if (!(preset == null) && preset.hasOwnProperty("defaultTexture")) return preset.defaultTexture;
         else return null;
     }
@@ -1294,6 +1294,36 @@ async function requestLoadFilters(placeable, startTimeout = 0) {
     }, startTimeout);
 };
 
+function getAnchor(direction, angle, shapeType) {
+    if (shapeType === "circle" || shapeType === "rect") return { x: 0.5, y: 0.5 };
+
+    // Compute emanation anchor point from the orthonormal bounding rect containing the polygon.
+    // Not complete (to rework later), but ok with cardinal and half-cardinal directions
+    let dirRad = direction * Math.PI / 180;
+    let angleRad = angle * Math.PI / 180;
+
+    let cosRa1 = Math.cos(dirRad - (angleRad / 2));
+    let rsinRa1 = -Math.sin(dirRad - (angleRad / 2));
+    let cosRa2 = Math.cos(dirRad + (angleRad / 2));
+    let rsinRa2 = -Math.sin(dirRad + (angleRad / 2));
+
+    let x = 0, y = 1;
+
+    if (cosRa1 < 0 && cosRa2 < 0) {
+        x = 1;
+    } else if (cosRa1 < 0 || cosRa2 < 0) {
+        x = (Math.sin(-dirRad - (Math.PI / 2)) + 1) / 2;
+    }
+
+    if (rsinRa1 < 0 && rsinRa2 < 0) {
+        y = 0;
+    } else if (rsinRa1 < 0 || rsinRa2 < 0) {
+        y = (Math.cos(-dirRad - (Math.PI / 2)) + 1) / 2;
+    }
+
+    return { x: x, y: y };
+}
+
 function onMeasuredTemplateConfig(data, html) {
 
     function compare(a, b) {
@@ -1592,40 +1622,6 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
         } else return "ITSBAD";
     }
 
-    function getAnchorFromDirection() {
-
-        let shapeType = getShapeType();
-        if (shapeType === "circle" || shapeType === "rect") return { x: 0.5, y: 0.5 };
-
-        // Compute emanation anchor point from the orthonormal bounding rect containing the polygon. 
-        let direction = getDirection();
-        let angle = getAngle();
-
-        let dirRad = direction * Math.PI / 180;
-        let angleRad = angle * Math.PI / 180;
-
-        let cosRa1 = Math.cos(dirRad - (angleRad / 2));
-        let rsinRa1 = -Math.sin(dirRad - (angleRad / 2));
-        let cosRa2 = Math.cos(dirRad + (angleRad / 2));
-        let rsinRa2 = -Math.sin(dirRad + (angleRad / 2));
-
-        let x = 0, y = 1;
-
-        if (cosRa1 < 0 && cosRa2 < 0) {
-            x = 1;
-        } else if (cosRa1 < 0 || cosRa2 < 0) {
-            x = (Math.sin(-dirRad - (Math.PI / 2)) + 1) / 2;
-        }
-
-        if (rsinRa1 < 0 && rsinRa2 < 0) {
-            y = 0;
-        } else if (rsinRa1 < 0 || rsinRa2 < 0) {
-            y = (Math.cos(-dirRad - (Math.PI / 2)) + 1) / 2;
-        }
-
-        return { x: x, y: y };
-    }
-
     let measuredTemplateInstance = canvas.templates.get(measuredTemplate._id);
     let templateTint = getTint();
     let updateTmfxData = {};
@@ -1650,7 +1646,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
         let templateFX = getFX();
         if (templateFX !== "NOFX") {
-            let anchor = getAnchorFromDirection();
+            let anchor = getAnchor(getDirection(), getAngle(), getShapeType());
             let presetOptions =
             {
                 name: templateFX.slice(5),
@@ -1718,6 +1714,104 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
         // request to load filters (when pixi containers are ready)
         requestLoadFilters(placeable, 250);
     }
+});
+
+Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
+    //log("Hook -> preCreateMeasuredTemplate");
+
+    let hasPreset = data.hasOwnProperty("tmfxPreset");
+    let hasTint = data.hasOwnProperty("tmfxTint");
+    let hasOpacity = data.hasOwnProperty("tmfxTextureAlpha");
+    let hasTexture = data.hasOwnProperty("texture") && data.texture !== '';
+    let newFlags = [];
+
+    let tmfxBaseFlags = { tokenmagic: { filters: null, templateData: null } };
+    if (data.hasOwnProperty("flags")) {
+        data.flags = mergeObject(data.flags, tmfxBaseFlags, true, true);
+    } else {
+        data.flags = {};
+    }
+
+    // FX to add ?
+    if (hasPreset) {
+
+        // Compute shader anchor point
+        let anchor = getAnchor(data.direction, data.angle, data.t);
+
+        // Constructing the preset search object
+        let pstSearch =
+        {
+            name: data.tmfxPreset,
+            library: PresetsLibrary.TEMPLATE,
+            anchorX: anchor.x,
+            anchorY: anchor.y
+        };
+
+        // Adding tint if needed
+        if (hasTint && typeof data.tmfxTint === "number")
+            pstSearch.color = data.tmfxTint;
+
+        // Retrieving the preset
+        let preset = Magic.getPreset(pstSearch);
+
+        if (!(preset == null) && preset instanceof Array) {
+
+            let defaultTex = Magic._getPresetTemplateDefaultTexture(pstSearch.name);
+            if (!(defaultTex == null) && !hasTexture) {
+                data.texture = defaultTex;
+            }
+
+            let state = true;
+
+            // Constructing the filter flag parameters
+            for (const params of preset) {
+
+                if (!params.hasOwnProperty("filterType")
+                    || !FilterType.hasOwnProperty(params.filterType)) {
+                    // one invalid ? all rejected.
+                    state = false;
+                    break;
+                }
+
+                // getPreset MUST provide a filter id
+                if (!params.hasOwnProperty("filterId") || params.filterId == null) {
+                    state = false;
+                    break;
+                }
+
+                if (!params.hasOwnProperty("enabled") || !(typeof params.enabled === "boolean")) {
+                    params.enabled = true;
+                }
+
+                params.placeableId = null;
+                params.filterInternalId = randomID();
+                params.filterOwner = game.data.userId;
+                params.placeableType = PlaceableType.TEMPLATE;
+
+                newFlags.push({
+                    tmFilters: {
+                        tmFilterId: params.filterId,
+                        tmFilterInternalId: params.filterInternalId,
+                        tmFilterType: params.filterType,
+                        tmFilterOwner: params.filterOwner,
+                        tmParams: params
+                    }
+                });
+            }
+
+            if (state) {
+                data.flags = mergeObject(data.flags, { tokenmagic: { filters: newFlags } }, true, true);
+            }
+        }
+    }
+
+    let tmfxTemplateData = {
+        templateData: {
+            opacity: (hasOpacity ? data.tmfxTextureAlpha : 1),
+            tint: (hasTint ? data.tmfxTint : null)
+        }
+    };
+    data.flags = mergeObject(data.flags, { tokenmagic: tmfxTemplateData }, true, true);
 });
 
 Hooks.on("closeSettingsConfig", () => {

@@ -28,7 +28,7 @@ The notion of preset library has been added. Token Magic FX comes with two libra
 
 *Added new functions :*
 
-To get an array of presets (search by default in the main library  : "tmfx-main")
+To retrieve the presets of a library (search by default in the main library  : "tmfx-main"). Returns an array.
 ```javascript
 TokenMagic.getPresets(optional <libraryName>)
 ```
@@ -36,6 +36,7 @@ TokenMagic.getPresets(optional <libraryName>)
 ```javascript
 // Example to get the main presets
 let tmfxMainPresets = TokenMagic.getPresets();
+// Equivalent to TokenMagic.getPresets("tmfx-main");
 ```
 
 ```javascript
@@ -71,8 +72,7 @@ let tmfxWildMagicPst = TokenMagic.getPreset(pstParams);
 // Example 3:
 // You can override properties in the presets
 // All filters of the preset containing the properties will be changed
-// Currently does not work on animated properties, will come in a later version
-// ...in fact it works, but the animation procedures will change it nearly immediately.
+// Currently does not work on nested properties, will come in a later version
 let pstParams =
 {
     name: "Wild Magic",
@@ -80,7 +80,7 @@ let pstParams =
     color: 0x00FF00
 };
 let tmfxWildMagicPst = TokenMagic.getPreset(pstParams);
-// all colors properties in the preset have been changed to 0x00FF00
+// all colors properties values in the preset have been changed to 0x00FF00
 ```
 To add a preset, you can now specify a library in an object (same as getPreset).
 Also, when you create a preset for a template (template library), you can add a default texture (used if no texture is setted for a given template)
@@ -102,7 +102,7 @@ let params =
         color: 0x00FF00,
         outerStrength: 5
     }];
-TokenMagic.addPreset("myGlow",params);
+TokenMagic.addPreset("My Glow",params);
 ```
 ```javascript
 // Example 2:
@@ -110,7 +110,7 @@ TokenMagic.addPreset("myGlow",params);
 // in silent mode
 let presetDef =
 {
-    name: "myGlow",
+    name: "My Glow",
     library: "tmfx-template",
     defaultTexture: "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png"
 };
@@ -118,15 +118,54 @@ TokenMagic.addPreset(presetDef, params, true);
 ```
 ```javascript
 // Example 3:
+// You can create your own library (for a module for example)
+// I do not enforce anything, but you should add a suffix corresponding to your module (or others)
+let presetDef =
+{
+    name: "Glowing Death",
+    library: "au5e-conditions"
+};
+TokenMagic.addPreset(presetDef, params);
+```
+```javascript
+// Example 4:
 // deleting a preset in the template library
-TokenMagic.deletePreset({name:"myGlow",library:"tmfx-template"});
+TokenMagic.deletePreset({name:"Glowing Death",library:"tmfx-template"});
 ```
 
 ## Managing Filters
 
+*Creating template :*
+
+When creating templates, you can pass parameters to add special fx, opacity and tint.
+- tmfxPreset : name of the fx preset to apply on the template (from the template library)
+- tmfxTint : a color **value** to apply a tint on the fx
+- tmfxTextureAlpha: inner opacity factor (0 to 1)
+
+All these new parameters are optionals.
+If you do not pass a texture parameter, TMFX will apply the FX preset default texture (if present).
+
+```javascript
+MeasuredTemplate.create({
+   t: "cone",
+   user: game.user._id,
+   x: canvas.stage.pivot.x,
+   y: canvas.stage.pivot.y,
+   direction: 180,
+   angle: 57,
+   distance: 15,
+   borderColor: "#FF0000",
+   fillColor: "#FF3366",
+   tmfxPreset: "Wild Magic",
+   tmfxTint: 0x00FF90,
+   tmfxTextureAlpha: 0.8
+ });
+```
+
 *Removed useless functions :*
 
 All those which worked with a single filter (AddFilter, DeleteFilter, etc.)
+
 Sorry for that, but it was necessary.
 
 *Those that remain :*
@@ -181,11 +220,10 @@ let params =
         color: 0x000000,
     }];
 
-// All possible existing filters will be deleted on the selected placeables
+// All possible existing filters will be deleted on the selected placeables before applying the new filters
 // Technical precision -> it is just one call to a setFlag which add and delete the filters
 TokenMagic.addFiltersOnSelected(params, true);
 ```
-
 # Token Magic FX - Update v0.2.2b-alpha
 
 *Fixed issues :*
