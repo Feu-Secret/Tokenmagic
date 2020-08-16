@@ -11,10 +11,11 @@
 
 *New FX :*
 - Spider-Web filter
-    - To stick your players' characters.
+    - To stick the characters of your players
 - XFog filter
     - A thick and shifting fog.
-    
+- Macro examples with the new FX have been added to the TMFX compendium.
+ 
 *Fixed issues :*
 - Some critical issues in filters Shockwave and Twist (regression of v0.2.2).
 - Adding filters triggered too many updates (one by filter).
