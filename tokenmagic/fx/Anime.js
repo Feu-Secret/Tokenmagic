@@ -49,14 +49,14 @@ export class Anime {
     }
 
     animate(frameTime) {
-        Object.keys(this.puppet.animated).forEach((effect) => {
+        for (const effect of Object.keys(this.puppet.animated)) {
             if (this.animated[effect].active && this.cycleCheck(effect, frameTime)) {
                 if (this[this.animated[effect].animType] != null) {
                     this[this.animated[effect].animType](effect);
                 }
                 this.elapsedTime[effect] += frameTime;
             }
-        });
+        }
         this.autoDisableCheck();
     }
 
@@ -383,22 +383,19 @@ export class Anime {
         Anime._lastTime = canvas.app.ticker.lastTime;
         Anime._frameTime = Anime._lastTime - Anime._prevTime;
 
-        // Animation
-        if (Anime._frameTime >= canvas.app.ticker.deltaMS) {
-            // enough time passed : call animate for each animation
-            Anime._animeMap.forEach((anime, id) => {
-                if (anime.puppet.enabled) {
-                    if (anime.puppet.hasOwnProperty("preComputation")
-                        && anime.puppet.placeableImg != null) {
-                        anime.puppet.preComputation();
-                    }
-                    if (anime.puppet.hasOwnProperty("animated") && !(anime.puppet.animated == null)) {
-                        anime.animate(Anime._frameTime);
-                    }
+        for (const [id, anime] of Anime._animeMap) {
+            if (anime.puppet.enabled) {
+                if (anime.puppet.hasOwnProperty("preComputation")
+                    && anime.puppet.placeableImg != null) {
+                    anime.puppet.preComputation();
                 }
-            });
-            Anime._prevTime = Anime._lastTime;
+                if (anime.puppet.hasOwnProperty("animated") && !(anime.puppet.animated == null)) {
+                    anime.animate(Anime._frameTime);
+                }
+            }
         }
+
+        Anime._prevTime = Anime._lastTime;
     }
 
     static activateAnimation() {
