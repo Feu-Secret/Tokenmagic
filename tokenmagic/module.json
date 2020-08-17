@@ -2,7 +2,7 @@
   "name": "tokenmagic",
   "title": "Token Magic FX",
   "description": "<p>Add graphic filters and animations on your tokens and tiles.</p>",
-  "version": "0.2.2b",
+  "version": "0.3.0",
   "compatibleCoreVersion": "0.6.5",
   "minimumCoreVersion": "0.6.0",
   "author": "SecretFire",
@@ -27,6 +27,8 @@
     "fx/glsl/fragmentshaders/mirrorimages.js",
     "fx/glsl/fragmentshaders/xray.js",
     "fx/glsl/fragmentshaders/magicglow.js",
+    "fx/glsl/fragmentshaders/spiderweb.js",
+    "fx/glsl/fragmentshaders/xfog.js",
     "fx/filters/FilterBevel.js",
     "fx/filters/FilterAdjustment.js",
     "fx/filters/FilterAdvancedBloom.js",
@@ -42,6 +44,7 @@
     "fx/filters/FilterRemoveShadow.js",
     "fx/filters/FilterRays.js",
     "fx/filters/FilterFog.js",
+    "fx/filters/FilterXFog.js",
     "fx/filters/FilterElectric.js",
     "fx/filters/FilterShockWave.js",
     "fx/filters/FilterFumes.js",
@@ -55,6 +58,7 @@
     "fx/filters/FilterLiquid.js",
     "fx/filters/FilterGleamingGlow.js",
     "fx/filters/FilterPixelate.js",
+    "fx/filters/FilterSpiderWeb.js",
     "fx/filters/proto/FilterProto.js"
 
   ],

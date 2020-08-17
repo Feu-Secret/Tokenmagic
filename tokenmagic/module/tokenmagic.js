@@ -14,6 +14,7 @@ import { FilterBulgePinch } from "../fx/filters/FilterBulgePinch.js";
 import { FilterRemoveShadow } from "../fx/filters/FilterRemoveShadow.js";
 import { FilterRays } from "../fx/filters/FilterRays.js";
 import { FilterFog } from "../fx/filters/FilterFog.js";
+import { FilterXFog } from "../fx/filters/FilterXFog.js";
 import { FilterElectric } from "../fx/filters/FilterElectric.js";
 import { FilterWaves } from "../fx/filters/FilterWaves.js";
 import { FilterFire } from "../fx/filters/FilterFire.js";
@@ -26,9 +27,18 @@ import { FilterXRays } from "../fx/filters/FilterXRays.js";
 import { FilterLiquid } from "../fx/filters/FilterLiquid.js";
 import { FilterGleamingGlow } from "../fx/filters/FilterGleamingGlow.js";
 import { FilterPixelate } from "../fx/filters/FilterPixelate.js";
+import { FilterSpiderWeb } from "../fx/filters/FilterSpiderWeb.js";
 import { Anime } from "../fx/Anime.js";
-import { presets as defaultPresets } from "../fx/presets/defaultpresets.js";
+import { presets as defaultPresets, allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
+import { tmfxDataMigration, DataVersion } from "../migration/migration.js";
 import "./proto/PlaceableObjectProto.js";
+
+/*
+
+It's getting messy here ! 
+I will fix it in a future version (+ duplicated code to factorize)
+
+*/
 
 const moduleTM = "module.tokenmagic";
 
@@ -49,6 +59,7 @@ export const FilterType = {
     zapshadow: FilterRemoveShadow,
     ray: FilterRays,
     fog: FilterFog,
+    xfog: FilterXFog,
     electric: FilterElectric,
     wave: FilterWaves,
     shockwave: FilterShockwave,
@@ -61,37 +72,9 @@ export const FilterType = {
     xray: FilterXRays,
     liquid: FilterLiquid,
     xglow: FilterGleamingGlow,
-    pixel: FilterPixelate
+    pixel: FilterPixelate,
+    web: FilterSpiderWeb,
 };
-
-var cachedFilters = {};
-
-async function cacheFilters() {
-    // Only caching filters with heavy shaders that takes time to compile
-    // https://www.html5gamedevs.com/topic/43652-shader-compile-performance/
-    let params =
-    {
-        filterType: "field",
-        enabled: true,
-        dummy: true
-    };
-    cachedFilters.filterForceField = new FilterForceField(params);
-
-    params.filterType = "electric";
-    cachedFilters.filterElectric = new FilterElectric(params);
-
-    params.filterType = "xglow";
-    cachedFilters.filterGleamingGlow = new FilterGleamingGlow(params);
-
-    params.filterType = "fire";
-    cachedFilters.filterFire = new FilterFire(params);
-
-    params.filterType = "smoke";
-    cachedFilters.filterSmoke = new FilterSmoke(params);
-
-    params.filterType = "images";
-    cachedFilters.filterImages = new FilterMirrorImages(params);
-}
 
 export const PlaceableType = {
     TOKEN: Token.embeddedName,
@@ -162,6 +145,15 @@ function registerSettings() {
         config: false,
         default: defaultPresets,
         type: Object
+    });
+
+    game.settings.register("tokenmagic", "migration", {
+        name: "TMFX Data Version",
+        hint: "TMFX Data Version",
+        scope: "world",
+        config: false,
+        default: DataVersion.ARCHAIC,
+        type: String
     });
 }
 
@@ -295,39 +287,19 @@ export function objectAssign(target, ...sources) {
 
 export function TokenMagic() {
 
-    async function addFilterOnSelected(params) {
-        if (params == null) return;
+    var _cachedFilters = {};
 
-        var controlled = getControlledPlaceables();
-
-        if (!(controlled == null) && controlled.length > 0) {
-            for (const placeable of controlled) {
-                await addFilter(placeable, params);
-            }
-        }
-    };
-
-    async function addUpdateFilterOnSelected(params) {
-        if (params == null) return;
-
-        var controlled = getControlledPlaceables();
-
-        if (!(controlled == null) && controlled.length > 0) {
-            for (const placeable of controlled) {
-                await addUpdateFilter(placeable, params);
-            }
-        }
-    };
-
-    async function addFiltersOnSelected(paramsArray) {
+    async function addFiltersOnSelected(paramsArray, replace = false) {
 
         if (typeof paramsArray === "string") {
             paramsArray = getPreset(paramsArray);
         }
 
-        if (paramsArray instanceof Array && paramsArray.length > 0) {
-            for (const params of paramsArray) {
-                await addFilterOnSelected(params);
+        var controlled = getControlledPlaceables();
+
+        if (!(controlled == null) && controlled.length > 0) {
+            for (const placeable of controlled) {
+                await addFilters(placeable, paramsArray, replace);
             }
         }
     };
@@ -338,125 +310,163 @@ export function TokenMagic() {
             paramsArray = getPreset(paramsArray);
         }
 
-        if (paramsArray instanceof Array && paramsArray.length > 0) {
-            for (const params of paramsArray) {
-                await addUpdateFilterOnSelected(params);
+        var controlled = getControlledPlaceables();
+
+        if (!(controlled == null) && controlled.length > 0) {
+            for (const placeable of controlled) {
+                await addUpdateFilters(placeable, paramsArray);
             }
         }
     };
 
-    async function addFilterOnTargeted(params) {
-        if (params == null) return;
+    async function addUpdateFiltersOnTargeted(paramsArray) {
+
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
+        }
 
         var targeted = getTargetedTokens();
 
         if (!(targeted == null) && targeted.length > 0) {
             for (const token of targeted) {
-                await addFilter(token, params);
+                await addUpdateFilters(token, paramsArray);
             }
         }
-    }
+    };
 
-    async function addFiltersOnTargeted(paramsArray) {
+    async function addFiltersOnTargeted(paramsArray, replace = false) {
 
         if (typeof paramsArray === "string") {
             paramsArray = getPreset(paramsArray);
         }
 
-        if (paramsArray instanceof Array && paramsArray.length > 0) {
-            for (const params of paramsArray) {
-                await addFilterOnTargeted(params);
+        var targeted = getTargetedTokens();
+
+        if (!(targeted == null) && targeted.length > 0) {
+            for (const token of targeted) {
+                await addFilters(token, paramsArray, replace);
             }
         }
     }
 
-    async function addFilter(placeable, params) {
-        if (placeable == null
-            || params == null
-            || !params.hasOwnProperty("filterType")
-            || !FilterType.hasOwnProperty(params.filterType)) {
-            return;
+    async function addFilters(placeable, paramsArray, replace = false) {
+
+        if (typeof paramsArray === "string") {
+            paramsArray = getPreset(paramsArray);
         }
+        if (!(paramsArray instanceof Array && paramsArray.length > 0)
+            || placeable == null) return;
 
-        if (!params.hasOwnProperty("filterId") || params.filterId == null) {
-            params.filterId = randomID();
-        }
+        var actualFlags = (replace ? null : placeable.getFlag("tokenmagic", "filters"));
+        var newFlags = [];
 
-        if (!params.hasOwnProperty("enabled") || !typeof params.enabled === "boolean") {
-            params.enabled = true;
-        }
-
-        params.placeableId = placeable.id;
-        params.filterInternalId = randomID();
-        params.filterOwner = game.data.userId;
-        params.placeableType = placeable._TMFXgetPlaceableType();
-
-        var placeableNewFlag = [{
-            tmFilters: {
-                tmFilterId: params.filterId,
-                tmFilterInternalId: params.filterInternalId,
-                tmFilterType: params.filterType,
-                tmFilterOwner: params.filterOwner,
-                tmParams: params
+        for (const params of paramsArray) {
+            if (!params.hasOwnProperty("filterType")
+                || !FilterType.hasOwnProperty(params.filterType)) {
+                // one invalid ? all rejected.
+                return;
             }
-        }];
 
-        var placeableFlag = null;
-        var placeableActualFlag = placeable.getFlag("tokenmagic", "filters");
+            if (!params.hasOwnProperty("filterId") || params.filterId == null) {
+                params.filterId = randomID();
+            }
 
-        if (placeableActualFlag == null) {
-            placeableFlag = placeableNewFlag;
-        } else {
-            placeableFlag = placeableActualFlag.concat(placeableNewFlag);
+            if (!params.hasOwnProperty("enabled") || !(typeof params.enabled === "boolean")) {
+                params.enabled = true;
+            }
+
+            params.placeableId = placeable.id;
+            params.filterInternalId = randomID();
+            params.filterOwner = game.data.userId;
+            params.placeableType = placeable._TMFXgetPlaceableType();
+
+            newFlags.push({
+                tmFilters: {
+                    tmFilterId: params.filterId,
+                    tmFilterInternalId: params.filterInternalId,
+                    tmFilterType: params.filterType,
+                    tmFilterOwner: params.filterOwner,
+                    tmParams: params
+                }
+            });
         }
 
-        await placeable._TMFXsetFlag(placeableFlag);
-    };
+        if (!(actualFlags == null)) {
+            newFlags = actualFlags.concat(newFlags);
+        }
+
+        await placeable._TMFXsetFlag(newFlags);
+    }
 
     async function addUpdateFilters(placeable, paramsArray) {
-        if (paramsArray instanceof Array && paramsArray.length > 0) {
-            for (const params of paramsArray) {
-                await addUpdateFilter(placeable, params);
+
+        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+
+        var flags = placeable.getFlag("tokenmagic", "filters");
+        var workingFlags = [];
+        if (flags) {
+            flags.forEach(flag => {
+                workingFlags.push(duplicate(flag));
+            });
+        }
+
+        var newFlags = [];
+        var updateParams;
+
+        for (const params of paramsArray) {
+
+            updateParams = false;
+
+            workingFlags.forEach(flag => {
+                if (flag.tmFilters.tmFilterId === params.filterId
+                    && flag.tmFilters.tmFilterType === params.filterType) {
+                    if (flag.tmFilters.hasOwnProperty("tmParams")) {
+                        objectAssign(flag.tmFilters.tmParams, params);
+                        updateParams = true;
+                    }
+                }
+            });
+
+            if (!updateParams) {
+                if (!params.hasOwnProperty("filterType")
+                    || !FilterType.hasOwnProperty(params.filterType)) {
+                    // one invalid ? all rejected (even the update)
+                    return;
+                }
+
+                if (!params.hasOwnProperty("filterId") || params.filterId == null) {
+                    params.filterId = randomID();
+                }
+
+                if (!params.hasOwnProperty("enabled") || !(typeof params.enabled === "boolean")) {
+                    params.enabled = true;
+                }
+
+                params.placeableId = placeable.id;
+                params.filterInternalId = randomID();
+                params.filterOwner = game.data.userId;
+                params.placeableType = placeable._TMFXgetPlaceableType();
+
+                newFlags.push({
+                    tmFilters: {
+                        tmFilterId: params.filterId,
+                        tmFilterInternalId: params.filterInternalId,
+                        tmFilterType: params.filterType,
+                        tmFilterOwner: params.filterOwner,
+                        tmParams: params
+                    }
+                });
             }
         }
-    };
 
-    async function addUpdateFilter(placeable, params) {
-        if (placeable == null
-            || params == null
-            || !params.hasOwnProperty("filterType")
-            || !FilterType.hasOwnProperty(params.filterType)) {
-            return;
+        if (newFlags.length > 0) {
+            workingFlags = newFlags.concat(workingFlags);
         }
 
-        if (params.hasOwnProperty("filterId") && placeable.TMFXhasFilterId(params.filterId)
-            && placeable.TMFXhasFilterType(params.filterType)) {
-            await updateFilterByPlaceable(params, placeable);
-        } else {
-            await addFilter(placeable, params);
-        }
-    };
-
-    async function addFilters(placeable, paramsArray) {
-        if (typeof paramsArray === "string") {
-            paramsArray = getPreset(paramsArray);
-        }
-        if (paramsArray instanceof Array && paramsArray.length > 0) {
-            for (const params of paramsArray) {
-                await addFilter(placeable, params);
-            }
-        }
+        await placeable._TMFXsetFlag(workingFlags);
     };
 
     async function updateFilters(paramsArray) {
-        if (paramsArray instanceof Array && paramsArray.length > 0) {
-            for (const params of paramsArray) {
-                await updateFilter(params);
-            }
-        }
-    }
-
-    async function updateFilter(params) {
         if (params == null
             || !params.hasOwnProperty("filterId")) {
             return;
@@ -466,7 +476,8 @@ export function TokenMagic() {
         if (animations.size <= 0) { return; }
 
         animations.forEach((anime, id) => {
-            if (anime.puppet.filterId === params.filterId) {
+            var filterIdMatch = (params) => params.filterId === anime.puppet.filterId;
+            if (paramsArray.some(filterIdMatch)) {
                 placeableIdSet.add(anime.puppet.placeableId);
             }
         });
@@ -478,13 +489,16 @@ export function TokenMagic() {
             // we have just a filterId.
             var placeable = getPlaceableById(placeableId, PlaceableType.TOKEN);
             if (placeable == null) {
+                placeable = getPlaceableById(placeableId, PlaceableType.TEMPLATE);
+            }
+            if (placeable == null) {
                 placeable = getPlaceableById(placeableId, PlaceableType.TILE);
             }
             if (placeable == null) {
-                placeable = getPlaceableById(placeableId, PlaceableType.TEMPLATE);
+                placeable = getPlaceableById(placeableId, PlaceableType.DRAWING);
             }
             if (!(placeable == null) && placeable instanceof PlaceableObject) {
-                await updateFilterByPlaceable(params, placeable);
+                await updateFiltersByPlaceable(placeable, paramsArray);
             }
         }
     };
@@ -499,41 +513,30 @@ export function TokenMagic() {
         if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
 
         for (const placeable of placeables) {
-            for (const params of paramsArray) {
-                await updateFilterByPlaceable(params, placeable);
-            }
+            await updateFiltersByPlaceable(placeable, paramsArray);
         }
     }
 
     async function updateFiltersOnTargeted(paramsArray) {
-        var placeables = getTargetedTokens();
+        var targeted = getTargetedTokens();
 
-        if (placeables == null || placeables.length < 1) { return; }
+        if (targeted == null || targeted.length < 1) { return; }
+
         if (typeof paramsArray === "string") {
             paramsArray = getPreset(paramsArray);
         }
+
         if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
 
-        for (const placeable of placeables) {
-            for (const params of paramsArray) {
-                await updateFilterByPlaceable(params, placeable);
-            }
+        for (const token of targeted) {
+            await updateFiltersByPlaceable(token, paramsArray);
         }
     }
 
     async function updateFiltersByPlaceable(placeable, paramsArray) {
 
-        if (typeof paramsArray === "string") {
-            paramsArray = getPreset(paramsArray);
-        }
-        if (paramsArray instanceof Array && paramsArray.length > 0) {
-            for (const params of paramsArray) {
-                await updateFilterByPlaceable(params, placeable);
-            }
-        }
-    }
+        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
 
-    async function updateFilterByPlaceable(params, placeable) {
         var flags = placeable.getFlag("tokenmagic", "filters");
         if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to update...
 
@@ -542,17 +545,18 @@ export function TokenMagic() {
             workingFlags.push(duplicate(flag));
         });
 
-        workingFlags.forEach(flag => {
-            if (flag.tmFilters.tmFilterId === params.filterId
-                && flag.tmFilters.tmFilterType === params.filterType) {
-                if (flag.tmFilters.hasOwnProperty("tmParams")) {
-                    objectAssign(flag.tmFilters.tmParams, params);
+        for (const params of paramsArray) {
+            workingFlags.forEach(flag => {
+                if (flag.tmFilters.tmFilterId === params.filterId
+                    && flag.tmFilters.tmFilterType === params.filterType) {
+                    if (flag.tmFilters.hasOwnProperty("tmParams")) {
+                        objectAssign(flag.tmFilters.tmParams, params);
+                    }
                 }
-            }
-        });
+            });
+        }
         await placeable._TMFXsetFlag(workingFlags);
-    };
-
+    }
 
     // Deleting filters on targeted tokens
     async function deleteFiltersOnTargeted(filterId = null) {
@@ -615,10 +619,16 @@ export function TokenMagic() {
 
     function hasFilterId(placeable, filterId) {
         if (placeable == null
+            || !(placeable instanceof PlaceableObject)) { return null; }
+        var flags = placeable.getFlag("tokenmagic", "filters");
+        return _checkFilterId(placeable, filterId, flags);
+    };
+
+    function _checkFilterId(placeable, filterId, flags) {
+        if (placeable == null
             || filterId == null
             || !(placeable instanceof PlaceableObject)) { return null; }
 
-        var flags = placeable.getFlag("tokenmagic", "filters");
         if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
 
         const found = flags.find(flag => flag.tmFilters.tmFilterId === filterId);
@@ -626,7 +636,7 @@ export function TokenMagic() {
             return false;
         }
         return true;
-    };
+    }
 
     function setFilter(placeable, filter, params = {}) {
 
@@ -654,19 +664,23 @@ export function TokenMagic() {
     function _loadFilters(placeables) {
         if (!(placeables == null)) {
             placeables.forEach((placeable) => {
-                var filters = placeable.getFlag("tokenmagic", "filters");
-                if (!(filters == null)) {
-                    _assignFilters(placeable, filters);
-                }
+                _singleLoadFilters(placeable);
             });
         }
     };
 
     function _singleLoadFilters(placeable) {
+
+        var updateData = placeable.getFlag("tokenmagic", "templateData");
+        if (!(updateData == null)) {
+            placeable._TMFXgetSprite().alpha = updateData.opacity;
+        }
+
         var filters = placeable.getFlag("tokenmagic", "filters");
         if (!(filters == null)) {
             _assignFilters(placeable, filters);
         }
+        placeable.loadingRequest = false;
     };
 
     function _fxPseudoEqual(flagObject, filterObject) {
@@ -699,8 +713,24 @@ export function TokenMagic() {
         return true;
     };
 
-    function _updateFilters(data, options, placeableType) {
+    function _updateTemplateData(data, options, placeableType) {
         if (!options.hasOwnProperty("flags") || !options.flags.hasOwnProperty("tokenmagic")) { return; }
+        if (data == null || !data.hasOwnProperty("_id")) { return; }
+
+        var placeable = getPlaceableById(data._id, placeableType);
+        if (placeable == null) { return; }
+
+        var updateData = placeable.getFlag("tokenmagic", "templateData");
+        if (!(updateData == null)) {
+            placeable._TMFXgetSprite().alpha = updateData.opacity;
+        }
+    }
+
+    function _updateFilters(data, options, placeableType) {
+        if (!(options.hasOwnProperty("flags")
+            && options.flags.hasOwnProperty("tokenmagic")
+            && (options.flags.tokenmagic.hasOwnProperty("filters")
+                || options.flags.tokenmagic.hasOwnProperty("-=filters")))) { return; }
         if (data == null || !data.hasOwnProperty("_id")) { return; }
 
         var placeable = getPlaceableById(data._id, placeableType);
@@ -872,7 +902,7 @@ export function TokenMagic() {
 
         if (confirm(i18n("TMFX.preset.reset.message"))) {
             try {
-                await game.settings.set("tokenmagic", "presets", defaultPresets);
+                await game.settings.set("tokenmagic", "presets", allPresets);
                 ui.notifications.info(i18n("TMFX.preset.reset.success"));
             } catch (e) {
                 error(e.message);
@@ -921,14 +951,58 @@ export function TokenMagic() {
         exportObjectAsJson(pst, exportName);
     }
 
+    function getPresets(libraryName = PresetsLibrary.MAIN) {
+        var pst = game.settings.get("tokenmagic", "presets");
+        if (pst == null || typeof pst !== "object") return [];
+        return pst.filter(preset => preset.library === libraryName);
+    };
+
+    function _getPresetTemplateDefaultTexture(presetName, presetLibrary = PresetsLibrary.TEMPLATE) {
+        var pst = game.settings.get("tokenmagic", "presets");
+        const preset = pst.find(el => el['name'] === presetName && el['library'] === presetLibrary);
+        if (!(preset == null) && preset.hasOwnProperty("defaultTexture")) return preset.defaultTexture;
+        else return null;
+    }
+
     function getPreset(presetName) {
+
+        let pName = null, pLibrary = null;
+        let argIsObj = (presetName instanceof Object);
+        const { name, library, ...adjustmentProp } = argIsObj ? presetName : {};
+        if (argIsObj) {
+            if (presetName.hasOwnProperty("name")) {
+                pName = presetName.name;
+            }
+            if (presetName.hasOwnProperty("library")) {
+                pLibrary = presetName.library;
+            }
+        } else {
+            pName = presetName;
+        }
+
+        if (pLibrary == null || typeof pLibrary !== "string") {
+            pLibrary = PresetsLibrary.MAIN;
+        }
+
+        if (typeof pName !== "string") return undefined;
+
         var pst = game.settings.get("tokenmagic", "presets");
         if (pst == null || typeof pst !== "object") return undefined;
 
-        const preset = pst.find(el => el['name'] === presetName);
+        const preset = pst.find(el => el['name'] === pName && el['library'] === pLibrary);
         if (!(preset == null)
             && preset.hasOwnProperty("params")
-            && preset.params instanceof Array) return preset.params;
+            && preset.params instanceof Array) {
+            for (const [filterProp, filterPropVal] of Object.entries(adjustmentProp)) {
+                //log(`getPreset ${filterProp}: ${filterPropVal}`);
+                for (const param of preset.params) {
+                    if (param.hasOwnProperty(filterProp)) {
+                        param[filterProp] = filterPropVal;
+                    }
+                }
+            }
+            return preset.params;
+        }
         return undefined;
     };
 
@@ -938,7 +1012,24 @@ export function TokenMagic() {
             return false;
         }
 
-        if (typeof presetName !== "string") {
+        let pName = null, pLibrary = null;
+
+        if (presetName instanceof Object) {
+            if (presetName.hasOwnProperty("name")) {
+                pName = presetName.name;
+            }
+            if (presetName.hasOwnProperty("library")) {
+                pLibrary = presetName.library;
+            }
+        } else {
+            pName = presetName;
+        }
+
+        if (pLibrary == null || typeof pLibrary !== "string") {
+            pLibrary = PresetsLibrary.MAIN;
+        }
+
+        if (typeof pName !== "string") {
             if (!silent) ui.notifications.error(i18n("TMFX.preset.delete.params.failure"));
             return false;
         }
@@ -950,7 +1041,7 @@ export function TokenMagic() {
         }
 
         var state = true;
-        const preset = pst.find(el => el['name'] === presetName);
+        const preset = pst.find(el => el['name'] === pName && el['library'] === pLibrary);
 
         if (preset == null) {
             if (!silent) ui.notifications.warn(i18n("TMFX.preset.delete.notfound.failure"));
@@ -978,26 +1069,54 @@ export function TokenMagic() {
             return false;
         }
 
-        if (typeof presetName !== "string"
+        let pName = null, pLibrary = null, pDefaultTexture = null;
+        if (presetName instanceof Object) {
+            if (presetName.hasOwnProperty("name")) {
+                pName = presetName.name;
+            }
+            if (presetName.hasOwnProperty("library")) {
+                pLibrary = presetName.library;
+            }
+            if (presetName.hasOwnProperty("defaultTexture")) {
+                pDefaultTexture = presetName.defaultTexture;
+            }
+        } else {
+            pName = presetName;
+        }
+
+        if (pLibrary == null || typeof pLibrary !== "string") {
+            pLibrary = PresetsLibrary.MAIN;
+        }
+
+        if (typeof pDefaultTexture !== "string") {
+            pDefaultTexture = null;
+        }
+
+        if (typeof pName !== "string"
             && !(params instanceof Array)) {
             if (!silent) ui.notifications.error(i18n("TMFX.preset.add.params.failure"));
             return false;
         }
 
         for (const param of params) {
-            param.filterId = presetName;
+            param.filterId = pName;
         }
 
         var pst = game.settings.get("tokenmagic", "presets");
         var presetObject = {};
-        presetObject.name = presetName;
+        presetObject.name = pName;
+        presetObject.library = pLibrary;
         presetObject.params = params;
+        if (pDefaultTexture != null) {
+            presetObject.defaultTexture = pDefaultTexture;
+        }
 
         var state = true;
         if (pst == null) {
             pst = [presetObject];
         } else {
-            const preset = pst.find(el => el['name'] === presetName);
+            const preset =
+                pst.find(el => el['name'] === pName && el['library'] === pLibrary);
             if (preset == null) pst.push(presetObject);
             else {
                 if (!silent) ui.notifications.warn(i18n("TMFX.preset.add.duplicate.failure"));
@@ -1019,24 +1138,19 @@ export function TokenMagic() {
     };
 
     return {
-        addFilter: addFilter,
         addFilters: addFilters,
-        addFilterOnSelected: addFilterOnSelected,
         addFiltersOnSelected: addFiltersOnSelected,
         addFiltersOnTargeted: addFiltersOnTargeted,
-        addUpdateFiltersOnSelected: addUpdateFiltersOnSelected,
-        addUpdateFilterOnSelected: addUpdateFilterOnSelected,
         addUpdateFilters: addUpdateFilters,
-        addUpdateFilter: addUpdateFilter,
+        addUpdateFiltersOnSelected: addUpdateFiltersOnSelected,
+        addUpdateFiltersOnTargeted: addUpdateFiltersOnTargeted,
         deleteFilters: deleteFilters,
         deleteFiltersOnSelected: deleteFiltersOnSelected,
         deleteFiltersOnTargeted: deleteFiltersOnTargeted,
-        updateFilter: updateFilter,
         updateFilters: updateFilters,
         updateFiltersOnSelected: updateFiltersOnSelected,
         updateFiltersOnTargeted: updateFiltersOnTargeted,
         updateFiltersByPlaceable: updateFiltersByPlaceable,
-        updateFilterByPlaceable: updateFilterByPlaceable,
         hasFilterType: hasFilterType,
         hasFilterId: hasFilterId,
         exportPresetLibrary: exportPresetLibrary,
@@ -1044,6 +1158,7 @@ export function TokenMagic() {
         importPresetLibraryFromURL: importPresetLibraryFromURL,
         importPresetLibraryFromPath: importPresetLibraryFromPath,
         resetPresetLibrary: resetPresetLibrary,
+        getPresets: getPresets,
         getPreset: getPreset,
         addPreset: addPreset,
         deletePreset: deletePreset,
@@ -1052,11 +1167,42 @@ export function TokenMagic() {
         _clearImgFiltersByPlaceable: _clearImgFiltersByPlaceable,
         _getAnimeMap: Anime.getAnimeMap,
         _updateFilters: _updateFilters,
+        _updateTemplateData: _updateTemplateData,
         _singleLoadFilters: _singleLoadFilters,
+        _cachedFilters: _cachedFilters,
+        _checkFilterId: _checkFilterId,
+        _getPresetTemplateDefaultTexture: _getPresetTemplateDefaultTexture,
     };
 }
 
 export const Magic = TokenMagic();
+
+async function cacheFilters() {
+    // Only caching filters with heavy shaders that takes time to compile
+    // https://www.html5gamedevs.com/topic/43652-shader-compile-performance/
+    let params =
+    {
+        filterType: "field",
+        enabled: true,
+        dummy: true
+    };
+    Magic._cachedFilters.filterForceField = new FilterForceField(params);
+
+    params.filterType = "electric";
+    Magic._cachedFilters.filterElectric = new FilterElectric(params);
+
+    params.filterType = "xglow";
+    Magic._cachedFilters.filterGleamingGlow = new FilterGleamingGlow(params);
+
+    params.filterType = "fire";
+    Magic._cachedFilters.filterFire = new FilterFire(params);
+
+    params.filterType = "smoke";
+    Magic._cachedFilters.filterSmoke = new FilterSmoke(params);
+
+    params.filterType = "images";
+    Magic._cachedFilters.filterImages = new FilterMirrorImages(params);
+}
 
 function initSocketListener() {
 
@@ -1096,7 +1242,7 @@ function initFurnaceDrawingsException() {
             const cachedDCR = DrawingConfig.prototype.refresh;
             return async function (html) {
 
-                // Clear animations and filters
+                // Clear animations and filters if needed
                 let tmfxUpdate = false;
                 if (this.object.data.hasOwnProperty("flags")
                     && this.object.data.flags.hasOwnProperty("tokenmagic")
@@ -1121,12 +1267,16 @@ function initFurnaceDrawingsException() {
 
 async function requestLoadFilters(placeable, startTimeout = 0) {
     var reqTimer;
+    placeable.loadingRequest = true;
 
     function launchRequest(placeable) {
         reqTimer = setTimeout(() => {
             if (placeable == null) return;
             var check = placeable._TMFXcheckSprite();
-            if (check == null) return;
+            if (check == null) {
+                placeable.loadingRequest = false;
+                return;
+            }
             else if (check) Magic._singleLoadFilters(placeable);
             else launchRequest(placeable);
         }, 35);
@@ -1144,15 +1294,109 @@ async function requestLoadFilters(placeable, startTimeout = 0) {
     }, startTimeout);
 };
 
+function getAnchor(direction, angle, shapeType) {
+    if (shapeType === "circle" || shapeType === "rect") return { x: 0.5, y: 0.5 };
+
+    // Compute emanation anchor point from the orthonormal bounding rect containing the polygon.
+    // Not complete (to rework later), but ok with cardinal and half-cardinal directions
+    let dirRad = direction * Math.PI / 180;
+    let angleRad = angle * Math.PI / 180;
+
+    let cosRa1 = Math.cos(dirRad - (angleRad / 2));
+    let rsinRa1 = -Math.sin(dirRad - (angleRad / 2));
+    let cosRa2 = Math.cos(dirRad + (angleRad / 2));
+    let rsinRa2 = -Math.sin(dirRad + (angleRad / 2));
+
+    let x = 0, y = 1;
+
+    if (cosRa1 < 0 && cosRa2 < 0) {
+        x = 1;
+    } else if (cosRa1 < 0 || cosRa2 < 0) {
+        x = (Math.sin(-dirRad - (Math.PI / 2)) + 1) / 2;
+    }
+
+    if (rsinRa1 < 0 && rsinRa2 < 0) {
+        y = 0;
+    } else if (rsinRa1 < 0 || rsinRa2 < 0) {
+        y = (Math.cos(-dirRad - (Math.PI / 2)) + 1) / 2;
+    }
+
+    return { x: x, y: y };
+}
+
+function onMeasuredTemplateConfig(data, html) {
+
+    function compare(a, b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+    }
+
+    const tmTemplate = data.object;
+    var opacity = tmTemplate.template.alpha;
+    var tint = "";
+
+    // getting custom data
+    var tmfxTemplateData = tmTemplate.getFlag("tokenmagic", "templateData");
+    if (!(tmfxTemplateData == null) && tmfxTemplateData instanceof Object) {
+        opacity = tmTemplate.data.tmfxTextureAlpha = tmfxTemplateData.opacity;
+        tint = tmTemplate.data.tmfxTint = (tmfxTemplateData.tint ? PIXI.utils.hex2string(tmfxTemplateData.tint) : "");
+    }
+    var flag = tmTemplate.getFlag("tokenmagic", "filters");
+    var presets = Magic.getPresets(PresetsLibrary.TEMPLATE);
+
+    // forming our injected html
+    var tmfxValues;
+    var selected = '';
+    tmfxValues += '<option value="NOFX">-- No FX --</option>';
+    presets.sort(compare).forEach(preset => {
+        if (flag) (Magic._checkFilterId(tmTemplate, preset.name, flag) ? selected = ' selected' : selected = '');
+        tmfxValues += `<option value="TMFX_${preset.name}"${selected}>${preset.name}</option>`;
+    });
+
+    var divPreset = `
+    <div class="form-group">
+        <label>${i18n('TMFX.template.opacity')}</label>
+        <div class="form-fields">
+            <input type="range" name="tmfxTextureAlpha" value="${opacity}" min="0.0" max="1.0" step="0.05" data-dtype="Number"/>
+            <span class="range-value">${opacity}</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>${i18n('TMFX.template.fx')}</label>
+        <select class="tmfx" name="tmfxPreset" data-dtype="String">
+        ${tmfxValues}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>${i18n('TMFX.template.tint')}</label>
+        <div class="form-fields">
+            <input class="color" type="text" name="tmfxTint" value="${tint}"/>
+            <input type="color" value="${tint}" data-edit="tmfxTint"/>
+        </div>
+    </div>
+    `;
+
+    // injecting
+    const htmlForm = html.find('.form-group');
+    htmlForm.last().after(divPreset);
+
+    $(html).css({ 'min-height': '490px' });
+}
+
 Hooks.once("init", () => {
     registerSettings();
 });
 
 Hooks.on("ready", () => {
     log("Hook -> ready");
+    tmfxDataMigration();
     initSocketListener();
     initFurnaceDrawingsException();
     window.TokenMagic = Magic;
+    Hooks.on("renderMeasuredTemplateConfig", onMeasuredTemplateConfig);
 });
 
 Hooks.on("canvasInit", (canvas) => {
@@ -1163,7 +1407,7 @@ Hooks.on("canvasInit", (canvas) => {
 });
 
 Hooks.once("canvasReady", (canvas) => {
-    log("Init -> canvasReady -> caching shaders");
+    //log("Init -> canvasReady -> caching shaders");
     cacheFilters();
 });
 
@@ -1181,12 +1425,14 @@ Hooks.on("canvasReady", (canvas) => {
     Magic._loadFilters(tiles);
     var drawings = canvas.drawings.placeables;
     Magic._loadFilters(drawings);
+    var templates = canvas.templates.placeables;
+    Magic._loadFilters(templates);
 
     Anime.activateAnimation();
 });
 
 Hooks.on("deleteScene", (scene, data, options) => {
-    log("Hook -> deleteScene");
+    //log("Hook -> deleteScene");
 
     if (!(scene == null) && scene.id === game.user.viewedScene) {
         Anime.desactivateAnimation();
@@ -1195,14 +1441,14 @@ Hooks.on("deleteScene", (scene, data, options) => {
 });
 
 Hooks.on("deleteToken", (parent, doc, options, userId) => {
-    log("Hook -> deleteToken");
+    //log("Hook -> deleteToken");
     if (!(doc == null || !doc.hasOwnProperty("_id"))) {
         Anime.removeAnimation(doc._id);
     }
 });
 
 Hooks.on("createToken", (scene, data, options) => {
-    log("Hook -> createToken");
+    //log("Hook -> createToken");
 
     if (!(scene == null)
         && scene.id === game.user.viewedScene
@@ -1217,8 +1463,40 @@ Hooks.on("createToken", (scene, data, options) => {
     }
 });
 
+Hooks.on("createTile", (scene, data, options) => {
+    //log("Hook -> createTile");
+
+    if (!(scene == null)
+        && scene.id === game.user.viewedScene
+        && data.hasOwnProperty("flags")
+        && data.flags.hasOwnProperty("tokenmagic")
+        && data.flags.tokenmagic.hasOwnProperty("filters")) {
+
+        var placeable = getPlaceableById(data._id, PlaceableType.TILE);
+
+        // request to load filters (when pixi containers are ready)
+        requestLoadFilters(placeable, 250);
+    }
+});
+
+Hooks.on("createDrawing", (scene, data, options) => {
+    //log("Hook -> createDrawing");
+
+    if (!(scene == null)
+        && scene.id === game.user.viewedScene
+        && data.hasOwnProperty("flags")
+        && data.flags.hasOwnProperty("tokenmagic")
+        && data.flags.tokenmagic.hasOwnProperty("filters")) {
+
+        var placeable = getPlaceableById(data._id, PlaceableType.DRAWING);
+
+        // request to load filters (when pixi containers are ready)
+        requestLoadFilters(placeable, 250);
+    }
+});
+
 Hooks.on("updateToken", (scene, data, options) => {
-    log("Hook -> updateToken");
+    //log("Hook -> updateToken");
 
     if (scene.id !== game.user.viewedScene) return;
 
@@ -1243,14 +1521,14 @@ Hooks.on("updateToken", (scene, data, options) => {
 });
 
 Hooks.on("deleteTile", (parent, doc, options, userId) => {
-    log("Hook -> deleteTile");
+    //log("Hook -> deleteTile");
     if (!(doc == null || !doc.hasOwnProperty("_id"))) {
         Anime.removeAnimation(doc._id);
     }
 });
 
 Hooks.on("updateTile", (scene, data, options) => {
-    log("Hook -> updateTile");
+    //log("Hook -> updateTile");
 
     if (scene.id !== game.user.viewedScene) return;
 
@@ -1270,14 +1548,14 @@ Hooks.on("updateTile", (scene, data, options) => {
 });
 
 Hooks.on("deleteDrawing", (parent, doc, options, userId) => {
-    log("Hook -> deleteDrawing");
+    //log("Hook -> deleteDrawing");
     if (!(doc == null || !doc.hasOwnProperty("_id"))) {
         Anime.removeAnimation(doc._id);
     }
 });
 
 Hooks.on("updateDrawing", (scene, data, options, action) => {
-    log("Hook -> updateDrawing");
+    //log("Hook -> updateDrawing");
 
     if (scene.id !== game.user.viewedScene) return;
 
@@ -1299,6 +1577,241 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
     } else {
         Magic._updateFilters(data, options, PlaceableType.DRAWING);
     }
+});
+
+Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData, options) => {
+    //log("Hook -> preUpdateMeasuredTemplate");
+
+    function getTint() {
+        if (updateData.hasOwnProperty("tmfxTint")) {
+            return updateData.tmfxTint;
+        } else if (measuredTemplate.hasOwnProperty("tmfxTint")) {
+            return measuredTemplate.tmfxTint;
+        } else return "";
+    }
+
+    function getFX() {
+        if (updateData.hasOwnProperty("tmfxPreset")) {
+            return updateData.tmfxPreset;
+        } else if (measuredTemplate.hasOwnProperty("tmfxPreset")) {
+            return measuredTemplate.tmfxPreset;
+        } else return "NOFX";
+    }
+
+    function getDirection() {
+        if (updateData.hasOwnProperty("direction")) {
+            return updateData.direction;
+        } else if (measuredTemplate.hasOwnProperty("direction")) {
+            return measuredTemplate.direction;
+        } else return 0;
+    }
+
+    function getAngle() {
+        if (updateData.hasOwnProperty("angle")) {
+            return updateData.angle;
+        } else if (measuredTemplate.hasOwnProperty("angle")) {
+            return measuredTemplate.angle;
+        } else return 0;
+    }
+
+    function getShapeType() {
+        if (updateData.hasOwnProperty("t")) {
+            return updateData.t;
+        } else if (measuredTemplate.hasOwnProperty("t")) {
+            return measuredTemplate.t;
+        } else return "ITSBAD";
+    }
+
+    let measuredTemplateInstance = canvas.templates.get(measuredTemplate._id);
+    let templateTint = getTint();
+    let updateTmfxData = {};
+    let presetUpdate = updateData.hasOwnProperty("tmfxPreset");
+    let tintUpdate = updateData.hasOwnProperty("tmfxTint");
+    let textureUpdate = updateData.hasOwnProperty("tmfxTextureAlpha");
+    let directionUpdate = updateData.hasOwnProperty("direction");
+    let angleUpdate = updateData.hasOwnProperty("angle");
+    let typeUpdate = updateData.hasOwnProperty("t");
+
+    if (textureUpdate)
+        updateTmfxData.opacity = updateData.tmfxTextureAlpha;
+
+    if (tintUpdate)
+        updateTmfxData.tint = (templateTint !== '' ? colorStringToHex(templateTint) : null);
+
+    if (Object.keys(updateTmfxData).length > 0)
+        await measuredTemplateInstance.setFlag("tokenmagic", "templateData", updateTmfxData);
+
+    if (presetUpdate || tintUpdate
+        || directionUpdate || typeUpdate || angleUpdate) {
+
+        let templateFX = getFX();
+        if (templateFX !== "NOFX") {
+            let anchor = getAnchor(getDirection(), getAngle(), getShapeType());
+            let presetOptions =
+            {
+                name: templateFX.slice(5),
+                library: PresetsLibrary.TEMPLATE,
+                anchorX: anchor.x,
+                anchorY: anchor.y
+            };
+            if (templateTint !== "") {
+                presetOptions.color = colorStringToHex(templateTint);
+            }
+            var preset = Magic.getPreset(presetOptions);
+            if (!(preset == null)) {
+                if (presetUpdate) setTimeout(() => { measuredTemplateInstance.TMFXaddFilters(preset, true) }, 150);
+                else setTimeout(() => { measuredTemplateInstance.TMFXaddUpdateFilters(preset) }, 150);
+            }
+        }
+        else setTimeout(() => { measuredTemplateInstance.TMFXdeleteFilters() }, 150);
+    }
+});
+
+Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
+    //log("Hook -> updateMeasuredTemplate");
+
+    if (scene.id !== game.user.viewedScene) return;
+
+    var placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
+    if (options.hasOwnProperty("texture")) {
+        //var placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
+
+        // removing animations on this placeable
+        Anime.removeAnimation(data._id);
+
+        // clearing the filters (owned by tokenmagic)
+        Magic._clearImgFiltersByPlaceable(placeable);
+
+        // querying filters reload (when pixi containers are ready)
+        requestLoadFilters(placeable, 250);
+
+    } else {
+        if (!placeable.loadingRequest) {
+            Magic._updateFilters(data, options, PlaceableType.TEMPLATE);
+            Magic._updateTemplateData(data, options, PlaceableType.TEMPLATE);
+        }
+    }
+});
+
+Hooks.on("deleteMeasuredTemplate", (parent, doc, options, userId) => {
+    //log("Hook -> deleteMeasuredTemplate");
+    if (!(doc == null || !doc.hasOwnProperty("_id"))) {
+        Anime.removeAnimation(doc._id);
+    }
+});
+
+Hooks.on("createMeasuredTemplate", (scene, data, options) => {
+    //log("Hook -> createMeasuredTemplate");
+
+    if (!(scene == null)
+        && scene.id === game.user.viewedScene
+        && data.hasOwnProperty("flags")
+        && data.flags.hasOwnProperty("tokenmagic")
+        && data.flags.tokenmagic.hasOwnProperty("filters")) {
+
+        var placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
+
+        // request to load filters (when pixi containers are ready)
+        requestLoadFilters(placeable, 250);
+    }
+});
+
+Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
+    //log("Hook -> preCreateMeasuredTemplate");
+
+    let hasPreset = data.hasOwnProperty("tmfxPreset");
+    let hasTint = data.hasOwnProperty("tmfxTint");
+    let hasOpacity = data.hasOwnProperty("tmfxTextureAlpha");
+    let hasTexture = data.hasOwnProperty("texture") && data.texture !== '';
+    let newFlags = [];
+
+    let tmfxBaseFlags = { tokenmagic: { filters: null, templateData: null } };
+    if (data.hasOwnProperty("flags")) {
+        data.flags = mergeObject(data.flags, tmfxBaseFlags, true, true);
+    } else {
+        data.flags = {};
+    }
+
+    // FX to add ?
+    if (hasPreset) {
+
+        // Compute shader anchor point
+        let anchor = getAnchor(data.direction, data.angle, data.t);
+
+        // Constructing the preset search object
+        let pstSearch =
+        {
+            name: data.tmfxPreset,
+            library: PresetsLibrary.TEMPLATE,
+            anchorX: anchor.x,
+            anchorY: anchor.y
+        };
+
+        // Adding tint if needed
+        if (hasTint && typeof data.tmfxTint === "number")
+            pstSearch.color = data.tmfxTint;
+
+        // Retrieving the preset
+        let preset = Magic.getPreset(pstSearch);
+
+        if (!(preset == null) && preset instanceof Array) {
+
+            let defaultTex = Magic._getPresetTemplateDefaultTexture(pstSearch.name);
+            if (!(defaultTex == null) && !hasTexture) {
+                data.texture = defaultTex;
+            }
+
+            let state = true;
+
+            // Constructing the filter flag parameters
+            for (const params of preset) {
+
+                if (!params.hasOwnProperty("filterType")
+                    || !FilterType.hasOwnProperty(params.filterType)) {
+                    // one invalid ? all rejected.
+                    state = false;
+                    break;
+                }
+
+                // getPreset MUST provide a filter id
+                if (!params.hasOwnProperty("filterId") || params.filterId == null) {
+                    state = false;
+                    break;
+                }
+
+                if (!params.hasOwnProperty("enabled") || !(typeof params.enabled === "boolean")) {
+                    params.enabled = true;
+                }
+
+                params.placeableId = null;
+                params.filterInternalId = randomID();
+                params.filterOwner = game.data.userId;
+                params.placeableType = PlaceableType.TEMPLATE;
+
+                newFlags.push({
+                    tmFilters: {
+                        tmFilterId: params.filterId,
+                        tmFilterInternalId: params.filterInternalId,
+                        tmFilterType: params.filterType,
+                        tmFilterOwner: params.filterOwner,
+                        tmParams: params
+                    }
+                });
+            }
+
+            if (state) {
+                data.flags = mergeObject(data.flags, { tokenmagic: { filters: newFlags } }, true, true);
+            }
+        }
+    }
+
+    let tmfxTemplateData = {
+        templateData: {
+            opacity: (hasOpacity ? data.tmfxTextureAlpha : 1),
+            tint: (hasTint ? data.tmfxTint : null)
+        }
+    };
+    data.flags = mergeObject(data.flags, { tokenmagic: tmfxTemplateData }, true, true);
 });
 
 Hooks.on("closeSettingsConfig", () => {
