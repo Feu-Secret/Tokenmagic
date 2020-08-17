@@ -2701,39 +2701,19 @@ params =
         filterId: "Spider Web 1",
         anchorX: 0.5,
         anchorY: 0.5,
+        color: 0xFFFFFF,
+        thickness: 2,
+        div2: 5,
+        time: 98.8,
         animated:
         {
             time:
             {
                 active: true,
-                speed: 0.0005,
-                animType: "move"
-            }
-        }
-    },
-    {
-        filterType: "blur",
-        filterId: "Spider Web 1",
-        padding: 10,
-        quality: 5.0,
-        blur: 1.4,
-    },
-    {
-        filterType: "liquid",
-        filterId: "Spider Web 1",
-        color: 0xFF0000,
-        time: 0,
-        blend: 1,
-        intensity: 8,
-        spectral: false,
-        scale: 0.2,
-        animated:
-        {
-            time:
-            {
-                active: true,
-                speed: 0.0005,
-                animType: "move"
+                loopDuration: 5000,
+                animType: "cosOscillation",
+                val1: 98.8,
+                val2: 99.7
             }
         }
     }];
@@ -2751,53 +2731,75 @@ params =
         filterId: "Spider Web 2",
         anchorX: 0.5,
         anchorY: 0.5,
-        time: 100,
-    },
-    {
-        filterType: "blur",
-        filterId: "Spider Web 2",
-        padding: 10,
-        quality: 5.0,
-        blur: 1.4,
-    },
-    {
-        filterType: "xfog",
-        filterId: "Spider Web 2",
-        autoFit: false,
-        color: 0x909090,
-        time: 0,
+        color: 0xCCCCCC,
         animated:
         {
             time:
             {
                 active: true,
-                speed: 0.00020,
+                speed: 0.0005,
                 animType: "move"
             }
         }
     },
     {
-        filterType: "bulgepinch",
+        filterType: "liquid",
         filterId: "Spider Web 2",
-        strength: 0,
-        padding: 50,
-        radiusPercent: 120,
+        color: 0xFF0000,
+        time: 0,
+        blend: 4,
+        intensity: 8,
+        spectral: false,
+        scale: 0.2,
         animated:
         {
-            strength:
+            time:
             {
                 active: true,
-                animType: "cosOscillation",
-                loopDuration: 3000,
-                val1: 0.45,
-                val2: 0
+                speed: 0.0005,
+                animType: "move"
             }
         }
-    }
-    ];
+    }];
 
 presetObject = {};
 presetObject.name = "Spider Web 2";
+presetObject.library = PresetsLibrary.TEMPLATE;
+presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.params = params;
+templatePresets.push(presetObject);
+
+params =
+    [{
+        filterType: "web",
+        filterId: "Spider Web 3",
+        anchorX: 0.5,
+        anchorY: 0.5,
+        color: 0xCCCCCC,
+        time: 100,
+    },
+    {
+        filterType: "liquid",
+        filterId: "Spider Web 3",
+        color: 0xFF0000,
+        time: 0,
+        blend: 1,
+        intensity: 4,
+        spectral: true,
+        scale: 0.2,
+        animated:
+        {
+            time:
+            {
+                active: true,
+                speed: 0.0005,
+                animType: "move"
+            }
+        }
+    }];
+
+presetObject = {};
+presetObject.name = "Spider Web 3";
 presetObject.library = PresetsLibrary.TEMPLATE;
 presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;

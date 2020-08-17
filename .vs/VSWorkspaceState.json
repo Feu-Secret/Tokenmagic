@@ -1,16 +1,15 @@
 {
   "ExpandedNodes": [
     "",
-    "\\images",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
-    "\\tokenmagic\\fx\\presets",
-    "\\tokenmagic\\import",
-    "\\tokenmagic\\lang",
-    "\\tokenmagic\\libs",
-    "\\tokenmagic\\libs\\filters",
+    "\\tokenmagic\\fx\\filters",
+    "\\tokenmagic\\fx\\glsl",
+    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
     "\\tokenmagic\\migration",
-    "\\tokenmagic\\module"
+    "\\tokenmagic\\module",
+    "\\tokenmagic\\module\\proto",
+    "\\tokenmagic\\updates"
   ],
   "SelectedNode": "\\tokenmagic\\module\\tokenmagic.js",
   "PreviewInSolutionExplorer": false

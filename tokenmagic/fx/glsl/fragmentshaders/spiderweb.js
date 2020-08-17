@@ -2,7 +2,13 @@ export const spiderWeb = `
 precision mediump float;
 
 uniform float time;
+uniform float thickness;
+uniform float div1;
+uniform float div2;
+uniform float tear;
+uniform float amplitude;
 uniform vec2 anchor;
+uniform vec3 color;
 uniform sampler2D uSampler;
 
 varying vec2 vTextureCoord;
@@ -10,41 +16,72 @@ varying vec2 vFilterCoord;
 
 const float PI = 3.14159265358;
 
+float random(vec2 n) 
+{ 
+	return fract(cos(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
+vec2 random2(vec2 p) 
+{
+    return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+}
+
 float uvrand(vec2 uv)
 {
     return fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
-vec4 spiderweb(vec2 fragCoord )
+float noise(vec2 n) 
+{
+	const vec2 d = vec2(0., 1.0);
+	vec2 b = floor(n);
+	vec2 f = smoothstep(vec2(0.), vec2(1.0), fract(n));
+	return mix(mix(random(b), random(b + d.yx), f.x), 
+	       mix(random(b + d.xy), random(b + d.yy), f.x), f.y);
+}
+
+float fbm(vec2 n) 
+{
+	float total = 0.0, amp = amplitude;
+	for (int i = 0; i < 2; i++) {
+		total += noise(n) * amp;
+		n += n;
+		amp *= 0.5;
+	}
+	return total;
+}
+
+vec4 spiderweb()
 {
     vec2 coord = vFilterCoord.xy + anchor;
 
-    float t = floor(time * 1.1) * 7.3962;
+    float t = floor(time * 0.01) * 7.3962;
 
     vec2 sc = (coord.xy - 1.) * 0.5;
     float phi = atan(sc.y, sc.x + 1e-6);
     vec2 pc = vec2(fract(phi / (PI * 2.)), length(sc));
     
-    float h_divnum = 10.; 5. + 10.*abs(sin(float(int(time))));
-    float s_divnum = 10.; 5. + 10.*abs(sin(float(int(time))));
+    float h_divnum = div1;
+    float s_divnum = div2;
     
-    float ddth = fract(pc.x * h_divnum);
+    float ddth = fbm(vec2(pc.x*h_divnum,pc.x*20.*pow(length(sc*0.5),2.))*3.);
     
-    float h_rand = 0.09*(sin(time)+9.6)*0.56;
-    float s_rand = 0.025*(cos(time)+1.)*0.5;
+    float h_rand = 0.3+0.0895*(0.1*cos(time)+010.9)*tear;
+    float s_rand = .355*(0.2*cos(time)+1.);
     
-    float l = pc.y+ ddth * (h_rand - 0.4) + ddth*(s_rand - 0.5)*0.2 ;
+    float l = pc.y+ cos(ddth*0.5) * (h_rand - 0.4) + ddth*(s_rand - 0.5)*0.2;
     
-    float thickness = 0.5;
-    float a = step(abs(sin( ( pc.x*PI*2.  )  * s_divnum )),thickness * 0.2);
-    float b = step(abs(sin( ( pc.y*PI*2. + h_rand + l)  * h_divnum )),thickness*0.2 );
+    float ts = 0.05;
+    float a = smoothstep(abs( 1.*sin(( pc.x*PI*2.  )  * s_divnum) ),-.1,thickness * ts );
+    float b = smoothstep(abs( 1.*sin(( pc.y*PI*2. + h_rand + l)  * h_divnum ) ),-.1,thickness * ts );
+    float s = a*b+a*b;
     
-    return vec4(a+b,a+b,a+b,1.0);
+    return vec4(color.r*2.25,color.g*2.25,color.b*2.25,2.)-vec4(s,s,s,1.0);
 }
 
 void main() 
 {
     vec4 pixel = texture2D(uSampler,vTextureCoord);
-    gl_FragColor = max(spiderweb(vFilterCoord),pixel)*pixel.a;
+    gl_FragColor = max(spiderweb(),pixel)*pixel.a;
 }
 `;

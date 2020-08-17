@@ -9,16 +9,23 @@ export class FilterSpiderWeb extends PIXI.Filter {
         let {
             time,
             anchorX,
-            anchorY
+            anchorY,
+            color,
+            thickness,
+            div1,
+            div2,
+            tear,
+            amplitude
         } = Object.assign({}, FilterSpiderWeb.defaults, params);
 
         // using specific vertex shader and fragment shader
         super(customVertex2D, spiderWeb);
 
         this.uniforms.anchor = new Float32Array([0.5, -1.0]);
+        this.uniforms.color = new Float32Array([0.75, 0.75, 0.75]);
 
         Object.assign(this, {
-            time, anchorX, anchorY
+            time, anchorX, anchorY, color, thickness, div1, div2, tear, amplitude
         });
 
         this.animated = {};
@@ -33,6 +40,14 @@ export class FilterSpiderWeb extends PIXI.Filter {
 
     set time(value) {
         this.uniforms.time = value;
+    }
+
+    get color() {
+        return PIXI.utils.rgb2hex(this.uniforms.color);
+    }
+
+    set color(value) {
+        PIXI.utils.hex2rgb(value, this.uniforms.color);
     }
 
     get anchorX() {
@@ -50,12 +65,58 @@ export class FilterSpiderWeb extends PIXI.Filter {
     set anchorY(value) {
         this.uniforms.anchor[1] = 0.5;
     }
+
+    get thickness() {
+        return this.uniforms.thickness;
+    }
+
+    set thickness(value) {
+        this.uniforms.thickness = value;
+    }
+
+    get tear() {
+        return this.uniforms.tear;
+    }
+
+    set tear(value) {
+        this.uniforms.tear = value;
+    }
+
+    get amplitude() {
+        return this.uniforms.amplitude;
+    }
+
+    set amplitude(value) {
+        this.uniforms.amplitude = value;
+    }
+
+    get div1() {
+        return this.uniforms.div1;
+    }
+
+    set div1(value) {
+        this.uniforms.div1 = value;
+    }
+
+    get div2() {
+        return this.uniforms.div2;
+    }
+
+    set div2(value) {
+        this.uniforms.div2 = value;
+    }
 }
 
 FilterSpiderWeb.defaults = {
     time: 0.0,
     anchorX: 0.5,
     anchorY: 0.5,
+    color: 0xBBBBBB,
+    thickness: 1,
+    div1: 10,
+    div2: 10,
+    tear: 0.54,
+    amplitude: 0.8
 };
 
 

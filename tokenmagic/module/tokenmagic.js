@@ -29,7 +29,7 @@ import { FilterGleamingGlow } from "../fx/filters/FilterGleamingGlow.js";
 import { FilterPixelate } from "../fx/filters/FilterPixelate.js";
 import { FilterSpiderWeb } from "../fx/filters/FilterSpiderWeb.js";
 import { Anime } from "../fx/Anime.js";
-import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
+import { presets as defaultPresets, allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration, DataVersion } from "../migration/migration.js";
 import "./proto/PlaceableObjectProto.js";
 
@@ -902,7 +902,7 @@ export function TokenMagic() {
 
         if (confirm(i18n("TMFX.preset.reset.message"))) {
             try {
-                await game.settings.set("tokenmagic", "presets", defaultPresets);
+                await game.settings.set("tokenmagic", "presets", allPresets);
                 ui.notifications.info(i18n("TMFX.preset.reset.success"));
             } catch (e) {
                 error(e.message);
