@@ -1,8 +1,8 @@
 {
   "name": "tokenmagic",
   "title": "Token Magic FX",
-  "description": "<p>Add graphic filters and animations on your tokens and tiles.</p>",
-  "version": "0.3.0",
+  "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
+  "version": "0.3.0b",
   "compatibleCoreVersion": "0.6.5",
   "minimumCoreVersion": "0.6.0",
   "author": "SecretFire",
