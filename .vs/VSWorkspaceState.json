@@ -3,14 +3,14 @@
     "",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
-    "\\tokenmagic\\fx\\filters",
     "\\tokenmagic\\fx\\glsl",
-    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
+    "\\tokenmagic\\fx\\presets",
     "\\tokenmagic\\migration",
     "\\tokenmagic\\module",
     "\\tokenmagic\\module\\proto",
+    "\\tokenmagic\\packs",
     "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\tokenmagic\\module\\tokenmagic.js",
+  "SelectedNode": "\\tokenmagic\\fx\\presets\\defaultpresets.js",
   "PreviewInSolutionExplorer": false
 }

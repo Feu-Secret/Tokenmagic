@@ -61,7 +61,7 @@ vec3 cloudify( vec3 ro, vec3 rd )
 vec4 xfog(vec2 fragCoord)
 {
 	vec3 vo = vec3(0.0,4.9,-40.);
-	vec3 vd = normalize(vec3((0.7 * vFilterCoord.xy) * 1., 1.2)) * rotationMatrix * 1.5;
+	vec3 vd = normalize(vec3((0.7 * vFilterCoord.xy), 1.2)) * rotationMatrix * 1.5;
 	vec3 volume = cloudify( vo, vd );
 	volume = volume * 0.5 + 0.5 * volume * volume * (3.0 - 2.0 * volume);
 	return vec4( volume, 1.0 );
