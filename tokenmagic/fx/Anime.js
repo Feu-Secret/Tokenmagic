@@ -99,10 +99,11 @@ export class Anime {
                 await window.TokenMagic.deleteFilters(placeable, this.puppet.filterId);
             } else {
                 let params = {};
+                params.filterType = this.puppet.filterType;
                 params.filterId = this.puppet.filterId;
                 params.enabled = false;
 
-                await window.TokenMagic.updateFilterByPlaceable(params, placeable);
+                await window.TokenMagic.updateFiltersByPlaceable(placeable, [params]);
             }
         }
     }
