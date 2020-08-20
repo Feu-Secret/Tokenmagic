@@ -27,6 +27,8 @@
   "TMFX.fxPlayerPermission.hint": "If this option is checked, non-GM players can add, modify and delete FX on placeables which they do not own. A GM must be connected.",
   "TMFX.settings.autoTemplateEnabled.name": "Enable automatic template effects",
   "TMFX.settings.autoTemplateEnabled.hint": "Disabling this option will disable all automatic template effects. NOTE: Only affects newly placed templates.",
+  "TMFX.settings.defaultTemplateOnHover.name": "Default template grid on hover",
+  "TMFX.settings.defaultTemplateOnHover.hint": "Display the default template grid only when hovering on the template layer.",
   "TMFX.settings.autoTemplateSettings.button.name": "Automatic Template Effects",
   "TMFX.settings.autoTemplateSettings.button.label": "Template Settings",
   "TMFX.settings.autoTemplateSettings.button.hint": "On game systems that are supported, template effects can be enabled based on the type of spell area and damage type, or with overrides for specific spells.",
