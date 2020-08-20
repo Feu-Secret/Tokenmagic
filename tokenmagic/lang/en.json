@@ -24,5 +24,20 @@
   "TMFX.minPadding.name": "Minimum padding",
   "TMFX.minPadding.hint": "The minimum padding applied to an FX.",
   "TMFX.fxPlayerPermission.name": "Permissive mode",
-  "TMFX.fxPlayerPermission.hint": "If this option is checked, non-GM players can add, modify and delete FX on placeables which they do not own. A GM must be connected."
+  "TMFX.fxPlayerPermission.hint": "If this option is checked, non-GM players can add, modify and delete FX on placeables which they do not own. A GM must be connected.",
+  "TMFX.settings.autoTemplateEnabled.name": "Enable automatic template effects",
+  "TMFX.settings.autoTemplateEnabled.hint": "Disabling this option will disable all automatic template effects. NOTE: Only affects newly placed templates.",
+  "TMFX.settings.autoTemplateSettings.button.name": "Automatic Template Effects",
+  "TMFX.settings.autoTemplateSettings.button.label": "Template Settings",
+  "TMFX.settings.autoTemplateSettings.button.hint": "On game systems that are supported, template effects can be enabled based on the type of spell area and damage type, or with overrides for specific spells.",
+  "TMFX.settings.autoTemplateSettings.tabs.general": "General",
+  "TMFX.settings.autoTemplateSettings.tabs.categories": "Categories",
+  "TMFX.settings.autoTemplateSettings.tabs.overrides": "Overrides",
+  "TMFX.settings.autoTemplateSettings.texture.label": "Texture (optional)",
+  "TMFX.settings.autoTemplateSettings.texture.hint": "Optionally specify a texture for the filter, if one is not specified, an appropriate texture will be used.",
+  "TMFX.settings.autoTemplateSettings.unsupported": "This feature is currently unsupportted for this game system, contributions to enable more systems would be more than welcome!",
+  "TMFX.settings.autoTemplateSettings.overrides.introduction": "You may configure overrides for individual items/spells here. Enter the name of the item/spell as it appears in your Items/Compendiums in the Target field, and configure your preferred settings.",
+  "TMFX.settings.autoTemplateSettings.overrides.add": "Add Override",
+  "TMFX.settings.autoTemplateSettings.dialog.title": "Token Magic Template Settings",
+  "TMFX.save": "Save"
 }

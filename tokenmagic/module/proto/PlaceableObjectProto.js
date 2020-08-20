@@ -116,7 +116,7 @@ MeasuredTemplate.prototype.update = (function () {
         let hasTexture = data.hasOwnProperty("texture");
         let hasPresetData = data.hasOwnProperty("tmfxPreset");
         if (hasPresetData && data.tmfxPreset !== 'NOFX') {
-            let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset.slice(5));
+            let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
                 if (data.texture === '' || data.texture.includes('/modules/tokenmagic/fx/assets/templates/'))
                     data.texture = defaultTexture;
