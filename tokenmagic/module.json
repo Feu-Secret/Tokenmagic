@@ -10,6 +10,7 @@
     "libs/filters/pixi-filters.js"
   ],
   "esmodules": [
+    "module/settings.js",
     "module/tokenmagic.js",
     "module/proto/PlaceableObjectProto.js",
     "fx/Anime.js",
@@ -60,9 +61,10 @@
     "fx/filters/FilterPixelate.js",
     "fx/filters/FilterSpiderWeb.js",
     "fx/filters/proto/FilterProto.js"
-
   ],
-  "styles": [],
+  "styles": [
+    "styles/tokenmagic.css"
+  ],
   "packs": [
     {
       "name": "tmMacros",
