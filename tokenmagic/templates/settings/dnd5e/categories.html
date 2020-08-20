@@ -51,7 +51,7 @@
 				</label>
 				<select name="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.preset" data-dtype='String'>
 					{{#select (lookup (lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) tplKey) 'preset')}}
-						<option value='NOFX'></option>
+						<option value="{{@root.emptyPreset}}"></option>
 						{{#each @root.presets as |preset|}}
 							<option value="{{preset.name}}">
 								{{preset.name}}

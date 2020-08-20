@@ -60,7 +60,7 @@
 					</label>
 					<select name="autoTemplateSettings.overrides.{{idx}}.preset" data-dtype='String'>
 						{{#select (lookup (lookup @root.settings.autoTemplateSettings.overrides idx) 'preset')}}
-							<option value='NOFX'></option>
+							<option value="{{@root.emptyPreset}}"></option>
 							{{#each @root.presets as |preset|}}
 								<option value="{{preset.name}}">
 									{{preset.name}}

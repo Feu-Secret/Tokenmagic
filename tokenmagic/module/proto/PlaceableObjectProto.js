@@ -1,5 +1,5 @@
-import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast, isTheOne } from "../tokenmagic.js";
-import { PresetsLibrary } from "../../fx/presets/defaultpresets.js";
+import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast } from "../tokenmagic.js";
+import { emptyPreset } from '../constants.js';
 
 PlaceableObject.prototype.TMFXaddFilters = async function (paramsArray, replace = false) {
     await Magic.addFilters(this, paramsArray, replace);
@@ -115,7 +115,7 @@ MeasuredTemplate.prototype.update = (function () {
     return async function (data, options) {
         let hasTexture = data.hasOwnProperty("texture");
         let hasPresetData = data.hasOwnProperty("tmfxPreset");
-        if (hasPresetData && data.tmfxPreset !== 'NOFX') {
+        if (hasPresetData && data.tmfxPreset !== emptyPreset) {
             let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
                 if (data.texture === '' || data.texture.includes('/modules/tokenmagic/fx/assets/templates/'))
@@ -123,10 +123,10 @@ MeasuredTemplate.prototype.update = (function () {
             }
 
         } else if (hasTexture && data.texture.includes('/modules/tokenmagic/fx/assets/templates/')
-            && hasPresetData && data.tmfxPreset === 'NOFX') {
+            && hasPresetData && data.tmfxPreset === emptyPreset) {
             data.texture = '';
         }
 
-        await cachedMTU.apply(this, arguments);
+        await cachedMTU.apply(this, [data, options]);
     };
 })();

@@ -104,22 +104,22 @@ export class AutoTemplateDND5E {
 
 		if (!enabled) {
 			// Restore original function if we previously patched it
-			if (this._origFromItem != null) {
+			if (this._origFromItem !== null) {
 				this._abilityTemplate.fromItem = this._origFromItem;
 				this._origFromItem = null;
 			}
 			return;
 		}
 
-		if (this._importedJS == null) {
+		if (this._importedJS === null) {
 			this._importedJS = (await import('../../../../systems/dnd5e/module/pixi/ability-template.js'));
 		}
-		if (this._abilityTemplate == null) {
+		if (this._abilityTemplate === null) {
 			this._abilityTemplate = this._importedJS.default || this._importedJS.AbilityTemplate;
 		}
 
 		this._origFromItem = this._abilityTemplate.fromItem;
-		this._abilityTemplate.fromItem = this._fromItem.bind(this);
+		this._abilityTemplate.fromItem = this._fromItemFn();
 	}
 
 	get _isDnd5e() {
@@ -127,20 +127,20 @@ export class AutoTemplateDND5E {
 	}
 
 	_fromConfig(config, template) {
-		if (config.preset && config.preset != '' && config.preset != 'NOFX') {
+		if (config.preset && config.preset !== '' && config.preset !== emptyPreset) {
 			template.data.tmfxPreset = config.preset;
 		}
-		if (config.texture && config.texture != '') {
+		if (config.texture && config.texture !== '') {
 			template.data.texture = config.texture;
 		}
-		if (config.tint && config.tint != '') {
+		if (config.tint && config.tint !== '') {
 			template.data.tmfxTint = config.tint;
 		}
 		template.data.tmfxTextureAlpha = config.opacity;
 	}
 
 	_fromOverrides(overrides = [], item, template) {
-		let config = overrides.find((el) => el.target.toLowerCase() == item.name.toLowerCase());
+		let config = overrides.find((el) => el.target.toLowerCase() === item.name.toLowerCase());
 		if (!config) {
 			return false;
 		}
@@ -161,21 +161,24 @@ export class AutoTemplateDND5E {
 		return true;
 	}
 
-	_fromItem(item) {
-		const template = this._origFromItem.bind(this._abilityTemplate)(item);
-		if (!template) {
+	_fromItemFn() {
+		const self = this;
+		return function (item) {
+			const template = self._origFromItem.apply(this, [item]);
+			if (!template) {
+				return template;
+			}
+			let hasPreset = template.hasOwnProperty("tmfxPreset");
+			if (hasPreset) {
+				return template;
+			}
+			const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
+			let updated = self._fromOverrides(Object.values(settings.overrides), item, template);
+			if (!updated) {
+				self._fromCategories(settings.categories, item, template);
+			}
 			return template;
 		}
-		let hasPreset = template.hasOwnProperty("tmfxPreset");
-		if (hasPreset) {
-			return template;
-		}
-		const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
-		let updated = this._fromOverrides(Object.values(settings.overrides), item, template);
-		if (!updated) {
-			this._fromCategories(settings.categories, item, template);
-		}
-		return template;
 	}
 }
 

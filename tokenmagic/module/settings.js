@@ -171,6 +171,7 @@ export class TokenMagicSettings extends FormApplication {
 	getData() {
 		let data = super.getData();
 		data.hasAutoTemplates = false;
+		data.emptyPreset = emptyPreset;
 		switch (game.system.id) {
 			case 'dnd5e':
 				data.hasAutoTemplates = true
