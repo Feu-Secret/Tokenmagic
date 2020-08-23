@@ -22,6 +22,7 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
         this.maskSpriteSkewX = 0;
         this.maskSpriteSkewY = 0;
         this.maskSpriteRotation = 0;
+        this.zOrder = 2048;
 
         this.animated = {};
         this.setTMParams(params);

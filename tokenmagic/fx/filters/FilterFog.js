@@ -23,6 +23,7 @@ export class FilterFog extends PIXI.Filter {
             time, color, density, dimX, dimY
         });
 
+        this.zOrder = 160;
         this.animated = {};
         Object.assign(this, params);
         this.anime = new Anime(this);

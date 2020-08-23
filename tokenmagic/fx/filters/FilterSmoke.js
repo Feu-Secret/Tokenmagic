@@ -24,6 +24,7 @@ export class FilterSmoke extends PIXI.Filter {
             time, color, blend, dimX, dimY
         });
 
+        this.zOrder = 175;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {

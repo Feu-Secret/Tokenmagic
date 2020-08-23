@@ -7,7 +7,8 @@ export class FilterXFog extends PIXI.Filter {
     constructor(params) {
         let {
             time,
-            color
+            color,
+            alphaDiscard
         } = Object.assign({}, FilterXFog.defaults, params);
 
         // specific vertex and fragment shaders
@@ -16,9 +17,10 @@ export class FilterXFog extends PIXI.Filter {
         this.uniforms.color = new Float32Array([1.0, 0.4, 0.1, 0.55]);
 
         Object.assign(this, {
-            time, color
+            time, color, alphaDiscard
         });
 
+        this.zOrder = 185;
         this.animated = {};
         Object.assign(this, params);
         this.anime = new Anime(this);
@@ -39,11 +41,22 @@ export class FilterXFog extends PIXI.Filter {
     set color(value) {
         PIXI.utils.hex2rgb(value, this.uniforms.color);
     }
+
+    get alphaDiscard() {
+        return this.uniforms.alphaDiscard;
+    }
+
+    set alphaDiscard(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this.uniforms.alphaDiscard = value;
+        }
+    }
 }
 
 FilterXFog.defaults = {
     time: 0.0,
     color: 0xFFFFFF,
+    alphaDiscard: false,
 };
 
 

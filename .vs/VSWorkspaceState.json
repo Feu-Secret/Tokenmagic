@@ -4,12 +4,13 @@
     "\\tokenmagic",
     "\\tokenmagic\\fx",
     "\\tokenmagic\\fx\\glsl",
-    "\\tokenmagic\\fx\\presets",
-    "\\tokenmagic\\migration",
+    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
+    "\\tokenmagic\\lang",
     "\\tokenmagic\\module",
-    "\\tokenmagic\\module\\proto",
-    "\\tokenmagic\\packs",
-    "\\tokenmagic\\updates"
+    "\\tokenmagic\\module\\autoTemplate",
+    "\\tokenmagic\\templates",
+    "\\tokenmagic\\templates\\settings",
+    "\\tokenmagic\\templates\\settings\\dnd5e"
   ],
   "SelectedNode": "\\tokenmagic\\fx\\presets\\defaultpresets.js",
   "PreviewInSolutionExplorer": false

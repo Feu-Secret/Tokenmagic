@@ -12,7 +12,8 @@ export class FilterLiquid extends PIXI.Filter {
             scale,
             intensity,
             blend,
-            spectral
+            spectral,
+            alphaDiscard
         } = Object.assign({}, FilterLiquid.defaults, params);
 
         // using specific vertex shader and fragment shader
@@ -21,9 +22,10 @@ export class FilterLiquid extends PIXI.Filter {
         this.uniforms.color = new Float32Array([0.1, 0.45, 1.0]);
 
         Object.assign(this, {
-            time, color, scale, intensity, blend, spectral
+            time, color, scale, intensity, blend, spectral, alphaDiscard
         });
 
+        this.zOrder = 141;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);
@@ -79,6 +81,16 @@ export class FilterLiquid extends PIXI.Filter {
             this.uniforms.spectral = value;
         }
     }
+
+    get alphaDiscard() {
+        return this.uniforms.alphaDiscard;
+    }
+
+    set alphaDiscard(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this.uniforms.alphaDiscard = value;
+        }
+    }
 }
 
 FilterLiquid.defaults = {
@@ -88,6 +100,7 @@ FilterLiquid.defaults = {
     intensity: 5,
     blend: 4,
     spectral: false,
+    alphaDiscard: false,
 };
 
 

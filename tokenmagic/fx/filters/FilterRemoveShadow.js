@@ -14,6 +14,7 @@ export class FilterRemoveShadow extends PIXI.Filter {
             alphaTolerance,
         });
 
+        this.zOrder = 3;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

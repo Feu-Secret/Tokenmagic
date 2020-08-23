@@ -1,4 +1,4 @@
-import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast } from "../tokenmagic.js";
+import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast, isZOrderConfig } from "../tokenmagic.js";
 import { emptyPreset } from '../constants.js';
 
 PlaceableObject.prototype.TMFXaddFilters = async function (paramsArray, replace = false) {
@@ -84,6 +84,16 @@ PlaceableObject.prototype._TMFXcheckSprite = function () {
 
 PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
 
+    function insertFilter(filters) {
+        function filterZOrderCompare(a, b) {
+            if (a.zOrder < b.zOrder) return -1;
+            if (a.zOrder > b.zOrder) return 1;
+            return 0;
+        }
+        sprite.filters.push(filters);
+        if (isZOrderConfig()) sprite.filters.sort(filterZOrderCompare);
+    }
+
     let sprite;
     sprite = this._TMFXgetSprite();
     if (sprite == null) { return false; }
@@ -93,7 +103,7 @@ PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
     } else {
         sprite.filters == null
             ? sprite.filters = [filters]
-            : sprite.filters.push(filters);
+            : insertFilter(filters);
     }
 
     return true;

@@ -13,6 +13,7 @@ export class FilterBevel extends PIXI.filters.BevelFilter {
         this.lightAlpha = 0.95;
         this.shadowColor = 0x000000;
         this.shadowAlpha = 0.95;
+        this.zOrder = 15;
         this.quality = 1;
         this.animated = {};
         this.setTMParams(params);

@@ -28,8 +28,10 @@ import { FilterLiquid } from "../fx/filters/FilterLiquid.js";
 import { FilterGleamingGlow } from "../fx/filters/FilterGleamingGlow.js";
 import { FilterPixelate } from "../fx/filters/FilterPixelate.js";
 import { FilterSpiderWeb } from "../fx/filters/FilterSpiderWeb.js";
+import { FilterSolarRipples } from "../fx/filters/FilterSolarRipples.js";
+import { FilterGlobes } from "../fx/filters/FilterGlobes.js";
 import { Anime } from "../fx/Anime.js";
-import { presets as allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
+import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
 import { emptyPreset } from './constants.js';
 import "./proto/PlaceableObjectProto.js";
@@ -75,6 +77,8 @@ export const FilterType = {
     xglow: FilterGleamingGlow,
     pixel: FilterPixelate,
     web: FilterSpiderWeb,
+    ripples: FilterSolarRipples,
+    globes: FilterGlobes,
 };
 
 export const PlaceableType = {
@@ -154,6 +158,14 @@ export function mustBroadCast() {
 
 export function autosetPaddingMode() {
     canvas.app.renderer.filter.useMaxPadding = !isAdditivePaddingConfig();
+}
+
+export function isZOrderConfig() {
+    return game.settings.get("tokenmagic", "useZOrder");
+}
+
+export function isAnimationDisabled() {
+    return game.settings.get("tokenmagic", "disableAnimations");
 }
 
 export function log(output) {
@@ -583,10 +595,7 @@ export function TokenMagic() {
         return true;
     }
 
-    function setFilter(placeable, filter, params = {}) {
-
-        params.placeableId = placeable.id;
-        params.placeableType = placeable._TMFXgetPlaceableType();
+    function setFilter(placeable, filter) {
         placeable._TMFXsetRawFilters(filter);
     };
 
@@ -602,8 +611,9 @@ export function TokenMagic() {
         if (filterInfo == null) { return; }
         var workingFilterInfo = duplicate(filterInfo);
         workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
+        workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
         var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
-        setFilter(placeable, filter, filterInfo.tmFilters.tmParams);
+        setFilter(placeable, filter);
     }
 
     function _loadFilters(placeables) {
@@ -754,7 +764,10 @@ export function TokenMagic() {
 
     async function _importContent(content, options = {}) {
 
-        options.overwrite = game.settings.get("tokenmagic", "importOverwrite");
+        // In internal, we can force overwrite
+        if (!options.hasOwnProperty("overwrite")) {
+            options.overwrite = game.settings.get("tokenmagic", "importOverwrite");
+        }
 
         ///////////////////////////////////////////////
         // Checking the imported object format
@@ -855,10 +868,10 @@ export function TokenMagic() {
         }
     }
 
-    async function importPresetLibraryFromURL(url) {
+    async function importPresetLibraryFromURL(url, options = {}) {
         try {
             $.getJSON(url, async function (content) {
-                return await _importContent(content);
+                return await _importContent(content, options);
             });
         } catch (e) {
             error(e.message);
@@ -867,12 +880,12 @@ export function TokenMagic() {
         }
     }
 
-    async function importPresetLibraryFromPath(path) {
+    async function importPresetLibraryFromPath(path, options = {}) {
         try {
             const response = await fetch(path);
             const content = await response.json();
 
-            return await _importContent(content);
+            return await _importContent(content, options);
 
         } catch (e) {
             error(e.message);

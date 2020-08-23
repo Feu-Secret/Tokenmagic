@@ -1,3 +1,5 @@
+import { isAnimationDisabled } from "../module/tokenmagic.js";
+
 export class Anime {
 
     constructor(puppet) {
@@ -364,7 +366,7 @@ export class Anime {
 
     static _suspendAnimation() {
         Anime._suspended = true;
-        if (Anime._activated) {
+        if (Anime._activated && !isAnimationDisabled()) {
             canvas.app.ticker.remove(Anime.tick, this);
         }
         Anime._lastTime = 0;
@@ -373,7 +375,7 @@ export class Anime {
 
     static _resumeAnimation() {
         Anime._suspended = false;
-        if (Anime._activated) {
+        if (Anime._activated && !isAnimationDisabled()) {
             canvas.app.ticker.add(Anime.tick, this);
             Anime._lastTime = canvas.app.ticker.lastTime;
             Anime._prevTime = Anime._lastTime;
@@ -401,7 +403,7 @@ export class Anime {
 
     static activateAnimation() {
         Anime._activated = true;
-        if (!Anime._suspended) {
+        if (!Anime._suspended && !isAnimationDisabled() ) {
             canvas.app.ticker.add(Anime.tick, this);
             Anime._lastTime = canvas.app.ticker.lastTime;
             Anime._prevTime = Anime._lastTime;
@@ -410,7 +412,7 @@ export class Anime {
 
     static desactivateAnimation() {
         Anime._activated = false;
-        if (!Anime._suspended) {
+        if (!Anime._suspended && !isAnimationDisabled()) {
             canvas.app.ticker.remove(Anime.tick, this);
         }
         Anime._lastTime = 0;

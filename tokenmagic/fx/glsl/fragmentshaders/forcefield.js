@@ -229,6 +229,8 @@ vec4 blenderVec3(int blend, vec4 fColv4, vec4 sColv4)
     else if (blend == 11) { fCol = fCol / (1.0 - sCol + 0.00001); }
     else if (blend == 12) { fCol = 1.0 - (1.0 - fCol) / sCol + 0.00001; }
     else if (blend == 13) { fCol = fCol + sCol; return vec4(fCol,0.6); }
+    else if (blend == 14) { return mix(fColv4,sColv4,1.-fColv4.a); }
+    else if (blend == 15) { return mix(fColv4,sColv4,fColv4.a); }
     else { fCol = fCol + sCol; }
     
     return vec4(fCol,(fColv4.a+sColv4.a)*0.5);

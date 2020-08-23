@@ -70,8 +70,8 @@ export class TokenMagicSettings extends FormApplication {
 		});
 
 		game.settings.register("tokenmagic", "useAdditivePadding", {
-			name: game.i18n.localize("TMFX.useMaxPadding.name"),
-			hint: game.i18n.localize("TMFX.useMaxPadding.hint"),
+			name: game.i18n.localize("TMFX.settings.useMaxPadding.name"),
+			hint: game.i18n.localize("TMFX.settings.useMaxPadding.hint"),
 			scope: "world",
 			config: true,
 			default: false,
@@ -79,8 +79,8 @@ export class TokenMagicSettings extends FormApplication {
 		});
 
 		game.settings.register("tokenmagic", "minPadding", {
-			name: game.i18n.localize("TMFX.minPadding.name"),
-			hint: game.i18n.localize("TMFX.minPadding.hint"),
+			name: game.i18n.localize("TMFX.settings.minPadding.name"),
+			hint: game.i18n.localize("TMFX.settings.minPadding.hint"),
 			scope: "world",
 			config: true,
 			default: 50,
@@ -88,8 +88,8 @@ export class TokenMagicSettings extends FormApplication {
 		});
 
 		game.settings.register("tokenmagic", "fxPlayerPermission", {
-			name: game.i18n.localize("TMFX.fxPlayerPermission.name"),
-			hint: game.i18n.localize("TMFX.fxPlayerPermission.hint"),
+			name: game.i18n.localize("TMFX.settings.fxPlayerPermission.name"),
+			hint: game.i18n.localize("TMFX.settings.fxPlayerPermission.hint"),
 			scope: "world",
 			config: true,
 			default: false,
@@ -97,9 +97,27 @@ export class TokenMagicSettings extends FormApplication {
 		});
 
 		game.settings.register("tokenmagic", "importOverwrite", {
-			name: game.i18n.localize("TMFX.importOverwrite.name"),
-			hint: game.i18n.localize("TMFX.importOverwrite.hint"),
+			name: game.i18n.localize("TMFX.settings.importOverwrite.name"),
+			hint: game.i18n.localize("TMFX.settings.importOverwrite.hint"),
 			scope: "world",
+			config: true,
+			default: false,
+			type: Boolean
+		});
+
+		game.settings.register("tokenmagic", "useZOrder", {
+			name: game.i18n.localize("TMFX.settings.useZOrder.name"),
+			hint: game.i18n.localize("TMFX.settings.useZOrder.hint"),
+			scope: "world",
+			config: true,
+			default: false,
+			type: Boolean
+		});
+
+		game.settings.register("tokenmagic", "disableAnimations", {
+			name: game.i18n.localize("TMFX.settings.disableAnimations.name"),
+			hint: game.i18n.localize("TMFX.settings.disableAnimations.hint"),
+			scope: "client",
 			config: true,
 			default: false,
 			type: Boolean
