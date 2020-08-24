@@ -8,6 +8,7 @@ uniform vec2 dimensions;
 uniform vec2 anchor;
 uniform vec4 color;
 uniform float divisor;
+uniform bool alphaDiscard;
 
 varying vec2 vTextureCoord;
 varying vec2 vFilterCoord;
@@ -36,6 +37,7 @@ void main() {
     
     vec4 color1 = smoothstep(0., 1., white * color);
     vec4 result = mix(pixel, color1, color1.a);
+    if (alphaDiscard && all(lessThanEqual(result.rgb,vec3(0.05)))) discard;
     gl_FragColor = result*pixel.a;
 }
 `;

@@ -27,6 +27,7 @@ export class FilterFlood extends PIXI.Filter {
             time, scale, glint, billowy, color, shiftX, shiftY, tintIntensity
         });
 
+        this.zOrder = 170;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

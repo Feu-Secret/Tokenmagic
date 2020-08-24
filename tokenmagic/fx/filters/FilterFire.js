@@ -14,7 +14,8 @@ export class FilterFire extends PIXI.Filter {
             fireBlend,
             blend,
             anchorX,
-            anchorY
+            anchorY,
+            alphaDiscard
         } = Object.assign({}, FilterFire.defaults, params);
 
         // using specific vertex shader and fragment shader
@@ -24,9 +25,10 @@ export class FilterFire extends PIXI.Filter {
         this.uniforms.anchor = new Float32Array([1.0, 1.0]);
 
         Object.assign(this, {
-            time, color, amplitude, intensity, fireBlend, blend, anchorX, anchorY
+            time, color, amplitude, intensity, fireBlend, blend, anchorX, anchorY, alphaDiscard
         });
 
+        this.zOrder = 150;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {
@@ -98,6 +100,16 @@ export class FilterFire extends PIXI.Filter {
     set anchorY(value) {
         this.uniforms.anchor[1] = value;
     }
+
+    get alphaDiscard() {
+        return this.uniforms.alphaDiscard;
+    }
+
+    set alphaDiscard(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this.uniforms.alphaDiscard = value;
+        }
+    }
 }
 
 FilterFire.defaults = {
@@ -109,6 +121,7 @@ FilterFire.defaults = {
     blend: 2,
     anchorX: 1,
     anchorY: 1,
+    alphaDiscard: false,
 };
 
 

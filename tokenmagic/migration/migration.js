@@ -1,10 +1,13 @@
-import { isTheOne, log, warn, error } from "../module/tokenmagic.js";
+import { TokenMagic, isTheOne, log, warn, error } from "../module/tokenmagic.js";
 import { PresetsLibrary, templatePresets } from "../fx/presets/defaultpresets.js";
+
+const Magic = TokenMagic();
 
 export const DataVersion =
 {
     ARCHAIC: "",
-    V030: "0.3.0"
+    V030: "0.3.0",
+    V040: "0.4.0"
 }
 
 // migration function - will evolve constantly
@@ -18,6 +21,9 @@ export async function tmfxDataMigration() {
         }
         if (dataVersionNow < DataVersion.V030) {
             await updatePresetsV030();
+        }
+        if (dataVersionNow < DataVersion.V040) {
+            await updatePresetsV040();
         }
     }
 }
@@ -52,6 +58,41 @@ async function updatePresetsV030() {
             log(`Migration 0.3.0 - Migration successful!`);
         } catch (e) {
             error(`Migration 0.3.0 - Migration failed.`);
+            error(e);
+        }
+    }
+}
+
+async function updatePresetsV040() {
+    var presets = game.settings.get("tokenmagic", "presets");
+
+    if (!(presets == null)) {
+        log(`Migration 0.4.0 - Launching presets data migration...`);
+
+        // Adding zOrder for the template presets only
+        // Does not break visuals
+        for (const preset of presets) {
+            if (preset.library === PresetsLibrary.TEMPLATE) {
+                log(`Migration 0.4.0 - Checking template preset ${preset.name}...`);
+                let zOrder = 1;
+                for (const filter of preset.params) {
+                    if (!filter.hasOwnProperty("zOrder")) {
+                        filter.zOrder = zOrder;
+                        log(`Migration 0.4.0 - Updating ${filter.filterType} in ${preset.name}...`);
+                        zOrder++;
+                    }
+                }
+            }
+        }
+
+        try {
+            await game.settings.set("tokenmagic", "presets", presets);
+            log(`Migration 0.4.0 - Importing new template presets...`);
+            await Magic.importPresetLibraryFromPath("/modules/tokenmagic/import/TMFX-update-presets-v040.json", {overwrite:false} );
+            await game.settings.set("tokenmagic", "migration", DataVersion.V040);
+            log(`Migration 0.4.0 - Migration successful!`);
+        } catch (e) {
+            error(`Migration 0.4.0 - Migration failed.`);
             error(e);
         }
     }

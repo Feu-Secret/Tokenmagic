@@ -15,7 +15,8 @@ export class FilterSpiderWeb extends PIXI.Filter {
             div1,
             div2,
             tear,
-            amplitude
+            amplitude,
+            alphaDiscard
         } = Object.assign({}, FilterSpiderWeb.defaults, params);
 
         // using specific vertex shader and fragment shader
@@ -25,9 +26,10 @@ export class FilterSpiderWeb extends PIXI.Filter {
         this.uniforms.color = new Float32Array([0.75, 0.75, 0.75]);
 
         Object.assign(this, {
-            time, anchorX, anchorY, color, thickness, div1, div2, tear, amplitude
+            time, anchorX, anchorY, color, thickness, div1, div2, tear, amplitude, alphaDiscard
         });
 
+        this.zOrder = 260;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);
@@ -105,6 +107,16 @@ export class FilterSpiderWeb extends PIXI.Filter {
     set div2(value) {
         this.uniforms.div2 = value;
     }
+
+    get alphaDiscard() {
+        return this.uniforms.alphaDiscard;
+    }
+
+    set alphaDiscard(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this.uniforms.alphaDiscard = value;
+        }
+    }
 }
 
 FilterSpiderWeb.defaults = {
@@ -116,7 +128,8 @@ FilterSpiderWeb.defaults = {
     div1: 10,
     div2: 10,
     tear: 0.54,
-    amplitude: 0.8
+    amplitude: 0.8,
+    alphaDiscard: false,
 };
 
 

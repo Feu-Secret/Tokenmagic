@@ -6,6 +6,7 @@ uniform float amplitude;
 uniform float intensity;
 uniform int fireBlend;
 uniform int blend;
+uniform bool alphaDiscard;
 uniform vec2 anchor;
 uniform vec3 color;
 
@@ -98,6 +99,7 @@ void main()
     }
 
     vec4 result = resultBlending(pixel, fireBlending())*pixel.a;
+    if (alphaDiscard && all(lessThanEqual(result.rgb,vec3(0.50)))) discard;
 	gl_FragColor = result;
 }
 `;

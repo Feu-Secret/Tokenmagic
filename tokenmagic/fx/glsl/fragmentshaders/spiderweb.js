@@ -7,6 +7,7 @@ uniform float div1;
 uniform float div2;
 uniform float tear;
 uniform float amplitude;
+uniform bool alphaDiscard;
 uniform vec2 anchor;
 uniform vec3 color;
 uniform sampler2D uSampler;
@@ -72,16 +73,18 @@ vec4 spiderweb()
     float l = pc.y+ cos(ddth*0.5) * (h_rand - 0.4) + ddth*(s_rand - 0.5)*0.2;
     
     float ts = 0.05;
-    float a = smoothstep(abs( 1.*sin(( pc.x*PI*2.  )  * s_divnum) ),-.1,thickness * ts );
-    float b = smoothstep(abs( 1.*sin(( pc.y*PI*2. + h_rand + l)  * h_divnum ) ),-.1,thickness * ts );
-    float s = a*b+a*b;
-    
-    return vec4(color.r*2.25,color.g*2.25,color.b*2.25,2.)-vec4(s,s,s,1.0);
+    float a = smoothstep(abs(sin(( pc.x*PI*2.  )  * s_divnum) ),-.1,thickness * ts );
+    float b = smoothstep(abs(sin(( pc.y*PI*2. + h_rand + l)  * h_divnum ) ),-.1,thickness * ts );
+    float s = a*b*2.;
+    float m = alphaDiscard ? 1. : 2.25;
+    return vec4(color.rgb*m,2.)-vec4(s,s,s,1.);
 }
 
 void main() 
 {
     vec4 pixel = texture2D(uSampler,vTextureCoord);
-    gl_FragColor = max(spiderweb(),pixel)*pixel.a;
+    vec4 result = max(spiderweb(),pixel)*pixel.a;
+    if (alphaDiscard && result.rgb == vec3(0.)) discard;
+    gl_FragColor = result;
 }
 `;

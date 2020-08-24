@@ -3,6 +3,7 @@ precision mediump float;
 
 uniform float time;
 uniform vec3 color;
+uniform bool alphaDiscard;
 uniform sampler2D uSampler;
 
 varying vec2 vTextureCoord;
@@ -30,26 +31,29 @@ vec4 map( vec3 p )
 {
 	float d = 0.2 - p.y;	
 	vec3 q = p  - vec3(0.0,1.0,0.0)*time;
-	float f  = 0.50000*noise( q ); q = q*2.02 - vec3(0.0,1.0,0.0)*time*0.4;
-	f += 0.25000*noise( q ); q = q*2.03 - vec3(0.0,1.0,0.0)*time*0.2;
-	f += 0.12500*noise( q ); q = q*2.01 - vec3(0.0,1.0,0.0)*time*0.3;
-	f += 0.06250*noise( q ); q = q*2.02 - vec3(0.0,1.0,0.0)*time*0.3;
-	f += 0.03125*noise( q );
+	float f  = 0.5*noise( q ); q = q*2.02 - vec3(0.25,0.25,0.25)*time*0.4;
+	f += 0.25*noise( q ); 
+    q = q*2.03 - vec3(0.0,1.0,0.0)*time*0.2;
+	f += 0.125*noise( q ); 
 	d = clamp( d + 4.5*f, 0.0, 1.0 );
-	vec3 col = mix( vec3(1.0,0.9,0.8), vec3(0.4,0.1,0.1), d ) + 0.05*sin(p);
+	vec3 col = mix( vec3(0.9,0.9,0.9), vec3(0.1,0.1,0.1), d ) + 0.05*sin(p);
 	return vec4( col, d );
 }
 
 vec3 cloudify( vec3 ro, vec3 rd )
 {
-	vec4 s = vec4( 0,0,0,0 );
-	float t = 0.0;	
-	for( int i=0; i<128; i++ )
+	vec4 s = vec4(0.);
+	float t = 0.0;
+    vec3 col = color*0.75;
+    vec3 p;
+    vec4 k;
+
+	for( int i=0; i<90; i++ )
 	{
-		if( s.a > 0.99 ) break;
-		vec3 p = ro + t*rd;
-		vec4 k = map( p );
-		k.rgb *= mix( color*0.9, color, clamp( (p.y-0.2)*0.5, 0.0, 1.0 ) );
+		if( s.a > 0.97 ) break;
+		p = ro + t*rd;
+		k = map( p );
+		k.rgb *= mix( col, color, clamp( (p.y-0.2)*0.5, 0.0, 1.0 ) );
 		k.a *= 0.5;
 		k.rgb *= k.a;
 		s = s + k*(1.0-s.a);	
@@ -58,12 +62,12 @@ vec3 cloudify( vec3 ro, vec3 rd )
 	return clamp( s.xyz, 0.0, 1.0 );
 }
 
-vec4 xfog(vec2 fragCoord)
+vec4 xfog()
 {
 	vec3 vo = vec3(0.0,4.9,-40.);
-	vec3 vd = normalize(vec3((0.7 * vFilterCoord.xy), 1.2)) * rotationMatrix * 1.5;
+	vec3 vd = normalize(vec3(vFilterCoord.xy, 1.)) * rotationMatrix * 2.25;
 	vec3 volume = cloudify( vo, vd );
-	volume = volume * 0.5 + 0.5 * volume * volume * (3.0 - 2.0 * volume);
+	volume *= volume;
 	return vec4( volume, 1.0 );
 }
 
@@ -71,6 +75,8 @@ void main()
 {
     vec4 pixel = texture2D(uSampler, vTextureCoord);
     if (pixel.a == 0.) discard;
-    gl_FragColor = max( xfog(vFilterCoord), pixel)*pixel.a;
+    vec4 result = max( xfog(), pixel) * pixel.a;
+    if (alphaDiscard && all(lessThanEqual(result.rgb,vec3(0.15)))) discard;
+    gl_FragColor = result;
 }
 `;

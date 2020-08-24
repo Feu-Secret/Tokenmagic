@@ -1,5 +1,5 @@
-import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast, isTheOne } from "../tokenmagic.js";
-import { PresetsLibrary } from "../../fx/presets/defaultpresets.js";
+import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast, isZOrderConfig } from "../tokenmagic.js";
+import { emptyPreset } from '../constants.js';
 
 PlaceableObject.prototype.TMFXaddFilters = async function (paramsArray, replace = false) {
     await Magic.addFilters(this, paramsArray, replace);
@@ -84,6 +84,16 @@ PlaceableObject.prototype._TMFXcheckSprite = function () {
 
 PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
 
+    function insertFilter(filters) {
+        function filterZOrderCompare(a, b) {
+            if (a.zOrder < b.zOrder) return -1;
+            if (a.zOrder > b.zOrder) return 1;
+            return 0;
+        }
+        sprite.filters.push(filters);
+        if (isZOrderConfig()) sprite.filters.sort(filterZOrderCompare);
+    }
+
     let sprite;
     sprite = this._TMFXgetSprite();
     if (sprite == null) { return false; }
@@ -93,7 +103,7 @@ PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
     } else {
         sprite.filters == null
             ? sprite.filters = [filters]
-            : sprite.filters.push(filters);
+            : insertFilter(filters);
     }
 
     return true;
@@ -115,18 +125,18 @@ MeasuredTemplate.prototype.update = (function () {
     return async function (data, options) {
         let hasTexture = data.hasOwnProperty("texture");
         let hasPresetData = data.hasOwnProperty("tmfxPreset");
-        if (hasPresetData && data.tmfxPreset !== 'NOFX') {
-            let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset.slice(5));
+        if (hasPresetData && data.tmfxPreset !== emptyPreset) {
+            let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
                 if (data.texture === '' || data.texture.includes('/modules/tokenmagic/fx/assets/templates/'))
                     data.texture = defaultTexture;
             }
 
         } else if (hasTexture && data.texture.includes('/modules/tokenmagic/fx/assets/templates/')
-            && hasPresetData && data.tmfxPreset === 'NOFX') {
+            && hasPresetData && data.tmfxPreset === emptyPreset) {
             data.texture = '';
         }
 
-        await cachedMTU.apply(this, arguments);
+        await cachedMTU.apply(this, [data, options]);
     };
 })();

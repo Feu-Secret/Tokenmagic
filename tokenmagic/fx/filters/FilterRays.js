@@ -14,7 +14,8 @@ export class FilterRays extends PIXI.Filter {
             anchorX,
             anchorY,
             dimX,
-            dimY
+            dimY,
+            alphaDiscard
         } = Object.assign({}, FilterRays.defaults, params);
 
         // using specific vertex shader and fragment shader
@@ -25,9 +26,10 @@ export class FilterRays extends PIXI.Filter {
         this.uniforms.dimensions = new Float32Array([100.0,100.0]);
 
         Object.assign(this, {
-            time, color, divisor, alpha, anchorX, anchorY, dimX, dimY
+            time, color, divisor, alpha, anchorX, anchorY, dimX, dimY, alphaDiscard
         });
 
+        this.zOrder = 120;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);
@@ -99,6 +101,16 @@ export class FilterRays extends PIXI.Filter {
     set dimY(value) {
         this.uniforms.dimensions[1] = value;
     }
+
+    get alphaDiscard() {
+        return this.uniforms.alphaDiscard;
+    }
+
+    set alphaDiscard(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this.uniforms.alphaDiscard = value;
+        }
+    }
 }
 
 FilterRays.defaults = {
@@ -110,6 +122,7 @@ FilterRays.defaults = {
     anchorY: 0.5,
     dimX: 100,
     dimY: 100,
+    alphaDiscard: false,
 };
 
 

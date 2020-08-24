@@ -1,0 +1,569 @@
+[
+  {
+    "name": "Spider Web 4",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "web",
+        "filterId": "Spider Web 4",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "color": 13421772,
+        "thickness": 2,
+        "div2": 5,
+        "time": 98.8,
+        "zOrder": 1,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "loopDuration": 5000,
+            "animType": "cosOscillation",
+            "val1": 98.8,
+            "val2": 99.7
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Spider Web 4",
+        "outerStrength": 7,
+        "innerStrength": 3,
+        "color": 24576,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2,
+        "animated": {
+          "outerStrength": {
+            "active": true,
+            "loopDuration": 3000,
+            "animType": "syncCosOscillation",
+            "val1": 7,
+            "val2": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Spider Web 5",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "web",
+        "filterId": "Spider Web 5",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "color": 10395294,
+        "thickness": 0.8,
+        "div2": 7,
+        "div1": 15,
+        "time": 97.8,
+        "alphaDiscard": true,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "loopDuration": 5000,
+            "animType": "cosOscillation",
+            "val1": 97.8,
+            "val2": 98.2
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Spider Web 5",
+        "outerStrength": 6,
+        "innerStrength": 3,
+        "color": 10395294,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2,
+        "animated": {
+          "outerStrength": {
+            "active": true,
+            "loopDuration": 3000,
+            "animType": "syncCosOscillation",
+            "val1": 6,
+            "val2": 4
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Ripples : Solar",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "ripples",
+        "filterId": "Ripples : Solar",
+        "color": 13206066,
+        "time": 98.8,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0005
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Ripples : Shadow Sun",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "ripples",
+        "filterId": "Ripples : Shadow Sun",
+        "color": 6560636,
+        "time": 98.8,
+        "zOrder": 1,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0005
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Ripples : Scars",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "ripples",
+        "filterId": "Ripples : Scars",
+        "color": 2516765,
+        "time": 98.8,
+        "zOrder": 1,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0005
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Ripples : Scars",
+        "outerStrength": 7.5,
+        "innerStrength": 0.5,
+        "color": 2516765,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2,
+        "animated": {
+          "outerStrength": {
+            "active": true,
+            "loopDuration": 3000,
+            "animType": "syncCosOscillation",
+            "val1": 7.5,
+            "val2": 5.5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Fairy Fireflies : Calm",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "globes",
+        "filterId": "Fairy Fireflies : Calm",
+        "color": 2516765,
+        "time": 98.8,
+        "zOrder": 1,
+        "distortion": 0.25,
+        "scale": 80,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0007
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Fairy Fireflies : Excited",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "globes",
+        "filterId": "Fairy Fireflies : Excited",
+        "color": 31969,
+        "time": 98.8,
+        "zOrder": 1,
+        "distortion": 0.25,
+        "scale": 80,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0012
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Fairy Fireflies : Excited",
+        "outerStrength": 7.5,
+        "innerStrength": 0.5,
+        "color": 31969,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2,
+        "animated": {
+          "outerStrength": {
+            "active": true,
+            "loopDuration": 3000,
+            "animType": "syncCosOscillation",
+            "val1": 7.5,
+            "val2": 5.5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Fairy Fireflies : Frenetic",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+    "params": [
+      {
+        "filterType": "globes",
+        "filterId": "Fairy Fireflies : Frenetic",
+        "color": 14803200,
+        "time": 98.8,
+        "zOrder": 1,
+        "distortion": 1.45,
+        "scale": 80,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0016
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Fairy Fireflies : Frenetic",
+        "outerStrength": 7.5,
+        "innerStrength": 0.5,
+        "color": 14803200,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2,
+        "animated": {
+          "outerStrength": {
+            "active": true,
+            "loopDuration": 3000,
+            "animType": "syncCosOscillation",
+            "val1": 7.5,
+            "val2": 5.5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Living Fluid",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "xfog",
+        "filterId": "Living Fluid",
+        "color": 14872211,
+        "autoFit": false,
+        "time": 0,
+        "zOrder": 1,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0007
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Living Fluid 2",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "xfog",
+        "filterId": "Living Fluid 2",
+        "color": 14872211,
+        "autoFit": false,
+        "time": 0,
+        "zOrder": 1,
+        "alphaDiscard": true,
+        "animated": {
+          "time": {
+            "active": true,
+            "animType": "move",
+            "speed": 0.0007
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Living Fluid 2",
+        "outerStrength": 0.5,
+        "innerStrength": 0.5,
+        "color": 14872211,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2
+      }
+    ]
+  },
+  {
+    "name": "Living Fluid 3",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "liquid",
+        "filterId": "Living Fluid 3",
+        "color": 6937746,
+        "time": 0,
+        "blend": 8,
+        "intensity": 4,
+        "spectral": true,
+        "alphaDiscard": true,
+        "scale": 1.4,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0010,
+            "animType": "move"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Living Fluid 4",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "liquid",
+        "filterId": "Living Fluid 4",
+        "color": 15107115,
+        "time": 0,
+        "blend": 8,
+        "intensity": 4,
+        "spectral": false,
+        "alphaDiscard": true,
+        "scale": 1.4,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0010,
+            "animType": "move"
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Living Fluid 4",
+        "outerStrength": 1,
+        "innerStrength": 1,
+        "color": 15107115,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2
+      }
+    ]
+  },
+  {
+    "name": "Flames 2",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "fire",
+        "filterId": "Flames 2",
+        "intensity": 1.5,
+        "color": "0xFFFFFF",
+        "amplitude": 1.3,
+        "time": 0,
+        "blend": 2,
+        "fireBlend": 1,
+        "alphaDiscard": true,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": -0.0016,
+            "animType": "move"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Flames 3",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-pure.png",
+    "params": [
+      {
+        "filterType": "fire",
+        "filterId": "Flames 3",
+        "intensity": 1.5,
+        "color": "0xFFFFFF",
+        "amplitude": 1.3,
+        "time": 0,
+        "blend": 2,
+        "fireBlend": 1,
+        "alphaDiscard": true,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": -0.0016,
+            "animType": "move"
+          }
+        }
+      },
+      {
+        "filterType": "xglow",
+        "filterId": "Flames 3",
+        "auraType": 1,
+        "color": "0x903010",
+        "thickness": 2,
+        "scale": "3",
+        "time": 0,
+        "auraIntensity": 1,
+        "subAuraIntensity": 1,
+        "threshold": 0.40,
+        "discard": true,
+        "zOrder": 2,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0027,
+            "animType": "move"
+          },
+          "thickness": {
+            "active": true,
+            "loopDuration": 3000,
+            "animType": "cosOscillation",
+            "val1": 2,
+            "val2": 5
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Classic Rays 2",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "ray",
+        "filterId": "Classic Rays 2",
+        "time": 0,
+        "color": "0xCF8000",
+        "alpha": 1,
+        "divisor": 16,
+        "anchorX": 0,
+        "anchorY": 0,
+        "alphaDiscard": true,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0009,
+            "animType": "move"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Fire Rays",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-pure.png",
+    "params": [
+      {
+        "filterType": "ray",
+        "filterId": "Fire Rays",
+        "time": 0,
+        "color": "0xCF8000",
+        "alpha": 1,
+        "divisor": 24,
+        "anchorX": 0,
+        "anchorY": 0,
+        "alphaDiscard": true,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0009,
+            "animType": "move"
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Fire Rays",
+        "outerStrength": 1,
+        "innerStrength": 1,
+        "color": "0x906000",
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2
+      },
+      {
+        "filterType": "fire",
+        "filterId": "Fire Rays",
+        "intensity": 1.5,
+        "color": "0xFFFFFF",
+        "amplitude": 1.3,
+        "time": 0,
+        "blend": 2,
+        "fireBlend": 1,
+        "zOrder": 3,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": -0.0016,
+            "animType": "move"
+          }
+        }
+      }
+    ]
+  }
+]

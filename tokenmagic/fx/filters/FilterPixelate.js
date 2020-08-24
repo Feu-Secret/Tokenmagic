@@ -8,6 +8,7 @@ export class FilterPixelate extends PIXI.filters.PixelateFilter {
         this.animated = {};
         this.sizeX = 5;
         this.sizeY = 5;
+        this.zOrder = 20;
         this.setTMParams(params);
         this.anime = new Anime(this);
         this.normalizeTMParams();

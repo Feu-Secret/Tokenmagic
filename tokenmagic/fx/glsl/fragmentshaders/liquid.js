@@ -8,6 +8,7 @@ uniform float intensity;
 uniform float scale;
 uniform int blend;
 uniform bool spectral;
+uniform bool alphaDiscard;
 uniform vec3 color;
 
 varying vec2 vFilterCoord;
@@ -91,12 +92,14 @@ void main() {
     
     vec4 pixel = texture2D(uSampler, mappedCoord);
     vec3 aColor = color;
-    aColor.rgb *= min(distortion1,distortion2);
+    if (alphaDiscard) aColor.rgb *= mix(distortion1,distortion2,0.5);
+    else aColor.rgb *= min(distortion1,distortion2);
     pixel.rgb += aColor*intensity;
 
     float a = pixel.a;
 
     if (spectral) pixel.a = max(distortion1,distortion2)*3.75;
+    if (alphaDiscard && all(lessThanEqual(pixel.rgb,vec3(0.50)))) discard;
 
     gl_FragColor = blenderVec3(blend,pixel,color*0.3333334) * min(pixel.a,a);
 }

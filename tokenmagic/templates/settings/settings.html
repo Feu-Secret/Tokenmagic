@@ -1,0 +1,40 @@
+<form class="flexcol" autocomplete='off'>
+	<nav class='sheet-tabs tabs' data-group="sections">
+		<a class='item' data-tab='categories'>
+			{{localize 'TMFX.settings.autoTemplateSettings.tabs.categories'}}
+		</a>
+		<a class='item' data-tab='overrides'>
+			{{localize 'TMFX.settings.autoTemplateSettings.tabs.overrides'}}
+		</a>
+	</nav>
+
+	{{#*inline 'unsupported'}}
+		<h1>
+			{{system.title}}
+		</h1>
+		<p>
+			{{localize 'TMFX.settings.autoTemplateSettings.unsupported'}}
+		</p>
+		<p>
+			<a href='https://github.com/Feu-Secret/Tokenmagic/' target='_blank'>
+				https://github.com/Feu-Secret/Tokenmagic/
+			</a>
+		</p>
+	{{/inline}}
+
+	<section class='content'>
+		<div class='tab' data-tab='categories' data-group='sections'>
+			{{#> (concat (concat 'modules/tokenmagic/templates/settings/' system.id) '/categories.html')}}
+				{{> unsupported}}
+			{{/undefined}}
+		</div>
+		<div class='tab' data-tab='overrides' data-group='sections'>
+			{{#> (concat (concat 'modules/tokenmagic/templates/settings/' system.id) '/overrides.html')}}
+				{{> unsupported}}
+			{{/undefined}}
+		</div>
+	</section>
+	<footer class='sheet-footer flexrow'>
+		<button type='submit' name='submit' value='1'><i class='far fa-save'></i>{{submitText}}</button>
+	</footer>
+</form>

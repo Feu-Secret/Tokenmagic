@@ -13,6 +13,7 @@ export class FilterShockwave extends PIXI.filters.ShockwaveFilter {
         this.brightness = 1.5;
         this.radius = 200;
 
+        this.zOrder = 220;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

@@ -28,9 +28,12 @@ import { FilterLiquid } from "../fx/filters/FilterLiquid.js";
 import { FilterGleamingGlow } from "../fx/filters/FilterGleamingGlow.js";
 import { FilterPixelate } from "../fx/filters/FilterPixelate.js";
 import { FilterSpiderWeb } from "../fx/filters/FilterSpiderWeb.js";
+import { FilterSolarRipples } from "../fx/filters/FilterSolarRipples.js";
+import { FilterGlobes } from "../fx/filters/FilterGlobes.js";
 import { Anime } from "../fx/Anime.js";
-import { presets as defaultPresets, allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
-import { tmfxDataMigration, DataVersion } from "../migration/migration.js";
+import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
+import { tmfxDataMigration } from "../migration/migration.js";
+import { emptyPreset } from './constants.js';
 import "./proto/PlaceableObjectProto.js";
 
 /*
@@ -74,6 +77,8 @@ export const FilterType = {
     xglow: FilterGleamingGlow,
     pixel: FilterPixelate,
     web: FilterSpiderWeb,
+    ripples: FilterSolarRipples,
+    globes: FilterGlobes,
 };
 
 export const PlaceableType = {
@@ -99,62 +104,6 @@ async function exportObjectAsJson(exportObj, exportName) {
     a.click();
 
     URL.revokeObjectURL(a.href);
-}
-
-function registerSettings() {
-    game.settings.register("tokenmagic", "useAdditivePadding", {
-        name: i18n("TMFX.useMaxPadding.name"),
-        hint: i18n("TMFX.useMaxPadding.hint"),
-        scope: "world",
-        config: true,
-        default: false,
-        type: Boolean
-    });
-
-    game.settings.register("tokenmagic", "minPadding", {
-        name: i18n("TMFX.minPadding.name"),
-        hint: i18n("TMFX.minPadding.hint"),
-        scope: "world",
-        config: true,
-        default: 50,
-        type: Number
-    });
-
-    game.settings.register("tokenmagic", "fxPlayerPermission", {
-        name: i18n("TMFX.fxPlayerPermission.name"),
-        hint: i18n("TMFX.fxPlayerPermission.hint"),
-        scope: "world",
-        config: true,
-        default: false,
-        type: Boolean
-    });
-
-    game.settings.register("tokenmagic", "importOverwrite", {
-        name: i18n("TMFX.importOverwrite.name"),
-        hint: i18n("TMFX.importOverwrite.hint"),
-        scope: "world",
-        config: true,
-        default: false,
-        type: Boolean
-    });
-
-    game.settings.register("tokenmagic", "presets", {
-        name: "Token Magic FX presets",
-        hint: "Token Magic FX presets",
-        scope: "world",
-        config: false,
-        default: defaultPresets,
-        type: Object
-    });
-
-    game.settings.register("tokenmagic", "migration", {
-        name: "TMFX Data Version",
-        hint: "TMFX Data Version",
-        scope: "world",
-        config: false,
-        default: DataVersion.ARCHAIC,
-        type: String
-    });
 }
 
 export const SocketAction = {
@@ -209,6 +158,14 @@ export function mustBroadCast() {
 
 export function autosetPaddingMode() {
     canvas.app.renderer.filter.useMaxPadding = !isAdditivePaddingConfig();
+}
+
+export function isZOrderConfig() {
+    return game.settings.get("tokenmagic", "useZOrder");
+}
+
+export function isAnimationDisabled() {
+    return game.settings.get("tokenmagic", "disableAnimations");
 }
 
 export function log(output) {
@@ -638,10 +595,7 @@ export function TokenMagic() {
         return true;
     }
 
-    function setFilter(placeable, filter, params = {}) {
-
-        params.placeableId = placeable.id;
-        params.placeableType = placeable._TMFXgetPlaceableType();
+    function setFilter(placeable, filter) {
         placeable._TMFXsetRawFilters(filter);
     };
 
@@ -657,8 +611,9 @@ export function TokenMagic() {
         if (filterInfo == null) { return; }
         var workingFilterInfo = duplicate(filterInfo);
         workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
+        workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
         var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
-        setFilter(placeable, filter, filterInfo.tmFilters.tmParams);
+        setFilter(placeable, filter);
     }
 
     function _loadFilters(placeables) {
@@ -809,7 +764,10 @@ export function TokenMagic() {
 
     async function _importContent(content, options = {}) {
 
-        options.overwrite = game.settings.get("tokenmagic", "importOverwrite");
+        // In internal, we can force overwrite
+        if (!options.hasOwnProperty("overwrite")) {
+            options.overwrite = game.settings.get("tokenmagic", "importOverwrite");
+        }
 
         ///////////////////////////////////////////////
         // Checking the imported object format
@@ -910,10 +868,10 @@ export function TokenMagic() {
         }
     }
 
-    async function importPresetLibraryFromURL(url) {
+    async function importPresetLibraryFromURL(url, options = {}) {
         try {
             $.getJSON(url, async function (content) {
-                return await _importContent(content);
+                return await _importContent(content, options);
             });
         } catch (e) {
             error(e.message);
@@ -922,12 +880,12 @@ export function TokenMagic() {
         }
     }
 
-    async function importPresetLibraryFromPath(path) {
+    async function importPresetLibraryFromPath(path, options = {}) {
         try {
             const response = await fetch(path);
             const content = await response.json();
 
-            return await _importContent(content);
+            return await _importContent(content, options);
 
         } catch (e) {
             error(e.message);
@@ -1348,10 +1306,10 @@ function onMeasuredTemplateConfig(data, html) {
     // forming our injected html
     var tmfxValues;
     var selected = '';
-    tmfxValues += '<option value="NOFX">-- No FX --</option>';
+    tmfxValues += `<option value="${emptyPreset}"></option>`;
     presets.sort(compare).forEach(preset => {
         if (flag) (Magic._checkFilterId(tmTemplate, preset.name, flag) ? selected = ' selected' : selected = '');
-        tmfxValues += `<option value="TMFX_${preset.name}"${selected}>${preset.name}</option>`;
+        tmfxValues += `<option value="${preset.name}"${selected}>${preset.name}</option>`;
     });
 
     var divPreset = `
@@ -1385,10 +1343,6 @@ function onMeasuredTemplateConfig(data, html) {
 
     $(html).css({ 'min-height': '490px' });
 }
-
-Hooks.once("init", () => {
-    registerSettings();
-});
 
 Hooks.on("ready", () => {
     log("Hook -> ready");
@@ -1595,7 +1549,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
             return updateData.tmfxPreset;
         } else if (measuredTemplate.hasOwnProperty("tmfxPreset")) {
             return measuredTemplate.tmfxPreset;
-        } else return "NOFX";
+        } else return emptyPreset;
     }
 
     function getDirection() {
@@ -1645,11 +1599,11 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
         || directionUpdate || typeUpdate || angleUpdate) {
 
         let templateFX = getFX();
-        if (templateFX !== "NOFX") {
+        if (templateFX !== emptyPreset) {
             let anchor = getAnchor(getDirection(), getAngle(), getShapeType());
             let presetOptions =
             {
-                name: templateFX.slice(5),
+                name: templateFX,
                 library: PresetsLibrary.TEMPLATE,
                 anchorX: anchor.x,
                 anchorY: anchor.y
@@ -1748,8 +1702,9 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
         };
 
         // Adding tint if needed
-        if (hasTint && typeof data.tmfxTint === "number")
-            pstSearch.color = data.tmfxTint;
+        let tint = data.tmfxTint;
+        if (hasTint && typeof data.tmfxTint !== "number") tint = colorStringToHex(tint);
+        if (hasTint) pstSearch.color = tint;
 
         // Retrieving the preset
         let preset = Magic.getPreset(pstSearch);
