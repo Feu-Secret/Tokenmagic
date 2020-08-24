@@ -29,7 +29,7 @@ export class FilterGleamingGlow extends PIXI.Filter {
             time, color, thickness, scale, auraIntensity, subAuraIntensity, discard, threshold, auraType
         });
 
-        this.zOrder = 11;
+        this.zOrder = 80;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {

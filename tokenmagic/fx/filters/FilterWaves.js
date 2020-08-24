@@ -28,7 +28,7 @@ export class FilterWaves extends PIXI.Filter {
             time, color, inward, frequency, strength, minIntensity, maxIntensity, anchorX, anchorY
         });
 
-        this.zOrder = 320;
+        this.zOrder = 280;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

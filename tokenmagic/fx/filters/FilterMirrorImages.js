@@ -23,7 +23,7 @@ export class FilterMirrorImages extends PIXI.Filter {
             time, blend, alphaImg, alphaChr, nbImage, ampX, ampY
         });
 
-        this.zOrder = 15;
+        this.zOrder = 100;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {

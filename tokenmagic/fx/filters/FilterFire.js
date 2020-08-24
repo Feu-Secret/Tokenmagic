@@ -28,7 +28,7 @@ export class FilterFire extends PIXI.Filter {
             time, color, amplitude, intensity, fireBlend, blend, anchorX, anchorY, alphaDiscard
         });
 
-        this.zOrder = 127;
+        this.zOrder = 150;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {

@@ -29,7 +29,7 @@ export class FilterXRays extends PIXI.Filter {
             time, color, divisor, intensity, blend, anchorX, anchorY, dimX, dimY
         });
 
-        this.zOrder = 68;
+        this.zOrder = 130;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

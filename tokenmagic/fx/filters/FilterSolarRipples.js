@@ -27,7 +27,7 @@ export class FilterSolarRipples extends PIXI.Filter {
             time, color, amplitude, intensity, alphaDiscard
         });
 
-        this.zOrder = 300;
+        this.zOrder = 250;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

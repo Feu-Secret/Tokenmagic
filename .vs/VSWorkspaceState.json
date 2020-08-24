@@ -3,15 +3,16 @@
     "",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
-    "\\tokenmagic\\fx\\glsl",
-    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
-    "\\tokenmagic\\lang",
+    "\\tokenmagic\\fx\\filters",
+    "\\tokenmagic\\fx\\presets",
+    "\\tokenmagic\\import",
+    "\\tokenmagic\\migration",
     "\\tokenmagic\\module",
-    "\\tokenmagic\\module\\autoTemplate",
+    "\\tokenmagic\\module\\proto",
     "\\tokenmagic\\templates",
     "\\tokenmagic\\templates\\settings",
     "\\tokenmagic\\templates\\settings\\dnd5e"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\presets\\defaultpresets.js",
+  "SelectedNode": "\\tokenmagic\\module\\proto\\PlaceableObjectProto.js",
   "PreviewInSolutionExplorer": false
 }

@@ -25,7 +25,7 @@ export class FilterLiquid extends PIXI.Filter {
             time, color, scale, intensity, blend, spectral, alphaDiscard
         });
 
-        this.zOrder = 141;
+        this.zOrder = 180;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

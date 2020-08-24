@@ -29,7 +29,7 @@ export class FilterElectric extends PIXI.Filter {
             time, blend, color
         });
 
-        this.zOrder = 128;
+        this.zOrder = 160;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {

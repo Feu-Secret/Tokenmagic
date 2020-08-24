@@ -10,7 +10,7 @@ export class FilterOldFilm extends PIXI.filters.OldFilmFilter {
         this.scratch = 0.1;
         this.scratchDensity = 0.1;
         this.seed = 0;
-        this.zOrder = 5;
+        this.zOrder = 60;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

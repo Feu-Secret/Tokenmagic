@@ -7,7 +7,7 @@ export class FilterBulgePinch extends PIXI.filters.BulgePinchFilter {
 
         this.strength = 0;
         this.radiusPercent = 100;
-        this.zOrder = 100;
+        this.zOrder = 140;
 
         this.animated = {};
         this.setTMParams(params);

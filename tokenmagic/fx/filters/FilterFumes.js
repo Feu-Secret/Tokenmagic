@@ -24,7 +24,7 @@ export class FilterFumes extends PIXI.Filter {
             time, color, blend, dimX, dimY
         });
 
-        this.zOrder = 180;
+        this.zOrder = 210;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

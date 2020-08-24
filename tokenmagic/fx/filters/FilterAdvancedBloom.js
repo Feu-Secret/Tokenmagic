@@ -11,7 +11,7 @@ export class FilterXBloom extends PIXI.filters.AdvancedBloomFilter {
         this.brightness = 1.0;
         this.blur = 4.0;
         this.quality = 4.0;
-        this.zOrder = 9;
+        this.zOrder = 40;
 
         this.animated = {};
         this.setTMParams(params);

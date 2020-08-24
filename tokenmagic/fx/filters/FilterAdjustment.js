@@ -13,7 +13,7 @@ export class FilterAdjustment extends PIXI.filters.AdjustmentFilter {
         this.green = 1;
         this.blue = 1;
         this.alpha = 1;
-        this.zOrder = 10;
+        this.zOrder = 30;
         this.animating = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

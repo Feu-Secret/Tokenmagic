@@ -23,7 +23,7 @@ export class FilterGlobes extends PIXI.Filter {
             time, color, scale, distortion, alphaDiscard
         });
 
-        this.zOrder = 301;
+        this.zOrder = 270;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

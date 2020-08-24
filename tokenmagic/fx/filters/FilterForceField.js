@@ -41,7 +41,7 @@ export class FilterForceField extends PIXI.Filter {
             chromatic
         });
 
-        this.zOrder = 1024;
+        this.zOrder = 2000;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {

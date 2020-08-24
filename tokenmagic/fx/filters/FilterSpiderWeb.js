@@ -29,7 +29,7 @@ export class FilterSpiderWeb extends PIXI.Filter {
             time, anchorX, anchorY, color, thickness, div1, div2, tear, amplitude, alphaDiscard
         });
 
-        this.zOrder = 300;
+        this.zOrder = 260;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

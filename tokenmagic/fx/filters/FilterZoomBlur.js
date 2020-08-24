@@ -8,7 +8,7 @@ export class FilterZoomBlur extends PIXI.filters.ZoomBlurFilter {
         this.strength = 0.1;
         this.radiusPercent = 50;
         this.innerRadiusPercent = 10;
-        this.zOrder = 420;
+        this.zOrder = 300;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);

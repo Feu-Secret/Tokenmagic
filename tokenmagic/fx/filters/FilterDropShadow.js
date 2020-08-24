@@ -13,7 +13,7 @@ export class FilterDropShadow extends PIXI.filters.DropShadowFilter {
         this.blur = 2;
         this.quality = 3;
         this.padding = 10;
-        this.zOrder = 64;
+        this.zOrder = 110;
         this.animated = {};
         this.setTMParams(params);
         this.anime = new Anime(this);
