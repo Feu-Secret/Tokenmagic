@@ -5,10 +5,15 @@ class DefaultTemplateOnHover {
 
 	configure(enabled = false) {
 		if (!enabled) {
-			// Restore original function when setting toggled off
 			if (this._origRefresh !== null) {
-				MeasuredTemplate.prototype.refresh = this._origRefresh;
-				this._origRefresh = null;
+				// Restoring the original function when setting toggled off is unsafe
+				// in the case that there is another module patching the same function
+				// and they're loaded after us, so resort to refresh here.
+				/*
+					MeasuredTemplate.prototype.refresh = this._origRefresh;
+					this._origRefresh = null;
+				*/
+				window.location.reload();
 			}
 			return;
 		}
