@@ -4,15 +4,13 @@
     "\\tokenmagic",
     "\\tokenmagic\\fx",
     "\\tokenmagic\\fx\\filters",
-    "\\tokenmagic\\fx\\presets",
     "\\tokenmagic\\import",
     "\\tokenmagic\\migration",
     "\\tokenmagic\\module",
-    "\\tokenmagic\\module\\proto",
-    "\\tokenmagic\\templates",
-    "\\tokenmagic\\templates\\settings",
-    "\\tokenmagic\\templates\\settings\\dnd5e"
+    "\\tokenmagic\\module\\autoTemplate",
+    "\\tokenmagic\\packs",
+    "\\tokenmagic\\templates"
   ],
-  "SelectedNode": "\\tokenmagic\\module\\proto\\PlaceableObjectProto.js",
+  "SelectedNode": "\\tokenmagic\\migration\\migration.js",
   "PreviewInSolutionExplorer": false
 }

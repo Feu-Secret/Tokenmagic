@@ -36,14 +36,11 @@ vec3 hsvToRgb(vec3 hsVcolor)
            * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), hsVcolor.y);
 }
 
-vec4 multihue(vec2 uv) 
+vec3 multihue(vec2 uv) 
 {
     float h = 0.5 + atan(uv.y, uv.x) * MU_TWOPI;
-    float b2 = .5 * ((1.0 - 1.) 
-                + 1. + sqrt((1.0 - 2.) 
-                * (1.0 - 2.) + 0.01));
-    vec3 hsv = vec3(h, sqrt(1.), b2);
-    return vec4(hsvToRgb(hsv), 1.0);
+    vec3 hsv = vec3(h, 1., 1.);
+    return hsvToRgb(hsv);
 }
 
 float random(vec2 n) 
@@ -58,22 +55,22 @@ vec2 random2(vec2 p)
 
 float bornedCos(float minimum, float maximum)
 {
-    return (maximum-minimum)*(cos(2.*PI*time*0.05 + 1.)*0.5)+minimum;
+    return (maximum-minimum)*(cos(PI*time*0.10 + 1.)*0.5)+minimum;
 }
 
 float bornedSin(float minimum, float maximum)
 {
-    return (maximum-minimum)*(sin(2.*PI*time*0.05 + 1.)*0.5)+minimum;
+    return (maximum-minimum)*(sin(PI*time*0.10 + 1.)*0.5)+minimum;
 }
 
 vec4 mod289(vec4 x) 
 {
-    return x - floor(x * (1.0 * MU_289)) * 289.0;
+    return x - floor(x * MU_289) * 289.0;
 }
 
 float mod289(float x) 
 {
-    return x - floor(x * (1.0 * MU_289)) * 289.0;
+    return x - floor(x * MU_289) * 289.0;
 }
 
 vec4 permute(vec4 x) 
@@ -359,7 +356,7 @@ float fbm2(vec2 n)
 vec4 ripples(vec2 suv) 
 {
     suv.x += time*0.5;
-    vec3 c1 = ( 0.0 ) * (color * 10.);
+    vec3 c1 = vec3(0.);
     vec3 c2 = vec3(c1);
     vec3 c3 = vec3(c1);
     vec3 c4 = vec3(color.r*5., color.g*3.333, color.b*2.);
@@ -379,10 +376,10 @@ vec4 ripples(vec2 suv)
 
 vec4 fire(vec2 suv) 
 {
-    vec3 c1 = color+(2.*vec3(0.1, 0.0, 0.))*0.3333333;
-	vec3 c2 = color+(2.*vec3(0.7, 0.0, 0.))*0.3333333;
-	vec3 c3 = color+(2.*vec3(0.2, 0.0, 0.))*0.3333333;
-	vec3 c4 = color+(2.*vec3(1.0, 0.9, 0.))*0.3333333;
+    vec3 c1 = color+vec3(0.1, 0.0, 0.)*0.666667;
+	vec3 c2 = color+vec3(0.7, 0.0, 0.)*0.666667;
+	vec3 c3 = color+vec3(0.2, 0.0, 0.)*0.666667;
+	vec3 c4 = color+vec3(1.0, 0.9, 0.)*0.666667;
 	vec3 c5 = vec3(0.1);
 	vec3 c6 = vec3(0.9);
     vec2 uv = suv - vec2(0.92,0.26);
@@ -497,9 +494,8 @@ vec4 galaxy(vec2 suv)
         + vec2(bornedCos(0.0,0.7),
                bornedSin(0.0,0.7));
 
-    float t = 4.4 * time 
-            * 0.1 + (
-            ( 0.25 + 0.05 * sin( time * 0.44 ) ) 
+    float t = 0.44 * time 
+            + (( 0.25 + 0.05 * sin( time * 0.44 )) 
             / ( length( uv.xy ) + 0.2 )) * 2.2;
     
     float si = sin( t * 1.5 );
@@ -521,9 +517,9 @@ vec4 galaxy(vec2 suv)
             p = abs( p ) / dot( p, p ) - 0.659;
         }
 
-        v1 += dot( p,p ) * 0.0015 * 3. * ( 1.8 + sin( length( uv.xy * 13.0 ) + 0.5 - t * 0.2 ) );
-        v2 += dot( p,p ) * 0.0015 * 3. * ( 1.5 + sin( length( uv.xy * 13.5 ) + 2.2 - t * 0.3 ) );
-        c = length( p.xy * 0.5 ) * 0.35 * 3.;
+        v1 += dot( p,p ) * 0.0045 * ( 1.8 + sin( length( uv.xy * 13.0 ) + 0.5 - t * 0.2 ) );
+        v2 += dot( p,p ) * 0.0045 * ( 1.5 + sin( length( uv.xy * 13.5 ) + 2.2 - t * 0.3 ) );
+        c = length( p.xy * 0.5 ) * 1.05;
     }
     
     float len = length( uv );
@@ -592,7 +588,7 @@ void main()
         vec2 vHue = uv;
         vHue.x -= bornedCos(-0.,+2.2);
         vHue.y -= bornedSin(-0.,+2.2);
-        chromaOption = vec3(multihue(vHue));
+        chromaOption = multihue(vHue);
     } else {
         chromaOption = color;
     }

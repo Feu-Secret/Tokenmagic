@@ -626,13 +626,21 @@ export function TokenMagic() {
 
     function _singleLoadFilters(placeable) {
 
-        var updateData = placeable.getFlag("tokenmagic", "templateData");
-        if (!(updateData == null)) {
-            placeable._TMFXgetSprite().alpha = updateData.opacity;
+        let placeableType = placeable._TMFXgetPlaceableType();
+        if (placeableType === PlaceableType.TEMPLATE) {
+            var updateData = placeable.getFlag("tokenmagic", "templateData");
+            if (!(updateData == null)) {
+                placeable.data.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
+                placeable.data.tmfxTint = updateData.tint;
+            }
         }
 
         var filters = placeable.getFlag("tokenmagic", "filters");
         if (!(filters == null)) {
+            if (placeableType === PlaceableType.TEMPLATE) {
+                // get the first filterId to assign tmfxPreset
+                placeable.data.tmfxPreset = filters[0].tmFilters.tmFilterId;
+            }
             _assignFilters(placeable, filters);
         }
         placeable.loadingRequest = false;
@@ -1608,7 +1616,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
                 anchorX: anchor.x,
                 anchorY: anchor.y
             };
-            if (templateTint !== "") {
+            if (templateTint && templateTint !== "") {
                 presetOptions.color = colorStringToHex(templateTint);
             }
             var preset = Magic.getPreset(presetOptions);
@@ -1673,6 +1681,7 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
 Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
     //log("Hook -> preCreateMeasuredTemplate");
 
+    let hasFlags = data.hasOwnProperty("flags");
     let hasPreset = data.hasOwnProperty("tmfxPreset");
     let hasTint = data.hasOwnProperty("tmfxTint");
     let hasOpacity = data.hasOwnProperty("tmfxTextureAlpha");
@@ -1680,7 +1689,11 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
     let newFlags = [];
 
     let tmfxBaseFlags = { tokenmagic: { filters: null, templateData: null } };
-    if (data.hasOwnProperty("flags")) {
+    if (hasFlags) {
+        // the measured template comes with tokenmagic flags ? It is a copy ! We do nothing.
+        if (data.flags.hasOwnProperty("tokenmagic")) {
+            return;
+        }
         data.flags = mergeObject(data.flags, tmfxBaseFlags, true, true);
     } else {
         data.flags = {};
@@ -1758,12 +1771,17 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
                 data.flags = mergeObject(data.flags, { tokenmagic: { filters: newFlags } }, true, true);
             }
         }
+    } else {
+        data.tmfxPreset = emptyPreset;
     }
+
+    if (!hasOpacity) data.tmfxTextureAlpha = 1;
+    if (!hasTint) data.tmfxTint = null;
 
     let tmfxTemplateData = {
         templateData: {
-            opacity: (hasOpacity ? data.tmfxTextureAlpha : 1),
-            tint: (hasTint ? data.tmfxTint : null)
+            opacity: data.tmfxTextureAlpha,
+            tint: data.tmfxTint
         }
     };
     data.flags = mergeObject(data.flags, { tokenmagic: tmfxTemplateData }, true, true);
