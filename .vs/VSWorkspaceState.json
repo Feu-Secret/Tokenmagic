@@ -3,14 +3,14 @@
     "",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
-    "\\tokenmagic\\fx\\filters\\proto",
-    "\\tokenmagic\\fx\\glsl",
-    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
-    "\\tokenmagic\\lang",
-    "\\tokenmagic\\templates\\settings",
-    "\\tokenmagic\\templates\\settings\\dnd5e",
-    "\\tokenmagic\\updates"
+    "\\tokenmagic\\fx\\filters",
+    "\\tokenmagic\\import",
+    "\\tokenmagic\\migration",
+    "\\tokenmagic\\module",
+    "\\tokenmagic\\module\\autoTemplate",
+    "\\tokenmagic\\packs",
+    "\\tokenmagic\\templates"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\mirrorimages.js",
+  "SelectedNode": "\\tokenmagic\\migration\\migration.js",
   "PreviewInSolutionExplorer": false
 }
