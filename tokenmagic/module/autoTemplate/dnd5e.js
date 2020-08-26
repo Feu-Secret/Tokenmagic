@@ -103,10 +103,15 @@ export class AutoTemplateDND5E {
 		if (!this._isDnd5e) return;
 
 		if (!enabled) {
-			// Restore original function if we previously patched it
 			if (this._origFromItem !== null) {
-				this._abilityTemplate.fromItem = this._origFromItem;
-				this._origFromItem = null;
+				// Restoring the original function when setting toggled off is unsafe
+				// in the case that there is another module patching the same function
+				// and they're loaded after us, so resort to refresh here.
+				/*
+					this._abilityTemplate.fromItem = this._origFromItem;
+					this._origFromItem = null;
+				*/
+				window.location.reload();
 			}
 			return;
 		}
