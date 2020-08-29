@@ -16,7 +16,9 @@ export class FilterAdjustment extends PIXI.filters.AdjustmentFilter {
         this.zOrder = 30;
         this.animating = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 }

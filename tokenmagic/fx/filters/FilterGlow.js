@@ -15,7 +15,9 @@ export class FilterGlow extends PIXI.filters.GlowFilter {
         this.setTMParams(params);
         // Imposed value. Should not be a shader uniform
         this.distance = 10;
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 }

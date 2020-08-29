@@ -1,0 +1,148 @@
+[
+  {
+    "name": "Splash 1",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "splash",
+        "filterId": "Splash 1",
+        "color": 9438469,
+        "time": 25,
+        "seed": 0.10,
+        "splashFactor": 5,
+        "spread": 10,
+        "blend": 2,
+        "dimX": 1,
+        "dimY": 1,
+        "cut": true,
+        "textureAlphaBlend": true,
+        "padding": 200,
+        "zOrder": 1
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Splash 1",
+        "outerStrength": 3.3,
+        "innerStrength": 1,
+        "color": 9438469,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2
+      }
+    ]
+  },
+  {
+    "name": "Splash 2",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "splash",
+        "filterId": "Splash 2",
+        "color": 9438469,
+        "time": 25,
+        "seed": 0.10,
+        "splashFactor": 3,
+        "spread": 10,
+        "blend": 2,
+        "dimX": 1,
+        "dimY": 1,
+        "cut": true,
+        "textureAlphaBlend": true,
+        "padding": 200,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0009,
+            "animType": "move"
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Splash 2",
+        "outerStrength": 2,
+        "innerStrength": 1,
+        "color": 9438469,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 2
+      }
+    ]
+  },
+  {
+    "name": "Splash 3",
+    "library": "tmfx-template",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "params": [
+      {
+        "filterType": "fumes",
+        "filterId": "Splash 3",
+        "color": 3690878,
+        "time": 0,
+        "blend": 4,
+        "zOrder": 1,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.001,
+            "animType": "move"
+          }
+        }
+      },
+      {
+        "filterType": "splash",
+        "filterId": "Splash 3",
+        "color": 3690878,
+        "time": 25,
+        "seed": 0.10,
+        "splashFactor": 3,
+        "spread": 10,
+        "blend": 2,
+        "dimX": 1,
+        "dimY": 1,
+        "cut": true,
+        "textureAlphaBlend": true,
+        "padding": 200,
+        "zOrder": 2,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0009,
+            "animType": "move"
+          }
+        }
+      },
+      {
+        "filterType": "glow",
+        "filterId": "Splash 3",
+        "outerStrength": 3,
+        "innerStrength": 0.5,
+        "color": 3690878,
+        "quality": 0.5,
+        "padding": 10,
+        "zOrder": 3
+      },
+      {
+        "filterType": "liquid",
+        "filterId": "Splash 3",
+        "color": 3690878,
+        "time": 0,
+        "blend": 8,
+        "intensity": 3,
+        "spectral": false,
+        "scale": 2,
+        "zOrder": 4,
+        "animated": {
+          "time": {
+            "active": true,
+            "speed": 0.0015,
+            "animType": "move"
+          }
+        }
+      }
+    ]
+  }
+]

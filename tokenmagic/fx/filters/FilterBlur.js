@@ -12,7 +12,9 @@ export class FilterBlur extends PIXI.filters.BlurFilter {
         this.repeatEdgePixels = false;
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 }

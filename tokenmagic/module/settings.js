@@ -123,6 +123,15 @@ export class TokenMagicSettings extends FormApplication {
 			type: Boolean
 		});
 
+		game.settings.register("tokenmagic", "disableCaching", {
+			name: game.i18n.localize("TMFX.settings.disableCaching.name"),
+			hint: game.i18n.localize("TMFX.settings.disableCaching.hint"),
+			scope: "client",
+			config: true,
+			default: false,
+			type: Boolean
+		});
+
 		game.settings.register("tokenmagic", "presets", {
 			name: "Token Magic FX presets",
 			hint: "Token Magic FX presets",

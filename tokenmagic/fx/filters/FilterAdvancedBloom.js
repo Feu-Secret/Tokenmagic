@@ -15,7 +15,9 @@ export class FilterXBloom extends PIXI.filters.AdvancedBloomFilter {
 
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 }

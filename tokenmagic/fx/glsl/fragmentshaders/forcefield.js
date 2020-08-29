@@ -266,7 +266,7 @@ vec4 hexa(vec2 fragCoord)
     vec2 uv1 = uv + vec2(0, sin(uv.x*1. +t)*.25);
     
     vec2 uv2 = .5*uv1 + .5*uv + vec2(sin(uv.y*5. + t)*.05, 0);
-    float a = 1. + t*.1;
+    float a = 1. + t*0.1;
     float c = cos(a);
     float s = sin(a);
     uv2 *= mat2(c, -s, s, c);

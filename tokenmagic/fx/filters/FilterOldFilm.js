@@ -13,7 +13,9 @@ export class FilterOldFilm extends PIXI.filters.OldFilmFilter {
         this.zOrder = 60;
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 }

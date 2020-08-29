@@ -3,14 +3,12 @@
     "",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
-    "\\tokenmagic\\fx\\filters",
-    "\\tokenmagic\\import",
-    "\\tokenmagic\\migration",
+    "\\tokenmagic\\fx\\glsl",
+    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
+    "\\tokenmagic\\lang",
     "\\tokenmagic\\module",
-    "\\tokenmagic\\module\\autoTemplate",
-    "\\tokenmagic\\packs",
-    "\\tokenmagic\\templates"
+    "\\tokenmagic\\module\\autoTemplate"
   ],
-  "SelectedNode": "\\tokenmagic\\migration\\migration.js",
+  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\forcefield.js",
   "PreviewInSolutionExplorer": false
 }

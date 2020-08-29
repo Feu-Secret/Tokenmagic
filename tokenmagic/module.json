@@ -2,10 +2,18 @@
   "name": "tokenmagic",
   "title": "Token Magic FX",
   "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
-  "version": "0.4.0b",
+  "version": "0.4.1",
   "compatibleCoreVersion": "0.6.6",
   "minimumCoreVersion": "0.6.0",
-  "author": "SecretFire",
+  "author": "SecretFire and sPOiDar (Auto-Templates)",
+  "authors": [
+    {
+      "name": "SecretFire"
+    },
+    {
+      "name": "sPOiDar"
+    }
+  ],
   "scripts": [
     "libs/filters/pixi-filters.js"
   ],
@@ -14,24 +22,6 @@
     "module/tokenmagic.js",
     "module/proto/PlaceableObjectProto.js",
     "fx/Anime.js",
-    "fx/glsl/vertexshaders/customvertex2D.js",
-    "fx/glsl/fragmentshaders/removeshadow.js",
-    "fx/glsl/fragmentshaders/cosmicray.js",
-    "fx/glsl/fragmentshaders/fog.js",
-    "fx/glsl/fragmentshaders/electriciy.js",
-    "fx/glsl/fragmentshaders/smoke.js",
-    "fx/glsl/fragmentshaders/waves.js",
-    "fx/glsl/fragmentshaders/fire.js",
-    "fx/glsl/fragmentshaders/flood.js",
-    "fx/glsl/fragmentshaders/smoke.js",
-    "fx/glsl/fragmentshaders/forcefield.js",
-    "fx/glsl/fragmentshaders/mirrorimages.js",
-    "fx/glsl/fragmentshaders/xray.js",
-    "fx/glsl/fragmentshaders/magicglow.js",
-    "fx/glsl/fragmentshaders/spiderweb.js",
-    "fx/glsl/fragmentshaders/xfog.js",
-    "fx/glsl/fragmentshaders/ripples.js",
-    "fx/glsl/fragmentshaders/globes.js",
     "fx/filters/FilterBevel.js",
     "fx/filters/FilterAdjustment.js",
     "fx/filters/FilterAdvancedBloom.js",
@@ -64,6 +54,8 @@
     "fx/filters/FilterSpiderWeb.js",
     "fx/filters/FilterSolarRipples.js",
     "fx/filters/FilterGlobes.js",
+    "fx/filters/FilterTransform.js",
+    "fx/filters/FilterSplash.js",
     "fx/filters/proto/FilterProto.js"
   ],
   "styles": [
@@ -93,5 +85,5 @@
   "socket": true,
   "url": "https://github.com/Feu-Secret/Tokenmagic",
   "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
-  "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.4.0b-alpha/Tokenmagic.zip"
+  "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.4.1-alpha/Tokenmagic.zip"
 }
