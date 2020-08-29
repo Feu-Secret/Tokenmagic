@@ -105,9 +105,11 @@ export class FilterGleamingGlow extends PIXI.Filter {
     }
 
     apply(filterManager, input, output, clear) {
-        this.uniforms.thickness[0] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.width;
-        this.uniforms.thickness[1] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.height;
-        filterManager.applyFilter(this, input, output, clear);
+        if (!this.dummy) {
+            this.uniforms.thickness[0] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.width;
+            this.uniforms.thickness[1] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.height;
+            filterManager.applyFilter(this, input, output, clear);
+        }
     }
 }
 

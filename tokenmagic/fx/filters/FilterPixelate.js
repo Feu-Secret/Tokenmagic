@@ -10,8 +10,10 @@ export class FilterPixelate extends PIXI.filters.PixelateFilter {
         this.sizeY = 5;
         this.zOrder = 20;
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 
     //get sizeX() {
@@ -31,7 +33,9 @@ export class FilterPixelate extends PIXI.filters.PixelateFilter {
     //}
 
     handleTransform() {
-        this.size.x = this.sizeX * this.placeableImg.parent.worldTransform.a;
-        this.size.y = this.sizeY * this.placeableImg.parent.worldTransform.a;
+        if (!this.dummy) {
+            this.size.x = this.sizeX * this.placeableImg.parent.worldTransform.a;
+            this.size.y = this.sizeY * this.placeableImg.parent.worldTransform.a;
+        }
     }
 }

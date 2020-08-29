@@ -22,8 +22,11 @@ export class FilterXFog extends PIXI.Filter {
 
         this.zOrder = 230;
         this.animated = {};
-        Object.assign(this, params);
-        this.anime = new Anime(this);
+        this.setTMParams(params);
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 
     get time() {

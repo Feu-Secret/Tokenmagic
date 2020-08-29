@@ -17,7 +17,9 @@ export class FilterBevel extends PIXI.filters.BevelFilter {
         this.quality = 1;
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 }

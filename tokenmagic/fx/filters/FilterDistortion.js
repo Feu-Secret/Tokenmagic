@@ -26,15 +26,15 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
 
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
-
-        this.sprite.anchor.set(this.anchorSet);
-        this.sprite.texture.baseTexture.wrapMode = this.wrapMode;
-
-        this.placeableImg.addChild(this.sprite);
-        this.sprite.x = this.placeableImg.width / 2;
-        this.sprite.y = this.placeableImg.height / 2;
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+            this.sprite.anchor.set(this.anchorSet);
+            this.sprite.texture.baseTexture.wrapMode = this.wrapMode;
+            this.placeableImg.addChild(this.sprite);
+            this.sprite.x = this.placeableImg.width / 2;
+            this.sprite.y = this.placeableImg.height / 2;
+        }
     }
 
     set maskSpriteX(value) {

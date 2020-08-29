@@ -13,7 +13,9 @@ export class FilterOutline extends PIXI.filters.OutlineFilter {
         this.zOrder = 50;
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 }

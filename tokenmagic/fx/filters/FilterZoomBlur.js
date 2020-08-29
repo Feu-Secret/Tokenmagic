@@ -11,8 +11,10 @@ export class FilterZoomBlur extends PIXI.filters.ZoomBlurFilter {
         this.zOrder = 300;
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 
     handleTransform() {

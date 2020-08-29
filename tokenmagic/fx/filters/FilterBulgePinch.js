@@ -11,8 +11,10 @@ export class FilterBulgePinch extends PIXI.filters.BulgePinchFilter {
 
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
 
         // Anchor point
         this.center = [0.5, 0.5];

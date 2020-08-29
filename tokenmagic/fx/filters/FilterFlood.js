@@ -30,8 +30,10 @@ export class FilterFlood extends PIXI.Filter {
         this.zOrder = 170;
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 
     get time() {

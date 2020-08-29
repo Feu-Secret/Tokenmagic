@@ -26,8 +26,10 @@ export class FilterGlobes extends PIXI.Filter {
         this.zOrder = 270;
         this.animated = {};
         this.setTMParams(params);
-        this.anime = new Anime(this);
-        this.normalizeTMParams();
+        if (!this.dummy) {
+            this.anime = new Anime(this);
+            this.normalizeTMParams();
+        }
     }
 
     get time() {

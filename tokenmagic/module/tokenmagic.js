@@ -30,6 +30,8 @@ import { FilterPixelate } from "../fx/filters/FilterPixelate.js";
 import { FilterSpiderWeb } from "../fx/filters/FilterSpiderWeb.js";
 import { FilterSolarRipples } from "../fx/filters/FilterSolarRipples.js";
 import { FilterGlobes } from "../fx/filters/FilterGlobes.js";
+import { FilterTransform } from "../fx/filters/FilterTransform.js";
+import { FilterSplash } from "../fx/filters/FilterSplash.js";
 import { Anime } from "../fx/Anime.js";
 import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
@@ -79,6 +81,8 @@ export const FilterType = {
     web: FilterSpiderWeb,
     ripples: FilterSolarRipples,
     globes: FilterGlobes,
+    transform: FilterTransform,
+    splash: FilterSplash,
 };
 
 export const PlaceableType = {
@@ -134,6 +138,10 @@ export function getMinPadding() {
 
 export function isAdditivePaddingConfig() {
     return game.settings.get("tokenmagic", "useAdditivePadding");
+}
+
+export function isFilterCachingDisabled() {
+    return game.settings.get("tokenmagic", "disableCaching");
 }
 
 export var isFurnaceDrawingsActive = () => {
@@ -244,7 +252,7 @@ export function objectAssign(target, ...sources) {
 
 export function TokenMagic() {
 
-    var _cachedFilters = {};
+    var _cachedGraphics = new PIXI.Graphics;
 
     async function addFiltersOnSelected(paramsArray, replace = false) {
 
@@ -1135,7 +1143,7 @@ export function TokenMagic() {
         _updateFilters: _updateFilters,
         _updateTemplateData: _updateTemplateData,
         _singleLoadFilters: _singleLoadFilters,
-        _cachedFilters: _cachedFilters,
+        _cachedGraphics: _cachedGraphics,
         _checkFilterId: _checkFilterId,
         _getPresetTemplateDefaultTexture: _getPresetTemplateDefaultTexture,
     };
@@ -1143,31 +1151,26 @@ export function TokenMagic() {
 
 export const Magic = TokenMagic();
 
-async function cacheFilters() {
-    // Only caching filters with heavy shaders that takes time to compile
+async function compilingShaders() {
+    // Caching filters to prevent freezing on first-time loading (shader compilation time)
     // https://www.html5gamedevs.com/topic/43652-shader-compile-performance/
-    let params =
-    {
-        filterType: "field",
-        enabled: true,
-        dummy: true
-    };
-    Magic._cachedFilters.filterForceField = new FilterForceField(params);
 
-    params.filterType = "electric";
-    Magic._cachedFilters.filterElectric = new FilterElectric(params);
+    let params = { enabled: true, dummy: true };
 
-    params.filterType = "xglow";
-    Magic._cachedFilters.filterGleamingGlow = new FilterGleamingGlow(params);
+    Magic._cachedGraphics.filters = [];
+    const filterTypes = Object.keys(FilterType);
+    for (const filterType of filterTypes) {
+        params.filterType = filterType;
+        log(`Caching ${filterType}`);
+        Magic._cachedGraphics.filters.push(new FilterType[filterType](params));
+    }
 
-    params.filterType = "fire";
-    Magic._cachedFilters.filterFire = new FilterFire(params);
+    log("Compiling shaders...");
+    var tmpRenderTexture = new PIXI.RenderTexture.create({ width: 16, height: 16 });
+    // A call to render triggers the compilation of all the shaders bound to the filters.
+    canvas.app.renderer.render(Magic._cachedGraphics, tmpRenderTexture);
 
-    params.filterType = "smoke";
-    Magic._cachedFilters.filterSmoke = new FilterSmoke(params);
-
-    params.filterType = "images";
-    Magic._cachedFilters.filterImages = new FilterMirrorImages(params);
+    log("Shaders compiled for the GPU and ready!");
 }
 
 function initSocketListener() {
@@ -1368,9 +1371,11 @@ Hooks.on("canvasInit", (canvas) => {
     Anime.resetAnimation();
 });
 
-Hooks.once("canvasReady", (canvas) => {
-    //log("Init -> canvasReady -> caching shaders");
-    cacheFilters();
+Hooks.once("canvasInit", (canvas) => {
+    if (!isFilterCachingDisabled()) {
+        log("Init -> canvasInit -> caching shaders");
+        compilingShaders();
+    }
 });
 
 Hooks.on("canvasReady", (canvas) => {
