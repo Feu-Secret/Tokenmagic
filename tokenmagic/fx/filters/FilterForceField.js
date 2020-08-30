@@ -17,7 +17,10 @@ export class FilterForceField extends PIXI.Filter {
             scale,
             intensity,
             radius,
-            chromatic
+            hideRadius,
+            chromatic,
+            discardThreshold,
+            alphaDiscard
         } = Object.assign({}, FilterForceField.defaults, params);
 
         // using specific vertex shader and fragment shader
@@ -38,7 +41,10 @@ export class FilterForceField extends PIXI.Filter {
             scale,
             intensity,
             radius,
-            chromatic
+            hideRadius,
+            chromatic,
+            discardThreshold,
+            alphaDiscard
         });
 
         this.zOrder = 2000;
@@ -138,6 +144,32 @@ export class FilterForceField extends PIXI.Filter {
         this.uniforms.radius = value;
     }
 
+    get hideRadius() {
+        return this.uniforms.hideRadius;
+    }
+
+    set hideRadius(value) {
+        this.uniforms.hideRadius = value;
+    }
+
+    get discardThreshold() {
+        return this.uniforms.discardThreshold;
+    }
+
+    set discardThreshold(value) {
+        this.uniforms.discardThreshold = value;
+    }
+
+    get alphaDiscard() {
+        return this.uniforms.alphaDiscard;
+    }
+
+    set alphaDiscard(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this.uniforms.alphaDiscard = value;
+        }
+    }
+
     get chromatic() {
         return this.uniforms.chromatic;
     }
@@ -161,7 +193,10 @@ FilterForceField.defaults = {
     scale: 1,
     intensity: 1,
     radius: 1,
+    hideRadius: 0,
     chromatic: false,
+    discardThreshold: 0.25,
+    alphaDiscard: false,
 };
 
 
