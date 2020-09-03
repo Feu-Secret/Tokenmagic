@@ -27,7 +27,6 @@ export class FilterFumes extends PIXI.Filter {
         this.zOrder = 210;
         this.animated = {};
         this.setTMParams(params);
-        this.setTMParams(params);
         if (!this.dummy) {
             this.anime = new Anime(this);
             this.normalizeTMParams();

@@ -4,13 +4,14 @@
     "\\tokenmagic",
     "\\tokenmagic\\fx",
     "\\tokenmagic\\fx\\filters",
-    "\\tokenmagic\\fx\\glsl",
-    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
-    "\\tokenmagic\\lang",
+    "\\tokenmagic\\fx\\filters\\proto",
+    "\\tokenmagic\\fx\\presets",
+    "\\tokenmagic\\import",
+    "\\tokenmagic\\migration",
     "\\tokenmagic\\module",
-    "\\tokenmagic\\module\\autoTemplate",
+    "\\tokenmagic\\module\\proto",
     "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\forcefield.js",
+  "SelectedNode": "\\tokenmagic\\fx\\Anime.js",
   "PreviewInSolutionExplorer": false
 }

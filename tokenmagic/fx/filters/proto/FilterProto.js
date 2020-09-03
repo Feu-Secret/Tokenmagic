@@ -6,10 +6,12 @@ PIXI.Filter.prototype.setTMParams = function (params) {
     this.autoDestroy = false;
     this.padding = 0;
     this.gridPadding = 0;
+    this.rawPadding = 0;
     this.dummy = false;
     objectAssign(this, params);
     this.autoFit = false;
     if (!this.dummy) {
+        this.rawPadding = this.padding;
         this.originalPadding = Math.max(this.padding, getMinPadding());
         this.assignPlaceable();
         this.activateTransform();
@@ -26,8 +28,8 @@ PIXI.Filter.prototype.getPlaceableType = function () {
 
 PIXI.Filter.prototype.calculatePadding = function () {
     if (this.gridPadding > 0) {
-        var imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
-        var toSize = (canvas.dimensions.size >= imgSize
+        const imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
+        const toSize = (canvas.dimensions.size >= imgSize
             ? canvas.dimensions.size - imgSize
             : imgSize % canvas.dimensions.size);
 
@@ -46,10 +48,15 @@ PIXI.Filter.prototype.calculatePadding = function () {
 
 PIXI.Filter.prototype.assignPlaceable = function () {
 
-    let placeable = this.getPlaceable();
-    placeable != null
-        ? this.placeableImg = placeable._TMFXgetSprite()
+    this.targetPlaceable = this.getPlaceable();
+    this.targetPlaceable != null
+        ? this.placeableImg = this.targetPlaceable._TMFXgetSprite()
         : this.placeableImg = null;
+}
+
+PIXI.Filter.prototype.getPlaceablePadding = function () {
+    if (this.placeableImg) return this.placeableImg._TMFXgetPlaceablePadding();
+    return 0;
 }
 
 PIXI.Filter.prototype.activateTransform = function () {

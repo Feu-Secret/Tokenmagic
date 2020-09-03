@@ -1,10 +1,10 @@
-import { isAnimationDisabled } from "../module/tokenmagic.js";
+import { isAnimationDisabled, log } from "../module/tokenmagic.js";
 
 export class Anime {
 
     constructor(puppet) {
 
-        let self = this;
+        const self = this;
         this.puppet = puppet;
         this.animated = null;
         this.animeId = randomID();
@@ -95,7 +95,7 @@ export class Anime {
 
         if (Object.values(this.animated).every(animeEffect => animeEffect.active === false)) {
 
-            var placeable = this.puppet.getPlaceable();
+            const placeable = this.puppet.getPlaceable();
 
             if (this.puppet.autoDestroy) {
                 await window.TokenMagic.deleteFilters(placeable, this.puppet.filterId);
@@ -235,17 +235,17 @@ export class Anime {
     }
 
     rotation(effect) {
-        var computedRotation = (360 * this.elapsedTime[effect]) / this.animated[effect].loopDuration;
+        const computedRotation = (360 * this.elapsedTime[effect]) / this.animated[effect].loopDuration;
         this.puppet[effect] = (this.animated[effect].clockWise ? computedRotation : 360 - computedRotation);
     }
 
     syncRotation(effect) {
-        var computedRotation = Anime.getSynchronizedRotation(this.animated[effect].loopDuration, this.animated[effect].syncShift);
+        const computedRotation = Anime.getSynchronizedRotation(this.animated[effect].loopDuration, this.animated[effect].syncShift);
         this.puppet[effect] = (this.animated[effect].clockWise ? computedRotation : 360 - computedRotation);
     }
 
     randomNumber(effect) {
-        var randomNumber = Math.random()
+        const randomNumber = Math.random()
             * (this.animated[effect].val2 - this.animated[effect].val1)
             + this.animated[effect].val1;
         if (this.animated[effect].wantInteger) {
@@ -284,14 +284,14 @@ export class Anime {
     }
 
     static rgbToValue(r, g, b) {
-        var bin = r << 16 | g << 8 | b;
+        const bin = r << 16 | g << 8 | b;
         return bin;
     }
 
     static valueToRgb(bin) {
-        var r = bin >> 16;
-        var g = bin >> 8 & 0xFF;
-        var b = bin & 0xFF;
+        const r = bin >> 16;
+        const g = bin >> 8 & 0xFF;
+        const b = bin & 0xFF;
         return [r, g, b];
     }
 
@@ -303,8 +303,8 @@ export class Anime {
     }
 
     static colOscillation(elapsed, loopDuration, syncShift, val1, val2, isSync) {
-        var rgbValue1 = Anime.valueToRgb(val1);
-        var rgbValue2 = Anime.valueToRgb(val2);
+        const rgbValue1 = Anime.valueToRgb(val1);
+        const rgbValue2 = Anime.valueToRgb(val2);
 
         return Anime.rgbToValue(
             Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[0], rgbValue2[0], Math.cos, isSync)),
@@ -362,24 +362,7 @@ export class Anime {
 
     static resetAnimation() {
         Anime._animeMap = new Map();
-    }
-
-    static _suspendAnimation() {
         Anime._suspended = true;
-        if (Anime._activated && !isAnimationDisabled()) {
-            canvas.app.ticker.remove(Anime.tick, this);
-        }
-        Anime._lastTime = 0;
-        Anime._prevTime = 0;
-    }
-
-    static _resumeAnimation() {
-        Anime._suspended = false;
-        if (Anime._activated && !isAnimationDisabled()) {
-            canvas.app.ticker.add(Anime.tick, this);
-            Anime._lastTime = canvas.app.ticker.lastTime;
-            Anime._prevTime = Anime._lastTime;
-        }
     }
 
     static tick() {
@@ -401,20 +384,45 @@ export class Anime {
         Anime._prevTime = Anime._lastTime;
     }
 
-    static activateAnimation() {
-        Anime._activated = true;
-        if (!Anime._suspended && !isAnimationDisabled() ) {
-            canvas.app.ticker.add(Anime.tick, this);
-            Anime._lastTime = canvas.app.ticker.lastTime;
-            Anime._prevTime = Anime._lastTime;
+    static _suspendAnimation() {
+        if (Anime._activated && !Anime._suspended && !isAnimationDisabled()) {
+            Anime._detachFromTicker();
         }
+        Anime._suspended = true;
     }
 
-    static desactivateAnimation() {
-        Anime._activated = false;
-        if (!Anime._suspended && !isAnimationDisabled()) {
-            canvas.app.ticker.remove(Anime.tick, this);
+    static _resumeAnimation() {
+        if (Anime._activated && Anime._suspended && !isAnimationDisabled()) {
+            Anime._attachToTicker();
         }
+        Anime._suspended = false;
+    }
+
+    static activateAnimation() {
+        if (!Anime._activated && !Anime._suspended && !isAnimationDisabled()) {
+            Anime._attachToTicker();
+        }
+        Anime._activated = true;
+    }
+
+    static deactivateAnimation() {
+        if (Anime._activated && !Anime._suspended && !isAnimationDisabled()) {
+            Anime._detachFromTicker();
+        }
+        Anime._activated = false;
+    }
+
+    static _attachToTicker() {
+        canvas.app.ticker.maxFPS = 0;
+        canvas.app.ticker.add(Anime.tick, this);
+        //log("_attachToTicker - count:" + canvas.app.ticker.count);
+        Anime._lastTime = canvas.app.ticker.lastTime;
+        Anime._prevTime = Anime._lastTime;
+    }
+
+    static _detachFromTicker() {
+        canvas.app.ticker.remove(Anime.tick, this);
+        //log("_detachFromTicker - count:" + canvas.app.ticker.count);
         Anime._lastTime = 0;
         Anime._prevTime = 0;
     }
@@ -428,6 +436,6 @@ Anime._lastTime = 0;
 Anime._prevTime = 0;
 Anime._frameTime = 0;
 Anime._animeMap = new Map();
-Anime._suspended = false;
-Anime._activated = false;
 Anime.twoPi = Math.PI * 2;
+Anime._activated = false;
+Anime._suspended = true;

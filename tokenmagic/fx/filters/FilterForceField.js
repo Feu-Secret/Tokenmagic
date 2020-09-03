@@ -28,7 +28,7 @@ export class FilterForceField extends PIXI.Filter {
 
         this.uniforms.color = new Float32Array([1.0, 1.0, 1.0]);
         this.uniforms.posLight = new Float32Array([1.0, 1.0]);
-        
+
         Object.assign(this, {
             time,
             color,
@@ -160,6 +160,14 @@ export class FilterForceField extends PIXI.Filter {
         this.uniforms.discardThreshold = value;
     }
 
+    get _ratio() {
+        return this.uniforms.ratio;
+    }
+
+    set _ratio(value) {
+        this.uniforms.ratio = value;
+    }
+
     get alphaDiscard() {
         return this.uniforms.alphaDiscard;
     }
@@ -179,6 +187,44 @@ export class FilterForceField extends PIXI.Filter {
             this.uniforms.chromatic = value;
         }
     }
+
+    // override
+    calculatePadding() {
+        return;
+    }
+
+    apply(filterManager, input, output, clear) {
+
+        if (!this.dummy) {
+            let imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
+
+            if (this.gridPadding > 0) {
+                const toSize = (canvas.dimensions.size >= imgSize
+                    ? canvas.dimensions.size - imgSize
+                    : imgSize % canvas.dimensions.size);
+
+                this.currentPadding =
+                    (this.targetPlaceable.worldTransform.a * (this.gridPadding - 1)
+                        * canvas.dimensions.size)
+                + ((toSize * this.targetPlaceable.worldTransform.a) / 2);
+
+            } else {
+
+                this.currentPadding =
+                    this.placeableImg.parent.worldTransform.a
+                    * this.rawPadding;
+            }
+
+            const placeablePadding = this.targetPlaceable._TMFXgetPlaceablePadding();
+
+            if (this.currentPadding >= placeablePadding) this._ratio = 1;
+            else {
+                imgSize *= this.targetPlaceable.worldTransform.a;
+                this._ratio = (imgSize + 2 * this.currentPadding) / (imgSize + 2 * placeablePadding);
+            }
+        }
+        filterManager.applyFilter(this, input, output, clear);
+    }
 }
 
 FilterForceField.defaults = {
@@ -197,6 +243,7 @@ FilterForceField.defaults = {
     chromatic: false,
     discardThreshold: 0.25,
     alphaDiscard: false,
+    _ratio: 1,
 };
 
 

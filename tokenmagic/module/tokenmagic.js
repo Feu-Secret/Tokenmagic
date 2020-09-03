@@ -1367,7 +1367,7 @@ Hooks.on("ready", () => {
 Hooks.on("canvasInit", (canvas) => {
     log("Hook -> canvasInit");
     autosetPaddingMode();
-    Anime.desactivateAnimation();
+    Anime.deactivateAnimation();
     Anime.resetAnimation();
 });
 
@@ -1402,7 +1402,7 @@ Hooks.on("deleteScene", (scene, data, options) => {
     //log("Hook -> deleteScene");
 
     if (!(scene == null) && scene.id === game.user.viewedScene) {
-        Anime.desactivateAnimation();
+        Anime.deactivateAnimation();
         Anime.resetAnimation();
     }
 });
@@ -1626,11 +1626,11 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
             }
             var preset = Magic.getPreset(presetOptions);
             if (!(preset == null)) {
-                if (presetUpdate) setTimeout(() => { measuredTemplateInstance.TMFXaddFilters(preset, true) }, 150);
-                else setTimeout(() => { measuredTemplateInstance.TMFXaddUpdateFilters(preset) }, 150);
+                if (presetUpdate) await measuredTemplateInstance.TMFXaddFilters(preset, true);
+                else await measuredTemplateInstance.TMFXaddUpdateFilters(preset);
             }
         }
-        else setTimeout(() => { measuredTemplateInstance.TMFXdeleteFilters() }, 150);
+        else await measuredTemplateInstance.TMFXdeleteFilters();
     }
 });
 
