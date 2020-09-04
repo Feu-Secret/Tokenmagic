@@ -3,15 +3,14 @@
     "",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
-    "\\tokenmagic\\fx\\filters",
-    "\\tokenmagic\\fx\\filters\\proto",
-    "\\tokenmagic\\fx\\presets",
-    "\\tokenmagic\\import",
+    "\\tokenmagic\\fx\\glsl",
+    "\\tokenmagic\\fx\\glsl\\fragmentshaders",
+    "\\tokenmagic\\fx\\glsl\\vertexshaders",
     "\\tokenmagic\\migration",
     "\\tokenmagic\\module",
     "\\tokenmagic\\module\\proto",
     "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\Anime.js",
+  "SelectedNode": "\\tokenmagic\\fx\\filters\\FilterLightSource.js",
   "PreviewInSolutionExplorer": false
 }

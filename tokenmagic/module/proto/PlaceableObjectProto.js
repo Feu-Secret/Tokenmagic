@@ -57,7 +57,7 @@ PlaceableObject.prototype._TMFXgetSprite = function () {
 
 PlaceableObject.prototype._TMFXgetPlaceablePadding = function () {
     // get the placeable padding, by taking into account all filters and options
-    let accPadding = 0;
+    var accPadding = 0;
     const filters = this._TMFXgetSprite().filters;
     if (filters instanceof Array) {
         // "for (const) of" has performance advantage

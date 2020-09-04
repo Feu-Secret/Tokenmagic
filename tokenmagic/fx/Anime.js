@@ -1,4 +1,4 @@
-import { isAnimationDisabled, log } from "../module/tokenmagic.js";
+import { isAnimationDisabled } from "../module/tokenmagic.js";
 
 export class Anime {
 
@@ -413,16 +413,13 @@ export class Anime {
     }
 
     static _attachToTicker() {
-        canvas.app.ticker.maxFPS = 0;
         canvas.app.ticker.add(Anime.tick, this);
-        //log("_attachToTicker - count:" + canvas.app.ticker.count);
         Anime._lastTime = canvas.app.ticker.lastTime;
         Anime._prevTime = Anime._lastTime;
     }
 
     static _detachFromTicker() {
         canvas.app.ticker.remove(Anime.tick, this);
-        //log("_detachFromTicker - count:" + canvas.app.ticker.count);
         Anime._lastTime = 0;
         Anime._prevTime = 0;
     }

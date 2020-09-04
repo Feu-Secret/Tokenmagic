@@ -54,11 +54,6 @@ PIXI.Filter.prototype.assignPlaceable = function () {
         : this.placeableImg = null;
 }
 
-PIXI.Filter.prototype.getPlaceablePadding = function () {
-    if (this.placeableImg) return this.placeableImg._TMFXgetPlaceablePadding();
-    return 0;
-}
-
 PIXI.Filter.prototype.activateTransform = function () {
     this.preComputation = this.filterTransform;
     this.filterTransform();
