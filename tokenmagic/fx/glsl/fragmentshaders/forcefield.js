@@ -12,7 +12,11 @@ uniform float lightColorAlpha;
 uniform float lightSize;
 uniform float scale;
 uniform float radius;
+uniform float hideRadius;
+uniform float discardThreshold;
+uniform float ratio;
 uniform bool chromatic;
+uniform bool alphaDiscard;
 uniform sampler2D uSampler;
 
 varying vec2 vTextureCoord;
@@ -537,7 +541,7 @@ vec4 galaxy(vec2 suv)
 vec2 getSphere(out float alpha, out float r)
 {
   vec2 tc = vFilterCoord.xy;
-  vec2 p = (-1.0 + 2. * tc) * (1.01 / radius+0.000001);
+  vec2 p = (-1.0 + 2. * tc) * (1.01 / (radius*ratio));
   r = dot(p,p);
   r > 0.943 ? alpha = max(min(40.*log(1./r),1.),0.) : alpha = 1.;
   float f = (1.0-sqrt(1.0-r))/(r);
@@ -547,11 +551,27 @@ vec2 getSphere(out float alpha, out float r)
   return uv;
 }
 
+void computeHideAlpha(out float alpha)
+{
+  vec2 tc = vFilterCoord.xy;
+  vec2 p = (-1.0 + 2. * tc) * (1.01 / (hideRadius*ratio));
+  float r = dot(p,p);
+  r > 0.9 ? alpha = 1.-max(min(40.*log(1./r),1.),0.) : alpha = 0.;
+}
+
 void main()
 {
-    float a, r;
+    float a, r, hideAlpha;
     vec4 result;
     vec4 pixel = texture2D(uSampler, vTextureCoord);
+
+    if (hideRadius > 0.) computeHideAlpha(hideAlpha);
+    else hideAlpha = 1.;
+
+    if (pixel.a == 0. && hideAlpha == 0.) {
+        discard;
+    }
+
     vec2 uv = getSphere(a, r);
 
     if (shieldType <= 1) {
@@ -581,7 +601,7 @@ void main()
     } else if (shieldType != 1) {
         result = vec4(color,1.);
     }
-   
+
     vec4 colorized;
     vec3 chromaOption;
     if (chromatic) {
@@ -595,12 +615,22 @@ void main()
     colorized = (vec4(
                     colorize(
                         toGray(result.rgb), chromaOption), result.a) + result)*0.5;
-    vec4 final = clamp(ambientLight(clamp(colorized, 0., 1.)*intensity, uv, posLight-vec2(0.5,0.5)),0.,1.);
+    vec4 preRenderedResult = clamp(ambientLight(clamp(colorized, 0., 1.)*intensity, uv, posLight-vec2(0.5,0.5)),0.,1.);
+    vec4 final = vec4(preRenderedResult.rgb * hideAlpha, 1.);
+
+    if (alphaDiscard && all(lessThanEqual(final.rgb,vec3(discardThreshold)))) {
+        if (pixel.a == 0.) discard;
+        else {
+            gl_FragColor = pixel;
+            return;
+        }
+    }
+
     gl_FragColor =
             r > 1.0
                 ? pixel*(1.-a)
                 : (pixel.a < 1. 
-                        ? mix(blenderVec3(13, pixel, final),blenderVec3(blend, pixel, final),pixel.a)
-                        : blenderVec3(blend, pixel, final)) * a;
+                        ? mix( blenderVec3(13, pixel, final), blenderVec3(blend, pixel, final), pixel.a)
+                        : blenderVec3(blend, pixel, final) * a);
 }
 `;

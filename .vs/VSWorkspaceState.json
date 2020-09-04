@@ -5,10 +5,12 @@
     "\\tokenmagic\\fx",
     "\\tokenmagic\\fx\\glsl",
     "\\tokenmagic\\fx\\glsl\\fragmentshaders",
-    "\\tokenmagic\\lang",
+    "\\tokenmagic\\fx\\glsl\\vertexshaders",
+    "\\tokenmagic\\migration",
     "\\tokenmagic\\module",
-    "\\tokenmagic\\module\\autoTemplate"
+    "\\tokenmagic\\module\\proto",
+    "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\tokenmagic\\fx\\glsl\\fragmentshaders\\forcefield.js",
+  "SelectedNode": "\\tokenmagic\\fx\\filters\\FilterLightSource.js",
   "PreviewInSolutionExplorer": false
 }

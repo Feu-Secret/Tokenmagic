@@ -17,7 +17,10 @@ export class FilterForceField extends PIXI.Filter {
             scale,
             intensity,
             radius,
-            chromatic
+            hideRadius,
+            chromatic,
+            discardThreshold,
+            alphaDiscard
         } = Object.assign({}, FilterForceField.defaults, params);
 
         // using specific vertex shader and fragment shader
@@ -25,7 +28,7 @@ export class FilterForceField extends PIXI.Filter {
 
         this.uniforms.color = new Float32Array([1.0, 1.0, 1.0]);
         this.uniforms.posLight = new Float32Array([1.0, 1.0]);
-        
+
         Object.assign(this, {
             time,
             color,
@@ -38,7 +41,10 @@ export class FilterForceField extends PIXI.Filter {
             scale,
             intensity,
             radius,
-            chromatic
+            hideRadius,
+            chromatic,
+            discardThreshold,
+            alphaDiscard
         });
 
         this.zOrder = 2000;
@@ -138,6 +144,40 @@ export class FilterForceField extends PIXI.Filter {
         this.uniforms.radius = value;
     }
 
+    get hideRadius() {
+        return this.uniforms.hideRadius;
+    }
+
+    set hideRadius(value) {
+        this.uniforms.hideRadius = value;
+    }
+
+    get discardThreshold() {
+        return this.uniforms.discardThreshold;
+    }
+
+    set discardThreshold(value) {
+        this.uniforms.discardThreshold = value;
+    }
+
+    get _ratio() {
+        return this.uniforms.ratio;
+    }
+
+    set _ratio(value) {
+        this.uniforms.ratio = value;
+    }
+
+    get alphaDiscard() {
+        return this.uniforms.alphaDiscard;
+    }
+
+    set alphaDiscard(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this.uniforms.alphaDiscard = value;
+        }
+    }
+
     get chromatic() {
         return this.uniforms.chromatic;
     }
@@ -146,6 +186,44 @@ export class FilterForceField extends PIXI.Filter {
         if (!(value == null) && typeof value === "boolean") {
             this.uniforms.chromatic = value;
         }
+    }
+
+    // override
+    calculatePadding() {
+        return;
+    }
+
+    apply(filterManager, input, output, clear) {
+
+        if (!this.dummy) {
+            let imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
+
+            if (this.gridPadding > 0) {
+                const toSize = (canvas.dimensions.size >= imgSize
+                    ? canvas.dimensions.size - imgSize
+                    : imgSize % canvas.dimensions.size);
+
+                this.currentPadding =
+                    (this.targetPlaceable.worldTransform.a * (this.gridPadding - 1)
+                        * canvas.dimensions.size)
+                + ((toSize * this.targetPlaceable.worldTransform.a) / 2);
+
+            } else {
+
+                this.currentPadding =
+                    this.placeableImg.parent.worldTransform.a
+                    * this.rawPadding;
+            }
+
+            const placeablePadding = this.targetPlaceable._TMFXgetPlaceablePadding();
+
+            if (this.currentPadding >= placeablePadding) this._ratio = 1;
+            else {
+                imgSize *= this.targetPlaceable.worldTransform.a;
+                this._ratio = (imgSize + 2 * this.currentPadding) / (imgSize + 2 * placeablePadding);
+            }
+        }
+        filterManager.applyFilter(this, input, output, clear);
     }
 }
 
@@ -161,7 +239,11 @@ FilterForceField.defaults = {
     scale: 1,
     intensity: 1,
     radius: 1,
+    hideRadius: 0,
     chromatic: false,
+    discardThreshold: 0.25,
+    alphaDiscard: false,
+    _ratio: 1,
 };
 
 

@@ -12,7 +12,7 @@ varying vec2 vFilterCoord;
 varying vec4 vInputSize;
 varying vec4 vOutputFrame;
 
-float angle = radians(rotation);
+float angle = -radians(rotation);
 
 void transform(out vec2 uv)
 {

@@ -55,6 +55,23 @@ PlaceableObject.prototype._TMFXgetSprite = function () {
     }
 }
 
+PlaceableObject.prototype._TMFXgetPlaceablePadding = function () {
+    // get the placeable padding, by taking into account all filters and options
+    var accPadding = 0;
+    const filters = this._TMFXgetSprite().filters;
+    if (filters instanceof Array) {
+        // "for (const) of" has performance advantage
+        for (const filter of filters) {
+            if (canvas.app.renderer.filter.useMaxPadding) {
+                accPadding = Math.max(accPadding, filter.padding);
+            } else {
+                accPadding += filter.padding;
+            }
+        }
+    }
+    return accPadding;
+}
+
 PlaceableObject.prototype._TMFXcheckSprite = function () {
 
     switch (this.constructor.embeddedName) {
@@ -94,8 +111,7 @@ PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
         if (isZOrderConfig()) sprite.filters.sort(filterZOrderCompare);
     }
 
-    let sprite;
-    sprite = this._TMFXgetSprite();
+    const sprite = this._TMFXgetSprite();
     if (sprite == null) { return false; }
 
     if (filters == null) {
@@ -120,11 +136,21 @@ PlaceableObject.prototype._TMFXgetPlaceableType = function () {
     return PlaceableType.NOT_SUPPORTED;
 }
 
+MeasuredTemplate.prototype.refresh = (function () {
+    const cachedMTR = MeasuredTemplate.prototype.refresh;
+    return function () {
+        if (this.template && !this.template._destroyed) {
+            return cachedMTR.apply(this);
+        }
+        return this;
+    };
+})();
+
 MeasuredTemplate.prototype.update = (function () {
     const cachedMTU = MeasuredTemplate.prototype.update;
     return async function (data, options) {
-        let hasTexture = data.hasOwnProperty("texture");
-        let hasPresetData = data.hasOwnProperty("tmfxPreset");
+        const hasTexture = data.hasOwnProperty("texture");
+        const hasPresetData = data.hasOwnProperty("tmfxPreset");
         if (hasPresetData && data.tmfxPreset !== emptyPreset) {
             let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
@@ -137,6 +163,6 @@ MeasuredTemplate.prototype.update = (function () {
             data.texture = '';
         }
 
-        await cachedMTU.apply(this, [data, options]);
+        return await cachedMTU.apply(this, [data, options]);
     };
 })();
