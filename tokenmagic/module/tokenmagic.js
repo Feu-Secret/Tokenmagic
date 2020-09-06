@@ -36,6 +36,7 @@ import { Anime } from "../fx/Anime.js";
 import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
 import { emptyPreset } from './constants.js';
+import { enableMeasuredTemplatePrototypeRefresh } from "./proto/PlaceableObjectProto.js";
 import "./proto/PlaceableObjectProto.js";
 
 /*
@@ -1360,6 +1361,7 @@ Hooks.on("ready", () => {
     tmfxDataMigration();
     initSocketListener();
     initFurnaceDrawingsException();
+    enableMeasuredTemplatePrototypeRefresh();
     window.TokenMagic = Magic;
     Hooks.on("renderMeasuredTemplateConfig", onMeasuredTemplateConfig);
 });
@@ -1622,7 +1624,8 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
                 anchorY: anchor.y
             };
             if (templateTint && templateTint !== "") {
-                presetOptions.color = colorStringToHex(templateTint);
+                if (typeof templateTint !== "number") presetOptions.color = colorStringToHex(templateTint);
+                else presetOptions.color = templateTint;
             }
             var preset = Magic.getPreset(presetOptions);
             if (!(preset == null)) {

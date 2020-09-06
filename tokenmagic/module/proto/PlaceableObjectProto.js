@@ -136,16 +136,6 @@ PlaceableObject.prototype._TMFXgetPlaceableType = function () {
     return PlaceableType.NOT_SUPPORTED;
 }
 
-MeasuredTemplate.prototype.refresh = (function () {
-    const cachedMTR = MeasuredTemplate.prototype.refresh;
-    return function () {
-        if (this.template && !this.template._destroyed) {
-            return cachedMTR.apply(this);
-        }
-        return this;
-    };
-})();
-
 MeasuredTemplate.prototype.update = (function () {
     const cachedMTU = MeasuredTemplate.prototype.update;
     return async function (data, options) {
@@ -166,3 +156,15 @@ MeasuredTemplate.prototype.update = (function () {
         return await cachedMTU.apply(this, [data, options]);
     };
 })();
+
+export function enableMeasuredTemplatePrototypeRefresh() {
+    MeasuredTemplate.prototype.refresh = (function () {
+        const cachedMTR = MeasuredTemplate.prototype.refresh;
+        return function () {
+            if (this.template && !this.template._destroyed) {
+                return cachedMTR.apply(this);
+            }
+            return this;
+        };
+    })();
+}

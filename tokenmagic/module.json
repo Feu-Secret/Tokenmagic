@@ -2,7 +2,7 @@
   "name": "tokenmagic",
   "title": "Token Magic FX",
   "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
-  "version": "0.4.2",
+  "version": "0.4.2b",
   "compatibleCoreVersion": "0.6.6",
   "minimumCoreVersion": "0.6.0",
   "author": "SecretFire and sPOiDar (Auto-Templates)",
@@ -12,6 +12,9 @@
     },
     {
       "name": "sPOiDar"
+    },
+    {
+      "name": "Zimm"
     }
   ],
   "scripts": [
@@ -80,10 +83,15 @@
       "lang": "fr",
       "name": "French (FRANCE)",
       "path": "lang/fr.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
     }
   ],
   "socket": true,
   "url": "https://github.com/Feu-Secret/Tokenmagic",
   "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
-  "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.4.2-alpha/Tokenmagic.zip"
+  "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.4.2b-alpha/Tokenmagic.zip"
 }
