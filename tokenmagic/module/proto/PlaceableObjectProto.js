@@ -1,5 +1,7 @@
 import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast, isZOrderConfig } from "../tokenmagic.js";
-import { emptyPreset } from '../constants.js';
+import { emptyPreset, autoMinRank } from '../constants.js';
+
+export var gMaxRank = autoMinRank;
 
 PlaceableObject.prototype.TMFXaddFilters = async function (paramsArray, replace = false) {
     await Magic.addFilters(this, paramsArray, replace);
@@ -30,9 +32,19 @@ PlaceableObject.prototype._TMFXsetFlag = async function (flag) {
     else await this.setFlag("tokenmagic", "filters", flag);
 }
 
+PlaceableObject.prototype._TMFXsetAnimeFlag = async function (flag) {
+    if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_ANIME_FLAG);
+    else await this.setFlag("tokenmagic", "animeInfo", flag);
+}
+
 PlaceableObject.prototype._TMFXunsetFlag = async function () {
     if (mustBroadCast()) broadcast(this, null, SocketAction.SET_FLAG);
     else await this.unsetFlag("tokenmagic", "filters");
+}
+
+PlaceableObject.prototype._TMFXunsetAnimeFlag = async function () {
+    if (mustBroadCast()) broadcast(this, null, SocketAction.SET_ANIME_FLAG);
+    else await this.unsetFlag("tokenmagic", "animeInfo");
 }
 
 PlaceableObject.prototype._TMFXgetSprite = function () {
@@ -99,6 +111,18 @@ PlaceableObject.prototype._TMFXcheckSprite = function () {
     }
 }
 
+PlaceableObject.prototype._TMFXgetMaxFilterRank = function () {
+    const sprite = this._TMFXgetSprite();
+    if (sprite == null) { return (gMaxRank++); }
+    if (sprite.filters == null) {
+        return (gMaxRank++);
+    } else {
+        let maxRank = Math.max(...sprite.filters.map(f => f.rank), autoMinRank);
+        gMaxRank = Math.max(maxRank, gMaxRank) + 1;
+        return gMaxRank;
+    }
+}
+
 PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
 
     function insertFilter(filters) {
@@ -107,10 +131,33 @@ PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
             if (a.zOrder > b.zOrder) return 1;
             return 0;
         }
+
+        function filterRankCompare(a, b) {
+            if (a.rank < b.rank) return -1;
+            if (a.rank > b.rank) return 1;
+            return 0;
+        }
+
+        if (!isZOrder) {
+            if (!filters.hasOwnProperty("rank")) {
+                let maxRank = Math.max(...sprite.filters.map(f => f.rank), autoMinRank);
+                filters.rank = maxRank + 1;
+            }
+        }
+
         sprite.filters.push(filters);
-        if (isZOrderConfig()) sprite.filters.sort(filterZOrderCompare);
+        isZOrder ? sprite.filters.sort(filterZOrderCompare)
+            : sprite.filters.sort(filterRankCompare);
     }
 
+    function addFilter(filters) {
+        if (!isZOrder && !filters.hasOwnProperty("rank")) {
+            filters.rank = autoMinRank;
+        }
+        sprite.filters = [filters];
+    }
+
+    const isZOrder = isZOrderConfig();
     const sprite = this._TMFXgetSprite();
     if (sprite == null) { return false; }
 
@@ -118,7 +165,7 @@ PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
         sprite.filters = null;
     } else {
         sprite.filters == null
-            ? sprite.filters = [filters]
+            ? addFilter(filters)
             : insertFilter(filters);
     }
 

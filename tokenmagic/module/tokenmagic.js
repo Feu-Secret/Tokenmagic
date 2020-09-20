@@ -32,6 +32,8 @@ import { FilterSolarRipples } from "../fx/filters/FilterSolarRipples.js";
 import { FilterGlobes } from "../fx/filters/FilterGlobes.js";
 import { FilterTransform } from "../fx/filters/FilterTransform.js";
 import { FilterSplash } from "../fx/filters/FilterSplash.js";
+import { FilterPolymorph } from "../fx/filters/FilterPolymorph.js";
+import { FilterXFire } from "../fx/filters/FilterXFire.js";
 import { Anime } from "../fx/Anime.js";
 import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
@@ -42,7 +44,8 @@ import "./proto/PlaceableObjectProto.js";
 /*
 
 It's getting messy here ! 
-I will fix it in a future version (+ duplicated code to factorize)
+I will fix it in a future version 
+(+ duplicated code to factorize and code to improve)
 
 */
 
@@ -84,6 +87,8 @@ export const FilterType = {
     globes: FilterGlobes,
     transform: FilterTransform,
     splash: FilterSplash,
+    polymorph: FilterPolymorph,
+    xfire: FilterXFire,
 };
 
 export const PlaceableType = {
@@ -112,7 +117,8 @@ async function exportObjectAsJson(exportObj, exportName) {
 }
 
 export const SocketAction = {
-    SET_FLAG: "TMFXSetFlag"
+    SET_FLAG: "TMFXSetFlag",
+    SET_ANIME_FLAG: "TMFXSetAnimeFlag"
 };
 
 export function broadcast(placeable, flag, socketAction) {
@@ -333,6 +339,10 @@ export function TokenMagic() {
                 return;
             }
 
+            if (!params.hasOwnProperty("rank")) {
+                params.rank = placeable._TMFXgetMaxFilterRank();
+            }
+
             if (!params.hasOwnProperty("filterId") || params.filterId == null) {
                 params.filterId = randomID();
             }
@@ -345,6 +355,7 @@ export function TokenMagic() {
             params.filterInternalId = randomID();
             params.filterOwner = game.data.userId;
             params.placeableType = placeable._TMFXgetPlaceableType();
+            params.updateId = randomID();
 
             newFlags.push({
                 tmFilters: {
@@ -382,6 +393,7 @@ export function TokenMagic() {
         for (const params of paramsArray) {
 
             updateParams = false;
+            params.updateId = randomID();
 
             workingFlags.forEach(flag => {
                 if (flag.tmFilters.tmFilterId === params.filterId
@@ -398,6 +410,10 @@ export function TokenMagic() {
                     || !FilterType.hasOwnProperty(params.filterType)) {
                     // one invalid ? all rejected (even the update)
                     return;
+                }
+
+                if (!params.hasOwnProperty("rank")) {
+                    params.rank = placeable._TMFXgetMaxFilterRank();
                 }
 
                 if (!params.hasOwnProperty("filterId") || params.filterId == null) {
@@ -512,6 +528,7 @@ export function TokenMagic() {
         });
 
         for (const params of paramsArray) {
+            params.updateId = randomID();
             workingFlags.forEach(flag => {
                 if (flag.tmFilters.tmFilterId === params.filterId
                     && flag.tmFilters.tmFilterType === params.filterType) {
@@ -550,13 +567,15 @@ export function TokenMagic() {
     async function deleteFilters(placeable, filterId = null) {
         if (placeable == null) { return; }
 
-        if (filterId == null) await placeable._TMFXunsetFlag();
-        else if (typeof filterId === "string") {
+        if (filterId == null) {
+            await placeable._TMFXunsetFlag();
+            await placeable._TMFXunsetAnimeFlag();
+        } else if (typeof filterId === "string") {
 
             var flags = placeable.getFlag("tokenmagic", "filters");
             if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
 
-            var workingFlags = new Array();
+            var workingFlags = [];
             flags.forEach(flag => {
                 if (flag.tmFilters.tmFilterId != filterId) {
                     workingFlags.push(duplicate(flag));
@@ -565,6 +584,19 @@ export function TokenMagic() {
 
             if (workingFlags.length > 0) await placeable._TMFXsetFlag(workingFlags);
             else await placeable._TMFXunsetFlag();
+
+            flags = placeable.getFlag("tokenmagic", "animeInfo");
+            if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+
+            workingFlags = [];
+            flags.forEach(flag => {
+                if (flag.tmFilterId != filterId) {
+                    workingFlags.push(duplicate(flag));
+                }
+            });
+
+            if (workingFlags.length > 0) await placeable._TMFXsetAnimeFlag(workingFlags);
+            else await placeable._TMFXunsetAnimeFlag();
         }
     };
 
@@ -608,12 +640,45 @@ export function TokenMagic() {
         placeable._TMFXsetRawFilters(filter);
     };
 
-    function _assignFilters(placeable, filters) {
+    function _loadPersistedValues(params, animeInfos) {
+
+        if (!params.hasOwnProperty("animated")) { return; }
+        if (!animeInfos || animeInfos.length <= 0) { return; }
+
+        for (const effect of Object.keys(params.animated)) {
+
+            for (const animeInfo of animeInfos.values()) {
+
+                if (animeInfo.tmFilterId === params.filterId
+                    && animeInfo.tmFilterInternalId === params.filterInternalId
+                    && animeInfo.tmFilterEffect === effect) {
+                    params.animated[effect].active = false;
+                    params[effect] = animeInfo.tmFilterEffectValue;
+
+                    // special case for halfCosOscillation
+                    if (params.animated[effect].animType === "halfCosOscillation") {
+                        if (params.animated[effect].val1 !== animeInfo.tmFilterEffectValue) {
+                            params.animated[effect].val2 = params.animated[effect].val1;
+                            params.animated[effect].val1 = animeInfo.tmFilterEffectValue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function _assignFilters(placeable, filters, bulkLoading = false) {
         if (filters == null || placeable == null) { return; }
         // Assign all filters to the placeable
-        filters.forEach((filterInfo) => {
+        let animeInfos = placeable.getFlag("tokenmagic", "animeInfo");
+        for (const filterInfo of filters) {
+            // if bulkloading is on, we update with terminal value if it exists
+            if (bulkLoading) {
+                let params = filterInfo.tmFilters.tmParams;
+                _loadPersistedValues(params, animeInfos);
+            }
             _assignFilter(placeable, filterInfo);
-        });
+        }
     };
 
     function _assignFilter(placeable, filterInfo) {
@@ -625,15 +690,15 @@ export function TokenMagic() {
         setFilter(placeable, filter);
     }
 
-    function _loadFilters(placeables) {
+    function _loadFilters(placeables, bulkLoading = true) {
         if (!(placeables == null)) {
-            placeables.forEach((placeable) => {
-                _singleLoadFilters(placeable);
+            placeables.slice().reverse().forEach((placeable) => {
+                _singleLoadFilters(placeable, bulkLoading);
             });
         }
     };
 
-    function _singleLoadFilters(placeable) {
+    function _singleLoadFilters(placeable, bulkLoading = false) {
 
         let placeableType = placeable._TMFXgetPlaceableType();
         if (placeableType === PlaceableType.TEMPLATE) {
@@ -650,7 +715,7 @@ export function TokenMagic() {
                 // get the first filterId to assign tmfxPreset
                 placeable.data.tmfxPreset = filters[0].tmFilters.tmFilterId;
             }
-            _assignFilters(placeable, filters);
+            _assignFilters(placeable, filters, bulkLoading);
         }
         placeable.loadingRequest = false;
     };
@@ -718,36 +783,51 @@ export function TokenMagic() {
         var filters = placeable.getFlag("tokenmagic", "filters");
         if (filters == null) { return; }
 
-        // Handling deleted filters
-        for (let anime of Anime.getAnimeMap().values()) {
-            var foundFilter = false;
-            filters.forEach((filterFlag) => {
-                if (anime.puppet.filterId === filterFlag.tmFilters.tmFilterId
-                    && anime.puppet.filterInternalId === filterFlag.tmFilters.tmFilterInternalId
-                    && anime.puppet.placeableId === filterFlag.tmFilters.tmParams.placeableId) {
-                    foundFilter = true;
-                }
-            });
+        // CROSS-RESEARCH between the anime map and tokenmagic flags to add, delete or update filters on this placeable
 
-            if (!foundFilter) {
-                Anime.removeAnimationByFilterId(data._id, anime.puppet.filterId);
-                this._clearImgFiltersByPlaceable(placeable, anime.puppet.filterId);
+        // we begin by detecting deleted filters
+        for (let anime of Anime.getAnimeMap().values()) {
+            // we test all the animes that are supposed to be on the placeable
+            if (anime.puppet.placeableId === placeable.id) {
+                // is the animation present in the tokenmagic flags for this placeable ?
+                var foundFilter = false;
+                filters.forEach((filterFlag) => {
+                    if (anime.puppet.filterId === filterFlag.tmFilters.tmFilterId
+                        && anime.puppet.filterInternalId === filterFlag.tmFilters.tmFilterInternalId
+                        && anime.puppet.placeableId === filterFlag.tmFilters.tmParams.placeableId) {
+                        // we find it !
+                        foundFilter = true;
+                    }
+                });
+
+                // Not found, the animation is removed from the AnimeMap as well as the filter on the placeable
+                if (!foundFilter) {
+                    Anime.removeAnimationByFilterId(data._id, anime.puppet.filterId);
+                    this._clearImgFiltersByPlaceable(placeable, anime.puppet.filterId);
+                }
             }
         }
 
+        // we test each tokenmagic filter flag in the placeable
         filters.forEach((filterFlag) => {
             if (filterFlag.tmFilters.hasOwnProperty("tmParams")) {
+                // we get the puppets in anime corresponding to this placeable
                 var puppets = Anime.getPuppetsByParams(filterFlag.tmFilters.tmParams);
                 if (puppets.length > 0) {
-                    // Handling modified filters
+                    // we found corresponding filters
                     for (const puppet of puppets) {
+                        // we update if needed
                         if (!_fxPseudoEqual(filterFlag.tmFilters.tmParams, puppet)) {
-                            puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
-                            puppet.normalizeTMParams();
+                            if (!puppet.hasOwnProperty("updateId")
+                                || (puppet.hasOwnProperty("updateId")
+                                    && puppet.updateId !== filterFlag.tmFilters.tmParams.updateId)) {
+                                puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
+                                puppet.normalizeTMParams();
+                            }
                         }
                     }
                 } else {
-                    // Handling new filters
+                    // this is a new filter, we assign it to the placeable
                     _assignFilter(placeable, filterFlag);
                 }
 
@@ -760,6 +840,21 @@ export function TokenMagic() {
         if (placeable == null) { return; }
 
         var filterById = (filterId != null && typeof filterId === "string");
+
+        function destroyClearedFilters(theFilters) {
+            if (theFilters instanceof Array) {
+                var tmFilters = theFilters.filter(filter =>
+                    filterById
+                        ? filter.hasOwnProperty("filterId") && filter.filterId === filterId
+                        : filter.hasOwnProperty("filterId")
+                );
+
+                for (const filter of tmFilters) {
+                    filter.enabled = false;
+                    filter.destroy();
+                }
+            }
+        };
 
         function filterTheFiltering(theFilters) {
             if (theFilters instanceof Array) {
@@ -775,6 +870,7 @@ export function TokenMagic() {
 
         var sprite = placeable._TMFXgetSprite();
         if (sprite != null) {
+            destroyClearedFilters(sprite.filters);
             sprite.filters = filterTheFiltering(sprite.filters);
         }
     };
@@ -1187,20 +1283,30 @@ function initSocketListener() {
 
         if (data == null || !data.hasOwnProperty("tmAction")) { return; }
 
+        async function updateFlags(targetFlag) {
+            // getting the scene coming from the socket
+            var scene = game.scenes.get(data.tmViewedScene);
+            if (scene == null) return;
+
+            // preparing flag data (with -= if the data is null)
+            var updateData;
+            if (data.tmFlag == null) updateData = { [`flags.tokenmagic.-=${targetFlag}`]: null }
+            else updateData = { [`flags.tokenmagic.${targetFlag}`]: data.tmFlag };
+            updateData["_id"] = data.tmPlaceableId;
+
+            // updating the placeable in the scene
+            await scene.updateEmbeddedEntity(data.tmPlaceableType, updateData);
+        }
+
         switch (data.tmAction) {
             case SocketAction.SET_FLAG:
                 // getting the scene coming from the socket
-                var scene = game.scenes.get(data.tmViewedScene);
-                if (scene == null) return;
+                await updateFlags(`filters`);
+                break;
 
-                // preparing flag data (with -= if the data is null)
-                var updateData;
-                if (data.tmFlag == null) updateData = { [`flags.tokenmagic.-=filters`]: null }
-                else updateData = { [`flags.tokenmagic.filters`]: data.tmFlag };
-                updateData["_id"] = data.tmPlaceableId;
-
-                // updating the placeable in the scene
-                await scene.updateEmbeddedEntity(data.tmPlaceableType, updateData);
+            case SocketAction.SET_ANIME_FLAG:
+                // getting the scene coming from the socket
+                await updateFlags(`animeInfos`);
                 break;
         }
     });

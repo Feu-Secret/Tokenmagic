@@ -3,14 +3,14 @@
     "",
     "\\tokenmagic",
     "\\tokenmagic\\fx",
+    "\\tokenmagic\\fx\\filters",
+    "\\tokenmagic\\fx\\filters\\proto",
     "\\tokenmagic\\fx\\glsl",
     "\\tokenmagic\\fx\\glsl\\fragmentshaders",
-    "\\tokenmagic\\lang",
-    "\\tokenmagic\\migration",
     "\\tokenmagic\\module",
-    "\\tokenmagic\\module\\proto",
+    "\\tokenmagic\\module\\autoTemplate",
     "\\tokenmagic\\updates"
   ],
-  "SelectedNode": "\\tokenmagic\\module.json",
+  "SelectedNode": "\\tokenmagic\\fx\\filters\\FilterPolymorph.js",
   "PreviewInSolutionExplorer": false
 }

@@ -8,6 +8,14 @@ export class FilterTransform extends PIXI.Filter {
     constructor(params) {
         let {
             rotation,
+            twRadiusPercent,
+            twAngle,
+            twRotation,
+            bpRadiusPercent,
+            bpStrength,
+            spRadiusPercent,
+            spStrength,
+            scale,
             scaleX,
             scaleY,
             pivotX,
@@ -24,6 +32,14 @@ export class FilterTransform extends PIXI.Filter {
 
         Object.assign(this, {
             rotation,
+            twRadiusPercent,
+            twAngle,
+            twRotation,
+            bpRadiusPercent,
+            bpStrength,
+            spRadiusPercent,
+            spStrength,
+            scale,
             scaleX,
             scaleY,
             pivotX,
@@ -48,6 +64,55 @@ export class FilterTransform extends PIXI.Filter {
 
     set rotation(value) {
         this.uniforms.rotation = value;
+    }
+
+    get twRadiusPercent() {
+        return this.uniforms.twRadius*200;
+    }
+
+    set twRadiusPercent(value) {
+        this.uniforms.twRadius = value/200;
+    }
+
+    get twAngle() {
+        return this.uniforms.twAngle;
+    }
+
+    set twAngle(value) {
+        this.uniforms.twAngle = value;
+    }
+
+    get twRotation() {
+        return this.uniforms.twAngle * (180 / Math.PI);
+    }
+
+    set twRotation(value) {
+        this.uniforms.twAngle = value * (Math.PI / 180);
+    }
+
+    get bpRadiusPercent() {
+        return this.uniforms.bpRadius*200;
+    }
+
+    set bpRadiusPercent(value) {
+        this.uniforms.bpRadius = value/200;
+    }
+
+    get bpStrength() {
+        return this.uniforms.bpStrength;
+    }
+
+    set bpStrength(value) {
+        this.uniforms.bpStrength = value;
+    }
+
+    get scale() {
+        // a little hack (we get only x)
+        return this.uniforms.scale[0];
+    }
+
+    set scale(value) {
+        this.uniforms.scale[1] = this.uniforms.scale[0] = value;
     }
 
     get scaleX() {
@@ -101,6 +166,12 @@ export class FilterTransform extends PIXI.Filter {
 
 FilterTransform.defaults = {
     rotation: 0.0,
+    twRadiusPercent: 0,
+    twAngle: 0,
+    bpRadiusPercent: 0,
+    bpStrength: 0,
+    spRadiusPercent: 0,
+    spStrength: 0,
     scaleX: 1,
     scaleY: 1,
     pivotX: 0.5,
