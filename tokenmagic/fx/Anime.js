@@ -110,9 +110,10 @@ export class Anime {
     }
 
     async persistTerminatedEffect(effect) {
+        if (!(this.puppet.filterOwner === game.data.userId)) { return; }
+
         let animeInfo;
         let doInit = true;
-
         let flag = this.puppet.targetPlaceable.getFlag("tokenmagic", "animeInfo");
 
         if (flag) {

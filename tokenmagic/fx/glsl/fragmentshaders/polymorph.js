@@ -189,6 +189,17 @@ void main() {
     uvExtra *= mat2(scale,0.,0.,scale);
     uvExtra += vec2(0.5);
 
+    // shortcut to prevent a lot of computation if progress is equal to 0 or 1
+    if (progress == 1.) {
+        gl_FragColor = getToColor(uvExtra);
+        return;
+    }
+
+    if (progress == 0.) {
+        gl_FragColor = getFromColor(vTextureCoord);
+        return;
+    }
+
     if (type <= 1 || type >= 10) {
         result = transition(vTextureCoord, uvExtra);
     } else if (type == 2) {

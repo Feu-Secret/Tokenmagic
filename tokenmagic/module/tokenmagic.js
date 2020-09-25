@@ -1300,13 +1300,11 @@ function initSocketListener() {
 
         switch (data.tmAction) {
             case SocketAction.SET_FLAG:
-                // getting the scene coming from the socket
                 await updateFlags(`filters`);
                 break;
 
             case SocketAction.SET_ANIME_FLAG:
-                // getting the scene coming from the socket
-                await updateFlags(`animeInfos`);
+                await updateFlags(`animeInfo`);
                 break;
         }
     });
