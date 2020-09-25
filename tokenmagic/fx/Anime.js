@@ -12,10 +12,13 @@ export class Anime {
         // Time/synchronization related variables
         this.frameTime = {};
         this.elapsedTime = {};
+        this.loopElapsedTime = {};
         this.loops = {};
+        this.internalLoops = {};
         this.ping = {};
         this.pauseBetweenElapsedTime = {};
         this.pauseBetween = {};
+        this.shutdown = {};
 
         if (!(this.puppet == null)) {
             if (this.puppet.hasOwnProperty("animated")
@@ -39,11 +42,14 @@ export class Anime {
 
     initInternals(effect) {
         this.elapsedTime[effect] = 0;
+        this.loopElapsedTime[effect] = 0;
         this.pauseBetweenElapsedTime[effect] = 0;
         this.loops[effect] = 0;
+        this.internalLoops[effect] = 0;
         this.frameTime[effect] = 0;
         this.pauseBetween[effect] = false;
         this.ping[effect] = false;
+        this.shutdown[effect] = false;
     }
 
     hasInternals(effect) {
@@ -56,7 +62,17 @@ export class Anime {
                 if (this[this.animated[effect].animType] != null) {
                     this[this.animated[effect].animType](effect);
                 }
-                this.elapsedTime[effect] += frameTime;
+                if (this.shutdown[effect]) {
+                    this.animated[effect].active = false;
+                    this.shutdown[effect] = false;
+
+                    // persists the value of an effect which is terminated.
+                    this.persistTerminatedEffect(effect);
+                }
+                else {
+                    this.loopElapsedTime[effect] += frameTime;
+                    this.elapsedTime[effect] += frameTime;
+                }
             }
         }
         this.autoDisableCheck();
@@ -64,49 +80,99 @@ export class Anime {
 
     cycleCheck(effect, frameTime) {
         this.frameTime[effect] = frameTime;
+
         if (this.isPauseBetweenLoop(effect, frameTime)) {
             return false;
         }
-        if (this.elapsedTime[effect] > this.animated[effect].loopDuration) {
-            this.elapsedTime[effect] -= this.animated[effect].loopDuration;
+
+        if (this.loopElapsedTime[effect] > this.animated[effect].loopDuration) {
+            this.loopElapsedTime[effect] -= this.animated[effect].loopDuration;
             this.ping[effect] = true;
+
             if (this.animated[effect].loops != Infinity) {
                 this.loops[effect]++;
+                this.internalLoops[effect]++;
             }
+
             if (this.loops[effect] >= this.animated[effect].loops) {
+                // correction to stop exactly on the target value when the last loop end.
+                this.elapsedTime[effect] = this.internalLoops[effect] * this.animated[effect].loopDuration;
                 this.loops[effect] = 0;
-                return (this.animated[effect].active = false);
-            } else if (this.animated[effect].pauseBetweenDuration > 0) {
+                this.loopElapsedTime[effect] = 0;
+                this.shutdown[effect] = true;
+            }
+            else if (this.animated[effect].pauseBetweenDuration > 0) {
+                this.elapsedTime[effect] = this.animated[effect].loopDuration;
                 this.pauseBetween[effect] = true;
             }
         }
         return true;
     }
 
-    async autoDisableCheck() {
-        // Check of conscience
-        if (this.puppet == null) { return; }
+    async persistTerminatedEffect(effect) {
+        if (!(this.puppet.filterOwner === game.data.userId)) { return; }
 
-        // Only the owner can alter the filter parameters
-        if (!(this.puppet.filterOwner === game.data.userId
-            && (this.puppet.autoDisable || this.puppet.autoDestroy))) { return; }
+        let animeInfo;
+        let doInit = true;
+        let flag = this.puppet.targetPlaceable.getFlag("tokenmagic", "animeInfo");
 
+        if (flag) {
+            // fastest than array.find
+            for (const animeinfo of flag.values()) {
+
+                if (animeinfo.tmFilterId === this.puppet.filterId
+                    && animeinfo.tmFilterInternalId === this.puppet.filterInternalId
+                    && animeinfo.tmFilterEffect === effect) {
+
+                    if (animeinfo && animeinfo instanceof Object) {
+                        animeinfo.tmFilterEffectValue = this.puppet[effect];
+                        doInit = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (doInit) {
+            animeInfo =
+                [{
+                    tmFilterId: this.puppet.filterId,
+                    tmFilterInternalId: this.puppet.filterInternalId,
+                    tmFilterEffect: effect,
+                    tmFilterEffectValue: this.puppet[effect]
+                }];
+
+            if (flag) flag = flag.concat(animeInfo);
+            else flag = animeInfo;
+        }
+
+        flag = duplicate(flag);
+        await this.puppet.targetPlaceable._TMFXsetAnimeFlag(flag);
+    }
+
+    autoDisableCheck() {
+        if (!(this.puppet.autoDisable || this.puppet.autoDestroy)) { return; }
+        if (!(this.puppet.filterOwner === game.data.userId)) { return; }
         if (this.puppet.enabled === false && !this.puppet.autoDestroy) { return; }
 
         if (Object.values(this.animated).every(animeEffect => animeEffect.active === false)) {
+            this.disableOrDestroy();
+        }
+    }
 
-            const placeable = this.puppet.getPlaceable();
+    async disableOrDestroy() {
+        if (this.puppet == null) return;
+        const placeable = this.puppet.targetPlaceable;
+        if (placeable == null) return;
 
-            if (this.puppet.autoDestroy) {
-                await window.TokenMagic.deleteFilters(placeable, this.puppet.filterId);
-            } else {
-                let params = {};
-                params.filterType = this.puppet.filterType;
-                params.filterId = this.puppet.filterId;
-                params.enabled = false;
-
-                await window.TokenMagic.updateFiltersByPlaceable(placeable, [params]);
-            }
+        if (this.puppet.autoDestroy) {
+            await window.TokenMagic.deleteFilters(placeable, this.puppet.filterId);
+        } else {
+            let params = {};
+            params.filterType = this.puppet.filterType;
+            params.filterId = this.puppet.filterId;
+            params.enabled = false;
+            await window.TokenMagic.updateFiltersByPlaceable(placeable, [params]);
         }
     }
 
@@ -151,6 +217,18 @@ export class Anime {
                 false);
     }
 
+    halfColorOscillation(effect) {
+        this.puppet[effect] =
+            Anime.colOscillation(
+                this.elapsedTime[effect],
+                this.animated[effect].loopDuration,
+                this.animated[effect].syncShift,
+                this.animated[effect].val1,
+                this.animated[effect].val2,
+                false,
+                Math.PI);
+    }
+
     syncColorOscillation(effect) {
         this.puppet[effect] =
             Anime.colOscillation(
@@ -174,6 +252,19 @@ export class Anime {
                 false);
     }
 
+    halfCosOscillation(effect) {
+        this.puppet[effect] =
+            Anime.oscillation(
+                this.elapsedTime[effect],
+                this.animated[effect].loopDuration,
+                this.animated[effect].syncShift,
+                this.animated[effect].val1,
+                this.animated[effect].val2,
+                Math.cos,
+                false,
+                Math.PI);
+    }
+
     sinOscillation(effect) {
         this.puppet[effect] =
             Anime.oscillation(
@@ -184,6 +275,19 @@ export class Anime {
                 this.animated[effect].val2,
                 Math.sin,
                 false);
+    }
+
+    halfSinOscillation(effect) {
+        this.puppet[effect] =
+            Anime.oscillation(
+                this.elapsedTime[effect],
+                this.animated[effect].loopDuration,
+                this.animated[effect].syncShift,
+                this.animated[effect].val1,
+                this.animated[effect].val2,
+                Math.sin,
+                false,
+                Math.PI);
     }
 
     chaoticOscillation(effect) {
@@ -295,21 +399,21 @@ export class Anime {
         return [r, g, b];
     }
 
-    static oscillation(elapsed, loopDuration, syncShift, val1, val2, func, isSync) {
+    static oscillation(elapsed, loopDuration, syncShift, val1, val2, func, isSync, xpi = Anime.twoPi) {
         return ((val1 - val2)
-            * (func(Anime.twoPi
+            * (func(xpi
                 * (isSync ? Anime.getSynchronizedTime(loopDuration, syncShift) : ((elapsed / loopDuration) + syncShift)))
                 + 1) / 2) + val2;
     }
 
-    static colOscillation(elapsed, loopDuration, syncShift, val1, val2, isSync) {
+    static colOscillation(elapsed, loopDuration, syncShift, val1, val2, isSync, xpi = Anime.twoPi) {
         const rgbValue1 = Anime.valueToRgb(val1);
         const rgbValue2 = Anime.valueToRgb(val2);
 
         return Anime.rgbToValue(
-            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[0], rgbValue2[0], Math.cos, isSync)),
-            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[1], rgbValue2[1], Math.cos, isSync)),
-            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[2], rgbValue2[2], Math.cos, isSync))
+            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[0], rgbValue2[0], Math.cos, isSync, xpi)),
+            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[1], rgbValue2[1], Math.cos, isSync, xpi)),
+            Math.floor(Anime.oscillation(elapsed, loopDuration, syncShift, rgbValue1[2], rgbValue2[2], Math.cos, isSync, xpi))
         );
     }
 
