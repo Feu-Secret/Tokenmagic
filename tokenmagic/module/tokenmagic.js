@@ -38,7 +38,6 @@ import { Anime } from "../fx/Anime.js";
 import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
 import { emptyPreset } from './constants.js';
-import { enableMeasuredTemplatePrototypeRefresh } from "./proto/PlaceableObjectProto.js";
 import "./proto/PlaceableObjectProto.js";
 
 /*
@@ -149,6 +148,10 @@ export function isAdditivePaddingConfig() {
 
 export function isFilterCachingDisabled() {
     return game.settings.get("tokenmagic", "disableCaching");
+}
+
+export function isVideoDisabled() {
+  return game.settings.get("tokenmagic", "disableVideo");
 }
 
 export var isFurnaceDrawingsActive = () => {
@@ -1400,6 +1403,10 @@ function getAnchor(direction, angle, shapeType) {
 
 function onMeasuredTemplateConfig(data, html) {
 
+    if (!isVideoDisabled()) {
+        html[0].querySelector('.file-picker').dataset.type = 'imagevideo';
+    }
+
     function compare(a, b) {
         if (a.name < b.name) return -1;
         if (a.name > b.name) return 1;
@@ -1465,8 +1472,8 @@ Hooks.on("ready", () => {
     tmfxDataMigration();
     initSocketListener();
     initFurnaceDrawingsException();
-    enableMeasuredTemplatePrototypeRefresh();
     window.TokenMagic = Magic;
+
     Hooks.on("renderMeasuredTemplateConfig", onMeasuredTemplateConfig);
 });
 
@@ -1811,6 +1818,11 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
         data.flags = {};
     }
 
+    // normalizing color to value if needed
+    if (hasTint && typeof data.tmfxTint !== "number") {
+        data.tmfxTint = colorStringToHex(data.tmfxTint);
+    }
+
     // FX to add ?
     if (hasPreset) {
 
@@ -1827,9 +1839,7 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
         };
 
         // Adding tint if needed
-        let tint = data.tmfxTint;
-        if (hasTint && typeof data.tmfxTint !== "number") tint = colorStringToHex(tint);
-        if (hasTint) pstSearch.color = tint;
+        if (hasTint) pstSearch.color = data.tmfxTint;
 
         // Retrieving the preset
         let preset = Magic.getPreset(pstSearch);
@@ -1889,7 +1899,7 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
 
     if (!hasOpacity) data.tmfxTextureAlpha = 1;
     if (!hasTint) data.tmfxTint = null;
-
+    
     let tmfxTemplateData = {
         templateData: {
             opacity: data.tmfxTextureAlpha,
