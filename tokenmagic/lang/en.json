@@ -31,6 +31,8 @@
   "TMFX.settings.disableAnimations.hint": "Check this option if you want to disable FX animations. Requires a foundry reload.",
   "TMFX.settings.disableCaching.name": "Disable filter caching on startup",
   "TMFX.settings.disableCaching.hint": "Check this option if you want to disable filter caching on foundry startup.",
+  "TMFX.settings.disableVideo.name": "Disable video support in templates",
+  "TMFX.settings.disableVideo.hint": "Check this option if you want to disable video support and texture autoresize in templates.",
   "TMFX.settings.autoTemplateEnabled.name": "Enable automatic template effects",
   "TMFX.settings.autoTemplateEnabled.hint": "Disabling this option will disable all automatic template effects. NOTE: Only affects newly placed templates.",
   "TMFX.settings.defaultTemplateOnHover.name": "Default template grid on hover",

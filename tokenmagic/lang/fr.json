@@ -19,6 +19,8 @@
   "TMFX.template.tint": "Teinte de l'Effet:",
   "TMFX.settings.disableCaching.name": "Désactiver la mise en cache des filtres",
   "TMFX.settings.disableCaching.hint": "Cochez cette option pour désactiver la mise en cache des filtres au démarrage de Foundry.",
+  "TMFX.settings.disableVideo.name": "Désactiver la prise en charge des vidéos",
+  "TMFX.settings.disableVideo.hint": "Cochez cette option si vous souhaitez désactiver la prise en charge des vidéos et le recadrage automatique des textures dans les templates.",
   "TMFX.settings.autoTemplateEnabled.name": "Activation automatique des effets",
   "TMFX.settings.autoTemplateEnabled.hint": "Décocher cette option désactivera tous les effets automatiques sur les templates. REMARQUE: affecte uniquement les templates nouvellement placés.",
   "TMFX.settings.defaultTemplateOnHover.name": "Grille sur demande",

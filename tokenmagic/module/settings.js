@@ -132,6 +132,15 @@ export class TokenMagicSettings extends FormApplication {
 			type: Boolean
 		});
 
+		game.settings.register("tokenmagic", "disableVideo", {
+			name: game.i18n.localize("TMFX.settings.disableVideo.name"),
+			hint: game.i18n.localize("TMFX.settings.disableVideo.hint"),
+			scope: "world",
+			config: true,
+			default: false,
+			type: Boolean
+		});
+
 		game.settings.register("tokenmagic", "presets", {
 			name: "Token Magic FX presets",
 			hint: "Token Magic FX presets",
