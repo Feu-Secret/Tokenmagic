@@ -91,13 +91,18 @@
     },
     {
       "lang": "pt-BR",
-      "name": "Português (Brasil)",
+      "name": "PortuguÃªs (Brasil)",
       "path": "lang/pt-BR.json"
     },
     {
       "lang": "es",
       "name": "Spanish",
       "path": "lang/es.json"
+    },
+    {
+      "lang": "ko",
+      "name": "Korean",
+      "path": "lang/ko.json"
     }
   ],
   "socket": true,
