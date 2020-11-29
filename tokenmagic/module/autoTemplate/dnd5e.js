@@ -157,8 +157,19 @@ export class AutoTemplateDND5E {
 		if (!item.hasDamage) {
 			return false;
 		}
-		let dmgSettings = categories[item.data.data.damage.parts[0][1]] || {};
-		let config = dmgSettings[template.data.t];
+
+		let config, dmgSettings;
+
+		// some items/spells have multiple damage types
+		// this loop looks over all the types until it finds one with a valid fx preset
+		for (const [_, dmgType] of item.data.data.damage.parts) {
+			dmgSettings = categories[dmgType] || {};
+			config = dmgSettings[template.data.t];
+
+			if (config && config.preset !== emptyPreset) {
+				break;
+			}
+		}
 		if (!config) {
 			return false;
 		}
