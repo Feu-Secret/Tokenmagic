@@ -16,9 +16,9 @@ varying vec2 vFilterCoord;
 varying vec4 vInputSize;
 varying vec4 vOutputFrame;
 
-float angle = -radians(rotation);
+const float PI = 3.1415927;
 
-vec2 morphing(vec2 uv) {
+vec2 morphing(in vec2 uv) {
     float dist = length(uv);
 
     // twist effect
@@ -43,20 +43,21 @@ vec2 morphing(vec2 uv) {
     return uv;
 }
 
-void transform(out vec2 uv) {
+vec2 transform(in vec2 uv) {
+    float angle = -(PI * rotation * 0.005555555555);
     uv -= pivot;
-    uv *= mat2(cos(angle),-sin(angle),
-                sin(angle),cos(angle));
-    uv *= mat2(scale.x,0.0,
-                0.0,scale.y);
+    uv *= mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+    uv *= mat2(scale.x, 0.0, 0.0, scale.y);
     uv = morphing(uv);
     uv += pivot;
+
+    return uv;
 }
 
 void main() {
     vec2 uv = vFilterCoord + translation;
-    transform(uv);
-    vec2 mappedCoord = (uv*vOutputFrame.zw) / vInputSize.xy;
+    uv = transform(uv);
+    vec2 mappedCoord = (uv * vOutputFrame.zw) / vInputSize.xy;
     vec4 pixel = texture2D(uSampler,clamp(mappedCoord, filterClamp.xy, filterClamp.zw));
     gl_FragColor = pixel;
 }

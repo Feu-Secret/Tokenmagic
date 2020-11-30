@@ -11,21 +11,21 @@ Icon:
 //
 let filterType;
 (async () => {
-  let msgtoken = ``;
-  if (canvas.tokens.controlled != 0) {
-    msgtoken = `<h2>Token Selected: <span style="color: darkred">${canvas.tokens.controlled[0].name}</span></h2>`;
-    filterType = 'selected';
-  } else if (game.user.targets.size != 0) {
-    let t = game.user.targets.values().next().value;
-    msgtoken = `<h2>Token Targered: <span style="color: darkred">${t.name}</span></h2>`;
-    filterType = 'targered';
-  } else {    
-    ui.notifications.warn("Select a token!");
-    return;
-  }
-  
-  let template =
-      `<style>
+    let msgtoken = ``;
+    if (canvas.tokens.controlled != 0) {
+        msgtoken = `<h2>Token Selected: <span style="color: darkred">${canvas.tokens.controlled[0].name}</span></h2>`;
+        filterType = 'selected';
+    } else if (game.user.targets.size != 0) {
+        let t = game.user.targets.values().next().value;
+        msgtoken = `<h2>Token Targered: <span style="color: darkred">${t.name}</span></h2>`;
+        filterType = 'targered';
+    } else {
+        ui.notifications.warn("Select a token!");
+        return;
+    }
+
+    let template =
+        `<style>
   #tokenmagic-quickpreview header {
     background: #9c0972;
     border-radius: 0;    
@@ -124,84 +124,84 @@ let filterType;
     ${await loadMacros(filterType)}
   </script>`;
 
-  new Dialog({
-    title: `Token Magic - ${macroVersion}`,
-    content: template,
-    buttons: {
-        yes: {
-            icon: "<i class='fas fa-check'></i>",
-            label: "Apply",
-            callback: () => {}
+    new Dialog({
+        title: `Token Magic - ${macroVersion}`,
+        content: template,
+        buttons: {
+            yes: {
+                icon: "<i class='fas fa-check'></i>",
+                label: "Apply",
+                callback: () => { }
+            },
+            clear: {
+                icon: "<i class='fas fa-skull'></i>",
+                label: "Clear",
+                callback: async (html) => {
+                    removeOnSelected(html);
+                }
+            }
         },
-        clear: {
-            icon: "<i class='fas fa-skull'></i>",
-            label: "Clear",
-            callback: async (html) => {
-              removeOnSelected(html);
-            }                        
+        default: "yes",
+        close: html => {
         }
-    },
-    default: "yes",
-    close: html => {
-    }
-  }, { id: 'tokenmagic-quickpreview'} ).render(true);  
-  //} ).render(true);  
+    }, { id: 'tokenmagic-quickpreview' }).render(true);
+    //} ).render(true);  
 })()
 
 // ==============================
 // Main
 // ==============================
 
-  
+
 // ==============================
 // Common Functions 
 // ==============================
-async function removeOnSelected() {  
-  await TokenMagic.deleteFilters(_token);
-  await TokenMagic.deleteFiltersOnSelected(); // Delete all filters on the selected tokens/tiles
+async function removeOnSelected() {
+    await TokenMagic.deleteFilters(_token);
+    await TokenMagic.deleteFiltersOnSelected(); // Delete all filters on the selected tokens/tiles
 }
 
-async function loadMacroButton() {  
-  const list_compendium = await game.packs.filter(p=>p.entity=='Macro' );      
-  const inside = await list_compendium.filter( p=>p.metadata.label==MyCompendium )[0].getContent();      
-  let msg = ``;
-  let tmp;
-  let counter = 1;
+async function loadMacroButton() {
+    const list_compendium = await game.packs.filter(p => p.entity == 'Macro');
+    const inside = await list_compendium.filter(p => p.metadata.label == MyCompendium)[0].getContent();
+    let msg = ``;
+    let tmp;
+    let counter = 1;
 
-  inside.map((el) => {      
-    tmp = el.data.name.split(' ').join('');    
-    msg+=`<li class="meuitem"><input type="radio" name="Type" id="${tmp.toLowerCase()}" value="${tmp}"><label for="${tmp.toLowerCase()}" onclick="effect${counter}(1)">${tmp}</label></li>`;
-    counter+=1;
-  });  
-  
-  return msg;
+    inside.map((el) => {
+        tmp = el.data.name.split(' ').join('');
+        msg += `<li class="meuitem"><input type="radio" name="Type" id="${tmp.toLowerCase()}" value="${tmp}"><label for="${tmp.toLowerCase()}" onclick="effect${counter}(1)">${tmp}</label></li>`;
+        counter += 1;
+    });
+
+    return msg;
 }
 
 async function loadMacros(filterType) {
-  const list_compendium = await game.packs.filter(p=>p.entity=='Macro' );      
-  const inside = await list_compendium.filter( p=>p.metadata.label==MyCompendium )[0].getContent();      
-  let msg = ``;
-  let tmp;
-  let counter = 1;
+    const list_compendium = await game.packs.filter(p => p.entity == 'Macro');
+    const inside = await list_compendium.filter(p => p.metadata.label == MyCompendium)[0].getContent();
+    let msg = ``;
+    let tmp;
+    let counter = 1;
 
-  inside.map((el) => {    
-    let macro = el.data.command;
-    if (filterType=='selected') {
-      macro = macro.replace("OnTargeted", "OnSelected");
-    } else {
-      macro = macro.replace("OnSelected", "OnTargeted");
-    }  
-    tmp = el.data.name.split(' ').join('');    
-    msg+=`async function effect${counter}() {`;
-    msg+=`await removeOnSelected();`;
-    msg+=`${macro}`;
-    msg+=`}`;
-    counter+=1;
-  }); 
-  return msg;
+    inside.map((el) => {
+        let macro = el.data.command;
+        if (filterType == 'selected') {
+            macro = macro.replace("OnTargeted", "OnSelected");
+        } else {
+            macro = macro.replace("OnSelected", "OnTargeted");
+        }
+        tmp = el.data.name.split(' ').join('');
+        msg += `async function effect${counter}() {`;
+        msg += `await removeOnSelected();`;
+        msg += `${macro}`;
+        msg += `}`;
+        counter += 1;
+    });
+    return msg;
 }
 
 function removeAll() {
-  const clean = `async function removeOnSelected() {await TokenMagic.deleteFilters(_token);await TokenMagic.deleteFiltersOnSelected()}`;  
-  return clean;
+    const clean = `async function removeOnSelected() {await TokenMagic.deleteFilters(_token);await TokenMagic.deleteFiltersOnSelected()}`;
+    return clean;
 }

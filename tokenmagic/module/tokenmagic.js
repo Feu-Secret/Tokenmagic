@@ -34,6 +34,7 @@ import { FilterTransform } from "../fx/filters/FilterTransform.js";
 import { FilterSplash } from "../fx/filters/FilterSplash.js";
 import { FilterPolymorph } from "../fx/filters/FilterPolymorph.js";
 import { FilterXFire } from "../fx/filters/FilterXFire.js";
+import { FilterSprite } from "../fx/filters/FilterSprite.js";
 import { Anime } from "../fx/Anime.js";
 import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
@@ -88,6 +89,7 @@ export const FilterType = {
     splash: FilterSplash,
     polymorph: FilterPolymorph,
     xfire: FilterXFire,
+    sprite: FilterSprite,
 };
 
 export const PlaceableType = {

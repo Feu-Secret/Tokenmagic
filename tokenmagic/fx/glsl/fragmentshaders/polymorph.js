@@ -4,8 +4,6 @@ precision mediump float;
 uniform float progress;
 uniform float magnify;
 uniform int type;
-uniform vec2 imgToTex;
-uniform vec2 texShift;
 uniform vec4 filterClamp;
 uniform vec4 filterClampTarget;
 varying vec4 vInputSize;
