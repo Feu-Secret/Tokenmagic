@@ -1,9 +1,10 @@
 import { forceField } from '../glsl/fragmentshaders/forcefield.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterForceField extends PIXI.Filter {
+export class FilterForceField extends CustomFilter {
     constructor(params) {
         let {
             time,
@@ -190,40 +191,20 @@ export class FilterForceField extends PIXI.Filter {
 
     // override
     calculatePadding() {
-        return;
-    }
+        super.calculatePadding();
 
-    apply(filterManager, input, output, clear) {
+        this.recalculatePadding = false;
 
-        if (!this.dummy) {
+        let placeablePadding = this.targetPlaceable._TMFXgetPlaceablePadding();
+
+        this.recalculatePadding = true;
+
+        if (this.currentPadding >= placeablePadding) this._ratio = 1;
+        else {
             let imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
-
-            if (this.gridPadding > 0) {
-                const toSize = (canvas.dimensions.size >= imgSize
-                    ? canvas.dimensions.size - imgSize
-                    : imgSize % canvas.dimensions.size);
-
-                this.currentPadding =
-                    (this.targetPlaceable.worldTransform.a * (this.gridPadding - 1)
-                        * canvas.dimensions.size)
-                + ((toSize * this.targetPlaceable.worldTransform.a) / 2);
-
-            } else {
-
-                this.currentPadding =
-                    this.placeableImg.parent.worldTransform.a
-                    * this.rawPadding;
-            }
-
-            const placeablePadding = this.targetPlaceable._TMFXgetPlaceablePadding();
-
-            if (this.currentPadding >= placeablePadding) this._ratio = 1;
-            else {
-                imgSize *= this.targetPlaceable.worldTransform.a;
-                this._ratio = (imgSize + 2 * this.currentPadding) / (imgSize + 2 * placeablePadding);
-            }
+            imgSize *= this.targetPlaceable.worldTransform.a;
+            this._ratio = (imgSize + 2 * this.currentPadding) / (imgSize + 2 * placeablePadding);
         }
-        filterManager.applyFilter(this, input, output, clear);
     }
 }
 

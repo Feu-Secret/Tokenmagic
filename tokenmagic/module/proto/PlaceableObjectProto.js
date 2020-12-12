@@ -74,6 +74,8 @@ PlaceableObject.prototype._TMFXgetPlaceablePadding = function () {
     if (filters instanceof Array) {
         // "for (const) of" has performance advantage
         for (const filter of filters) {
+            if (!filter.enabled)
+                continue;
             if (canvas.app.renderer.filter.useMaxPadding) {
                 accPadding = Math.max(accPadding, filter.padding);
             } else {

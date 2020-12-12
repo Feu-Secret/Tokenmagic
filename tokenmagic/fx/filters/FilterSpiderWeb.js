@@ -1,9 +1,10 @@
 import { spiderWeb } from '../glsl/fragmentshaders/spiderweb.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterSpiderWeb extends PIXI.Filter {
+export class FilterSpiderWeb extends CustomFilter {
 
     constructor(params) {
         let {

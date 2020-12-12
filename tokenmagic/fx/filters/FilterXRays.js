@@ -1,9 +1,10 @@
 import { xRay } from '../glsl/fragmentshaders/xray.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterXRays extends PIXI.Filter {
+export class FilterXRays extends CustomFilter {
 
     constructor(params) {
         let {

@@ -7,14 +7,26 @@ PIXI.Filter.prototype.setTMParams = function (params) {
     this.padding = 0;
     this.gridPadding = 0;
     this.rawPadding = 0;
+    this.localPadding = 0;
+    this.currentPadding = 0;
+    this.recalculatePadding = true;
     this.dummy = false;
     objectAssign(this, params);
-    this.autoFit = false;
     if (!this.dummy) {
         this.rawPadding = this.padding;
         this.originalPadding = Math.max(this.padding, getMinPadding());
         this.assignPlaceable();
         this.activateTransform();
+        Object.defineProperty(this, "padding", {
+            get: function () {
+                if (this.recalculatePadding)
+                    this.calculatePadding();
+                return this.currentPadding;
+            },
+            set: function () { /* ignore */ }
+        });
+    } else {
+        this.apply = function() { }
     }
 }
 
@@ -27,23 +39,26 @@ PIXI.Filter.prototype.getPlaceableType = function () {
 }
 
 PIXI.Filter.prototype.calculatePadding = function () {
+    const scale = this.targetPlaceable.worldTransform.a;
+    const rotation = this.placeableImg.transform.rotation;
+
     if (this.gridPadding > 0) {
         const imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
         const toSize = (canvas.dimensions.size >= imgSize
             ? canvas.dimensions.size - imgSize
             : imgSize % canvas.dimensions.size);
 
-        this.currentPadding =
-            (this.placeableImg.parent.worldTransform.a * (this.gridPadding - 1)
-                * canvas.dimensions.size)
-            + ((toSize * this.placeableImg.parent.worldTransform.a) / 2);
+        this.localPadding =
+            (scale * (this.gridPadding - 1)
+                * canvas.dimensions.size) + ((toSize * scale) / 2);
 
     } else {
 
-        this.currentPadding =
-            this.placeableImg.parent.worldTransform.a
-            * this.originalPadding;
+        this.localPadding = scale * this.rawPadding;
     }
+
+    this.currentPadding = (this.localPadding + scale * (this.originalPadding - this.rawPadding)) *
+        (Math.abs(Math.sin(rotation)) + Math.abs(Math.cos(rotation)));
 }
 
 PIXI.Filter.prototype.assignPlaceable = function () {
@@ -57,19 +72,19 @@ PIXI.Filter.prototype.assignPlaceable = function () {
 PIXI.Filter.prototype.activateTransform = function () {
     this.preComputation = this.filterTransform;
     this.filterTransform();
+
+    const apply = this.apply;
+    this.apply = function () {
+        if ("handleTransform" in this) {
+            this.handleTransform();
+        }
+        return apply.apply(this, arguments);
+    }
 }
 
 PIXI.Filter.prototype.filterTransform = function () {
-    this.calculatePadding();
-
     if (this.hasOwnProperty("zIndex")) {
         this.placeableImg.parent.zIndex = this.zIndex;
-    }
-
-    this.padding = this.currentPadding;
-
-    if ("handleTransform" in this) {
-        this.handleTransform();
     }
 }
 

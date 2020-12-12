@@ -6,6 +6,7 @@ precision mediump float;
 attribute vec2 aVertexPosition;
 
 uniform mat3 projectionMatrix;
+uniform mat3 filterMatrix;
 uniform mat3 targetUVMatrix;
 
 varying vec2 vTextureCoord;
@@ -35,7 +36,7 @@ void main(void)
 	gl_Position = filterVertexPosition();
 	vTextureCoord = filterTextureCoord();
 	vTextureCoordExtra = (targetUVMatrix * vec3(vTextureCoord, 1.0)).xy;
-    vFilterCoord = vTextureCoord * inputSize.xy / outputFrame.zw;
+    vFilterCoord = (filterMatrix * vec3(vTextureCoord, 1.0)).xy;
     vInputSize = inputSize;
     vOutputFrame = outputFrame;
     vTargetUVMatrix = targetUVMatrix;

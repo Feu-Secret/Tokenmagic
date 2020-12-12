@@ -1,9 +1,10 @@
 import { sprite } from '../glsl/fragmentshaders/sprite.js';
 import { customVertex2DSampler2 } from '../glsl/vertexshaders/customvertex2DSampler2.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterSprite extends PIXI.Filter {
+export class FilterSprite extends CustomFilter {
 
     constructor(params) {
         let {
@@ -229,23 +230,21 @@ export class FilterSprite extends PIXI.Filter {
 
     // override
     apply(filterManager, input, output, clear) {
-        if (!this.dummy) {
+        const targetSprite = this.targetSprite;
+        const tex = targetSprite._texture;
 
-            const targetSprite = this.targetSprite;
-            const tex = targetSprite._texture;
+        if (tex.valid) {
+            if (!tex.uvMatrix) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
+            tex.uvMatrix.update();
 
-            if (tex.valid) {
-                if (!tex.uvMatrix) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
-                tex.uvMatrix.update();
-
-                this.uniforms.uSamplerTarget = tex;
-                this.uniforms.targetUVMatrix =
-                    filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite)
-                        .prepend(tex.uvMatrix.mapCoord);
-                this.uniforms.filterClampTarget = tex.uvMatrix.uClampFrame;
-            }
+            this.uniforms.uSamplerTarget = tex;
+            this.uniforms.targetUVMatrix =
+                filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite)
+                    .prepend(tex.uvMatrix.mapCoord);
+            this.uniforms.filterClampTarget = tex.uvMatrix.uClampFrame;
         }
-        filterManager.applyFilter(this, input, output, clear);
+
+        super.apply(filterManager, input, output, clear);
     }
 
     // override

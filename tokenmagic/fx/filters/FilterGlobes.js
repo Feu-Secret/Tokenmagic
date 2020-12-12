@@ -1,9 +1,10 @@
 import { globes } from '../glsl/fragmentshaders/globes.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterGlobes extends PIXI.Filter {
+export class FilterGlobes extends CustomFilter {
 
     constructor(params) {
         let {
