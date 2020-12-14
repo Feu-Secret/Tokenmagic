@@ -58,7 +58,7 @@ PIXI.Filter.prototype.calculatePadding = function () {
     }
 
     this.currentPadding = (this.localPadding + scale * (this.originalPadding - this.rawPadding)) *
-        (Math.abs(Math.sin(rotation)) + Math.abs(Math.cos(rotation)));
+        (this.sticky ? Math.abs(Math.sin(rotation)) + Math.abs(Math.cos(rotation)) : 1);
 }
 
 PIXI.Filter.prototype.assignPlaceable = function () {

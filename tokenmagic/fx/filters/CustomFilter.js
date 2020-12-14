@@ -20,6 +20,10 @@ export class CustomFilter extends PIXI.Filter {
         const localBounds = target.getLocalBounds(_tempRect).pad(localPadding);
 
         filterMatrix.prepend(worldTransform);
+
+        if (!this.sticky)
+            filterMatrix.rotate(target.transform.rotation);
+
         filterMatrix.translate(-localBounds.x, -localBounds.y);
         filterMatrix.scale(1.0 / localBounds.width, 1.0 / localBounds.height);
 
