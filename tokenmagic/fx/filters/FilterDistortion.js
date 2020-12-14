@@ -13,16 +13,22 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
         // Configuring distortion sprite
         this.sprite = displacementSpriteMask;
         this.wrapMode = PIXI.WRAP_MODES.REPEAT;
+        this.position = new PIXI.Point();
+        this.skew = new PIXI.Point();
+        this.pivot = new PIXI.Point();
         this.anchorSet = 0.5;
         this.transition = null;
         this.padding = 15; // conf
         this.enabled = false;
+        this.maskSpriteX = 0;
+        this.maskSpriteY = 0;
         this.maskSpriteScaleX = 4;
         this.maskSpriteScaleY = 4;
         this.maskSpriteSkewX = 0;
         this.maskSpriteSkewY = 0;
         this.maskSpriteRotation = 0;
         this.zOrder = 4000;
+        this.sticky = true;
 
         this.animated = {};
         this.setTMParams(params);
@@ -31,65 +37,107 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
             this.normalizeTMParams();
             this.sprite.anchor.set(this.anchorSet);
             this.sprite.texture.baseTexture.wrapMode = this.wrapMode;
-            this.placeableImg.addChild(this.sprite);
-            this.sprite.x = this.placeableImg.width / 2;
-            this.sprite.y = this.placeableImg.height / 2;
         }
     }
 
     set maskSpriteX(value) {
-        this.maskSprite.x = value;
+        this.position.x = value;
     }
 
     set maskSpriteY(value) {
-        this.maskSprite.y = value;
+        this.position.y = value;
     }
 
     get maskSpriteX() {
-        return this.maskSprite.x;
+        return this.position.x;
     }
 
     get maskSpriteY() {
-        return this.maskSprite.y;
+        return this.position.y;
     }
 
     set maskSpriteScaleX(value) {
-        this.sprite.scale.x = value;
+        this.scale.x = value;
     }
 
     set maskSpriteScaleY(value) {
-        this.sprite.scale.y = value;
+        this.scale.y = value;
     }
 
     get maskSpriteScaleX() {
-        return this.sprite.scale.x;
+        return this.scale.x;
     }
 
     get maskSpriteScaleY() {
-        return this.sprite.scale.y;
+        return this.scale.y;
     }
 
     set maskSpriteRotation(value) {
-        this.sprite.rotation = value;
+        this.rotation = value;
     }
 
     get maskSpriteRotation() {
-        return this.sprite.rotation;
+        return this.rotation;
     }
 
     set maskSpriteSkewX(value) {
-        this.sprite.skew.x = value;
+        this.skew.x = value;
     }
 
     get maskSpriteSkewX() {
-        return this.sprite.skew.x;
+        return this.skew.x;
     }
 
     set maskSpriteSkewY(value) {
-        this.sprite.skew.y = value;
+        this.skew.y = value;
     }
 
     get maskSpriteSkewY() {
-        return this.sprite.skew.y;
+        return this.skew.y;
+    }
+
+    set maskSpritePivotX(value) {
+        this.pivot.x = value;
+    }
+
+    get maskSpritePivotX() {
+        return this.pivot.x;
+    }
+
+    set maskSpritePivotY(value) {
+        this.pivot.y = value;
+    }
+
+    get maskSpritePivotY() {
+        return this.pivot.y;
+    }
+
+    handleTransform() {
+        this.sprite.position.x = this.targetPlaceable.x + this.placeableImg.width / 2 + this.position.x;
+        this.sprite.position.y = this.targetPlaceable.y + this.placeableImg.height / 2 + this.position.y;
+        this.sprite.skew.x = this.skew.x;
+        this.sprite.skew.x = this.skew.y;
+        this.sprite.rotation = this.rotation;
+        this.sprite.pivot.x = this.pivot.x;
+        this.sprite.pivot.y = this.pivot.y;
+
+        if (this.sticky)
+            this.sprite.rotation += this.placeableImg.rotation;
+
+        this.sprite.transform.updateTransform(canvas.stage.transform);
+    }
+
+    apply(filterManager, input, output, clear) {
+        this.uniforms.filterMatrix = filterManager.calculateSpriteMatrix(this.maskMatrix, this.maskSprite);
+        this.uniforms.scale.x = this.scale.x;
+        this.uniforms.scale.y = this.scale.y;
+
+        const wt = this.maskSprite.worldTransform;
+        this.uniforms.rotation[0] = wt.a;
+        this.uniforms.rotation[1] = wt.b;
+        this.uniforms.rotation[2] = wt.c;
+        this.uniforms.rotation[3] = wt.d;
+
+        filterManager.applyFilter(this, input, output, clear);
     }
 }
