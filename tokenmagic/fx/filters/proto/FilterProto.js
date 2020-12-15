@@ -5,17 +5,15 @@ import { CustomFilter } from '../CustomFilter.js';
 PIXI.Filter.prototype.setTMParams = function (params) {
     this.autoDisable = false;
     this.autoDestroy = false;
-    this.padding = 0;
     this.gridPadding = 0;
-    this.rawPadding = 0;
     this.boundsPadding = new PIXI.Point(0, 0);
     this.currentPadding = 0;
     this.recalculatePadding = true;
     this.dummy = false;
     objectAssign(this, params);
     if (!this.dummy) {
-        this.rawPadding = this.padding;
-        this.originalPadding = Math.max(this.padding, getMinPadding());
+        this.rawPadding = this.rawPadding ?? this.padding ?? 0;
+        this.originalPadding = Math.max(this.rawPadding, getMinPadding());
         this.assignPlaceable();
         this.activateTransform();
         Object.defineProperty(this, "padding", {
