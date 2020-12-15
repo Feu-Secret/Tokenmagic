@@ -19,11 +19,11 @@ export class FilterZoomBlur extends PIXI.filters.ZoomBlurFilter {
 
     handleTransform() {
         this.center[0] =
-            this.padding +
+            this.boundsPadding.x +
             ((this.placeableImg.localTransform.tx * this.placeableImg.parent.worldTransform.a)
                 * this.placeableImg.parent.data.scale);
         this.center[1] =
-            this.padding +
+            this.boundsPadding.y +
             ((this.placeableImg.localTransform.ty * this.placeableImg.parent.worldTransform.a)
                 * this.placeableImg.parent.data.scale);
         this.radius =
