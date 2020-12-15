@@ -161,14 +161,6 @@ export class FilterForceField extends CustomFilter {
         this.uniforms.discardThreshold = value;
     }
 
-    get _ratio() {
-        return this.uniforms.ratio;
-    }
-
-    set _ratio(value) {
-        this.uniforms.ratio = value;
-    }
-
     get alphaDiscard() {
         return this.uniforms.alphaDiscard;
     }
@@ -186,24 +178,6 @@ export class FilterForceField extends CustomFilter {
     set chromatic(value) {
         if (!(value == null) && typeof value === "boolean") {
             this.uniforms.chromatic = value;
-        }
-    }
-
-    // override
-    calculatePadding() {
-        super.calculatePadding();
-
-        this.recalculatePadding = false;
-
-        let placeablePadding = this.targetPlaceable._TMFXgetPlaceablePadding();
-
-        this.recalculatePadding = true;
-
-        if (this.currentPadding >= placeablePadding) this._ratio = 1;
-        else {
-            let imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
-            imgSize *= this.targetPlaceable.worldTransform.a;
-            this._ratio = (imgSize + 2 * this.currentPadding) / (imgSize + 2 * placeablePadding);
         }
     }
 }
@@ -224,7 +198,6 @@ FilterForceField.defaults = {
     chromatic: false,
     discardThreshold: 0.25,
     alphaDiscard: false,
-    _ratio: 1,
 };
 
 

@@ -14,7 +14,6 @@ uniform float scale;
 uniform float radius;
 uniform float hideRadius;
 uniform float discardThreshold;
-uniform float ratio;
 uniform bool chromatic;
 uniform bool alphaDiscard;
 uniform sampler2D uSampler;
@@ -541,7 +540,7 @@ vec4 galaxy(vec2 suv)
 vec2 getSphere(out float alpha, out float r)
 {
   vec2 tc = vFilterCoord.xy;
-  vec2 p = (-1.0 + 2. * tc) * (1.01 / (radius*ratio));
+  vec2 p = (-1.0 + 2. * tc) * (1.01 / radius);
   r = dot(p,p);
   r > 0.943 ? alpha = max(min(40.*log(1./r),1.),0.) : alpha = 1.;
   float f = (1.0-sqrt(1.0-r))/(r);
@@ -554,7 +553,7 @@ vec2 getSphere(out float alpha, out float r)
 void computeHideAlpha(out float alpha)
 {
   vec2 tc = vFilterCoord.xy;
-  vec2 p = (-1.0 + 2. * tc) * (1.01 / (hideRadius*ratio));
+  vec2 p = (-1.0 + 2. * tc) * (1.01 / hideRadius);
   float r = dot(p,p);
   r > 0.9 ? alpha = 1.-max(min(40.*log(1./r),1.),0.) : alpha = 0.;
 }
