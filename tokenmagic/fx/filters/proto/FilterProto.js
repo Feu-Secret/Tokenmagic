@@ -63,22 +63,15 @@ PIXI.Filter.prototype.calculatePadding = function () {
         this.boundsPadding.x = this.boundsPadding.y = scale * this.rawPadding;
     }
 
-    if (!(this instanceof CustomFilter)) {
-        this.currentPadding = Math.max(this.boundsPadding.x, this.boundsPadding.y);
-    } else if (this.sticky) {
-        this.currentPadding = Math.max(
-            Math.abs(this.boundsPadding.x * cos) + Math.abs(this.boundsPadding.y * sin),
-            Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos)
-        );
-    } else {
-        if (this.placeableType !== PlaceableType.TOKEN) {
-            this.boundsPadding.x += scale * (boundsWidth - width) / 2;
-            this.boundsPadding.y += scale * (boundsHeight - height) / 2;
-        }
-        this.currentPadding = Math.max(this.boundsPadding.x, this.boundsPadding.y);
-    }
+    this.currentPadding = Math.max(
+        Math.abs(this.boundsPadding.x * cos) + Math.abs(this.boundsPadding.y * sin),
+        Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos)
+    ) + scale * (this.originalPadding - this.rawPadding);
 
-    this.currentPadding += scale * (this.originalPadding - this.rawPadding);
+    if (rotation !== 0) {
+        this.boundsPadding.x += scale * (boundsWidth - width) / 2;
+        this.boundsPadding.y += scale * (boundsHeight - height) / 2;
+    }
 }
 
 PIXI.Filter.prototype.assignPlaceable = function () {
