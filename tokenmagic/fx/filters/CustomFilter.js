@@ -15,8 +15,19 @@ export class CustomFilter extends PIXI.Filter {
 
         const worldTransform = PIXI.Matrix.TEMP_MATRIX;
 
+        const localBounds = target.getLocalBounds(_tempRect);
+
         if (this.sticky) {
             worldTransform.copyFrom(target.transform.worldTransform);
+            worldTransform.invert();
+
+            const rotation = target.transform.rotation;
+            const sin = Math.sin(rotation);
+            const cos = Math.cos(rotation);
+            const scaleX = Math.hypot(cos * worldTransform.a + sin * worldTransform.c, cos * worldTransform.b + sin * worldTransform.d);
+            const scaleY = Math.hypot(-sin * worldTransform.a + cos * worldTransform.c, -sin * worldTransform.b + cos * worldTransform.d);
+
+            localBounds.pad(scaleX * this.boundsPadding.x, scaleY * this.boundsPadding.y);
         } else {
             const transform = target.transform;
             worldTransform.a = transform.scale.x;
@@ -26,17 +37,15 @@ export class CustomFilter extends PIXI.Filter {
             worldTransform.tx = transform.position.x - transform.pivot.x * transform.scale.x;
             worldTransform.ty = transform.position.y - transform.pivot.y * transform.scale.y;
             worldTransform.prepend(target.parent.transform.worldTransform);
+            worldTransform.invert();
+
+            const scaleX = Math.hypot(worldTransform.a, worldTransform.b);
+            const scaleY = Math.hypot(worldTransform.c, worldTransform.d);
+
+            localBounds.pad(scaleX * this.boundsPadding.x, scaleY * this.boundsPadding.y);
         }
 
-        worldTransform.invert();
-
         filterMatrix.prepend(worldTransform);
-
-        const localBounds = target.getLocalBounds(_tempRect).pad(
-            Math.hypot(worldTransform.a, worldTransform.b) * this.boundsPadding.x,
-            Math.hypot(worldTransform.c, worldTransform.d) * this.boundsPadding.y
-        );
-
         filterMatrix.translate(-localBounds.x, -localBounds.y);
         filterMatrix.scale(1.0 / localBounds.width, 1.0 / localBounds.height);
 
