@@ -42,47 +42,40 @@ PIXI.Filter.prototype.getPlaceableType = function () {
 
 PIXI.Filter.prototype.calculatePadding = function () {
     const scale = this.targetPlaceable.worldTransform.a;
-    const rotation = this.placeableImg.rotation;
+    const rotation = !(this instanceof CustomFilter) || !this.sticky && this.placeableType !== PlaceableType.TOKEN ?
+        this.placeableImg.rotation : 0;
+    const sin = Math.sin(rotation);
+    const cos = Math.cos(rotation);
     const width = this.placeableImg.width;
     const height = this.placeableImg.height;
-
-    let boundsPadding;
+    const boundsWidth = Math.abs(width * cos) + Math.abs(height * sin);
+    const boundsHeight = Math.abs(width * sin) + Math.abs(height * cos);
 
     if (this.gridPadding > 0) {
-        const imgSize = Math.max(width, height);
-        const toSize = (canvas.dimensions.size >= imgSize
-            ? canvas.dimensions.size - imgSize
-            : imgSize % canvas.dimensions.size);
+        const gridSize = canvas.dimensions.size;
 
-        boundsPadding =
-            (scale * (this.gridPadding - 1)
-                * canvas.dimensions.size) + ((toSize * scale) / 2);
+        this.boundsPadding.x = this.boundsPadding.y =
+            scale * (this.gridPadding - 1) * gridSize;
+
+        this.boundsPadding.x += scale * (gridSize - 1 - (boundsWidth + gridSize - 1) % gridSize) / 2;
+        this.boundsPadding.y += scale * (gridSize - 1 - (boundsHeight + gridSize - 1) % gridSize) / 2;
     } else {
-        boundsPadding = scale * this.rawPadding;
+        this.boundsPadding.x = this.boundsPadding.y = scale * this.rawPadding;
     }
 
     if (!(this instanceof CustomFilter)) {
-        this.boundsPadding.x = boundsPadding;
-        this.boundsPadding.y = boundsPadding;
-        this.currentPadding = boundsPadding;
+        this.currentPadding = Math.max(this.boundsPadding.x, this.boundsPadding.y);
     } else if (this.sticky) {
-        this.boundsPadding.x = boundsPadding;
-        this.boundsPadding.y = boundsPadding;
         this.currentPadding = Math.max(
-            Math.abs(boundsPadding * Math.cos(rotation)) + Math.abs(boundsPadding * Math.sin(rotation)),
-            Math.abs(boundsPadding * Math.sin(rotation)) + Math.abs(boundsPadding * Math.cos(rotation))
+            Math.abs(this.boundsPadding.x * cos) + Math.abs(this.boundsPadding.y * sin),
+            Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos)
         );
     } else {
-        if (this.placeableType === PlaceableType.TOKEN) {
-            this.boundsPadding.x = boundsPadding;
-            this.boundsPadding.y = boundsPadding;
-        } else {
-            const sx = (Math.abs(width * Math.cos(rotation)) + Math.abs(height * Math.sin(rotation))) / width - 1;
-            const sy = (Math.abs(width * Math.sin(rotation)) + Math.abs(height * Math.cos(rotation))) / height - 1;
-            this.boundsPadding.x = boundsPadding + scale * width * sx / 2;
-            this.boundsPadding.y = boundsPadding + scale * height * sy / 2;
+        if (this.placeableType !== PlaceableType.TOKEN) {
+            this.boundsPadding.x += scale * (boundsWidth - width) / 2;
+            this.boundsPadding.y += scale * (boundsHeight - height) / 2;
         }
-        this.currentPadding = boundsPadding;
+        this.currentPadding = Math.max(this.boundsPadding.x, this.boundsPadding.y);
     }
 
     this.currentPadding += scale * (this.originalPadding - this.rawPadding);
