@@ -8,6 +8,7 @@ uniform float billowy;
 uniform float tintIntensity;
 uniform vec2 shift;
 uniform vec3 waterColor;
+
 varying vec2 vTextureCoord;
 varying vec2 vFilterCoord;
 uniform sampler2D uSampler;

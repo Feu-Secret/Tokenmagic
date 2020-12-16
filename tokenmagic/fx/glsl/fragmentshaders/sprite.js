@@ -16,14 +16,12 @@ uniform vec2 translation;
 
 uniform vec3 color;
 
-uniform vec4 filterClamp;
-uniform vec4 filterClampTarget;
+uniform vec4 inputClamp;
+uniform vec4 inputClampTarget;
 
 uniform sampler2D uSampler;
 uniform sampler2D uSamplerTarget;
 
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
 varying vec2 vTextureCoord;
 varying vec2 vTextureCoordExtra;
 varying vec2 vFilterCoord;
@@ -33,10 +31,10 @@ const float PI = 3.14159265358;
 
 float getClip(in vec2 uv) {
     return step(3.5,
-       step(filterClampTarget.x, uv.x) +
-       step(filterClampTarget.y, uv.y) +
-       step(uv.x, filterClampTarget.z) +
-       step(uv.y, filterClampTarget.w));
+       step(inputClampTarget.x, uv.x) +
+       step(inputClampTarget.y, uv.y) +
+       step(uv.x, inputClampTarget.z) +
+       step(uv.y, inputClampTarget.w));
 }
 
 vec2 morphing(in vec2 uv) {
@@ -85,11 +83,11 @@ vec2 transform(in vec2 uv) {
 }
 
 vec4 getFromColor(in vec2 uv) {
-    return texture2D(uSampler, clamp(uv, filterClamp.xy, filterClamp.zw));
+    return texture2D(uSampler, clamp(uv, inputClamp.xy, inputClamp.zw));
 }
 
 vec4 getToColor(in vec2 uv) {
-    return texture2D(uSamplerTarget, clamp(uv, filterClampTarget.xy, filterClampTarget.zw)) * getClip(uv);
+    return texture2D(uSamplerTarget, clamp(uv, inputClampTarget.xy, inputClampTarget.zw)) * getClip(uv);
 }
 
 void main() {

@@ -12,8 +12,6 @@ uniform mat3 targetUVMatrix;
 varying vec2 vTextureCoord;
 varying vec2 vTextureCoordExtra;
 varying vec2 vFilterCoord;
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
 
 uniform vec4 inputSize;
 uniform vec4 outputFrame;
@@ -36,7 +34,5 @@ void main(void)
 	vTextureCoord = filterTextureCoord();
 	vTextureCoordExtra = (targetUVMatrix * vec3(vTextureCoord, 1.0)).xy;
     vFilterCoord = (filterMatrix * vec3(vTextureCoord, 1.0)).xy;
-    vInputSize = inputSize;
-    vOutputFrame = outputFrame;
 }
 `;

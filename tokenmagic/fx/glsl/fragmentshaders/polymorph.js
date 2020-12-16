@@ -4,8 +4,8 @@ precision mediump float;
 uniform float progress;
 uniform float magnify;
 uniform int type;
-uniform vec4 filterClamp;
-uniform vec4 filterClampTarget;
+uniform vec4 inputClamp;
+uniform vec4 inputClampTarget;
 uniform sampler2D uSampler;
 uniform sampler2D uSamplerTarget;
 uniform mat3 filterMatrixInverse;
@@ -18,18 +18,18 @@ const float PI = 3.14159265358;
 
 float getClip(vec2 uv) {
     return step(3.5,
-       step(filterClampTarget.x, uv.x) +
-       step(filterClampTarget.y, uv.y) +
-       step(uv.x, filterClampTarget.z) +
-       step(uv.y, filterClampTarget.w));
+       step(inputClampTarget.x, uv.x) +
+       step(inputClampTarget.y, uv.y) +
+       step(uv.x, inputClampTarget.z) +
+       step(uv.y, inputClampTarget.w));
 }
 
 vec4 getFromColor(vec2 uv) {
-    return texture2D(uSampler,clamp(uv,filterClamp.xy,filterClamp.zw));
+    return texture2D(uSampler,clamp(uv,inputClamp.xy,inputClamp.zw));
 }
 
 vec4 getToColor(vec2 uv) {
-    return texture2D(uSamplerTarget,clamp(uv,filterClampTarget.xy,filterClampTarget.zw))*getClip(uv);
+    return texture2D(uSamplerTarget,clamp(uv,inputClampTarget.xy,inputClampTarget.zw))*getClip(uv);
 }
 
 float rand(vec2 co) {

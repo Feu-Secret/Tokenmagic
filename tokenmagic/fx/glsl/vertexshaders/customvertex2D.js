@@ -12,8 +12,6 @@ uniform vec4 outputFrame;
 
 varying vec2 vTextureCoord;
 varying vec2 vFilterCoord;
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
 
 vec4 filterVertexPosition( void )
 {
@@ -32,7 +30,5 @@ void main(void)
     gl_Position = filterVertexPosition();
     vTextureCoord = filterTextureCoord();
     vFilterCoord = (filterMatrix * vec3(vTextureCoord, 1.0)).xy;
-    vInputSize = inputSize;
-    vOutputFrame = outputFrame;
 }
 `;

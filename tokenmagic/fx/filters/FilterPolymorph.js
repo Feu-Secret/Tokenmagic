@@ -23,7 +23,7 @@ export class FilterPolymorph extends CustomFilter {
         this.uniforms.targetUVMatrix = targetSpriteMatrix;
 
         // fragment uniforms
-        this.uniforms.filterClampTarget = new Float32Array([0, 0, 0, 0]);
+        this.uniforms.inputClampTarget = new Float32Array([0, 0, 0, 0]);
 
         // to store sprite matrix from the filter manager (and send to vertex)
         this.targetSpriteMatrix = targetSpriteMatrix;
@@ -108,7 +108,7 @@ export class FilterPolymorph extends CustomFilter {
             this.uniforms.targetUVMatrix =
                 filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite)
                     .prepend(tex.uvMatrix.mapCoord);
-            this.uniforms.filterClampTarget = tex.uvMatrix.uClampFrame;
+            this.uniforms.inputClampTarget = tex.uvMatrix.uClampFrame;
         }
 
         super.apply(filterManager, input, output, clear);

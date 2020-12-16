@@ -9,7 +9,7 @@ uniform float bpStrength;
 uniform vec2 scale;
 uniform vec2 translation;
 uniform vec2 pivot;
-uniform vec4 filterClamp;
+uniform vec4 inputClamp;
 uniform sampler2D uSampler;
 uniform mat3 filterMatrixInverse;
 
@@ -57,7 +57,7 @@ void main() {
     vec2 uv = vFilterCoord + translation;
     uv = transform(uv);
     vec2 mappedCoord = (filterMatrixInverse * vec3(uv, 1.0)).xy;
-    vec4 pixel = texture2D(uSampler,clamp(mappedCoord, filterClamp.xy, filterClamp.zw));
+    vec4 pixel = texture2D(uSampler,clamp(mappedCoord, inputClamp.xy, inputClamp.zw));
     gl_FragColor = pixel;
 }
 `;

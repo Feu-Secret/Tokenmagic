@@ -1,5 +1,5 @@
 import { sprite } from '../glsl/fragmentshaders/sprite.js';
-import { customVertex2DSampler2 } from '../glsl/vertexshaders/customvertex2DSampler2.js';
+import { customVertex2DSampler } from '../glsl/vertexshaders/customvertex2DSampler.js';
 import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
@@ -29,13 +29,13 @@ export class FilterSprite extends CustomFilter {
         const targetSpriteMatrix = new PIXI.Matrix();
 
         // using specific vertex shader and fragment shader
-        super(customVertex2DSampler2, sprite);
+        super(customVertex2DSampler, sprite);
 
         // vertex uniforms
         this.uniforms.targetUVMatrix = targetSpriteMatrix;
 
         // fragment uniforms
-        this.uniforms.filterClampTarget = new Float32Array([0, 0, 0, 0]);
+        this.uniforms.inputClampTarget = new Float32Array([0, 0, 0, 0]);
         this.uniforms.color = new Float32Array([0.0, 0.0, 0.0]);
         this.uniforms.scale = new Float32Array([1.0, 1.0]);
         this.uniforms.translation = new Float32Array([0.0, 0.0]);
@@ -241,7 +241,7 @@ export class FilterSprite extends CustomFilter {
             this.uniforms.targetUVMatrix =
                 filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite)
                     .prepend(tex.uvMatrix.mapCoord);
-            this.uniforms.filterClampTarget = tex.uvMatrix.uClampFrame;
+            this.uniforms.inputClampTarget = tex.uvMatrix.uClampFrame;
         }
 
         super.apply(filterManager, input, output, clear);
