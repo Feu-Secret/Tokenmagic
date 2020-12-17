@@ -11,7 +11,7 @@ uniform int auraType;
 uniform bool holes;
 uniform vec2 thickness;
 uniform vec4 color;
-uniform vec4 filterArea;
+uniform vec4 inputSize;
 uniform vec4 inputClamp;
 
 varying vec2 vTextureCoord;
@@ -72,7 +72,7 @@ vec4 outlining()
 
 vec4 glowing() 
 {
-	vec2 px = vec2(1.0 / filterArea.x, 1.0 / filterArea.y);
+	vec2 px = inputSize.zw;
 
     float totalAlpha = 0.0;
     float outerStrength = 6.;
