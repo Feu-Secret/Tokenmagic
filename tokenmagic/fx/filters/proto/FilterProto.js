@@ -1,20 +1,34 @@
 import { objectAssign, getPlaceableById, getMinPadding, PlaceableType, Magic } from "../../../module/tokenmagic.js";
 import "../../../module/proto/PlaceableObjectProto.js";
+import { CustomFilter } from '../CustomFilter.js';
 
 PIXI.Filter.prototype.setTMParams = function (params) {
     this.autoDisable = false;
     this.autoDestroy = false;
-    this.padding = 0;
     this.gridPadding = 0;
-    this.rawPadding = 0;
+    this.boundsPadding = new PIXI.Point(0, 0);
+    this.currentPadding = 0;
+    this.recalculatePadding = true;
     this.dummy = false;
     objectAssign(this, params);
-    this.autoFit = false;
     if (!this.dummy) {
-        this.rawPadding = this.padding;
-        this.originalPadding = Math.max(this.padding, getMinPadding());
+        this.rawPadding = this.rawPadding ?? this.padding ?? 0;
+        this.originalPadding = Math.max(this.rawPadding, getMinPadding());
         this.assignPlaceable();
         this.activateTransform();
+        Object.defineProperty(this, "padding", {
+            get: function () {
+                if (this.recalculatePadding)
+                    this.calculatePadding();
+                return this.currentPadding;
+            },
+            set: function (padding) {
+                this.rawPadding = padding;
+                this.originalPadding = Math.max(padding, getMinPadding());
+            }
+        });
+    } else {
+        this.apply = function () { }
     }
 }
 
@@ -27,23 +41,49 @@ PIXI.Filter.prototype.getPlaceableType = function () {
 }
 
 PIXI.Filter.prototype.calculatePadding = function () {
-    if (this.gridPadding > 0) {
-        const imgSize = Math.max(this.placeableImg.width, this.placeableImg.height);
-        const toSize = (canvas.dimensions.size >= imgSize
-            ? canvas.dimensions.size - imgSize
-            : imgSize % canvas.dimensions.size);
+    const target = this.placeableImg;
 
-        this.currentPadding =
-            (this.placeableImg.parent.worldTransform.a * (this.gridPadding - 1)
-                * canvas.dimensions.size)
-            + ((toSize * this.placeableImg.parent.worldTransform.a) / 2);
+    let width;
+    let height;
 
-    } else {
+    {
+        const ang = !this.sticky && this.placeableType !== PlaceableType.TOKEN ? target.rotation : 0;
+        const sin = Math.sin(ang);
+        const cos = Math.cos(ang);
 
-        this.currentPadding =
-            this.placeableImg.parent.worldTransform.a
-            * this.originalPadding;
+        width = Math.abs(target.width * cos) + Math.abs(target.height * sin);
+        height = Math.abs(target.width * sin) + Math.abs(target.height * cos);
     }
+
+    if (this.gridPadding > 0) {
+        const gridSize = canvas.dimensions.size;
+
+        this.boundsPadding.x = this.boundsPadding.y = (this.gridPadding - 1) * gridSize;
+        this.boundsPadding.x += (gridSize - 1 - (width + gridSize - 1) % gridSize) / 2;
+        this.boundsPadding.y += (gridSize - 1 - (height + gridSize - 1) % gridSize) / 2;
+    } else {
+        this.boundsPadding.x = this.boundsPadding.y = this.rawPadding;
+    }
+
+    {
+        const ang = this.sticky ? target.rotation : 0;
+        const sin = Math.sin(ang);
+        const cos = Math.cos(ang);
+
+        this.currentPadding = Math.max(
+            Math.abs(this.boundsPadding.x * cos) + Math.abs(this.boundsPadding.y * sin),
+            Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos)
+        ) + (this.originalPadding - this.rawPadding);
+    }
+
+    this.boundsPadding.x += (width - target.width) / 2;
+    this.boundsPadding.y += (height - target.height) / 2;
+
+    const scale = this.targetPlaceable.worldTransform.a;
+
+    this.boundsPadding.x *= scale;
+    this.boundsPadding.y *= scale;
+    this.currentPadding *= scale;
 }
 
 PIXI.Filter.prototype.assignPlaceable = function () {
@@ -57,19 +97,19 @@ PIXI.Filter.prototype.assignPlaceable = function () {
 PIXI.Filter.prototype.activateTransform = function () {
     this.preComputation = this.filterTransform;
     this.filterTransform();
+
+    const apply = this.apply;
+    this.apply = function () {
+        if ("handleTransform" in this) {
+            this.handleTransform();
+        }
+        return apply.apply(this, arguments);
+    }
 }
 
 PIXI.Filter.prototype.filterTransform = function () {
-    this.calculatePadding();
-
     if (this.hasOwnProperty("zIndex")) {
         this.placeableImg.parent.zIndex = this.zIndex;
-    }
-
-    this.padding = this.currentPadding;
-
-    if ("handleTransform" in this) {
-        this.handleTransform();
     }
 }
 

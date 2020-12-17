@@ -1,8 +1,9 @@
 import { removeShadowFrag } from '../glsl/fragmentshaders/removeshadow.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterRemoveShadow extends PIXI.Filter {
+export class FilterRemoveShadow extends CustomFilter {
 
     constructor(params) {
         let { alphaTolerance } = Object.assign({}, FilterRemoveShadow.defaults, params);

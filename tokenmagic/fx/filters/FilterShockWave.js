@@ -29,10 +29,10 @@ export class FilterShockwave extends PIXI.filters.ShockwaveFilter {
         this.center[0] = (this.placeableImg.localTransform.tx
             * this.placeableImg.parent.worldTransform.a
             * scale)
-            + this.padding;
+            + this.boundsPadding.x;
         this.center[1] = (this.placeableImg.localTransform.ty
             * this.placeableImg.parent.worldTransform.a
             * scale)
-            + this.padding;
+            + this.boundsPadding.y;
     }
 }

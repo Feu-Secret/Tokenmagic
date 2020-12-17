@@ -9,7 +9,7 @@ uniform float ampY;
 uniform int blend;
 uniform int nbImage;
 uniform sampler2D uSampler;
-uniform vec4 filterClamp;
+uniform vec4 inputClamp;
 
 varying vec2 vTextureCoord;
 varying vec2 vFilterCoord;
@@ -50,7 +50,7 @@ vec4 renderMirror(vec2 translation, vec4 prevpix)
 {
     vec2 displaced = vTextureCoord + translation;
     return blender(blend, prevpix, 
-                   texture2D(uSampler, clamp(displaced, filterClamp.xy, filterClamp.zw)));
+                   texture2D(uSampler, clamp(displaced, inputClamp.xy, inputClamp.zw)));
 }
 
 void main() 
@@ -62,7 +62,7 @@ void main()
 
     if (nbImage >= 1) {
         translation = vec2(x,y);
-        renderedPixel = texture2D(uSampler, clamp(vTextureCoord + translation, filterClamp.xy, filterClamp.zw));
+        renderedPixel = texture2D(uSampler, clamp(vTextureCoord + translation, inputClamp.xy, inputClamp.zw));
     }
     if (nbImage >= 2) {
         translation = 0.90*vec2(-x,y*0.5);

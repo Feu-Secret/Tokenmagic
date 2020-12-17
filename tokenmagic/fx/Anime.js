@@ -517,7 +517,7 @@ export class Anime {
     }
 
     static _attachToTicker() {
-        canvas.app.ticker.add(Anime.tick, this);
+        canvas.app.ticker.add(Anime.tick, this, PIXI.UPDATE_PRIORITY.LOW + 1);
         Anime._lastTime = canvas.app.ticker.lastTime;
         Anime._prevTime = Anime._lastTime;
     }

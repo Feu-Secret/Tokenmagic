@@ -1,8 +1,9 @@
 import { xFog } from '../glsl/fragmentshaders/xfog.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 
-export class FilterXFog extends PIXI.Filter {
+export class FilterXFog extends CustomFilter {
 
     constructor(params) {
         let {

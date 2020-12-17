@@ -1,9 +1,10 @@
 import { matrix } from '../glsl/fragmentshaders/matrix.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterTransform extends PIXI.Filter {
+export class FilterTransform extends CustomFilter {
 
     constructor(params) {
         let {

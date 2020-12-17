@@ -1,9 +1,10 @@
 import { zapElectricity } from '../glsl/fragmentshaders/electricity.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterElectric extends PIXI.Filter {
+export class FilterElectric extends CustomFilter {
 
     constructor(params) {
         let {

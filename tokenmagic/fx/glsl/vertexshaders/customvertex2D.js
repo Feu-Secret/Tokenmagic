@@ -6,13 +6,12 @@ precision mediump float;
 attribute vec2 aVertexPosition;
 
 uniform mat3 projectionMatrix;
+uniform mat3 filterMatrix;
 uniform vec4 inputSize;
 uniform vec4 outputFrame;
 
 varying vec2 vTextureCoord;
 varying vec2 vFilterCoord;
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
 
 vec4 filterVertexPosition( void )
 {
@@ -30,8 +29,6 @@ void main(void)
 {
     gl_Position = filterVertexPosition();
     vTextureCoord = filterTextureCoord();
-    vFilterCoord = vTextureCoord * inputSize.xy / outputFrame.zw;
-    vInputSize = inputSize;
-    vOutputFrame = outputFrame;
+    vFilterCoord = (filterMatrix * vec3(vTextureCoord, 1.0)).xy;
 }
 `;

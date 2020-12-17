@@ -1,9 +1,10 @@
 import { magicWaves } from '../glsl/fragmentshaders/waves.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterWaves extends PIXI.Filter {
+export class FilterWaves extends CustomFilter {
 
     constructor(params) {
         let {

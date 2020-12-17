@@ -1,9 +1,10 @@
 import { polymorph } from '../glsl/fragmentshaders/polymorph.js';
 import { customVertex2DSampler } from '../glsl/vertexshaders/customvertex2DSampler.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterPolymorph extends PIXI.Filter {
+export class FilterPolymorph extends CustomFilter {
 
     constructor(params) {
         let {
@@ -22,7 +23,7 @@ export class FilterPolymorph extends PIXI.Filter {
         this.uniforms.targetUVMatrix = targetSpriteMatrix;
 
         // fragment uniforms
-        this.uniforms.filterClampTarget = new Float32Array([0, 0, 0, 0]);
+        this.uniforms.inputClampTarget = new Float32Array([0, 0, 0, 0]);
 
         // to store sprite matrix from the filter manager (and send to vertex)
         this.targetSpriteMatrix = targetSpriteMatrix;
@@ -96,23 +97,21 @@ export class FilterPolymorph extends PIXI.Filter {
 
     // override
     apply(filterManager, input, output, clear) {
-        if (!this.dummy) {
+        const targetSprite = this.targetSprite;
+        const tex = targetSprite._texture;
 
-            const targetSprite = this.targetSprite;
-            const tex = targetSprite._texture;
+        if (tex.valid) {
+            if (!tex.uvMatrix) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
+            tex.uvMatrix.update();
 
-            if (tex.valid) {
-                if (!tex.uvMatrix) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
-                tex.uvMatrix.update();
-
-                this.uniforms.uSamplerTarget = tex;
-                this.uniforms.targetUVMatrix =
-                    filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite)
-                        .prepend(tex.uvMatrix.mapCoord);
-                this.uniforms.filterClampTarget = tex.uvMatrix.uClampFrame;
-            }
+            this.uniforms.uSamplerTarget = tex;
+            this.uniforms.targetUVMatrix =
+                filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite)
+                    .prepend(tex.uvMatrix.mapCoord);
+            this.uniforms.inputClampTarget = tex.uvMatrix.uClampFrame;
         }
-        filterManager.applyFilter(this, input, output, clear);
+
+        super.apply(filterManager, input, output, clear);
     }
 
     // override
