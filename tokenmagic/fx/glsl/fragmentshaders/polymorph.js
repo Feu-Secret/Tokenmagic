@@ -6,10 +6,9 @@ uniform float magnify;
 uniform int type;
 uniform vec4 filterClamp;
 uniform vec4 filterClampTarget;
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
 uniform sampler2D uSampler;
 uniform sampler2D uSamplerTarget;
+uniform mat3 filterMatrixInverse;
 
 varying vec2 vTextureCoord;
 varying vec2 vTextureCoordExtra;
@@ -64,7 +63,7 @@ vec4 morph(vec2 uv, vec2 uvt) {
     vec2 oc = mix(oa,ob,0.5)*0.1;
     float w0 = progress;
     float w1 = 1.0-w0;
-    vec2 sourceMappedCoord = ((vFilterCoord+(oc*0.4)*w0)*vOutputFrame.zw) / vInputSize.xy;
+    vec2 sourceMappedCoord = (filterMatrixInverse * vec3(vFilterCoord+(oc*0.4)*w0, 1.0)).xy;
     vec4 fromcol = getFromColor(sourceMappedCoord);
     vec4 tocol = getToColor(uvt-oc*w1);
     float a = mix(ca.a, cb.a, progress);
@@ -78,7 +77,7 @@ vec4 waterdrop(vec2 uv, vec2 uvt) {
         return mix(getFromColor(uv), getToColor(uvt), progress);
     } else {
         vec2 shiftuvt = dirt * sin(distt * 60. - progress * 20.);
-        vec2 fuv = ((vFilterCoord + (shiftuvt*(1.-progress)))*vOutputFrame.zw) / vInputSize.xy;
+        vec2 fuv = (filterMatrixInverse * vec3(vFilterCoord + (shiftuvt*(1.-progress)), 1.0)).xy;
         return mix(getFromColor(fuv), getToColor(uvt + (shiftuvt*(1.-progress))), progress);
     }
 }
@@ -110,7 +109,7 @@ vec2 swirluv(vec2 uv) {
 vec4 swirl(vec2 uv, vec2 uvt) {
     vec2 suvfrom = swirluv(vFilterCoord);
     vec2 suvto = swirluv(uvt);
-    vec2 sourceMappedCoord = (suvfrom*vOutputFrame.zw) / vInputSize.xy;
+    vec2 sourceMappedCoord = (filterMatrixInverse * vec3(suvfrom, 1.0)).xy;
     vec4 fscol = getFromColor(sourceMappedCoord);
     vec4 ftcol = getToColor(suvto);
     return mix( fscol, ftcol, progress );

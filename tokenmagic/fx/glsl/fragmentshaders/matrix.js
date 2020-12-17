@@ -11,10 +11,9 @@ uniform vec2 translation;
 uniform vec2 pivot;
 uniform vec4 filterClamp;
 uniform sampler2D uSampler;
+uniform mat3 filterMatrixInverse;
 
 varying vec2 vFilterCoord;
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
 
 const float PI = 3.1415927;
 
@@ -57,7 +56,7 @@ vec2 transform(in vec2 uv) {
 void main() {
     vec2 uv = vFilterCoord + translation;
     uv = transform(uv);
-    vec2 mappedCoord = (uv * vOutputFrame.zw) / vInputSize.xy;
+    vec2 mappedCoord = (filterMatrixInverse * vec3(uv, 1.0)).xy;
     vec4 pixel = texture2D(uSampler,clamp(mappedCoord, filterClamp.xy, filterClamp.zw));
     gl_FragColor = pixel;
 }
