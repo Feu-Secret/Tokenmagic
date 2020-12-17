@@ -41,37 +41,49 @@ PIXI.Filter.prototype.getPlaceableType = function () {
 }
 
 PIXI.Filter.prototype.calculatePadding = function () {
-    const scale = this.targetPlaceable.worldTransform.a;
-    const rotation = !(this instanceof CustomFilter) || !this.sticky && this.placeableType !== PlaceableType.TOKEN ?
-        this.placeableImg.rotation : 0;
-    const sin = Math.sin(rotation);
-    const cos = Math.cos(rotation);
-    const width = this.placeableImg.width;
-    const height = this.placeableImg.height;
-    const boundsWidth = Math.abs(width * cos) + Math.abs(height * sin);
-    const boundsHeight = Math.abs(width * sin) + Math.abs(height * cos);
+    const target = this.placeableImg;
+
+    let width;
+    let height;
+
+    {
+        const ang = !this.sticky && this.placeableType !== PlaceableType.TOKEN ? target.rotation : 0;
+        const sin = Math.sin(ang);
+        const cos = Math.cos(ang);
+
+        width = Math.abs(target.width * cos) + Math.abs(target.height * sin);
+        height = Math.abs(target.width * sin) + Math.abs(target.height * cos);
+    }
 
     if (this.gridPadding > 0) {
         const gridSize = canvas.dimensions.size;
 
-        this.boundsPadding.x = this.boundsPadding.y =
-            scale * (this.gridPadding - 1) * gridSize;
-
-        this.boundsPadding.x += scale * (gridSize - 1 - (boundsWidth + gridSize - 1) % gridSize) / 2;
-        this.boundsPadding.y += scale * (gridSize - 1 - (boundsHeight + gridSize - 1) % gridSize) / 2;
+        this.boundsPadding.x = this.boundsPadding.y = (this.gridPadding - 1) * gridSize;
+        this.boundsPadding.x += (gridSize - 1 - (width + gridSize - 1) % gridSize) / 2;
+        this.boundsPadding.y += (gridSize - 1 - (height + gridSize - 1) % gridSize) / 2;
     } else {
-        this.boundsPadding.x = this.boundsPadding.y = scale * this.rawPadding;
+        this.boundsPadding.x = this.boundsPadding.y = this.rawPadding;
     }
 
-    this.currentPadding = Math.max(
-        Math.abs(this.boundsPadding.x * cos) + Math.abs(this.boundsPadding.y * sin),
-        Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos)
-    ) + scale * (this.originalPadding - this.rawPadding);
+    {
+        const ang = this.sticky ? target.rotation : 0;
+        const sin = Math.sin(ang);
+        const cos = Math.cos(ang);
 
-    if (rotation !== 0) {
-        this.boundsPadding.x += scale * (boundsWidth - width) / 2;
-        this.boundsPadding.y += scale * (boundsHeight - height) / 2;
+        this.currentPadding = Math.max(
+            Math.abs(this.boundsPadding.x * cos) + Math.abs(this.boundsPadding.y * sin),
+            Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos)
+        ) + (this.originalPadding - this.rawPadding);
     }
+
+    this.boundsPadding.x += (width - target.width) / 2;
+    this.boundsPadding.y += (height - target.height) / 2;
+
+    const scale = this.targetPlaceable.worldTransform.a;
+
+    this.boundsPadding.x *= scale;
+    this.boundsPadding.y *= scale;
+    this.currentPadding *= scale;
 }
 
 PIXI.Filter.prototype.assignPlaceable = function () {
