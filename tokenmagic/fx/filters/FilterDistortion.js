@@ -113,8 +113,8 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
     }
 
     handleTransform() {
-        this.sprite.position.x = this.targetPlaceable.x + this.placeableImg.width / 2 + this.position.x;
-        this.sprite.position.y = this.targetPlaceable.y + this.placeableImg.height / 2 + this.position.y;
+        this.sprite.position.x = this.targetPlaceable.x + this.placeableImg.x + this.position.x;
+        this.sprite.position.y = this.targetPlaceable.y + this.placeableImg.y + this.position.y;
         this.sprite.skew.x = this.skew.x;
         this.sprite.skew.x = this.skew.y;
         this.sprite.rotation = this.rotation;
