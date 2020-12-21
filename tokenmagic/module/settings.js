@@ -2,7 +2,6 @@ import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/default
 import { DataVersion } from "../migration/migration.js";
 import { TokenMagic } from './tokenmagic.js';
 import { AutoTemplateDND5E, dnd5eTemplates } from "./autoTemplate/dnd5e.js";
-import { defaultTemplateOnHover } from "./proto/DefaultTemplateOnHover.js";
 import { defaultOpacity, emptyPreset } from './constants.js';
 
 const Magic = TokenMagic();
@@ -65,8 +64,7 @@ export class TokenMagicSettings extends FormApplication {
 			scope: 'client',
 			config: true,
 			default: hasAutoTemplates,
-			type: Boolean,
-			onChange: (value) => TokenMagicSettings.configureDefaultTemplateOnHover(value),
+			type: Boolean
 		});
 
 		game.settings.register("tokenmagic", "useAdditivePadding", {
@@ -174,10 +172,6 @@ export class TokenMagicSettings extends FormApplication {
 			default:
 				break;
 		}
-	}
-
-	static configureDefaultTemplateOnHover(enabled = false) {
-		defaultTemplateOnHover.configure(enabled);
 	}
 
 	/** @override */
@@ -307,5 +301,4 @@ Hooks.once("init", () => {
 	});
 	TokenMagicSettings.init();
 	TokenMagicSettings.configureAutoTemplate(game.settings.get('tokenmagic', 'autoTemplateEnabled'));
-	TokenMagicSettings.configureDefaultTemplateOnHover(game.settings.get('tokenmagic', 'defaultTemplateOnHover'));
 });

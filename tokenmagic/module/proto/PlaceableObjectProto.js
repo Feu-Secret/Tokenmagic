@@ -185,9 +185,10 @@ PlaceableObject.prototype._TMFXgetPlaceableType = function () {
     return PlaceableType.NOT_SUPPORTED;
 }
 
-MeasuredTemplate.prototype.update = (function () {
-    const cachedMTU = MeasuredTemplate.prototype.update;
-    return async function (data, options) {
+Hooks.on("init", () => {
+    const wrappedMTU = async function (wrapped, ...args) {
+        const [ data ] = args;
+
         const hasTexture = data.hasOwnProperty("texture");
         const hasPresetData = data.hasOwnProperty("tmfxPreset");
         if (hasPresetData && data.tmfxPreset !== emptyPreset) {
@@ -202,16 +203,22 @@ MeasuredTemplate.prototype.update = (function () {
             data.texture = '';
         }
 
-        return await cachedMTU.apply(this, [data, options]);
+        return await wrapped(...args);
     };
-})();
 
-MeasuredTemplate.prototype.refresh = (function () {
-    const cachedMTR = MeasuredTemplate.prototype.refresh;
-    return function () {
+    const wrappedMTR = function (wrapped, ...args) {
+        if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
+            const hl = canvas.grid.getHighlightLayer(`Template.${this.id}`);
+            if (this.texture && this.texture !== '') {
+                hl.renderable = this._hover;
+            } else {
+                hl.renderable = true;
+            }
+        }
+
         if (this.template && !this.template._destroyed) {
             if (isVideoDisabled()) {
-                return cachedMTR.apply(this);
+                return wrapped(...args);
             } else {
                 // INTEGRATION FROM MESS
                 // THANKS TO MOERILL !!
@@ -320,4 +327,19 @@ MeasuredTemplate.prototype.refresh = (function () {
         }
         return this;
     };
-})();
+
+    if (game.modules.get("lib-wrapper")?.active) {
+        libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.update", wrappedMTU, "WRAPPER");
+        libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.refresh", wrappedMTR, "MIXED");
+    } else {
+        const cachedMTU = MeasuredTemplate.prototype.update;
+        MeasuredTemplate.prototype.update = function () {
+            return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+        };
+
+        const cachedMTR = MeasuredTemplate.prototype.refresh;
+        MeasuredTemplate.prototype.refresh = function () {
+            return wrappedMTR.call(this, cachedMTR.bind(this), ...arguments);
+        };
+    }
+});
