@@ -1,8 +1,7 @@
 import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { DataVersion } from "../migration/migration.js";
-import { TokenMagic } from './tokenmagic.js';
+import { TokenMagic, isVideoDisabled } from './tokenmagic.js';
 import { AutoTemplateDND5E, dnd5eTemplates } from "./autoTemplate/dnd5e.js";
-import { defaultTemplateOnHover } from "./proto/DefaultTemplateOnHover.js";
 import { defaultOpacity, emptyPreset } from './constants.js';
 
 const Magic = TokenMagic();
@@ -66,7 +65,7 @@ export class TokenMagicSettings extends FormApplication {
 			config: true,
 			default: hasAutoTemplates,
 			type: Boolean,
-			onChange: (value) => TokenMagicSettings.configureDefaultTemplateOnHover(value),
+			onChange: () => window.location.reload()
 		});
 
 		game.settings.register("tokenmagic", "useAdditivePadding", {
@@ -138,7 +137,8 @@ export class TokenMagicSettings extends FormApplication {
 			scope: "world",
 			config: true,
 			default: false,
-			type: Boolean
+			type: Boolean,
+			onChange: () => window.location.reload()
 		});
 
 		game.settings.register("tokenmagic", "presets", {
@@ -174,10 +174,6 @@ export class TokenMagicSettings extends FormApplication {
 			default:
 				break;
 		}
-	}
-
-	static configureDefaultTemplateOnHover(enabled = false) {
-		defaultTemplateOnHover.configure(enabled);
 	}
 
 	/** @override */
@@ -307,5 +303,190 @@ Hooks.once("init", () => {
 	});
 	TokenMagicSettings.init();
 	TokenMagicSettings.configureAutoTemplate(game.settings.get('tokenmagic', 'autoTemplateEnabled'));
-	TokenMagicSettings.configureDefaultTemplateOnHover(game.settings.get('tokenmagic', 'defaultTemplateOnHover'));
+
+	const wrappedMTU = async function (wrapped, ...args) {
+		const [ data ] = args;
+
+		const hasTexture = data.hasOwnProperty("texture");
+		const hasPresetData = data.hasOwnProperty("tmfxPreset");
+		if (hasPresetData && data.tmfxPreset !== emptyPreset) {
+			let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
+			if (!(defaultTexture == null)) {
+				if (data.texture === '' || data.texture.includes('/modules/tokenmagic/fx/assets/templates/'))
+					data.texture = defaultTexture;
+			}
+
+		} else if (hasTexture && data.texture.includes('/modules/tokenmagic/fx/assets/templates/')
+			&& hasPresetData && data.tmfxPreset === emptyPreset) {
+			data.texture = '';
+		}
+
+		return await wrapped(...args);
+	};
+
+	let patchedMTR;
+
+	if (!isVideoDisabled()) {
+		patchedMTR = function () {
+			if (this.template && !this.template._destroyed) {
+				// INTEGRATION FROM MESS
+				// THANKS TO MOERILL !!
+				let d = canvas.dimensions;
+				this.position.set(this.data.x, this.data.y);
+
+				// Extract and prepare data
+				let { direction, distance, angle, width } = this.data;
+				distance *= (d.size / d.distance);
+				width *= (d.size / d.distance);
+				direction = toRadians(direction);
+
+				// Create ray and bounding rectangle
+				this.ray = Ray.fromAngle(this.data.x, this.data.y, direction, distance);
+
+				// Get the Template shape
+				switch (this.data.t) {
+					case "circle":
+						this.shape = this._getCircleShape(distance);
+						break;
+					case "cone":
+						this.shape = this._getConeShape(direction, angle, distance);
+						break;
+					case "rect":
+						this.shape = this._getRectShape(direction, distance);
+						break;
+					case "ray":
+						this.shape = this._getRayShape(direction, distance, width);
+				}
+
+				// Draw the Template outline
+				this.template.clear()
+					.lineStyle(this._borderThickness, this.borderColor, 0.75)
+					.beginFill(0x000000, 0.0);
+
+				// Fill Color or Texture
+				if (this.texture) {
+					let mat = PIXI.Matrix.IDENTITY;
+					// rectangle
+					if (this.shape.width && this.shape.height)
+						mat.scale(this.shape.width / this.texture.width, this.shape.height / this.texture.height);
+					else if (this.shape.radius) {
+						mat.scale(this.shape.radius * 2 / this.texture.height, this.shape.radius * 2 / this.texture.width)
+						// Circle center is texture start...
+						mat.translate(-this.shape.radius, -this.shape.radius);
+					} else if (this.data.t === "ray") {
+						const d = canvas.dimensions,
+							height = this.data.width * d.size / d.distance,
+							width = this.data.distance * d.size / d.distance;
+						mat.scale(width / this.texture.width, height / this.texture.height);
+						mat.translate(0, -height * 0.5);
+
+						mat.rotate(toRadians(this.data.direction));
+					} else {// cone
+						const d = canvas.dimensions;
+
+						// Extract and prepare data
+						let { direction, distance, angle } = this.data;
+						distance *= (d.size / d.distance);
+						direction = toRadians(direction);
+						const width = this.data.distance * d.size / d.distance;
+
+						const angles = [(angle / -2), (angle / 2)];
+						distance = distance / Math.cos(toRadians(angle / 2));
+
+						// Get the cone shape as a polygon
+						const rays = angles.map(a => Ray.fromAngle(0, 0, direction + toRadians(a), distance + 1));
+						const height = Math.sqrt((rays[0].B.x - rays[1].B.x) * (rays[0].B.x - rays[1].B.x)
+							+ (rays[0].B.y - rays[1].B.y) * (rays[0].B.y - rays[1].B.y));
+						mat.scale(width / this.texture.width, height / this.texture.height);
+						mat.translate(0, -height / 2)
+						mat.rotate(toRadians(this.data.direction));
+					}
+					this.template.beginTextureFill({
+						texture: this.texture,
+						matrix: mat,
+						alpha: 1.0
+					});
+					// move into draw or so
+					const source = getProperty(this.texture, "baseTexture.resource.source")
+					if (source && (source.tagName === "VIDEO")) {
+						source.loop = true;
+						source.muted = true;
+						game.video.play(source);
+					}
+				}
+				else this.template.beginFill(0x000000, 0.0);
+
+				// Draw the shape
+				this.template.drawShape(this.shape);
+
+				// Draw origin and destination points
+				this.template.lineStyle(this._borderThickness, 0x000000)
+					.beginFill(0x000000, 0.5)
+					.drawCircle(0, 0, 6)
+					.drawCircle(this.ray.dx, this.ray.dy, 6);
+
+				// Update visibility
+				this.controlIcon.visible = this.layer._active;
+				this.controlIcon.border.visible = this._hover;
+
+				// Draw ruler text
+				this._refreshRulerText();
+				return this;
+			}
+			return this;
+		};
+	}
+
+	let wrappedMTR;
+	let wrappedMTRType;
+
+	if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
+		const defaultTemplateOnHover = function (wrapped, ...args) {
+			const hl = canvas.grid.getHighlightLayer(`Template.${this.id}`);
+			if (this.texture && this.texture !== '') {
+				hl.renderable = this._hover;
+			} else {
+				hl.renderable = true;
+			}
+
+			return wrapped(...args);
+		};
+
+		if (patchedMTR) {
+			wrappedMTRType = "OVERRIDE";
+			wrappedMTR = function() {
+				return defaultTemplateOnHover.call(this, patchedMTR.bind(this), ...arguments);
+			}
+		} else {
+			wrappedMTRType = "WRAPPER";
+			wrappedMTR = defaultTemplateOnHover;
+		}
+	} else if (patchedMTR) {
+		wrappedMTRType = "OVERRIDE";
+		wrappedMTR = patchedMTR;
+	}
+
+	if (game.modules.get("lib-wrapper")?.active) {
+		libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.update", wrappedMTU, "WRAPPER");
+
+		if (wrappedMTR) {
+			libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.refresh", wrappedMTR, wrappedMTRType);
+		}
+	} else {
+		const cachedMTU = MeasuredTemplate.prototype.update;
+		MeasuredTemplate.prototype.update = function () {
+			return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+		};
+
+		if (wrappedMTR) {
+			if (wrappedMTRType && wrappedMTRType !== "OVERRIDE") {
+				const cachedMTR = MeasuredTemplate.prototype.refresh;
+				MeasuredTemplate.prototype.refresh = function () {
+					return wrappedMTR.call(this, cachedMTR.bind(this), ...arguments);
+				};
+			} else {
+				MeasuredTemplate.prototype.refresh = wrappedMTR;
+			}
+		}
+	}
 });
