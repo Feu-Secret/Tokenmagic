@@ -51,7 +51,7 @@ export class TokenMagicSettings extends FormApplication {
 		game.settings.register('tokenmagic', 'autoTemplateEnabled', {
 			name: game.i18n.localize('TMFX.settings.autoTemplateEnabled.name'),
 			hint: game.i18n.localize('TMFX.settings.autoTemplateEnabled.hint'),
-			scope: 'client',
+			scope: "world",
 			config: hasAutoTemplates,
 			default: hasAutoTemplates,
 			type: Boolean,
@@ -61,7 +61,7 @@ export class TokenMagicSettings extends FormApplication {
 		game.settings.register('tokenmagic', 'defaultTemplateOnHover', {
 			name: game.i18n.localize('TMFX.settings.defaultTemplateOnHover.name'),
 			hint: game.i18n.localize('TMFX.settings.defaultTemplateOnHover.hint'),
-			scope: 'client',
+			scope: "world",
 			config: true,
 			default: hasAutoTemplates,
 			type: Boolean,
@@ -119,7 +119,8 @@ export class TokenMagicSettings extends FormApplication {
 			scope: "client",
 			config: true,
 			default: false,
-			type: Boolean
+			type: Boolean,
+			onChange: () => window.location.reload()
 		});
 
 		game.settings.register("tokenmagic", "disableCaching", {
