@@ -68,6 +68,16 @@ export class TokenMagicSettings extends FormApplication {
 			onChange: () => window.location.reload()
 		});
 
+		game.settings.register('tokenmagic', 'autohideTemplateElements', {
+			name: game.i18n.localize('TMFX.settings.autohideTemplateElements.name'),
+			hint: game.i18n.localize('TMFX.settings.autohideTemplateElements.hint'),
+			scope: 'world',
+			config: true,
+			default: true,
+			type: Boolean,
+			onChange: () => window.location.reload()
+		});
+
 		game.settings.register("tokenmagic", "useAdditivePadding", {
 			name: game.i18n.localize("TMFX.settings.useMaxPadding.name"),
 			hint: game.i18n.localize("TMFX.settings.useMaxPadding.hint"),
@@ -324,10 +334,12 @@ Hooks.once("init", () => {
 		return await wrapped(...args);
 	};
 
-	let patchedMTR;
+	let wrappedMTR;
+	let wrappedMTRType;
 
 	if (!isVideoDisabled()) {
-		patchedMTR = function () {
+		wrappedMTRType = "OVERRIDE";
+		wrappedMTR = function () {
 			if (this.template && !this.template._destroyed) {
 				// INTEGRATION FROM MESS
 				// THANKS TO MOERILL !!
@@ -437,33 +449,84 @@ Hooks.once("init", () => {
 		};
 	}
 
-	let wrappedMTR;
-	let wrappedMTRType;
+	if (game.settings.get('tokenmagic', 'autohideTemplateElements')) {
+		const autohideTemplateElements = function (wrapped, ...args) {
+			// Save texture and border thickness
+			const texture = this.texture;
+			const borderThickness = this._borderThickness;
+
+			// Hide template texture while moving
+			if (this._original || this.parent === canvas.templates.preview) {
+				this.texture = null;
+			}
+
+			// Show border outline only on hover if the template is textured
+			if (this.texture && this.texture !== '' && !this._hover) {
+				this._borderThickness = 0;
+			}
+
+			const retVal = wrapped(...args);
+
+			// Restore texture and border thickness
+			this.texture = texture;
+			this._borderThickness = borderThickness;
+
+			{
+				// Show the origin/destination points and ruler text only on hover or while creating but not while moving
+				const template = this._original ?? this;
+				const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
+
+				if (!show) {
+					// Hide origin and destination points, i.e., hide everything except the template shape
+					for (const data of template.template.geometry.graphicsData) {
+						if (data.shape !== template.shape) {
+							data.fillStyle.visible = false;
+							data.lineStyle.visible = false;
+						}
+					}
+					template.template.geometry.invalidate();
+				}
+
+				template.ruler.renderable = show;
+			}
+
+			return retVal;
+		}
+
+		if (wrappedMTR) {
+			const _wrappedMTR = wrappedMTR;
+			wrappedMTR = function() {
+				return autohideTemplateElements.call(this, _wrappedMTR.bind(this), ...arguments);
+			}
+		} else {
+			wrappedMTRType = "WRAPPER";
+			wrappedMTR = autohideTemplateElements;
+		}
+	}
 
 	if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
 		const defaultTemplateOnHover = function (wrapped, ...args) {
-			const hl = canvas.grid.getHighlightLayer(`Template.${this.id}`);
-			if (this.texture && this.texture !== '') {
-				hl.renderable = this._hover;
+			// Show grid highlights only on hover but not while moving
+			const template = this._original ?? this;
+			const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
+			const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
+			if (template.texture && template.texture !== '') {
+				hl.renderable = show;
 			} else {
 				hl.renderable = true;
 			}
-
 			return wrapped(...args);
 		};
 
-		if (patchedMTR) {
-			wrappedMTRType = "OVERRIDE";
+		if (wrappedMTR) {
+			const _wrappedMTR = wrappedMTR;
 			wrappedMTR = function() {
-				return defaultTemplateOnHover.call(this, patchedMTR.bind(this), ...arguments);
+				return defaultTemplateOnHover.call(this, _wrappedMTR.bind(this), ...arguments);
 			}
 		} else {
 			wrappedMTRType = "WRAPPER";
 			wrappedMTR = defaultTemplateOnHover;
 		}
-	} else if (patchedMTR) {
-		wrappedMTRType = "OVERRIDE";
-		wrappedMTR = patchedMTR;
 	}
 
 	if (game.modules.get("lib-wrapper")?.active) {
