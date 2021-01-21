@@ -505,28 +505,24 @@ Hooks.once("init", () => {
 	}
 
 	if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
-		const defaultTemplateOnHover = function (wrapped, ...args) {
-			// Show grid highlights only on hover but not while moving
-			const template = this._original ?? this;
-			const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
-			const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
-			if (template.texture && template.texture !== '') {
-				hl.renderable = show;
-			} else {
-				hl.renderable = true;
-			}
-			return wrapped(...args);
-		};
-
-		if (wrappedMTR) {
-			const _wrappedMTR = wrappedMTR;
-			wrappedMTR = function() {
-				return defaultTemplateOnHover.call(this, _wrappedMTR.bind(this), ...arguments);
-			}
-		} else {
-			wrappedMTRType = "WRAPPER";
-			wrappedMTR = defaultTemplateOnHover;
-		}
+		Hooks.on("canvasReady", () => {
+			canvas.stage.on("mousemove", event => {
+				const {x: mx, y: my} = event.data.getLocalPosition(canvas.templates);
+				for (const template of canvas.templates.placeables) {
+					const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
+					const opacity = template.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
+					if (template.texture && template.texture !== '') {
+						const {x: cx, y: cy} = template.center;
+						const mouseover = template.shape.contains(mx - cx, my - cy);
+						hl.renderable = mouseover;
+						template.template.alpha = (mouseover ? 0.5: 1.0) * opacity;
+					} else {
+						hl.renderable = true;
+						template.template.alpha = opacity;
+					}
+				}
+			});
+		});
 	}
 
 	if (game.modules.get("lib-wrapper")?.active) {
