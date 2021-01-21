@@ -488,6 +488,12 @@ Hooks.once("init", () => {
 				}
 
 				template.ruler.renderable = show;
+
+				template.controlIcon.renderable = template.owner;
+
+				if (template.handle) {
+					template.handle.renderable = template.owner;
+				}
 			}
 
 			return retVal;
