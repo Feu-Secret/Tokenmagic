@@ -51,7 +51,7 @@ export class TokenMagicSettings extends FormApplication {
         game.settings.register('tokenmagic', 'autoTemplateEnabled', {
             name: game.i18n.localize('TMFX.settings.autoTemplateEnabled.name'),
             hint: game.i18n.localize('TMFX.settings.autoTemplateEnabled.hint'),
-            scope: 'client',
+            scope: "world",
             config: hasAutoTemplates,
             default: hasAutoTemplates,
             type: Boolean,
@@ -61,7 +61,7 @@ export class TokenMagicSettings extends FormApplication {
         game.settings.register('tokenmagic', 'defaultTemplateOnHover', {
             name: game.i18n.localize('TMFX.settings.defaultTemplateOnHover.name'),
             hint: game.i18n.localize('TMFX.settings.defaultTemplateOnHover.hint'),
-            scope: 'client',
+            scope: "world",
             config: true,
             default: hasAutoTemplates,
             type: Boolean,
@@ -76,6 +76,16 @@ export class TokenMagicSettings extends FormApplication {
             default: true,
             type: Boolean,
             onChange: () => window.location.reload()
+        });
+      
+        game.settings.register('tokenmagic', 'autoFPSEnabled', {
+            name: game.i18n.localize('TMFX.settings.autoFPS.name'),
+            hint: game.i18n.localize('TMFX.settings.autoFPS.hint'),
+            scope: 'client',
+            config: true,
+            default: false,
+            type: Boolean,
+            onChange: (value) => TokenMagicSettings.configureAutoFPS(value),
         });
 
         game.settings.register("tokenmagic", "useAdditivePadding", {
@@ -129,7 +139,8 @@ export class TokenMagicSettings extends FormApplication {
             scope: "client",
             config: true,
             default: false,
-            type: Boolean
+            type: Boolean,
+            onChange: () => window.location.reload()
         });
 
         game.settings.register("tokenmagic", "disableCaching", {
@@ -184,6 +195,11 @@ export class TokenMagicSettings extends FormApplication {
             default:
                 break;
         }
+    }
+
+    static configureAutoFPS(enabled = false) {
+        if (enabled) canvas.app.ticker.maxFPS = 0;
+        else canvas.app.ticker.maxFPS = game.settings.get("core", "maxFPS");
     }
 
     /** @override */
@@ -301,6 +317,10 @@ export class TokenMagicSettings extends FormApplication {
     }
 }
 
+Hooks.on("canvasReady", () => {
+    TokenMagicSettings.configureAutoFPS(game.settings.get('tokenmagic', 'autoFPSEnabled'));
+});
+
 Hooks.once("init", () => {
     // Extracted from https://github.com/leapfrogtechnology/just-handlebars-helpers/
     Handlebars.registerHelper('concat', function (...params) {
@@ -315,7 +335,7 @@ Hooks.once("init", () => {
     TokenMagicSettings.configureAutoTemplate(game.settings.get('tokenmagic', 'autoTemplateEnabled'));
 
     const wrappedMTU = async function (wrapped, ...args) {
-        const [ data ] = args;
+        const [data] = args;
 
         const hasTexture = data.hasOwnProperty("texture");
         const hasPresetData = data.hasOwnProperty("tmfxPreset");

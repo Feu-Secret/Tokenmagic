@@ -19,6 +19,8 @@
   "TMFX.template.opacity": "Inner Opacity:",
   "TMFX.template.fx": "Special Effects:",
   "TMFX.template.tint": "Effect Tint:",
+  "TMFX.settings.autoFPS.name": "Auto framerate",
+  "TMFX.settings.autoFPS.hint":  "Check this option to let the browser (or the application) choose the framerate limit. May suppress jerky animations on some configurations. (Warning : this option overrides Foundry framerate limit)",
   "TMFX.settings.useMaxPadding.name": "FX in additive padding mode",
   "TMFX.settings.useMaxPadding.hint": "By default, FX paddings are additives when applied on a given placeable. If the checkbox is unchecked, the maximum padding is used.",
   "TMFX.settings.minPadding.name": "Minimum padding",
