@@ -167,9 +167,7 @@ export var isFurnaceDrawingsActive = () => {
 
 export function isTheOne() {
     const theOne = game.users.find((user) => user.isGM && user.active);
-    if (theOne && game.user !== theOne) {
-        return false;
-    } else return true
+    return theOne && game.user === theOne;
 }
 
 export function mustBroadCast() {
