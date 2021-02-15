@@ -94,97 +94,99 @@ export class AutoTemplateDND5E {
 	}
 
 	constructor() {
-		this._origFromItem = null;
-		this._importedJS = null;
-		this._abilityTemplate = null;
+		this._enabled = false;
 	}
 
-	async configure(enabled = false) {
-		if (!this._isDnd5e) return;
+	configure(enabled = false) {
+		if (game.system.id !== "dnd5e") return;
 
 		if (!enabled) {
-			if (this._origFromItem !== null) {
-				// Restoring the original function when setting toggled off is unsafe
-				// in the case that there is another module patching the same function
-				// and they're loaded after us, so resort to refresh here.
-				/*
-					this._abilityTemplate.fromItem = this._origFromItem;
-					this._origFromItem = null;
-				*/
-				window.location.reload();
+			if (this._enabled) {
+				if (game.modules.get("lib-wrapper")?.active) {
+					libWrapper.unregister("tokenmagic", "game.dnd5e.canvas.AbilityTemplate.fromItem");
+				} else {
+					window.location.reload();
+				}
 			}
-			return;
-		}
-
-		if (this._importedJS === null) {
-			this._importedJS = (await import('../../../../systems/dnd5e/module/pixi/ability-template.js'));
-		}
-		if (this._abilityTemplate === null) {
-			this._abilityTemplate = this._importedJS.default || this._importedJS.AbilityTemplate;
-		}
-
-		this._origFromItem = this._abilityTemplate.fromItem;
-		this._abilityTemplate.fromItem = this._fromItemFn();
-	}
-
-	get _isDnd5e() {
-		return game.system.id === 'dnd5e';
-	}
-
-	_fromConfig(config, template) {
-		if (config.preset && config.preset !== '' && config.preset !== emptyPreset) {
-			template.data.tmfxPreset = config.preset;
-		}
-		if (config.texture && config.texture !== '') {
-			template.data.texture = config.texture;
-		}
-		if (config.tint && config.tint !== '') {
-			template.data.tmfxTint = config.tint;
-		}
-		template.data.tmfxTextureAlpha = config.opacity;
-	}
-
-	_fromOverrides(overrides = [], item, template) {
-		let config = overrides.find((el) => el.target.toLowerCase() === item.name.toLowerCase());
-		if (!config) {
-			return false;
-		}
-		this._fromConfig(config, template);
-		return true;
-	}
-
-	_fromCategories(categories = {}, item, template) {
-		if (!item.hasDamage) {
-			return false;
-		}
-		let dmgSettings = categories[item.data.data.damage.parts[0][1]] || {};
-		let config = dmgSettings[template.data.t];
-		if (!config) {
-			return false;
-		}
-		this._fromConfig(mergeObject(config, { opacity: dmgSettings.opacity, tint: dmgSettings.tint }, true, true), template);
-		return true;
-	}
-
-	_fromItemFn() {
-		const self = this;
-		return function (item) {
-			const template = self._origFromItem.apply(this, [item]);
-			if (!template) {
-				return template;
+		} else {
+			if (!this._enabled) {
+				if (game.modules.get("lib-wrapper")?.active) {
+					libWrapper.register("tokenmagic", "game.dnd5e.canvas.AbilityTemplate.fromItem", fromItem, "WRAPPER");
+				} else {
+					const origFromItem = game.dnd5e.canvas.AbilityTemplate.fromItem;
+					game.dnd5e.canvas.AbilityTemplate.fromItem = function () {
+						return fromItem.call(this, origFromItem.bind(this), ...arguments);
+					}
+				}
 			}
-			let hasPreset = template.hasOwnProperty("tmfxPreset");
-			if (hasPreset) {
-				return template;
-			}
-			const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
-			let updated = self._fromOverrides(Object.values(settings.overrides), item, template);
-			if (!updated) {
-				self._fromCategories(settings.categories, item, template);
-			}
-			return template;
+		}
+
+		this._enabled = enabled;
+	}
+}
+
+function fromConfig(config, template) {
+	if (config.preset && config.preset !== '' && config.preset !== emptyPreset) {
+		template.data.tmfxPreset = config.preset;
+	}
+	if (config.texture && config.texture !== '') {
+		template.data.texture = config.texture;
+	}
+	if (config.tint && config.tint !== '') {
+		template.data.tmfxTint = config.tint;
+	}
+	template.data.tmfxTextureAlpha = config.opacity;
+}
+
+function fromOverrides(overrides = [], item, template) {
+	let config = overrides.find((el) => el.target.toLowerCase() === item.name.toLowerCase());
+	if (!config) {
+		return false;
+	}
+	fromConfig(config, template);
+	return true;
+}
+
+function fromCategories(categories = {}, item, template) {
+	if (!item.hasDamage) {
+		return false;
+	}
+
+	let config, dmgSettings;
+
+	// some items/spells have multiple damage types
+	// this loop looks over all the types until it finds one with a valid fx preset
+	for (const [_, dmgType] of item.data.data.damage.parts) {
+		dmgSettings = categories[dmgType] || {};
+		config = dmgSettings[template.data.t];
+
+		if (config && config.preset !== emptyPreset) {
+			break;
 		}
 	}
+	if (!config) {
+		return false;
+	}
+	fromConfig(mergeObject(config, { opacity: dmgSettings.opacity, tint: dmgSettings.tint }, true, true), template);
+	return true;
+}
+
+function fromItem(wrapped, ...args) {
+	const [ item ] = args;
+	const template = wrapped(...args);
+	if (!template) {
+		return template;
+	}
+	let hasPreset = template.hasOwnProperty("tmfxPreset");
+	if (hasPreset) {
+		return template;
+	}
+	const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
+	let updated = fromOverrides(Object.values(settings.overrides), item, template);
+	if (!updated) {
+		fromCategories(settings.categories, item, template);
+	}
+	return template;
 }
 
 export const dnd5eTemplates = new AutoTemplateDND5E();

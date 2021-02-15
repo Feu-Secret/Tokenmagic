@@ -25,6 +25,8 @@
   "TMFX.settings.autoTemplateEnabled.hint": "Décocher cette option désactivera tous les effets automatiques sur les templates. REMARQUE: affecte uniquement les templates nouvellement placés.",
   "TMFX.settings.defaultTemplateOnHover.name": "Grille sur demande",
   "TMFX.settings.defaultTemplateOnHover.hint": "Afficher uniquement la grille des templates en passant le curseur de la souris sur le sélecteur (dans la couche des templates.)",
+  "TMFX.settings.autoFPS.name": "Framerate automatique",
+  "TMFX.settings.autoFPS.hint": "Cochez cette option pour laisser le navigateur (ou l'application) décider de la limite du framerate. Peut supprimer les saccades sur certaines configurations. (Attention : cette option surcharge le paramètre de Foundry)",
   "TMFX.settings.autoTemplateSettings.button.name": "Effets automatiques des templates",
   "TMFX.settings.autoTemplateSettings.button.label": "Configuration des templates",
   "TMFX.settings.autoTemplateSettings.button.hint": "Pour les systèmes de jeu supportés, les effets de template peuvent être activés en tenant compte du type de zone et de dégâts, ou en surchargeant des sorts spécifiques.",

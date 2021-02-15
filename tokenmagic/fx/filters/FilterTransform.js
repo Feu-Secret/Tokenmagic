@@ -1,9 +1,10 @@
 import { matrix } from '../glsl/fragmentshaders/matrix.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterTransform extends PIXI.Filter {
+export class FilterTransform extends CustomFilter {
 
     constructor(params) {
         let {
@@ -13,8 +14,6 @@ export class FilterTransform extends PIXI.Filter {
             twRotation,
             bpRadiusPercent,
             bpStrength,
-            spRadiusPercent,
-            spStrength,
             scale,
             scaleX,
             scaleY,
@@ -37,8 +36,6 @@ export class FilterTransform extends PIXI.Filter {
             twRotation,
             bpRadiusPercent,
             bpStrength,
-            spRadiusPercent,
-            spStrength,
             scale,
             scaleX,
             scaleY,
@@ -170,8 +167,6 @@ FilterTransform.defaults = {
     twAngle: 0,
     bpRadiusPercent: 0,
     bpStrength: 0,
-    spRadiusPercent: 0,
-    spStrength: 0,
     scaleX: 1,
     scaleY: 1,
     pivotX: 0.5,

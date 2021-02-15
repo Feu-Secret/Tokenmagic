@@ -33,9 +33,7 @@ export class FilterPixelate extends PIXI.filters.PixelateFilter {
     //}
 
     handleTransform() {
-        if (!this.dummy) {
-            this.size.x = this.sizeX * this.placeableImg.parent.worldTransform.a;
-            this.size.y = this.sizeY * this.placeableImg.parent.worldTransform.a;
-        }
+        this.size.x = this.sizeX * this.placeableImg.parent.worldTransform.a;
+        this.size.y = this.sizeY * this.placeableImg.parent.worldTransform.a;
     }
 }

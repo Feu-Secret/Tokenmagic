@@ -1,9 +1,10 @@
 import { magicGlow } from '../glsl/fragmentshaders/magicglow.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterGleamingGlow extends PIXI.Filter {
+export class FilterGleamingGlow extends CustomFilter {
 
     constructor(params) {
 
@@ -105,11 +106,9 @@ export class FilterGleamingGlow extends PIXI.Filter {
     }
 
     apply(filterManager, input, output, clear) {
-        if (!this.dummy) {
-            this.uniforms.thickness[0] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.width;
-            this.uniforms.thickness[1] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.height;
-            filterManager.applyFilter(this, input, output, clear);
-        }
+        this.uniforms.thickness[0] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.width;
+        this.uniforms.thickness[1] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.height;
+        super.apply(filterManager, input, output, clear);
     }
 }
 

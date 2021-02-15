@@ -1,9 +1,10 @@
 import { splash } from '../glsl/fragmentshaders/splash.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterSplash extends PIXI.Filter {
+export class FilterSplash extends CustomFilter {
 
     constructor(params) {
         let {

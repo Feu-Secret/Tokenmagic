@@ -1,9 +1,10 @@
 import { burnFire } from '../glsl/fragmentshaders/fire.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterFire extends PIXI.Filter {
+export class FilterFire extends CustomFilter {
 
     constructor(params) {
         let {

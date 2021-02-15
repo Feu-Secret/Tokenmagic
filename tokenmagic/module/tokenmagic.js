@@ -34,6 +34,7 @@ import { FilterTransform } from "../fx/filters/FilterTransform.js";
 import { FilterSplash } from "../fx/filters/FilterSplash.js";
 import { FilterPolymorph } from "../fx/filters/FilterPolymorph.js";
 import { FilterXFire } from "../fx/filters/FilterXFire.js";
+import { FilterSprite } from "../fx/filters/FilterSprite.js";
 import { Anime } from "../fx/Anime.js";
 import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
@@ -88,6 +89,7 @@ export const FilterType = {
     splash: FilterSplash,
     polymorph: FilterPolymorph,
     xfire: FilterXFire,
+    sprite: FilterSprite,
 };
 
 export const PlaceableType = {
@@ -1314,31 +1316,35 @@ function initSocketListener() {
 };
 
 function initFurnaceDrawingsException() {
-    if (isFurnaceDrawingsActive) {
-        DrawingConfig.prototype.refresh = (function () {
-            const cachedDCR = DrawingConfig.prototype.refresh;
-            return async function (html) {
+    if (isFurnaceDrawingsActive()) {
+        const wrappedDCR = async function (wrapped, ...args) {
+            // Clear animations and filters if needed
+            let tmfxUpdate = false;
+            if (this.object.data.hasOwnProperty("flags")
+                && this.object.data.flags.hasOwnProperty("tokenmagic")
+                && this.object.data.flags.tokenmagic.hasOwnProperty("filters")) {
+                tmfxUpdate = true;
+                Anime.removeAnimation(this.object.id);
+                Magic._clearImgFiltersByPlaceable(this.object);
+            }
 
-                // Clear animations and filters if needed
-                let tmfxUpdate = false;
-                if (this.object.data.hasOwnProperty("flags")
-                    && this.object.data.flags.hasOwnProperty("tokenmagic")
-                    && this.object.data.flags.tokenmagic.hasOwnProperty("filters")) {
-                    tmfxUpdate = true;
-                    Anime.removeAnimation(this.object.id);
-                    Magic._clearImgFiltersByPlaceable(this.object);
-                }
+            // Furnace function apply (updating data and full redraw : destruction/reconstruction)
+            await wrapped(...args);
 
-                // Furnace function apply (updating data and full redraw : destruction/reconstruction)
-                cachedDCR.apply(this, arguments);
+            // Reapply the filters if needed
+            if (tmfxUpdate) {
+                Magic._singleLoadFilters(this.object);
+            }
+        };
 
-                // Reapply the filters if needed
-                if (tmfxUpdate) {
-                    Magic._singleLoadFilters(this.object);
-                }
-
+        if (game.modules.get("lib-wrapper")?.active) {
+            libWrapper.register("tokenmagic", "FurnaceDrawingConfig.prototype.refresh", wrappedDCR, "WRAPPER");
+        } else {
+            const cachedDCR = FurnaceDrawingConfig.prototype.refresh;
+            FurnaceDrawingConfig.prototype.refresh = function () {
+                return wrappedDCR.call(this, cachedDCR.bind(this), ...arguments);
             };
-        })();
+        }
     }
 }
 
@@ -1473,6 +1479,9 @@ Hooks.on("ready", () => {
     initSocketListener();
     initFurnaceDrawingsException();
     window.TokenMagic = Magic;
+
+    if (!game.modules.get("lib-wrapper")?.active && game.user.isGM)
+        ui.notifications.warn("The 'Token Magic FX' module recommends to install and activate the 'libWrapper' module.");
 
     Hooks.on("renderMeasuredTemplateConfig", onMeasuredTemplateConfig);
 });

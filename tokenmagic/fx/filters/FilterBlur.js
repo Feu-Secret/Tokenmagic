@@ -7,7 +7,6 @@ export class FilterBlur extends PIXI.filters.BlurFilter {
         this.enabled = false;
         this.blur = 2;
         this.quality = 4;
-        this.resolution = 1;
         this.zOrder = 290;
         this.repeatEdgePixels = false;
         this.animated = {};

@@ -1,9 +1,10 @@
 import { solarRipples } from '../glsl/fragmentshaders/ripples.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterSolarRipples extends PIXI.Filter {
+export class FilterSolarRipples extends CustomFilter {
 
     constructor(params) {
         let {

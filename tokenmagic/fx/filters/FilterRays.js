@@ -1,9 +1,10 @@
 import { cosmicRayFrag } from '../glsl/fragmentshaders/cosmicray.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
+import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
 
-export class FilterRays extends PIXI.Filter {
+export class FilterRays extends CustomFilter {
 
     constructor(params) {
         let {
@@ -22,8 +23,8 @@ export class FilterRays extends PIXI.Filter {
         super(customVertex2D, cosmicRayFrag);
 
         this.uniforms.color = new Float32Array([1.0, 0.4, 0.1, 0.55]);
-        this.uniforms.anchor = new Float32Array([0.5,0.5]);
-        this.uniforms.dimensions = new Float32Array([100.0,100.0]);
+        this.uniforms.anchor = new Float32Array([0.5, 0.5]);
+        this.uniforms.dimensions = new Float32Array([1.0, 1.0]);
 
         Object.assign(this, {
             time, color, divisor, alpha, anchorX, anchorY, dimX, dimY, alphaDiscard

@@ -4,14 +4,11 @@ precision mediump float;
 uniform float progress;
 uniform float magnify;
 uniform int type;
-uniform vec2 imgToTex;
-uniform vec2 texShift;
-uniform vec4 filterClamp;
-uniform vec4 filterClampTarget;
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
+uniform vec4 inputClamp;
+uniform vec4 inputClampTarget;
 uniform sampler2D uSampler;
 uniform sampler2D uSamplerTarget;
+uniform mat3 filterMatrixInverse;
 
 varying vec2 vTextureCoord;
 varying vec2 vTextureCoordExtra;
@@ -21,18 +18,18 @@ const float PI = 3.14159265358;
 
 float getClip(vec2 uv) {
     return step(3.5,
-       step(filterClampTarget.x, uv.x) +
-       step(filterClampTarget.y, uv.y) +
-       step(uv.x, filterClampTarget.z) +
-       step(uv.y, filterClampTarget.w));
+       step(inputClampTarget.x, uv.x) +
+       step(inputClampTarget.y, uv.y) +
+       step(uv.x, inputClampTarget.z) +
+       step(uv.y, inputClampTarget.w));
 }
 
 vec4 getFromColor(vec2 uv) {
-    return texture2D(uSampler,clamp(uv,filterClamp.xy,filterClamp.zw));
+    return texture2D(uSampler,clamp(uv,inputClamp.xy,inputClamp.zw));
 }
 
 vec4 getToColor(vec2 uv) {
-    return texture2D(uSamplerTarget,clamp(uv,filterClampTarget.xy,filterClampTarget.zw))*getClip(uv);
+    return texture2D(uSamplerTarget,clamp(uv,inputClampTarget.xy,inputClampTarget.zw))*getClip(uv);
 }
 
 float rand(vec2 co) {
@@ -66,7 +63,7 @@ vec4 morph(vec2 uv, vec2 uvt) {
     vec2 oc = mix(oa,ob,0.5)*0.1;
     float w0 = progress;
     float w1 = 1.0-w0;
-    vec2 sourceMappedCoord = ((vFilterCoord+(oc*0.4)*w0)*vOutputFrame.zw) / vInputSize.xy;
+    vec2 sourceMappedCoord = (filterMatrixInverse * vec3(vFilterCoord+(oc*0.4)*w0, 1.0)).xy;
     vec4 fromcol = getFromColor(sourceMappedCoord);
     vec4 tocol = getToColor(uvt-oc*w1);
     float a = mix(ca.a, cb.a, progress);
@@ -80,7 +77,7 @@ vec4 waterdrop(vec2 uv, vec2 uvt) {
         return mix(getFromColor(uv), getToColor(uvt), progress);
     } else {
         vec2 shiftuvt = dirt * sin(distt * 60. - progress * 20.);
-        vec2 fuv = ((vFilterCoord + (shiftuvt*(1.-progress)))*vOutputFrame.zw) / vInputSize.xy;
+        vec2 fuv = (filterMatrixInverse * vec3(vFilterCoord + (shiftuvt*(1.-progress)), 1.0)).xy;
         return mix(getFromColor(fuv), getToColor(uvt + (shiftuvt*(1.-progress))), progress);
     }
 }
@@ -112,7 +109,7 @@ vec2 swirluv(vec2 uv) {
 vec4 swirl(vec2 uv, vec2 uvt) {
     vec2 suvfrom = swirluv(vFilterCoord);
     vec2 suvto = swirluv(uvt);
-    vec2 sourceMappedCoord = (suvfrom*vOutputFrame.zw) / vInputSize.xy;
+    vec2 sourceMappedCoord = (filterMatrixInverse * vec3(suvfrom, 1.0)).xy;
     vec4 fscol = getFromColor(sourceMappedCoord);
     vec4 ftcol = getToColor(suvto);
     return mix( fscol, ftcol, progress );

@@ -3,6 +3,7 @@ precision mediump float;
 precision mediump int;
 
 uniform sampler2D uSampler;
+uniform mat3 filterMatrixInverse;
 uniform float time;
 uniform float intensity;
 uniform float scale;
@@ -13,8 +14,6 @@ uniform vec3 color;
 
 varying vec2 vFilterCoord;
 varying vec2 vTextureCoord;
-varying vec4 vInputSize;
-varying vec4 vOutputFrame;
 
 #define PI 3.14159265359
 
@@ -88,7 +87,7 @@ void main() {
     uv *= 1. + 0.11*(cos(sqrt(max(distortion1, distortion2))+1.)*0.5);
     uv -= vec2(0.036,0.81); 
 
-    vec2 mappedCoord = (uv*vOutputFrame.zw) / vInputSize.xy;
+    vec2 mappedCoord = (filterMatrixInverse * vec3(uv, 1.0)).xy;
     
     vec4 pixel = texture2D(uSampler, mappedCoord);
     vec3 aColor = color;

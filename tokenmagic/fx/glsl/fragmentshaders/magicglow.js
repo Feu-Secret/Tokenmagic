@@ -11,8 +11,8 @@ uniform int auraType;
 uniform bool holes;
 uniform vec2 thickness;
 uniform vec4 color;
-uniform vec4 filterArea;
-uniform vec4 filterClamp;
+uniform vec4 inputSize;
+uniform vec4 inputClamp;
 
 varying vec2 vTextureCoord;
 varying vec2 vFilterCoord;
@@ -62,7 +62,7 @@ vec4 outlining()
     for (float angle = 0.; angle <= TWOPI; angle += 0.3141592653) {
         displaced.x = vTextureCoord.x + thickness.x * cos(angle);
         displaced.y = vTextureCoord.y + thickness.y * sin(angle);
-        curColor = texture2D(uSampler, clamp(displaced, filterClamp.xy, filterClamp.zw));
+        curColor = texture2D(uSampler, clamp(displaced, inputClamp.xy, inputClamp.zw));
         maxAlpha = max(maxAlpha, curColor.a);
     }
     float resultAlpha = max(maxAlpha, ownColor.a);
@@ -72,7 +72,7 @@ vec4 outlining()
 
 vec4 glowing() 
 {
-	vec2 px = vec2(1.0 / filterArea.x, 1.0 / filterArea.y);
+	vec2 px = inputSize.zw;
 
     float totalAlpha = 0.0;
     float outerStrength = 6.;
@@ -86,7 +86,7 @@ vec4 glowing()
 
        for (float curDistance = 0.0; curDistance < 10.; curDistance++) {
            displaced = clamp(vTextureCoord + direction * 
-                   (curDistance + 1.0), filterClamp.xy, filterClamp.zw);
+                   (curDistance + 1.0), inputClamp.xy, inputClamp.zw);
 
            curColor = texture2D(uSampler, displaced);
            totalAlpha += (10. - curDistance) * curColor.a;
