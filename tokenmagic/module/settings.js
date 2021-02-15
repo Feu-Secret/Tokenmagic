@@ -68,6 +68,16 @@ export class TokenMagicSettings extends FormApplication {
             onChange: () => window.location.reload()
         });
 
+        game.settings.register('tokenmagic', 'autohideTemplateElements', {
+            name: game.i18n.localize('TMFX.settings.autohideTemplateElements.name'),
+            hint: game.i18n.localize('TMFX.settings.autohideTemplateElements.hint'),
+            scope: 'world',
+            config: true,
+            default: true,
+            type: Boolean,
+            onChange: () => window.location.reload()
+        });
+      
         game.settings.register('tokenmagic', 'autoFPSEnabled', {
             name: game.i18n.localize('TMFX.settings.autoFPS.name'),
             hint: game.i18n.localize('TMFX.settings.autoFPS.hint'),
@@ -344,10 +354,12 @@ Hooks.once("init", () => {
         return await wrapped(...args);
     };
 
-    let patchedMTR;
+    let wrappedMTR;
+    let wrappedMTRType;
 
     if (!isVideoDisabled()) {
-        patchedMTR = function () {
+        wrappedMTRType = "OVERRIDE";
+        wrappedMTR = function () {
             if (this.template && !this.template._destroyed) {
                 // INTEGRATION FROM MESS
                 // THANKS TO MOERILL !!
@@ -457,33 +469,86 @@ Hooks.once("init", () => {
         };
     }
 
-    let wrappedMTR;
-    let wrappedMTRType;
+    if (game.settings.get('tokenmagic', 'autohideTemplateElements')) {
+        const autohideTemplateElements = function (wrapped, ...args) {
+            // Save texture and border thickness
+            const texture = this.texture;
+            const borderThickness = this._borderThickness;
 
-    if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
-        const defaultTemplateOnHover = function (wrapped, ...args) {
-            const hl = canvas.grid.getHighlightLayer(`Template.${this.id}`);
-            if (this.texture && this.texture !== '') {
-                hl.renderable = this._hover;
-            } else {
-                hl.renderable = true;
+            // Hide template texture while moving
+            if (this._original || this.parent === canvas.templates.preview) {
+                this.texture = null;
             }
 
-            return wrapped(...args);
-        };
+            // Show border outline only on hover if the template is textured
+            if (this.texture && this.texture !== '' && !this._hover) {
+                this._borderThickness = 0;
+            }
 
-        if (patchedMTR) {
-            wrappedMTRType = "OVERRIDE";
-            wrappedMTR = function () {
-                return defaultTemplateOnHover.call(this, patchedMTR.bind(this), ...arguments);
+            const retVal = wrapped(...args);
+
+            // Restore texture and border thickness
+            this.texture = texture;
+            this._borderThickness = borderThickness;
+
+            {
+                // Show the origin/destination points and ruler text only on hover or while creating but not while moving
+                const template = this._original ?? this;
+                const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
+
+                if (!show) {
+                    // Hide origin and destination points, i.e., hide everything except the template shape
+                    for (const data of template.template.geometry.graphicsData) {
+                        if (data.shape !== template.shape) {
+                            data.fillStyle.visible = false;
+                            data.lineStyle.visible = false;
+                        }
+                    }
+                    template.template.geometry.invalidate();
+                }
+
+                template.ruler.renderable = show;
+
+                template.controlIcon.renderable = template.owner;
+
+                if (template.handle) {
+                    template.handle.renderable = template.owner;
+                }
+            }
+
+            return retVal;
+        }
+
+        if (wrappedMTR) {
+            const _wrappedMTR = wrappedMTR;
+            wrappedMTR = function() {
+                return autohideTemplateElements.call(this, _wrappedMTR.bind(this), ...arguments);
             }
         } else {
             wrappedMTRType = "WRAPPER";
-            wrappedMTR = defaultTemplateOnHover;
+            wrappedMTR = autohideTemplateElements;
         }
-    } else if (patchedMTR) {
-        wrappedMTRType = "OVERRIDE";
-        wrappedMTR = patchedMTR;
+    }
+
+    if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
+        Hooks.on("canvasReady", () => {
+            canvas.stage.on("mousemove", event => {
+                const {x: mx, y: my} = event.data.getLocalPosition(canvas.templates);
+                for (const template of canvas.templates.placeables) {
+                    const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
+                    const opacity = template.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
+                    if (template.texture && template.texture !== '') {
+                        const {x: cx, y: cy} = template.center;
+                        const mouseover = template.shape.contains(mx - cx, my - cy);
+                        hl.renderable = mouseover;
+                        template.template.alpha = (mouseover ? 0.5: 1.0) * opacity;
+                    } else {
+                        hl.renderable = true;
+                        template.template.alpha = opacity;
+                    }
+                }
+            });
+        });
     }
 
     if (game.modules.get("lib-wrapper")?.active) {
