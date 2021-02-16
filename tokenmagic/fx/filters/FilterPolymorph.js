@@ -3,6 +3,7 @@ import { customVertex2DSampler } from '../glsl/vertexshaders/customvertex2DSampl
 import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
+import { fixPath } from "../../module/tokenmagic.js";
 
 export class FilterPolymorph extends CustomFilter {
 
@@ -29,7 +30,7 @@ export class FilterPolymorph extends CustomFilter {
         this.targetSpriteMatrix = targetSpriteMatrix;
 
         Object.assign(this, {
-            imagePath, progress, magnify, type
+            imagePath: fixPath(imagePath), progress, magnify, type
         });
 
         this.zOrder = 1;
