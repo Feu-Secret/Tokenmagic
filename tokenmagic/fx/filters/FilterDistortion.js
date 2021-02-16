@@ -6,7 +6,7 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
         // Loading distortion sprite
         var displacementSpriteMask;
         var spriteMaskPath;
-        spriteMaskPath = (params.hasOwnProperty("maskPath") ? params.maskPath : "/modules/tokenmagic/fx/assets/distortion-1.png");
+        spriteMaskPath = (params.hasOwnProperty("maskPath") ? params.maskPath : "modules/tokenmagic/fx/assets/distortion-1.png");
         displacementSpriteMask = new PIXI.Sprite.from(spriteMaskPath);
         super(displacementSpriteMask);
 

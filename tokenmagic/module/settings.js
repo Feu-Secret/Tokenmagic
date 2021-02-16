@@ -332,11 +332,11 @@ Hooks.once("init", () => {
         if (hasPresetData && data.tmfxPreset !== emptyPreset) {
             let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
-                if (data.texture === '' || data.texture.includes('/modules/tokenmagic/fx/assets/templates/'))
+                if (data.texture === '' || data.texture.includes('modules/tokenmagic/fx/assets/templates/'))
                     data.texture = defaultTexture;
             }
 
-        } else if (hasTexture && data.texture.includes('/modules/tokenmagic/fx/assets/templates/')
+        } else if (hasTexture && data.texture.includes('modules/tokenmagic/fx/assets/templates/')
             && hasPresetData && data.tmfxPreset === emptyPreset) {
             data.texture = '';
         }

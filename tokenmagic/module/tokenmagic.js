@@ -1011,7 +1011,7 @@ export function TokenMagic() {
     };
 
     async function importPresetLibrary() {
-        const path = '/modules/tokenmagic/import';
+        const path = 'modules/tokenmagic/import';
         new FilePicker({
             type: "json",
             current: path,
