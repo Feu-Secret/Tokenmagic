@@ -16,4 +16,39 @@ export class FilterBlur extends PIXI.filters.BlurFilter {
             this.normalizeTMParams();
         }
     }
+
+    get blur() {
+        return this.strengthX;
+    }
+
+    set blur(value) {
+        this.strengthX = this.strengthY = value;
+    }
+
+    get blurX() {
+        return this.strengthX;
+    }
+
+    set blurX(value) {
+        this.strengthX = value;
+    }
+
+    get blurY() {
+        return this.strengthY;
+    }
+
+    set blurY(value) {
+        this.strengthY = value;
+    }
+
+    calculatePadding() {
+        const scale = this.targetPlaceable.worldTransform.a;
+
+        this.blurXFilter.blur = scale * this.strengthX;
+        this.blurYFilter.blur = scale * this.strengthY;
+
+        this.updatePadding();
+
+        super.calculatePadding();
+    }
 }
