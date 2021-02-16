@@ -1,6 +1,6 @@
 import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { DataVersion } from "../migration/migration.js";
-import { TokenMagic, isVideoDisabled } from './tokenmagic.js';
+import { TokenMagic, isVideoDisabled, fixPath } from './tokenmagic.js';
 import { AutoTemplateDND5E, dnd5eTemplates } from "./autoTemplate/dnd5e.js";
 import { defaultOpacity, emptyPreset } from './constants.js';
 
@@ -339,16 +339,29 @@ Hooks.once("init", () => {
 
         const hasTexture = data.hasOwnProperty("texture");
         const hasPresetData = data.hasOwnProperty("tmfxPreset");
+
+        if (hasTexture) {
+            data.texture = fixPath(data.texture);
+        }
+
         if (hasPresetData && data.tmfxPreset !== emptyPreset) {
             let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
-                if (data.texture === '' || data.texture.includes('modules/tokenmagic/fx/assets/templates/'))
+                if (data.texture === '' || data.texture.startsWith('modules/tokenmagic/fx/assets/templates/'))
                     data.texture = defaultTexture;
             }
 
-        } else if (hasTexture && data.texture.includes('modules/tokenmagic/fx/assets/templates/')
+        } else if (hasTexture && data.texture.startsWith('modules/tokenmagic/fx/assets/templates/')
             && hasPresetData && data.tmfxPreset === emptyPreset) {
             data.texture = '';
+        }
+
+        return await wrapped(...args);
+    };
+
+    const wrappedMTD = async function (wrapped, ...args) {
+        if (this.data.hasOwnProperty("texture")) {
+            this.data.texture = fixPath(this.data.texture);
         }
 
         return await wrapped(...args);
@@ -553,6 +566,7 @@ Hooks.once("init", () => {
 
     if (game.modules.get("lib-wrapper")?.active) {
         libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.update", wrappedMTU, "WRAPPER");
+        libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.draw", wrappedMTD, "WRAPPER");
 
         if (wrappedMTR) {
             libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.refresh", wrappedMTR, wrappedMTRType);
@@ -561,6 +575,11 @@ Hooks.once("init", () => {
         const cachedMTU = MeasuredTemplate.prototype.update;
         MeasuredTemplate.prototype.update = function () {
             return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+        };
+
+        const cachedMTD = MeasuredTemplate.prototype.draw;
+        MeasuredTemplate.prototype.draw = function () {
+            return wrappedMTD.call(this, cachedMTD.bind(this), ...arguments);
         };
 
         if (wrappedMTR) {
