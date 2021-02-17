@@ -1,12 +1,13 @@
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
+import { fixPath } from "../../module/tokenmagic.js";
 
 export class FilterDistortion extends PIXI.filters.DisplacementFilter {
     constructor(params) {
         // Loading distortion sprite
         var displacementSpriteMask;
         var spriteMaskPath;
-        spriteMaskPath = (params.hasOwnProperty("maskPath") ? params.maskPath : "/modules/tokenmagic/fx/assets/distortion-1.png");
+        spriteMaskPath = (params.hasOwnProperty("maskPath") ? fixPath(params.maskPath) : "modules/tokenmagic/fx/assets/distortion-1.png");
         displacementSpriteMask = new PIXI.Sprite.from(spriteMaskPath);
         super(displacementSpriteMask);
 
@@ -32,6 +33,7 @@ export class FilterDistortion extends PIXI.filters.DisplacementFilter {
 
         this.animated = {};
         this.setTMParams(params);
+        this.maskPath = spriteMaskPath;
         if (!this.dummy) {
             this.anime = new Anime(this);
             this.normalizeTMParams();

@@ -1,6 +1,6 @@
 import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { DataVersion } from "../migration/migration.js";
-import { TokenMagic, isVideoDisabled } from './tokenmagic.js';
+import { TokenMagic, isVideoDisabled, fixPath } from './tokenmagic.js';
 import { AutoTemplateDND5E, dnd5eTemplates } from "./autoTemplate/dnd5e.js";
 import { defaultOpacity, emptyPreset } from './constants.js';
 
@@ -68,16 +68,6 @@ export class TokenMagicSettings extends FormApplication {
             onChange: () => window.location.reload()
         });
 
-        game.settings.register('tokenmagic', 'autohideTemplateElements', {
-            name: game.i18n.localize('TMFX.settings.autohideTemplateElements.name'),
-            hint: game.i18n.localize('TMFX.settings.autohideTemplateElements.hint'),
-            scope: 'world',
-            config: true,
-            default: true,
-            type: Boolean,
-            onChange: () => window.location.reload()
-        });
-      
         game.settings.register('tokenmagic', 'autoFPSEnabled', {
             name: game.i18n.localize('TMFX.settings.autoFPS.name'),
             hint: game.i18n.localize('TMFX.settings.autoFPS.hint'),
@@ -339,14 +329,19 @@ Hooks.once("init", () => {
 
         const hasTexture = data.hasOwnProperty("texture");
         const hasPresetData = data.hasOwnProperty("tmfxPreset");
+
+        if (hasTexture) {
+            data.texture = fixPath(data.texture);
+        }
+
         if (hasPresetData && data.tmfxPreset !== emptyPreset) {
             let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
-                if (data.texture === '' || data.texture.includes('/modules/tokenmagic/fx/assets/templates/'))
+                if (data.texture === '' || data.texture.startsWith('modules/tokenmagic/fx/assets/templates/'))
                     data.texture = defaultTexture;
             }
 
-        } else if (hasTexture && data.texture.includes('/modules/tokenmagic/fx/assets/templates/')
+        } else if (hasTexture && data.texture.startsWith('modules/tokenmagic/fx/assets/templates/')
             && hasPresetData && data.tmfxPreset === emptyPreset) {
             data.texture = '';
         }
@@ -354,12 +349,18 @@ Hooks.once("init", () => {
         return await wrapped(...args);
     };
 
-    let wrappedMTR;
-    let wrappedMTRType;
+    const wrappedMTD = async function (wrapped, ...args) {
+        if (this.data.hasOwnProperty("texture")) {
+            this.data.texture = fixPath(this.data.texture);
+        }
+
+        return await wrapped(...args);
+    };
+
+    let patchedMTR;
 
     if (!isVideoDisabled()) {
-        wrappedMTRType = "OVERRIDE";
-        wrappedMTR = function () {
+        patchedMTR = function () {
             if (this.template && !this.template._destroyed) {
                 // INTEGRATION FROM MESS
                 // THANKS TO MOERILL !!
@@ -469,90 +470,38 @@ Hooks.once("init", () => {
         };
     }
 
-    if (game.settings.get('tokenmagic', 'autohideTemplateElements')) {
-        const autohideTemplateElements = function (wrapped, ...args) {
-            // Save texture and border thickness
-            const texture = this.texture;
-            const borderThickness = this._borderThickness;
+    let wrappedMTR;
+    let wrappedMTRType;
 
-            // Hide template texture while moving
-            if (this._original || this.parent === canvas.templates.preview) {
-                this.texture = null;
+    if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
+        const defaultTemplateOnHover = function (wrapped, ...args) {
+            const hl = canvas.grid.getHighlightLayer(`Template.${this.id}`);
+            if (this.texture && this.texture !== '') {
+                hl.renderable = this._hover;
+            } else {
+                hl.renderable = true;
             }
 
-            // Show border outline only on hover if the template is textured
-            if (this.texture && this.texture !== '' && !this._hover) {
-                this._borderThickness = 0;
-            }
+            return wrapped(...args);
+        };
 
-            const retVal = wrapped(...args);
-
-            // Restore texture and border thickness
-            this.texture = texture;
-            this._borderThickness = borderThickness;
-
-            {
-                // Show the origin/destination points and ruler text only on hover or while creating but not while moving
-                const template = this._original ?? this;
-                const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
-
-                if (!show) {
-                    // Hide origin and destination points, i.e., hide everything except the template shape
-                    for (const data of template.template.geometry.graphicsData) {
-                        if (data.shape !== template.shape) {
-                            data.fillStyle.visible = false;
-                            data.lineStyle.visible = false;
-                        }
-                    }
-                    template.template.geometry.invalidate();
-                }
-
-                template.ruler.renderable = show;
-
-                template.controlIcon.renderable = template.owner;
-
-                if (template.handle) {
-                    template.handle.renderable = template.owner;
-                }
-            }
-
-            return retVal;
-        }
-
-        if (wrappedMTR) {
-            const _wrappedMTR = wrappedMTR;
-            wrappedMTR = function() {
-                return autohideTemplateElements.call(this, _wrappedMTR.bind(this), ...arguments);
+        if (patchedMTR) {
+            wrappedMTRType = "OVERRIDE";
+            wrappedMTR = function () {
+                return defaultTemplateOnHover.call(this, patchedMTR.bind(this), ...arguments);
             }
         } else {
             wrappedMTRType = "WRAPPER";
-            wrappedMTR = autohideTemplateElements;
+            wrappedMTR = defaultTemplateOnHover;
         }
-    }
-
-    if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
-        Hooks.on("canvasReady", () => {
-            canvas.stage.on("mousemove", event => {
-                const {x: mx, y: my} = event.data.getLocalPosition(canvas.templates);
-                for (const template of canvas.templates.placeables) {
-                    const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
-                    const opacity = template.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
-                    if (template.texture && template.texture !== '') {
-                        const {x: cx, y: cy} = template.center;
-                        const mouseover = template.shape.contains(mx - cx, my - cy);
-                        hl.renderable = mouseover;
-                        template.template.alpha = (mouseover ? 0.5: 1.0) * opacity;
-                    } else {
-                        hl.renderable = true;
-                        template.template.alpha = opacity;
-                    }
-                }
-            });
-        });
+    } else if (patchedMTR) {
+        wrappedMTRType = "OVERRIDE";
+        wrappedMTR = patchedMTR;
     }
 
     if (game.modules.get("lib-wrapper")?.active) {
         libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.update", wrappedMTU, "WRAPPER");
+        libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.draw", wrappedMTD, "WRAPPER");
 
         if (wrappedMTR) {
             libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.refresh", wrappedMTR, wrappedMTRType);
@@ -561,6 +510,11 @@ Hooks.once("init", () => {
         const cachedMTU = MeasuredTemplate.prototype.update;
         MeasuredTemplate.prototype.update = function () {
             return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+        };
+
+        const cachedMTD = MeasuredTemplate.prototype.draw;
+        MeasuredTemplate.prototype.draw = function () {
+            return wrappedMTD.call(this, cachedMTD.bind(this), ...arguments);
         };
 
         if (wrappedMTR) {
