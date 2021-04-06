@@ -364,7 +364,11 @@ Hooks.once("init", () => {
             this.data.texture = fixPath(this.data.texture);
         }
 
-        return await wrapped(...args);
+        const retVal = await wrapped(...args);
+
+        this.template.alpha = this.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
+
+        return retVal;
     };
 
     let wrappedMTR;
