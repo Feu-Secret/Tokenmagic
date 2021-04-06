@@ -3,7 +3,6 @@ import { customVertex2DSampler } from '../glsl/vertexshaders/customvertex2DSampl
 import { CustomFilter } from './CustomFilter.js';
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
-import { fixPath } from "../../module/tokenmagic.js";
 
 export class FilterSprite extends CustomFilter {
 
@@ -45,7 +44,7 @@ export class FilterSprite extends CustomFilter {
         this.targetSpriteMatrix = targetSpriteMatrix;
 
         Object.assign(this, {
-            imagePath: fixPath(imagePath),
+            imagePath,
             color,
             colorize,
             inverse,
