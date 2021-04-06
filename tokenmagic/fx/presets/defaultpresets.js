@@ -200,7 +200,7 @@ params =
     [{
         filterType: "distortion",
         filterId: "distortion",
-        maskPath: "/modules/tokenmagic/fx/assets/distortion-1.png",
+        maskPath: "modules/tokenmagic/fx/assets/distortion-1.png",
         maskSpriteScaleX: 5,
         maskSpriteScaleY: 5,
         padding: 20,
@@ -1990,7 +1990,7 @@ params =
 presetObject = {};
 presetObject.name = "Watery Surface";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2018,7 +2018,7 @@ params =
 presetObject = {};
 presetObject.name = "Protoplasm";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2046,7 +2046,7 @@ params =
 presetObject = {};
 presetObject.name = "Watery Surface 2";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2073,7 +2073,7 @@ params =
 presetObject = {};
 presetObject.name = "Smoky Area";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2099,7 +2099,7 @@ params =
 presetObject = {};
 presetObject.name = "Shock";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2130,7 +2130,7 @@ params =
 presetObject = {};
 presetObject.name = "Annihilating Rays";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2158,7 +2158,7 @@ params =
 presetObject = {};
 presetObject.name = "Classic Rays";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2183,7 +2183,7 @@ params =
 presetObject = {};
 presetObject.name = "Smoke Filaments";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2211,7 +2211,7 @@ params =
 presetObject = {};
 presetObject.name = "Flames";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2236,7 +2236,7 @@ params =
 presetObject = {};
 presetObject.name = "Thick Fog";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2295,7 +2295,7 @@ params =
 presetObject = {};
 presetObject.name = "Waves";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2326,7 +2326,7 @@ params =
 presetObject = {};
 presetObject.name = "Waves 2";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2357,7 +2357,7 @@ params =
 presetObject = {};
 presetObject.name = "Waves 3";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2414,7 +2414,7 @@ params =
 presetObject = {};
 presetObject.name = "Zone : Fire";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2469,7 +2469,7 @@ params =
 presetObject = {};
 presetObject.name = "Zone : Electricity";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2541,7 +2541,7 @@ params =
 presetObject = {};
 presetObject.name = "Zone : Blizzard";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2691,7 +2691,7 @@ params =
 presetObject = {};
 presetObject.name = "Wild Magic";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2721,7 +2721,7 @@ params =
 presetObject = {};
 presetObject.name = "Spider Web 1";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2765,7 +2765,7 @@ params =
 presetObject = {};
 presetObject.name = "Spider Web 2";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 
@@ -2801,7 +2801,7 @@ params =
 presetObject = {};
 presetObject.name = "Spider Web 3";
 presetObject.library = PresetsLibrary.TEMPLATE;
-presetObject.defaultTexture = "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
+presetObject.defaultTexture = "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png";
 presetObject.params = params;
 templatePresets.push(presetObject);
 

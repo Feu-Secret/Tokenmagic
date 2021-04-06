@@ -170,7 +170,7 @@
             {
                 "filterType": "distortion",
                 "filterId": "distortion",
-                "maskPath": "/modules/tokenmagic/fx/assets/distortion-1.png",
+                "maskPath": "modules/tokenmagic/fx/assets/distortion-1.png",
                 "maskSpriteScaleX": 5,
                 "maskSpriteScaleY": 5,
                 "padding": 20,
@@ -1715,7 +1715,7 @@
     {
         "name": "Watery Surface",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "flood",
@@ -1740,7 +1740,7 @@
     {
         "name": "Protoplasm",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "liquid",
@@ -1764,7 +1764,7 @@
     {
         "name": "Watery Surface 2",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "liquid",
@@ -1788,7 +1788,7 @@
     {
         "name": "Smoky Area",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "smoke",
@@ -1811,7 +1811,7 @@
     {
         "name": "Shock",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "electric",
@@ -1833,7 +1833,7 @@
     {
         "name": "Annihilating Rays",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "xray",
@@ -1860,7 +1860,7 @@
     {
         "name": "Classic Rays",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "ray",
@@ -1884,7 +1884,7 @@
     {
         "name": "Smoke Filaments",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "fumes",
@@ -1905,7 +1905,7 @@
     {
         "name": "Flames",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "fire",
@@ -1929,7 +1929,7 @@
     {
         "name": "Thick Fog",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
         "params": [
             {
                 "filterType": "xfog",
@@ -1974,7 +1974,7 @@
     {
         "name": "Waves",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "wave",
@@ -2001,7 +2001,7 @@
     {
         "name": "Waves 2",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "wave",
@@ -2028,7 +2028,7 @@
     {
         "name": "Waves 3",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "wave",
@@ -2055,7 +2055,7 @@
     {
         "name": "Zone : Fire",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "xglow",
@@ -2105,7 +2105,7 @@
     {
         "name": "Zone : Electricity",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/white-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "xglow",
@@ -2153,7 +2153,7 @@
     {
         "name": "Zone : Blizzard",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "xglow",
@@ -2305,7 +2305,7 @@
     {
         "name": "Wild Magic",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "liquid",
@@ -2349,7 +2349,7 @@
     {
         "name": "Spider Web 1",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "web",
@@ -2393,7 +2393,7 @@
     {
         "name": "Spider Web 2",
         "library": "tmfx-template",
-        "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
+        "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png",
         "params": [
             {
                 "filterType": "web",
