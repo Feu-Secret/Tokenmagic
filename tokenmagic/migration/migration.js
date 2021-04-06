@@ -102,7 +102,7 @@ async function updatePresetsV040() {
         try {
             await game.settings.set("tokenmagic", "presets", presets);
             log(`Migration 0.4.0 - Importing new template presets...`);
-            await Magic.importPresetLibraryFromPath("modules/tokenmagic/import/TMFX-update-presets-v040.json", {overwrite: false} );
+            await Magic.importPresetLibraryFromPath("/modules/tokenmagic/import/TMFX-update-presets-v040.json", {overwrite: false} );
             await game.settings.set("tokenmagic", "migration", DataVersion.V040);
             log(`Migration 0.4.0 - Migration successful!`);
         } catch (e) {
@@ -121,7 +121,7 @@ async function updatePresetsV040b() {
         try {
             await game.settings.set("tokenmagic", "presets", presets);
             log(`Migration 0.4.0b - updating template presets...`);
-            await Magic.importPresetLibraryFromPath("modules/tokenmagic/import/TMFX-update-presets-v040b.json", {overwrite: true});
+            await Magic.importPresetLibraryFromPath("/modules/tokenmagic/import/TMFX-update-presets-v040b.json", {overwrite: true});
             await game.settings.set("tokenmagic", "migration", DataVersion.V040b);
             log(`Migration 0.4.0b - Migration successful!`);
         } catch (e) {
@@ -140,7 +140,7 @@ async function updatePresetsV041() {
         try {
             await game.settings.set("tokenmagic", "presets", presets);
             log(`Migration 0.4.1 - updating template presets...`);
-            await Magic.importPresetLibraryFromPath("modules/tokenmagic/import/TMFX-update-presets-v041.json", { overwrite: true });
+            await Magic.importPresetLibraryFromPath("/modules/tokenmagic/import/TMFX-update-presets-v041.json", { overwrite: true });
             await game.settings.set("tokenmagic", "migration", DataVersion.V041);
             log(`Migration 0.4.1 - Migration successful!`);
         } catch (e) {
@@ -159,7 +159,7 @@ async function updatePresetsV043() {
         try {
             await game.settings.set("tokenmagic", "presets", presets);
             log(`Migration 0.4.3 - updating template presets...`);
-            await Magic.importPresetLibraryFromPath("modules/tokenmagic/import/TMFX-update-presets-v043.json", { overwrite: true });
+            await Magic.importPresetLibraryFromPath("/modules/tokenmagic/import/TMFX-update-presets-v043.json", { overwrite: true });
             await game.settings.set("tokenmagic", "migration", DataVersion.V043);
             log(`Migration 0.4.3 - Migration successful!`);
         } catch (e) {

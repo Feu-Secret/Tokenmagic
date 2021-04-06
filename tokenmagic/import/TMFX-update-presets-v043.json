@@ -2,7 +2,7 @@
   {
     "name": "Flames 4 (colorizable)",
     "library": "tmfx-template",
-    "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
     "params": [
       {
         "filterType": "xfire",
@@ -26,7 +26,7 @@
   {
     "name": "Flames 5 (colorizable)",
     "library": "tmfx-template",
-    "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
     "params": [
       {
         "filterType": "xfire",
@@ -52,7 +52,7 @@
   {
     "name": "Flames 6 (colorizable)",
     "library": "tmfx-template",
-    "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+    "defaultTexture": "/modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
     "params": [
       {
         "filterType": "xfire",

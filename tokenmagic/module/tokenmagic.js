@@ -167,7 +167,9 @@ export var isFurnaceDrawingsActive = () => {
 
 export function isTheOne() {
     const theOne = game.users.find((user) => user.isGM && user.active);
-    return theOne && game.user === theOne;
+    if (theOne && game.user !== theOne) {
+        return false;
+    } else return true
 }
 
 export function mustBroadCast() {
@@ -199,42 +201,6 @@ export function warn(output) {
 export function error(output) {
     let logged = "TokenMagic | " + output;
     console.error(logged);
-}
-
-export function fixPath(path) {
-    /*
-        /prefix/...               =>   ...
-        /modules/tokenmagic/...   =>   modules/tokenmagic/...
-    */
-
-    if (path) {
-        const base = "/modules/tokenmagic";
-        const url = new URL(path, window.location.href);
-
-        if (url.origin === window.location.origin) {
-            let prefix = "/";
-
-            try {
-                if (ROUTE_PREFIX) {
-                    prefix = new URL(ROUTE_PREFIX, window.location.origin).pathname;
-                }
-            } catch (err) { }
-
-            path = url.pathname;
-
-            if (prefix === "/") {
-                path = path.slice(1);
-            } else if (path.startsWith(prefix) && (path.length === prefix.length || path[prefix.length] === "/")) {
-                path = path.slice(prefix.length + 1);
-            } else if (path.startsWith(base) && (path.length === base.length || path[base.length] === "/")) {
-                path = path.slice(1);
-            }
-        } else {
-            path = url.href;
-        }
-    }
-
-    return path;
 }
 
 export function getControlledPlaceables() {
@@ -1047,7 +1013,7 @@ export function TokenMagic() {
     };
 
     async function importPresetLibrary() {
-        const path = 'modules/tokenmagic/import';
+        const path = '/modules/tokenmagic/import';
         new FilePicker({
             type: "json",
             current: path,
@@ -1070,7 +1036,7 @@ export function TokenMagic() {
     function _getPresetTemplateDefaultTexture(presetName, presetLibrary = PresetsLibrary.TEMPLATE) {
         var pst = game.settings.get("tokenmagic", "presets");
         const preset = pst.find(el => el['name'] === presetName && el['library'] === presetLibrary);
-        if (!(preset == null) && preset.hasOwnProperty("defaultTexture")) return fixPath(preset.defaultTexture);
+        if (!(preset == null) && preset.hasOwnProperty("defaultTexture")) return preset.defaultTexture;
         else return null;
     }
 
@@ -1188,7 +1154,7 @@ export function TokenMagic() {
                 pLibrary = presetName.library;
             }
             if (presetName.hasOwnProperty("defaultTexture")) {
-                pDefaultTexture = fixPath(presetName.defaultTexture);
+                pDefaultTexture = presetName.defaultTexture;
             }
         } else {
             pName = presetName;

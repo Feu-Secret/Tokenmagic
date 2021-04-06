@@ -112,7 +112,7 @@ let presetDef =
 {
     name: "My Glow",
     library: "tmfx-template",
-    defaultTexture: "modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png"
+    defaultTexture: "/modules/tokenmagic/fx/assets/templates/black-tone-strong-opacity.png"
 };
 TokenMagic.addPreset(presetDef, params, true);
 ```
