@@ -726,6 +726,8 @@ export function TokenMagic() {
         workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
         workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
         var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
+        // Use only powers of two (which seem to work without problems) until PIXI is fixed.
+        filter.resolution = Math.pow(2, Math.floor(Math.log2(canvas.app.renderer.resolution)));
         setFilter(placeable, filter);
     }
 
