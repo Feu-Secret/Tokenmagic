@@ -1,5 +1,6 @@
 # IDE
 .vs/
 .idea/
+tokenmagic.zip
 tokenmagic/fx/assets/particles/
 foundry.js

@@ -1,6 +1,6 @@
 import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { DataVersion } from "../migration/migration.js";
-import { TokenMagic, isVideoDisabled } from './tokenmagic.js';
+import { TokenMagic, isVideoDisabled, fixPath } from './tokenmagic.js';
 import { AutoTemplateDND5E, dnd5eTemplates } from "./autoTemplate/dnd5e.js";
 import { defaultOpacity, emptyPreset } from './constants.js';
 
@@ -339,14 +339,19 @@ Hooks.once("init", () => {
 
         const hasTexture = data.hasOwnProperty("texture");
         const hasPresetData = data.hasOwnProperty("tmfxPreset");
+
+        if (hasTexture) {
+            data.texture = fixPath(data.texture);
+        }
+
         if (hasPresetData && data.tmfxPreset !== emptyPreset) {
             let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
             if (!(defaultTexture == null)) {
-                if (data.texture === '' || data.texture.includes('/modules/tokenmagic/fx/assets/templates/'))
+                if (data.texture === '' || data.texture.startsWith('modules/tokenmagic/fx/assets/templates/'))
                     data.texture = defaultTexture;
             }
 
-        } else if (hasTexture && data.texture.includes('/modules/tokenmagic/fx/assets/templates/')
+        } else if (hasTexture && data.texture.startsWith('modules/tokenmagic/fx/assets/templates/')
             && hasPresetData && data.tmfxPreset === emptyPreset) {
             data.texture = '';
         }
@@ -354,10 +359,24 @@ Hooks.once("init", () => {
         return await wrapped(...args);
     };
 
+    const wrappedMTD = async function (wrapped, ...args) {
+        if (this.data.hasOwnProperty("texture")) {
+            this.data.texture = fixPath(this.data.texture);
+        }
+
+        const retVal = await wrapped(...args);
+
+        this.template.alpha = this.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
+
+        return retVal;
+    };
+
     let wrappedMTR;
     let wrappedMTRType;
 
     if (!isVideoDisabled()) {
+        const _toRadians = Math.toRadians ?? toRadians;
+
         wrappedMTRType = "OVERRIDE";
         wrappedMTR = function () {
             if (this.template && !this.template._destroyed) {
@@ -370,7 +389,7 @@ Hooks.once("init", () => {
                 let { direction, distance, angle, width } = this.data;
                 distance *= (d.size / d.distance);
                 width *= (d.size / d.distance);
-                direction = toRadians(direction);
+                direction = _toRadians(direction);
 
                 // Create ray and bounding rectangle
                 this.ray = Ray.fromAngle(this.data.x, this.data.y, direction, distance);
@@ -412,26 +431,26 @@ Hooks.once("init", () => {
                         mat.scale(width / this.texture.width, height / this.texture.height);
                         mat.translate(0, -height * 0.5);
 
-                        mat.rotate(toRadians(this.data.direction));
+                        mat.rotate(_toRadians(this.data.direction));
                     } else {// cone
                         const d = canvas.dimensions;
 
                         // Extract and prepare data
                         let { direction, distance, angle } = this.data;
                         distance *= (d.size / d.distance);
-                        direction = toRadians(direction);
+                        direction = _toRadians(direction);
                         const width = this.data.distance * d.size / d.distance;
 
                         const angles = [(angle / -2), (angle / 2)];
-                        distance = distance / Math.cos(toRadians(angle / 2));
+                        distance = distance / Math.cos(_toRadians(angle / 2));
 
                         // Get the cone shape as a polygon
-                        const rays = angles.map(a => Ray.fromAngle(0, 0, direction + toRadians(a), distance + 1));
+                        const rays = angles.map(a => Ray.fromAngle(0, 0, direction + _toRadians(a), distance + 1));
                         const height = Math.sqrt((rays[0].B.x - rays[1].B.x) * (rays[0].B.x - rays[1].B.x)
                             + (rays[0].B.y - rays[1].B.y) * (rays[0].B.y - rays[1].B.y));
                         mat.scale(width / this.texture.width, height / this.texture.height);
                         mat.translate(0, -height / 2)
-                        mat.rotate(toRadians(this.data.direction));
+                        mat.rotate(_toRadians(this.data.direction));
                     }
                     this.template.beginTextureFill({
                         texture: this.texture,
@@ -552,15 +571,33 @@ Hooks.once("init", () => {
     }
 
     if (game.modules.get("lib-wrapper")?.active) {
-        libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.update", wrappedMTU, "WRAPPER");
+        if (isNewerVersion(game.data.version, "0.8")) {
+            libWrapper.register("tokenmagic", "MeasuredTemplateDocument.prototype.update", wrappedMTU, "WRAPPER");
+        } else {
+            libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.update", wrappedMTU, "WRAPPER");
+        }
+
+        libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.draw", wrappedMTD, "WRAPPER");
 
         if (wrappedMTR) {
             libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.refresh", wrappedMTR, wrappedMTRType);
         }
     } else {
-        const cachedMTU = MeasuredTemplate.prototype.update;
-        MeasuredTemplate.prototype.update = function () {
-            return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+        if (isNewerVersion(game.data.version, "0.8")) {
+            const cachedMTU = MeasuredTemplateDocument.prototype.update;
+            MeasuredTemplateDocument.prototype.update = function () {
+                return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+            };
+        } else {
+            const cachedMTU = MeasuredTemplate.prototype.update;
+            MeasuredTemplate.prototype.update = function () {
+                return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+            };
+        }
+
+        const cachedMTD = MeasuredTemplate.prototype.draw;
+        MeasuredTemplate.prototype.draw = function () {
+            return wrappedMTD.call(this, cachedMTD.bind(this), ...arguments);
         };
 
         if (wrappedMTR) {

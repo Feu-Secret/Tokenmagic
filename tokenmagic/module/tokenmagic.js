@@ -167,9 +167,7 @@ export var isFurnaceDrawingsActive = () => {
 
 export function isTheOne() {
     const theOne = game.users.find((user) => user.isGM && user.active);
-    if (theOne && game.user !== theOne) {
-        return false;
-    } else return true
+    return theOne && game.user === theOne;
 }
 
 export function mustBroadCast() {
@@ -201,6 +199,42 @@ export function warn(output) {
 export function error(output) {
     let logged = "TokenMagic | " + output;
     console.error(logged);
+}
+
+export function fixPath(path) {
+    /*
+        /prefix/...               =>   ...
+        /modules/tokenmagic/...   =>   modules/tokenmagic/...
+    */
+
+    if (path) {
+        const base = "/modules/tokenmagic";
+        const url = new URL(path, window.location.href);
+
+        if (url.origin === window.location.origin) {
+            let prefix = "/";
+
+            try {
+                if (ROUTE_PREFIX) {
+                    prefix = new URL(ROUTE_PREFIX, window.location.origin).pathname;
+                }
+            } catch (err) { }
+
+            path = url.pathname;
+
+            if (prefix === "/") {
+                path = path.slice(1);
+            } else if (path.startsWith(prefix) && (path.length === prefix.length || path[prefix.length] === "/")) {
+                path = path.slice(prefix.length + 1);
+            } else if (path.startsWith(base) && (path.length === base.length || path[base.length] === "/")) {
+                path = path.slice(1);
+            }
+        } else {
+            path = url.href;
+        }
+    }
+
+    return path;
 }
 
 export function getControlledPlaceables() {
@@ -692,6 +726,8 @@ export function TokenMagic() {
         workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
         workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
         var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
+        // Use only powers of two (which seem to work without problems) until PIXI is fixed.
+        filter.resolution = Math.pow(2, Math.floor(Math.log2(canvas.app.renderer.resolution)));
         setFilter(placeable, filter);
     }
 
@@ -1013,7 +1049,7 @@ export function TokenMagic() {
     };
 
     async function importPresetLibrary() {
-        const path = '/modules/tokenmagic/import';
+        const path = 'modules/tokenmagic/import';
         new FilePicker({
             type: "json",
             current: path,
@@ -1036,7 +1072,7 @@ export function TokenMagic() {
     function _getPresetTemplateDefaultTexture(presetName, presetLibrary = PresetsLibrary.TEMPLATE) {
         var pst = game.settings.get("tokenmagic", "presets");
         const preset = pst.find(el => el['name'] === presetName && el['library'] === presetLibrary);
-        if (!(preset == null) && preset.hasOwnProperty("defaultTexture")) return preset.defaultTexture;
+        if (!(preset == null) && preset.hasOwnProperty("defaultTexture")) return fixPath(preset.defaultTexture);
         else return null;
     }
 
@@ -1154,7 +1190,7 @@ export function TokenMagic() {
                 pLibrary = presetName.library;
             }
             if (presetName.hasOwnProperty("defaultTexture")) {
-                pDefaultTexture = presetName.defaultTexture;
+                pDefaultTexture = fixPath(presetName.defaultTexture);
             }
         } else {
             pName = presetName;
@@ -1419,7 +1455,12 @@ function onMeasuredTemplateConfig(data, html) {
         return 0;
     }
 
-    const tmTemplate = data.object;
+    let tmTemplate = data.object;
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        tmTemplate = tmTemplate.object;
+    }
+
     var opacity = tmTemplate.template.alpha;
     var tint = "";
 
@@ -1539,6 +1580,11 @@ Hooks.on("deleteToken", (parent, doc, options, userId) => {
 Hooks.on("createToken", (scene, data, options) => {
     //log("Hook -> createToken");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (!(scene == null)
         && scene.id === game.user.viewedScene
         && data.hasOwnProperty("flags")
@@ -1554,6 +1600,11 @@ Hooks.on("createToken", (scene, data, options) => {
 
 Hooks.on("createTile", (scene, data, options) => {
     //log("Hook -> createTile");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
 
     if (!(scene == null)
         && scene.id === game.user.viewedScene
@@ -1571,6 +1622,11 @@ Hooks.on("createTile", (scene, data, options) => {
 Hooks.on("createDrawing", (scene, data, options) => {
     //log("Hook -> createDrawing");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (!(scene == null)
         && scene.id === game.user.viewedScene
         && data.hasOwnProperty("flags")
@@ -1586,6 +1642,11 @@ Hooks.on("createDrawing", (scene, data, options) => {
 
 Hooks.on("updateToken", (scene, data, options) => {
     //log("Hook -> updateToken");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
 
     if (scene.id !== game.user.viewedScene) return;
 
@@ -1619,6 +1680,11 @@ Hooks.on("deleteTile", (parent, doc, options, userId) => {
 Hooks.on("updateTile", (scene, data, options) => {
     //log("Hook -> updateTile");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (scene.id !== game.user.viewedScene) return;
 
     if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")) {
@@ -1646,6 +1712,11 @@ Hooks.on("deleteDrawing", (parent, doc, options, userId) => {
 Hooks.on("updateDrawing", (scene, data, options, action) => {
     //log("Hook -> updateDrawing");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (scene.id !== game.user.viewedScene) return;
 
     if ((action.hasOwnProperty("diff") && action.diff
@@ -1670,6 +1741,12 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
 
 Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData, options) => {
     //log("Hook -> preUpdateMeasuredTemplate");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        updateData = measuredTemplate;
+        measuredTemplate = scene.data;
+        scene = scene.parent;
+    }
 
     function getTint() {
         if (updateData.hasOwnProperty("tmfxTint")) {
@@ -1760,6 +1837,11 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
     //log("Hook -> updateMeasuredTemplate");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (scene.id !== game.user.viewedScene) return;
 
     var placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
@@ -1793,6 +1875,11 @@ Hooks.on("deleteMeasuredTemplate", (parent, doc, options, userId) => {
 Hooks.on("createMeasuredTemplate", (scene, data, options) => {
     //log("Hook -> createMeasuredTemplate");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (!(scene == null)
         && scene.id === game.user.viewedScene
         && data.hasOwnProperty("flags")
@@ -1808,6 +1895,10 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
 
 Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
     //log("Hook -> preCreateMeasuredTemplate");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        scene = scene.parent;
+    }
 
     let hasFlags = data.hasOwnProperty("flags");
     let hasPreset = data.hasOwnProperty("tmfxPreset");
