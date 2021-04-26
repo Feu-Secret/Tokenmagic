@@ -1455,7 +1455,12 @@ function onMeasuredTemplateConfig(data, html) {
         return 0;
     }
 
-    const tmTemplate = data.object;
+    let tmTemplate = data.object;
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        tmTemplate = tmTemplate.object;
+    }
+
     var opacity = tmTemplate.template.alpha;
     var tint = "";
 
@@ -1575,6 +1580,11 @@ Hooks.on("deleteToken", (parent, doc, options, userId) => {
 Hooks.on("createToken", (scene, data, options) => {
     //log("Hook -> createToken");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (!(scene == null)
         && scene.id === game.user.viewedScene
         && data.hasOwnProperty("flags")
@@ -1590,6 +1600,11 @@ Hooks.on("createToken", (scene, data, options) => {
 
 Hooks.on("createTile", (scene, data, options) => {
     //log("Hook -> createTile");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
 
     if (!(scene == null)
         && scene.id === game.user.viewedScene
@@ -1607,6 +1622,11 @@ Hooks.on("createTile", (scene, data, options) => {
 Hooks.on("createDrawing", (scene, data, options) => {
     //log("Hook -> createDrawing");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (!(scene == null)
         && scene.id === game.user.viewedScene
         && data.hasOwnProperty("flags")
@@ -1622,6 +1642,11 @@ Hooks.on("createDrawing", (scene, data, options) => {
 
 Hooks.on("updateToken", (scene, data, options) => {
     //log("Hook -> updateToken");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
 
     if (scene.id !== game.user.viewedScene) return;
 
@@ -1655,6 +1680,11 @@ Hooks.on("deleteTile", (parent, doc, options, userId) => {
 Hooks.on("updateTile", (scene, data, options) => {
     //log("Hook -> updateTile");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (scene.id !== game.user.viewedScene) return;
 
     if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")) {
@@ -1682,6 +1712,11 @@ Hooks.on("deleteDrawing", (parent, doc, options, userId) => {
 Hooks.on("updateDrawing", (scene, data, options, action) => {
     //log("Hook -> updateDrawing");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (scene.id !== game.user.viewedScene) return;
 
     if ((action.hasOwnProperty("diff") && action.diff
@@ -1706,6 +1741,12 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
 
 Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData, options) => {
     //log("Hook -> preUpdateMeasuredTemplate");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        updateData = measuredTemplate;
+        measuredTemplate = scene.data;
+        scene = scene.parent;
+    }
 
     function getTint() {
         if (updateData.hasOwnProperty("tmfxTint")) {
@@ -1796,6 +1837,11 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
     //log("Hook -> updateMeasuredTemplate");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (scene.id !== game.user.viewedScene) return;
 
     var placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
@@ -1829,6 +1875,11 @@ Hooks.on("deleteMeasuredTemplate", (parent, doc, options, userId) => {
 Hooks.on("createMeasuredTemplate", (scene, data, options) => {
     //log("Hook -> createMeasuredTemplate");
 
+    if (isNewerVersion(game.data.version, "0.8")) {
+        [data, options] = [scene.data, data];
+        scene = scene.parent;
+    }
+
     if (!(scene == null)
         && scene.id === game.user.viewedScene
         && data.hasOwnProperty("flags")
@@ -1844,6 +1895,10 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
 
 Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
     //log("Hook -> preCreateMeasuredTemplate");
+
+    if (isNewerVersion(game.data.version, "0.8")) {
+        scene = scene.parent;
+    }
 
     let hasFlags = data.hasOwnProperty("flags");
     let hasPreset = data.hasOwnProperty("tmfxPreset");
