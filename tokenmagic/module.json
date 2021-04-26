@@ -86,6 +86,13 @@
             "path": "packs/token-magic-portfolio.db",
             "entity": "Macro",
             "module": "tokenmagic"
+        },
+        {
+            "name": "tmSampleCompendium",
+            "label": "TokenMagic Book of Fire",
+            "path": "packs/token-magic-book-of-fire.db",
+            "entity": "Macro",
+            "module": "tokenmagic"
         }
     ],
     "languages": [
