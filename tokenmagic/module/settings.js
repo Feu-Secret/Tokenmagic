@@ -77,7 +77,7 @@ export class TokenMagicSettings extends FormApplication {
             type: Boolean,
             onChange: () => window.location.reload()
         });
-      
+
         game.settings.register('tokenmagic', 'autoFPSEnabled', {
             name: game.i18n.localize('TMFX.settings.autoFPS.name'),
             hint: game.i18n.localize('TMFX.settings.autoFPS.hint'),
@@ -198,7 +198,17 @@ export class TokenMagicSettings extends FormApplication {
     }
 
     static configureAutoFPS(enabled = false) {
-        if (enabled) canvas.app.ticker.maxFPS = 0;
+        if (enabled) {
+            Object.defineProperty(MouseInteractionManager.prototype, "_dragThrottleMS", {
+                get: function () {
+                    return this._dragThrottleMS_;
+                },
+                set: function (value) {
+                    this._dragThrottleMS_ = Math.clamped(value !== Infinity ? value : 0, 17, 1000);
+                }
+            });
+            canvas.app.ticker.maxFPS = 0;
+        }
         else canvas.app.ticker.maxFPS = game.settings.get("core", "maxFPS");
     }
 
@@ -540,7 +550,7 @@ Hooks.once("init", () => {
 
         if (wrappedMTR) {
             const _wrappedMTR = wrappedMTR;
-            wrappedMTR = function() {
+            wrappedMTR = function () {
                 return autohideTemplateElements.call(this, _wrappedMTR.bind(this), ...arguments);
             }
         } else {
@@ -552,15 +562,15 @@ Hooks.once("init", () => {
     if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
         Hooks.on("canvasReady", () => {
             canvas.stage.on("mousemove", event => {
-                const {x: mx, y: my} = event.data.getLocalPosition(canvas.templates);
+                const { x: mx, y: my } = event.data.getLocalPosition(canvas.templates);
                 for (const template of canvas.templates.placeables) {
                     const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
                     const opacity = template.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
                     if (template.texture && template.texture !== '') {
-                        const {x: cx, y: cy} = template.center;
+                        const { x: cx, y: cy } = template.center;
                         const mouseover = template.shape.contains(mx - cx, my - cy);
                         hl.renderable = mouseover;
-                        template.template.alpha = (mouseover ? 0.5: 1.0) * opacity;
+                        template.template.alpha = (mouseover ? 0.5 : 1.0) * opacity;
                     } else {
                         hl.renderable = true;
                         template.template.alpha = opacity;
