@@ -58,7 +58,7 @@ On drawings, tiles, and Tokens. You must work with macros. You will find a lot o
 
 You can use them directly or create your own by modifying/improving them. Just think to create a copy of the Token Magic FX Compendium.
 
-![Token Magic Compendium](images/compendium.jpg)
+![Token Magic Compendium](images/Compendium.JPG)
 
 ## Token Magic API
 
