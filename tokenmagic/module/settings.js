@@ -85,7 +85,10 @@ export class TokenMagicSettings extends FormApplication {
             config: true,
             default: false,
             type: Boolean,
-            onChange: (value) => TokenMagicSettings.configureAutoFPS(value),
+            onChange: (value) => {
+              TokenMagicSettings.configureAutoFPS(value);
+              canvas ? canvas.draw() : null;
+            },
         });
 
         game.settings.register("tokenmagic", "useAdditivePadding", {
