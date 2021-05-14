@@ -205,7 +205,8 @@ export class TokenMagicSettings extends FormApplication {
                 },
                 set: function (value) {
                     this._dragThrottleMS_ = Math.clamped(value !== Infinity ? value : 0, 17, 1000);
-                }
+                },
+                configurable: true
             });
             canvas.app.ticker.maxFPS = 0;
         }
