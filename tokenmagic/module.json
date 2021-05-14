@@ -3,8 +3,8 @@
     "title": "Token Magic FX",
     "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
     "version": "0.5.1",
-    "compatibleCoreVersion": "0.8.1",
-    "minimumCoreVersion": "0.7.9",
+    "compatibleCoreVersion": "0.8.3",
+    "minimumCoreVersion": "0.8.3",
     "author": "SecretFire, sPOiDar, Moerill, dev7355608",
     "authors": [
         {
