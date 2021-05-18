@@ -380,7 +380,7 @@ Hooks.once("init", () => {
 
         const retVal = await wrapped(...args);
 
-        this.template.alpha = this.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
+        this.template.alpha = this.document.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
 
         return retVal;
     };
@@ -569,7 +569,7 @@ Hooks.once("init", () => {
                 const { x: mx, y: my } = event.data.getLocalPosition(canvas.templates);
                 for (const template of canvas.templates.placeables) {
                     const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
-                    const opacity = template.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
+                    const opacity = template.document.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
                     if (template.texture && template.texture !== '') {
                         const { x: cx, y: cy } = template.center;
                         const mouseover = template.shape.contains(mx - cx, my - cy);

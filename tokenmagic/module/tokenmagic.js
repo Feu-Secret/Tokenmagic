@@ -94,7 +94,8 @@ export const FilterType = {
 
 export const PlaceableType = {
     TOKEN: Token.embeddedName,
-    TILE: Tile.embeddedName,
+    BACK_TILE: `BACK_${Tile.embeddedName}`,
+    OVER_TILE: `OVER_${Tile.embeddedName}`,
     TEMPLATE: MeasuredTemplate.embeddedName,
     DRAWING: Drawing.embeddedName,
     NOT_SUPPORTED: null
@@ -241,13 +242,16 @@ export function getControlledPlaceables() {
     var controlled = [];
     switch (canvas.activeLayer.name) {
         case TokenLayer.name:
-            controlled = canvas.tokens.controlled;
+            controlled = canvas.tokens.placeables.filter(p => p._controlled === true);
             break;
-        case TilesLayer.name:
-            controlled = canvas.tiles.controlled;
+        case BackgroundLayer.name:
+            controlled = canvas.background.placeables.filter(p => p._controlled === true);;
+            break;
+        case ForegroundLayer.name:
+            controlled = canvas.foreground.placeables.filter(p => p._controlled === true);;
             break;
         case DrawingsLayer.name:
-            controlled = canvas.drawings.controlled;
+            controlled = canvas.drawings.placeables.filter(p => p._controlled === true);;
             break;
     }
     return controlled;
@@ -265,8 +269,11 @@ export function getPlaceableById(id, type) {
         case PlaceableType.TOKEN:
             placeables = canvas.tokens.placeables;
             break;
-        case PlaceableType.TILE:
-            placeables = canvas.tiles.placeables;
+        case PlaceableType.BACK_TILE:
+            placeables = canvas.background.placeables;
+            break;
+        case PlaceableType.OVER_TILE:
+            placeables = canvas.foreground.placeables;
             break;
         case PlaceableType.TEMPLATE:
             placeables = canvas.templates.placeables;
@@ -368,7 +375,7 @@ export function TokenMagic() {
         if (!(paramsArray instanceof Array && paramsArray.length > 0)
             || placeable == null) return;
 
-        var actualFlags = (replace ? null : placeable.getFlag("tokenmagic", "filters"));
+        var actualFlags = (replace ? null : placeable.document.getFlag("tokenmagic", "filters"));
         var newFlags = [];
 
         for (const params of paramsArray) {
@@ -418,7 +425,7 @@ export function TokenMagic() {
 
         if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
 
-        var flags = placeable.getFlag("tokenmagic", "filters");
+        var flags = placeable.document.getFlag("tokenmagic", "filters");
         var workingFlags = [];
         if (flags) {
             flags.forEach(flag => {
@@ -558,7 +565,7 @@ export function TokenMagic() {
 
         if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
 
-        var flags = placeable.getFlag("tokenmagic", "filters");
+        var flags = placeable.document.getFlag("tokenmagic", "filters");
         if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to update...
 
         var workingFlags = new Array();
@@ -611,7 +618,7 @@ export function TokenMagic() {
             await placeable._TMFXunsetAnimeFlag();
         } else if (typeof filterId === "string") {
 
-            var flags = placeable.getFlag("tokenmagic", "filters");
+            var flags = placeable.document.getFlag("tokenmagic", "filters");
             if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
 
             var workingFlags = [];
@@ -624,7 +631,7 @@ export function TokenMagic() {
             if (workingFlags.length > 0) await placeable._TMFXsetFlag(workingFlags);
             else await placeable._TMFXunsetFlag();
 
-            flags = placeable.getFlag("tokenmagic", "animeInfo");
+            flags = placeable.document.getFlag("tokenmagic", "animeInfo");
             if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
 
             workingFlags = [];
@@ -657,7 +664,7 @@ export function TokenMagic() {
     function hasFilterId(placeable, filterId) {
         if (placeable == null
             || !(placeable instanceof PlaceableObject)) { return null; }
-        var flags = placeable.getFlag("tokenmagic", "filters");
+        var flags = placeable.document.getFlag("tokenmagic", "filters");
         return _checkFilterId(placeable, filterId, flags);
     };
 
@@ -709,7 +716,7 @@ export function TokenMagic() {
     function _assignFilters(placeable, filters, bulkLoading = false) {
         if (filters == null || placeable == null) { return; }
         // Assign all filters to the placeable
-        let animeInfos = placeable.getFlag("tokenmagic", "animeInfo");
+        let animeInfos = placeable.document.getFlag("tokenmagic", "animeInfo");
         for (const filterInfo of filters) {
             // if bulkloading is on, we update with terminal value if it exists
             if (bulkLoading) {
@@ -743,14 +750,14 @@ export function TokenMagic() {
 
         let placeableType = placeable._TMFXgetPlaceableType();
         if (placeableType === PlaceableType.TEMPLATE) {
-            var updateData = placeable.getFlag("tokenmagic", "templateData");
+            var updateData = placeable.document.getFlag("tokenmagic", "templateData");
             if (!(updateData == null)) {
                 placeable.data.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
                 placeable.data.tmfxTint = updateData.tint;
             }
         }
 
-        var filters = placeable.getFlag("tokenmagic", "filters");
+        var filters = placeable.document.getFlag("tokenmagic", "filters");
         if (!(filters == null)) {
             if (placeableType === PlaceableType.TEMPLATE) {
                 // get the first filterId to assign tmfxPreset
@@ -798,7 +805,7 @@ export function TokenMagic() {
         var placeable = getPlaceableById(data._id, placeableType);
         if (placeable == null) { return; }
 
-        var updateData = placeable.getFlag("tokenmagic", "templateData");
+        var updateData = placeable.document.getFlag("tokenmagic", "templateData");
         if (!(updateData == null)) {
             placeable._TMFXgetSprite().alpha = updateData.opacity;
         }
@@ -821,7 +828,7 @@ export function TokenMagic() {
             return;
         }
 
-        var filters = placeable.getFlag("tokenmagic", "filters");
+        var filters = placeable.document.getFlag("tokenmagic", "filters");
         if (filters == null) { return; }
 
         // CROSS-RESEARCH between the anime map and tokenmagic flags to add, delete or update filters on this placeable
@@ -1465,12 +1472,12 @@ function onMeasuredTemplateConfig(data, html) {
     var tint = "";
 
     // getting custom data
-    var tmfxTemplateData = tmTemplate.getFlag("tokenmagic", "templateData");
+    var tmfxTemplateData = tmTemplate.document.getFlag("tokenmagic", "templateData");
     if (!(tmfxTemplateData == null) && tmfxTemplateData instanceof Object) {
         opacity = tmTemplate.data.tmfxTextureAlpha = tmfxTemplateData.opacity;
         tint = tmTemplate.data.tmfxTint = (tmfxTemplateData.tint ? PIXI.utils.hex2string(tmfxTemplateData.tint) : "");
     }
-    var flag = tmTemplate.getFlag("tokenmagic", "filters");
+    var flag = tmTemplate.document.getFlag("tokenmagic", "filters");
     var presets = Magic.getPresets(PresetsLibrary.TEMPLATE);
 
     // forming our injected html
@@ -1549,13 +1556,15 @@ Hooks.on("canvasReady", (canvas) => {
     }
     if (canvas == null) { return; }
 
-    var tokens = canvas.tokens.placeables;
+    const tokens = canvas.tokens.placeables;
     Magic._loadFilters(tokens);
-    var tiles = canvas.tiles.placeables;
-    Magic._loadFilters(tiles);
-    var drawings = canvas.drawings.placeables;
+    const btiles = canvas.background.placeables;
+    Magic._loadFilters(btiles);
+    const ftiles = canvas.foreground.placeables;
+    Magic._loadFilters(ftiles);
+    const drawings = canvas.drawings.placeables;
     Magic._loadFilters(drawings);
-    var templates = canvas.templates.placeables;
+    const templates = canvas.templates.placeables;
     Magic._loadFilters(templates);
 
     Anime.activateAnimation();
@@ -1612,7 +1621,9 @@ Hooks.on("createTile", (scene, data, options) => {
         && data.flags.hasOwnProperty("tokenmagic")
         && data.flags.tokenmagic.hasOwnProperty("filters")) {
 
-        var placeable = getPlaceableById(data._id, PlaceableType.TILE);
+        const ptype = (data.overhead ? PlaceableType.OVER_TILE : PlaceableType.BACK_TILE);
+
+        const placeable = getPlaceableById(data._id, ptype);
 
         // request to load filters (when pixi containers are ready)
         requestLoadFilters(placeable, 250);
@@ -1687,9 +1698,11 @@ Hooks.on("updateTile", (scene, data, options) => {
 
     if (scene.id !== game.user.viewedScene) return;
 
+    const ptype = (data.overhead ? PlaceableType.OVER_TILE : PlaceableType.BACK_TILE); 
+
     if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")) {
 
-        var placeable = getPlaceableById(data._id, PlaceableType.TILE);
+        const placeable = getPlaceableById(data._id, ptype);
 
         // removing animations on this placeable
         Anime.removeAnimation(data._id);
@@ -1698,7 +1711,7 @@ Hooks.on("updateTile", (scene, data, options) => {
         requestLoadFilters(placeable, 250);
 
     } else {
-        Magic._updateFilters(data, options, PlaceableType.TILE);
+        Magic._updateFilters(data, options, ptype);
     }
 });
 
@@ -1846,8 +1859,6 @@ Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
 
     var placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
     if (options.hasOwnProperty("texture")) {
-        //var placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
-
         // removing animations on this placeable
         Anime.removeAnimation(data._id);
 

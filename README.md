@@ -15,6 +15,7 @@ In short :
 - For module developpers, a complete API to use Token Magic capabilities.
 
 #### Various tutorials on Youtube
+###### In English
 
 - [Foundry VTT Creating Amazing Visuals: Token Magic and Custom Animations](https://www.youtube.com/watch?v=1cmRd6FadY8) by *Mr. Weaver*
 - [Foundry VTT Token Magic 90+ Effects](https://www.youtube.com/watch?v=9Ihx5MrHFuY) by *Mr. Weaver*
@@ -22,7 +23,16 @@ In short :
 - [8 D&D Monster Token Animations with Token Magic FX Addon Module for Foundry VTT](https://www.youtube.com/watch?v=EBYc9C-Bj0c&t=96s) by *Copper Dragon Games*
 - [Using Animated Maps, Tiles, Tokens, and Spells in Foundry VTT](https://www.youtube.com/watch?v=ooqsVsyfu70&t=235s) by *Encounter Library*
 - [Foundry VTT - Token Magic Featuring Disguise Self](https://www.youtube.com/watch?v=zz8uJkqoOYA&t=527s) by *Asgril's Foundry Lab*
+
+###### In Brazilian Portuguese
+
 - [Animações nas Magias de Dungeons and Dragons do Foundry VTT](https://www.youtube.com/watch?v=3S_mLVA_r44) by *Mestre Digital*
+
+###### In French
+
+- [#jdr #foundryvtt jeu de Rôle : Guide du débutant](https://www.youtube.com/watch?v=B0Gwvp-Ns6c&t=1s) by *Ceizyl*
+
+If you are a streamer and want your video about TMFX to be added to these lists, contact me on Discord or Github.
 
 ## Special effects
 
@@ -674,13 +684,13 @@ You can help me to track them by posting issues in Github and taking care to giv
 
 ### Acknowledgements
 - **Atropos** for the jewel that is Foundry, and also because he's a good man.
-- **devNumberz** for his patience, his advices and his awesome contributions.
+- **dev7355608** for his patience, his advices and his awesome contributions.
 - **sPoIdAr** for the Automatic Template settings, which is WOW!
 - **Moerill** for his very cool JS algorithms and for allowing me to port some functionnalities from MESS
 - **Mestre Digital** for the first Token Magic video on Youtube (and in a language I haven't learned. ^^), and his cool GUI Macro.
 - **Lozalojo, zimm44, drdwing, zeteticl** for providing translations for the community.
 - **The whole community** for its kindness.
-- **The Forgotten** Sorry for forgetting about you, you don't deserve it! 
+- **The Forgotten**, sorry for forgetting about you, you don't deserve it! 
 
 ### An advice
 *The wise man knows how to `await`.*

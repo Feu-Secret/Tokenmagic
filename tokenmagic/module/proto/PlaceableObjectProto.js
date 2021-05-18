@@ -29,22 +29,22 @@ PlaceableObject.prototype.TMFXhasFilterId = function (filterId) {
 
 PlaceableObject.prototype._TMFXsetFlag = async function (flag) {
     if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_FLAG);
-    else await this.setFlag("tokenmagic", "filters", flag);
+    else await this.document.setFlag("tokenmagic", "filters", flag);
 }
 
 PlaceableObject.prototype._TMFXsetAnimeFlag = async function (flag) {
     if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_ANIME_FLAG);
-    else await this.setFlag("tokenmagic", "animeInfo", flag);
+    else await this.document.setFlag("tokenmagic", "animeInfo", flag);
 }
 
 PlaceableObject.prototype._TMFXunsetFlag = async function () {
     if (mustBroadCast()) broadcast(this, null, SocketAction.SET_FLAG);
-    else await this.unsetFlag("tokenmagic", "filters");
+    else await this.document.unsetFlag("tokenmagic", "filters");
 }
 
 PlaceableObject.prototype._TMFXunsetAnimeFlag = async function () {
     if (mustBroadCast()) broadcast(this, null, SocketAction.SET_ANIME_FLAG);
-    else await this.unsetFlag("tokenmagic", "animeInfo");
+    else await this.document.unsetFlag("tokenmagic", "animeInfo");
 }
 
 PlaceableObject.prototype._TMFXgetSprite = function () {
