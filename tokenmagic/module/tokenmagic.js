@@ -94,8 +94,7 @@ export const FilterType = {
 
 export const PlaceableType = {
     TOKEN: Token.embeddedName,
-    BACK_TILE: `BACK_${Tile.embeddedName}`,
-    OVER_TILE: `OVER_${Tile.embeddedName}`,
+    TILE: Tile.embeddedName,
     TEMPLATE: MeasuredTemplate.embeddedName,
     DRAWING: Drawing.embeddedName,
     NOT_SUPPORTED: null
@@ -263,28 +262,29 @@ export function getTargetedTokens() {
 
 export function getPlaceableById(id, type) {
     let placeable = null;
-    let placeables = null;
+
+    function findPlaceable(placeables, id) {
+        let rplaceable = null;
+        if (!(placeables == null) && placeables.length > 0) {
+            rplaceable = placeables.find(n => n.id === id);
+        }
+        return rplaceable;
+    }
 
     switch (type) {
         case PlaceableType.TOKEN:
-            placeables = canvas.tokens.placeables;
+            placeable = findPlaceable(canvas.tokens.placeables, id);
             break;
-        case PlaceableType.BACK_TILE:
-            placeables = canvas.background.placeables;
-            break;
-        case PlaceableType.OVER_TILE:
-            placeables = canvas.foreground.placeables;
+        case PlaceableType.TILE:
+            placeable = findPlaceable(canvas.background.placeables, id);
+            if (placeable == null) placeable = findPlaceable(canvas.foreground.placeables, id);
             break;
         case PlaceableType.TEMPLATE:
-            placeables = canvas.templates.placeables;
+            placeable = findPlaceable(canvas.templates.placeables, id);
             break;
         case PlaceableType.DRAWING:
-            placeables = canvas.drawings.placeables;
+            placeable = findPlaceable(canvas.drawings.placeables, id);
             break;
-    }
-
-    if (!(placeables == null) && placeables.length > 0) {
-        placeable = placeables.find(n => n.id === id);
     }
 
     return placeable;
@@ -1558,10 +1558,10 @@ Hooks.on("canvasReady", (canvas) => {
 
     const tokens = canvas.tokens.placeables;
     Magic._loadFilters(tokens);
-    const btiles = canvas.background.placeables;
-    Magic._loadFilters(btiles);
-    const ftiles = canvas.foreground.placeables;
-    Magic._loadFilters(ftiles);
+    const bgtiles = canvas.background.placeables;
+    Magic._loadFilters(bgtiles);
+    const ohtiles = canvas.foreground.placeables;
+    Magic._loadFilters(ohtiles);
     const drawings = canvas.drawings.placeables;
     Magic._loadFilters(drawings);
     const templates = canvas.templates.placeables;
@@ -1572,7 +1572,6 @@ Hooks.on("canvasReady", (canvas) => {
 
 Hooks.on("deleteScene", (scene, data, options) => {
     //log("Hook -> deleteScene");
-
     if (!(scene == null) && scene.id === game.user.viewedScene) {
         Anime.deactivateAnimation();
         Anime.resetAnimation();
@@ -1588,7 +1587,6 @@ Hooks.on("deleteToken", (parent, doc, options, userId) => {
 
 Hooks.on("createToken", (scene, data, options) => {
     //log("Hook -> createToken");
-
     if (isNewerVersion(game.data.version, "0.8")) {
         [data, options] = [scene.data, data];
         scene = scene.parent;
@@ -1621,9 +1619,7 @@ Hooks.on("createTile", (scene, data, options) => {
         && data.flags.hasOwnProperty("tokenmagic")
         && data.flags.tokenmagic.hasOwnProperty("filters")) {
 
-        const ptype = (data.overhead ? PlaceableType.OVER_TILE : PlaceableType.BACK_TILE);
-
-        const placeable = getPlaceableById(data._id, ptype);
+        const placeable = getPlaceableById(data._id, PlaceableType.TILE);
 
         // request to load filters (when pixi containers are ready)
         requestLoadFilters(placeable, 250);
@@ -1698,11 +1694,9 @@ Hooks.on("updateTile", (scene, data, options) => {
 
     if (scene.id !== game.user.viewedScene) return;
 
-    const ptype = (data.overhead ? PlaceableType.OVER_TILE : PlaceableType.BACK_TILE); 
+    if (options.hasOwnProperty("img") || options.hasOwnProperty("overhead")) {
 
-    if (options.hasOwnProperty("img") || options.hasOwnProperty("tint")) {
-
-        const placeable = getPlaceableById(data._id, ptype);
+        const placeable = getPlaceableById(data._id, PlaceableType.TILE);
 
         // removing animations on this placeable
         Anime.removeAnimation(data._id);
@@ -1711,7 +1705,7 @@ Hooks.on("updateTile", (scene, data, options) => {
         requestLoadFilters(placeable, 250);
 
     } else {
-        Magic._updateFilters(data, options, ptype);
+        Magic._updateFilters(data, options, PlaceableType.TILE);
     }
 });
 

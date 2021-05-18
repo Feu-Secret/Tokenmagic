@@ -49,12 +49,13 @@ PlaceableObject.prototype._TMFXunsetAnimeFlag = async function () {
 
 PlaceableObject.prototype._TMFXgetSprite = function () {
 
-    switch (this.constructor.embeddedName) {
+    const type = this._TMFXgetPlaceableType();
+    switch (type) {
         case PlaceableType.TOKEN:
             return this.icon;
             break;
         case PlaceableType.TILE:
-            return this.tile.img;
+            return this.tile;
             break;
         case PlaceableType.TEMPLATE:
             return this.template;
@@ -88,15 +89,15 @@ PlaceableObject.prototype._TMFXgetPlaceablePadding = function () {
 
 PlaceableObject.prototype._TMFXcheckSprite = function () {
 
-    switch (this.constructor.embeddedName) {
+    const type = this._TMFXgetPlaceableType();
+    switch (type) {
         case PlaceableType.TOKEN:
             return (this.hasOwnProperty("icon")
                 && !(this.icon == null));
             break;
         case PlaceableType.TILE:
             return (this.hasOwnProperty("tile")
-                && this.tile.hasOwnProperty("img")
-                && !(this.tile.img == null));
+                && !(this.tile == null));
             break;
         case PlaceableType.TEMPLATE:
             return (this.hasOwnProperty("template")
@@ -179,8 +180,7 @@ PlaceableObject.prototype._TMFXunsetRawFilters = function () {
 }
 
 PlaceableObject.prototype._TMFXgetPlaceableType = function () {
-    if ([PlaceableType.TOKEN, PlaceableType.TILE, PlaceableType.TEMPLATE, PlaceableType.DRAWING]
+    if ([PlaceableType.TOKEN, PlaceableType.TEMPLATE, PlaceableType.TILE, PlaceableType.DRAWING]
         .includes(this.constructor.embeddedName)) return this.constructor.embeddedName;
-
     return PlaceableType.NOT_SUPPORTED;
 }
