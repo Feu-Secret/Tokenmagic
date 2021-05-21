@@ -1,44 +1,44 @@
-import { FilterAdjustment } from "../fx/filters/FilterAdjustment.js";
-import { FilterXBloom } from "../fx/filters/FilterAdvancedBloom.js";
-import { FilterDistortion } from "../fx/filters/FilterDistortion.js";
-import { FilterOldFilm } from "../fx/filters/FilterOldFilm.js";
-import { FilterGlow } from "../fx/filters/FilterGlow.js";
-import { FilterOutline } from "../fx/filters/FilterOutline.js";
-import { FilterBevel } from "../fx/filters/FilterBevel.js";
-import { FilterDropShadow } from "../fx/filters/FilterDropShadow.js";
-import { FilterTwist } from "../fx/filters/FilterTwist.js";
-import { FilterZoomBlur } from "../fx/filters/FilterZoomBlur.js";
-import { FilterBlur } from "../fx/filters/FilterBlur.js";
-import { FilterShockwave } from "../fx/filters/FilterShockWave.js";
-import { FilterBulgePinch } from "../fx/filters/FilterBulgePinch.js";
-import { FilterRemoveShadow } from "../fx/filters/FilterRemoveShadow.js";
-import { FilterRays } from "../fx/filters/FilterRays.js";
-import { FilterFog } from "../fx/filters/FilterFog.js";
-import { FilterXFog } from "../fx/filters/FilterXFog.js";
-import { FilterElectric } from "../fx/filters/FilterElectric.js";
-import { FilterWaves } from "../fx/filters/FilterWaves.js";
-import { FilterFire } from "../fx/filters/FilterFire.js";
-import { FilterFumes } from "../fx/filters/FilterFumes.js";
-import { FilterFlood } from "../fx/filters/FilterFlood.js";
-import { FilterSmoke } from "../fx/filters/FilterSmoke.js";
-import { FilterForceField } from "../fx/filters/FilterForceField.js";
-import { FilterMirrorImages } from "../fx/filters/FilterMirrorImages.js";
-import { FilterXRays } from "../fx/filters/FilterXRays.js";
-import { FilterLiquid } from "../fx/filters/FilterLiquid.js";
-import { FilterGleamingGlow } from "../fx/filters/FilterGleamingGlow.js";
-import { FilterPixelate } from "../fx/filters/FilterPixelate.js";
-import { FilterSpiderWeb } from "../fx/filters/FilterSpiderWeb.js";
-import { FilterSolarRipples } from "../fx/filters/FilterSolarRipples.js";
-import { FilterGlobes } from "../fx/filters/FilterGlobes.js";
-import { FilterTransform } from "../fx/filters/FilterTransform.js";
-import { FilterSplash } from "../fx/filters/FilterSplash.js";
-import { FilterPolymorph } from "../fx/filters/FilterPolymorph.js";
-import { FilterXFire } from "../fx/filters/FilterXFire.js";
-import { FilterSprite } from "../fx/filters/FilterSprite.js";
-import { Anime } from "../fx/Anime.js";
-import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
-import { tmfxDataMigration } from "../migration/migration.js";
-import { emptyPreset } from './constants.js';
+import {FilterAdjustment} from "../fx/filters/FilterAdjustment.js";
+import {FilterXBloom} from "../fx/filters/FilterAdvancedBloom.js";
+import {FilterDistortion} from "../fx/filters/FilterDistortion.js";
+import {FilterOldFilm} from "../fx/filters/FilterOldFilm.js";
+import {FilterGlow} from "../fx/filters/FilterGlow.js";
+import {FilterOutline} from "../fx/filters/FilterOutline.js";
+import {FilterBevel} from "../fx/filters/FilterBevel.js";
+import {FilterDropShadow} from "../fx/filters/FilterDropShadow.js";
+import {FilterTwist} from "../fx/filters/FilterTwist.js";
+import {FilterZoomBlur} from "../fx/filters/FilterZoomBlur.js";
+import {FilterBlur} from "../fx/filters/FilterBlur.js";
+import {FilterShockwave} from "../fx/filters/FilterShockWave.js";
+import {FilterBulgePinch} from "../fx/filters/FilterBulgePinch.js";
+import {FilterRemoveShadow} from "../fx/filters/FilterRemoveShadow.js";
+import {FilterRays} from "../fx/filters/FilterRays.js";
+import {FilterFog} from "../fx/filters/FilterFog.js";
+import {FilterXFog} from "../fx/filters/FilterXFog.js";
+import {FilterElectric} from "../fx/filters/FilterElectric.js";
+import {FilterWaves} from "../fx/filters/FilterWaves.js";
+import {FilterFire} from "../fx/filters/FilterFire.js";
+import {FilterFumes} from "../fx/filters/FilterFumes.js";
+import {FilterFlood} from "../fx/filters/FilterFlood.js";
+import {FilterSmoke} from "../fx/filters/FilterSmoke.js";
+import {FilterForceField} from "../fx/filters/FilterForceField.js";
+import {FilterMirrorImages} from "../fx/filters/FilterMirrorImages.js";
+import {FilterXRays} from "../fx/filters/FilterXRays.js";
+import {FilterLiquid} from "../fx/filters/FilterLiquid.js";
+import {FilterGleamingGlow} from "../fx/filters/FilterGleamingGlow.js";
+import {FilterPixelate} from "../fx/filters/FilterPixelate.js";
+import {FilterSpiderWeb} from "../fx/filters/FilterSpiderWeb.js";
+import {FilterSolarRipples} from "../fx/filters/FilterSolarRipples.js";
+import {FilterGlobes} from "../fx/filters/FilterGlobes.js";
+import {FilterTransform} from "../fx/filters/FilterTransform.js";
+import {FilterSplash} from "../fx/filters/FilterSplash.js";
+import {FilterPolymorph} from "../fx/filters/FilterPolymorph.js";
+import {FilterXFire} from "../fx/filters/FilterXFire.js";
+import {FilterSprite} from "../fx/filters/FilterSprite.js";
+import {Anime} from "../fx/Anime.js";
+import {allPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
+import {tmfxDataMigration} from "../migration/migration.js";
+import {emptyPreset} from './constants.js';
 import "./proto/PlaceableObjectProto.js";
 
 /*
@@ -108,7 +108,7 @@ async function exportObjectAsJson(exportObj, exportName) {
     let jsonStr = JSON.stringify(exportObj, null, 4);
 
     const a = document.createElement('a');
-    const file = new Blob([jsonStr], { type: 'plain/text' });
+    const file = new Blob([jsonStr], {type: 'plain/text'});
 
     a.href = URL.createObjectURL(file);
     a.download = exportName + '.json';
@@ -132,7 +132,7 @@ export function broadcast(placeable, flag, socketAction) {
         tmFlag: flag,
         tmViewedScene: game.user.viewedScene
     };
-    game.socket.emit(moduleTM, data, resp => { });
+    game.socket.emit(moduleTM, data, resp => {});
 }
 
 export function isActiveModule(moduleName) {
@@ -153,7 +153,7 @@ export function isFilterCachingDisabled() {
 }
 
 export function isVideoDisabled() {
-  return game.settings.get("tokenmagic", "disableVideo");
+    return game.settings.get("tokenmagic", "disableVideo");
 }
 
 export var isFurnaceDrawingsActive = () => {
@@ -218,7 +218,7 @@ export function fixPath(path) {
                 if (ROUTE_PREFIX) {
                     prefix = new URL(ROUTE_PREFIX, window.location.origin).pathname;
                 }
-            } catch (err) { }
+            } catch (err) {}
 
             path = url.pathname;
 
@@ -423,7 +423,7 @@ export function TokenMagic() {
 
     async function addUpdateFilters(placeable, paramsArray) {
 
-        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+        if (!paramsArray instanceof Array || paramsArray.length < 1) {return;}
 
         var flags = placeable.document.getFlag("tokenmagic", "filters");
         var workingFlags = [];
@@ -501,7 +501,7 @@ export function TokenMagic() {
         }
         var placeableIdSet = new Set();
         var animations = Anime.getAnimeMap();
-        if (animations.size <= 0) { return; }
+        if (animations.size <= 0) {return;}
 
         animations.forEach((anime, id) => {
             var filterIdMatch = (params) => params.filterId === anime.puppet.filterId;
@@ -510,7 +510,7 @@ export function TokenMagic() {
             }
         });
 
-        if (placeableIdSet.size <= 0) { return; }
+        if (placeableIdSet.size <= 0) {return;}
 
         for (const placeableId of placeableIdSet) {
             // we must browse the collection of placeables whatever their types
@@ -534,11 +534,11 @@ export function TokenMagic() {
     async function updateFiltersOnSelected(paramsArray) {
         var placeables = getControlledPlaceables();
 
-        if (placeables == null || placeables.length < 1) { return; }
+        if (placeables == null || placeables.length < 1) {return;}
         if (typeof paramsArray === "string") {
             paramsArray = getPreset(paramsArray);
         }
-        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+        if (!paramsArray instanceof Array || paramsArray.length < 1) {return;}
 
         for (const placeable of placeables) {
             await updateFiltersByPlaceable(placeable, paramsArray);
@@ -548,13 +548,13 @@ export function TokenMagic() {
     async function updateFiltersOnTargeted(paramsArray) {
         var targeted = getTargetedTokens();
 
-        if (targeted == null || targeted.length < 1) { return; }
+        if (targeted == null || targeted.length < 1) {return;}
 
         if (typeof paramsArray === "string") {
             paramsArray = getPreset(paramsArray);
         }
 
-        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+        if (!paramsArray instanceof Array || paramsArray.length < 1) {return;}
 
         for (const token of targeted) {
             await updateFiltersByPlaceable(token, paramsArray);
@@ -563,10 +563,10 @@ export function TokenMagic() {
 
     async function updateFiltersByPlaceable(placeable, paramsArray) {
 
-        if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+        if (!paramsArray instanceof Array || paramsArray.length < 1) {return;}
 
         var flags = placeable.document.getFlag("tokenmagic", "filters");
-        if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to update...
+        if (flags == null || !flags instanceof Array || flags.length < 1) {return;} // nothing to update...
 
         var workingFlags = new Array();
         flags.forEach(flag => {
@@ -611,7 +611,7 @@ export function TokenMagic() {
 
     // Deleting all filters on a placeable in parameter
     async function deleteFilters(placeable, filterId = null) {
-        if (placeable == null) { return; }
+        if (placeable == null) {return;}
 
         if (filterId == null) {
             await placeable._TMFXunsetFlag();
@@ -619,7 +619,7 @@ export function TokenMagic() {
         } else if (typeof filterId === "string") {
 
             var flags = placeable.document.getFlag("tokenmagic", "filters");
-            if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+            if (flags == null || !flags instanceof Array || flags.length < 1) {return;} // nothing to delete...
 
             var workingFlags = [];
             flags.forEach(flag => {
@@ -632,7 +632,7 @@ export function TokenMagic() {
             else await placeable._TMFXunsetFlag();
 
             flags = placeable.document.getFlag("tokenmagic", "animeInfo");
-            if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+            if (flags == null || !flags instanceof Array || flags.length < 1) {return;} // nothing to delete...
 
             workingFlags = [];
             flags.forEach(flag => {
@@ -649,10 +649,10 @@ export function TokenMagic() {
     function hasFilterType(placeable, filterType) {
         if (placeable == null
             || filterType == null
-            || !(placeable instanceof PlaceableObject)) { return null; }
+            || !(placeable instanceof PlaceableObject)) {return null;}
 
         var flags = placeable.getFlag("tokenmagic", "filters");
-        if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+        if (flags == null || !flags instanceof Array || flags.length < 1) {return false;}
 
         const found = flags.find(flag => flag.tmFilters.tmFilterType === filterType);
         if (found === undefined) {
@@ -663,7 +663,7 @@ export function TokenMagic() {
 
     function hasFilterId(placeable, filterId) {
         if (placeable == null
-            || !(placeable instanceof PlaceableObject)) { return null; }
+            || !(placeable instanceof PlaceableObject)) {return null;}
         var flags = placeable.document.getFlag("tokenmagic", "filters");
         return _checkFilterId(placeable, filterId, flags);
     };
@@ -671,9 +671,9 @@ export function TokenMagic() {
     function _checkFilterId(placeable, filterId, flags) {
         if (placeable == null
             || filterId == null
-            || !(placeable instanceof PlaceableObject)) { return null; }
+            || !(placeable instanceof PlaceableObject)) {return null;}
 
-        if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+        if (flags == null || !flags instanceof Array || flags.length < 1) {return false;}
 
         const found = flags.find(flag => flag.tmFilters.tmFilterId === filterId);
         if (found === undefined) {
@@ -688,8 +688,8 @@ export function TokenMagic() {
 
     function _loadPersistedValues(params, animeInfos) {
 
-        if (!params.hasOwnProperty("animated")) { return; }
-        if (!animeInfos || animeInfos.length <= 0) { return; }
+        if (!params.hasOwnProperty("animated")) {return;}
+        if (!animeInfos || animeInfos.length <= 0) {return;}
 
         for (const effect of Object.keys(params.animated)) {
 
@@ -714,7 +714,7 @@ export function TokenMagic() {
     }
 
     function _assignFilters(placeable, filters, bulkLoading = false) {
-        if (filters == null || placeable == null) { return; }
+        if (filters == null || placeable == null) {return;}
         // Assign all filters to the placeable
         let animeInfos = placeable.document.getFlag("tokenmagic", "animeInfo");
         for (const filterInfo of filters) {
@@ -728,7 +728,7 @@ export function TokenMagic() {
     };
 
     function _assignFilter(placeable, filterInfo) {
-        if (filterInfo == null) { return; }
+        if (filterInfo == null) {return;}
         var workingFilterInfo = duplicate(filterInfo);
         workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
         workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
@@ -799,11 +799,11 @@ export function TokenMagic() {
     };
 
     function _updateTemplateData(data, options, placeableType) {
-        if (!options.hasOwnProperty("flags") || !options.flags.hasOwnProperty("tokenmagic")) { return; }
-        if (data == null || !data.hasOwnProperty("_id")) { return; }
+        if (!options.hasOwnProperty("flags") || !options.flags.hasOwnProperty("tokenmagic")) {return;}
+        if (data == null || !data.hasOwnProperty("_id")) {return;}
 
         var placeable = getPlaceableById(data._id, placeableType);
-        if (placeable == null) { return; }
+        if (placeable == null) {return;}
 
         var updateData = placeable.document.getFlag("tokenmagic", "templateData");
         if (!(updateData == null)) {
@@ -815,11 +815,11 @@ export function TokenMagic() {
         if (!(options.hasOwnProperty("flags")
             && options.flags.hasOwnProperty("tokenmagic")
             && (options.flags.tokenmagic.hasOwnProperty("filters")
-                || options.flags.tokenmagic.hasOwnProperty("-=filters")))) { return; }
-        if (data == null || !data.hasOwnProperty("_id")) { return; }
+                || options.flags.tokenmagic.hasOwnProperty("-=filters")))) {return;}
+        if (data == null || !data.hasOwnProperty("_id")) {return;}
 
         var placeable = getPlaceableById(data._id, placeableType);
-        if (placeable == null) { return; }
+        if (placeable == null) {return;}
 
         // Shortcut when all filters are deleted
         if (options.flags.tokenmagic.hasOwnProperty("-=filters")) {
@@ -829,7 +829,7 @@ export function TokenMagic() {
         }
 
         var filters = placeable.document.getFlag("tokenmagic", "filters");
-        if (filters == null) { return; }
+        if (filters == null) {return;}
 
         // CROSS-RESEARCH between the anime map and tokenmagic flags to add, delete or update filters on this placeable
 
@@ -885,7 +885,7 @@ export function TokenMagic() {
 
     function _clearImgFiltersByPlaceable(placeable, filterId = null) {
 
-        if (placeable == null) { return; }
+        if (placeable == null) {return;}
 
         var filterById = (filterId != null && typeof filterId === "string");
 
@@ -1087,7 +1087,7 @@ export function TokenMagic() {
 
         let pName = null, pLibrary = null;
         let argIsObj = (presetName instanceof Object);
-        const { name, library, ...adjustmentProp } = argIsObj ? presetName : {};
+        const {name, library, ...adjustmentProp} = argIsObj ? presetName : {};
         if (argIsObj) {
             if (presetName.hasOwnProperty("name")) {
                 pName = presetName.name;
@@ -1300,7 +1300,7 @@ async function compilingShaders() {
     // Caching filters to prevent freezing on first-time loading (shader compilation time)
     // https://www.html5gamedevs.com/topic/43652-shader-compile-performance/
 
-    let params = { enabled: true, dummy: true };
+    let params = {enabled: true, dummy: true};
 
     Magic._cachedGraphics.filters = [];
     const filterTypes = Object.keys(FilterType);
@@ -1311,7 +1311,7 @@ async function compilingShaders() {
     }
 
     log("Compiling shaders...");
-    var tmpRenderTexture = new PIXI.RenderTexture.create({ width: 16, height: 16 });
+    var tmpRenderTexture = new PIXI.RenderTexture.create({width: 16, height: 16});
     // A call to render triggers the compilation of all the shaders bound to the filters.
     canvas.app.renderer.render(Magic._cachedGraphics, tmpRenderTexture);
 
@@ -1329,7 +1329,7 @@ function initSocketListener() {
     // Listener the listening
     game.socket.on(moduleTM, async (data) => {
 
-        if (data == null || !data.hasOwnProperty("tmAction")) { return; }
+        if (data == null || !data.hasOwnProperty("tmAction")) {return;}
 
         async function updateFlags(targetFlag) {
             // getting the scene coming from the socket
@@ -1338,8 +1338,8 @@ function initSocketListener() {
 
             // preparing flag data (with -= if the data is null)
             var updateData;
-            if (data.tmFlag == null) updateData = { [`flags.tokenmagic.-=${targetFlag}`]: null }
-            else updateData = { [`flags.tokenmagic.${targetFlag}`]: data.tmFlag };
+            if (data.tmFlag == null) updateData = {[`flags.tokenmagic.-=${targetFlag}`]: null}
+            else updateData = {[`flags.tokenmagic.${targetFlag}`]: data.tmFlag};
             updateData["_id"] = data.tmPlaceableId;
 
             // updating the placeable in the scene
@@ -1421,7 +1421,7 @@ async function requestLoadFilters(placeable, startTimeout = 0) {
 };
 
 function getAnchor(direction, angle, shapeType) {
-    if (shapeType === "circle" || shapeType === "rect") return { x: 0.5, y: 0.5 };
+    if (shapeType === "circle" || shapeType === "rect") return {x: 0.5, y: 0.5};
 
     // Compute emanation anchor point from the orthonormal bounding rect containing the polygon.
     // Not complete (to rework later), but ok with cardinal and half-cardinal directions
@@ -1447,7 +1447,7 @@ function getAnchor(direction, angle, shapeType) {
         y = (Math.cos(-dirRad - (Math.PI / 2)) + 1) / 2;
     }
 
-    return { x: x, y: y };
+    return {x: x, y: y};
 }
 
 function onMeasuredTemplateConfig(data, html) {
@@ -1518,7 +1518,7 @@ function onMeasuredTemplateConfig(data, html) {
     const htmlForm = html.find('.form-group');
     htmlForm.last().after(divPreset);
 
-    $(html).css({ 'min-height': '490px' });
+    $(html).css({'min-height': '490px'});
 }
 
 Hooks.on("ready", () => {
@@ -1554,7 +1554,7 @@ Hooks.on("canvasReady", (canvas) => {
     if (!window.hasOwnProperty("TokenMagic")) {
         window.TokenMagic = Magic;
     }
-    if (canvas == null) { return; }
+    if (canvas == null) {return;}
 
     const tokens = canvas.tokens.placeables;
     Magic._loadFilters(tokens);
@@ -1898,29 +1898,43 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
     }
 });
 
-Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
-    //log("Hook -> preCreateMeasuredTemplate");
+Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
 
-    if (isNewerVersion(game.data.version, "0.8")) {
-        scene = scene.parent;
+    const hasFlags = data.hasOwnProperty("flags");
+    let hasPreset = false;
+    let hasTint = false;
+    let hasOpacity = false;
+    let hasFlagsNoOptions = false;
+
+    if (hasFlags && data.flags.hasOwnProperty("tokenmagic") && data.flags.tokenmagic.hasOwnProperty("options") && data.flags.tokenmagic.options) {
+        const opt = data.flags.tokenmagic.options;
+        if (opt.hasOwnProperty("tmfxPreset")) {
+            data.tmfxPreset = opt.tmfxPreset;
+            hasPreset = true;
+        }
+        if (opt.hasOwnProperty("tmfxTint")) {
+            data.tmfxTint = opt.tmfxTint;
+            hasTint = true;
+        }
+        if (opt.hasOwnProperty("tmfxTextureAlpha")) {
+            data.tmfxTextureAlpha = opt.tmfxTextureAlpha;
+            hasOpacity = true;
+        }
     }
+    else hasFlagsNoOptions = true;
 
-    let hasFlags = data.hasOwnProperty("flags");
-    let hasPreset = data.hasOwnProperty("tmfxPreset");
-    let hasTint = data.hasOwnProperty("tmfxTint");
-    let hasOpacity = data.hasOwnProperty("tmfxTextureAlpha");
-    let hasTexture = data.hasOwnProperty("texture") && data.texture !== '';
-    let newFlags = [];
+    let hasTexture = data.hasOwnProperty("texture") && data.texture !== '' && data.texture;
+    let newFilters = [];
 
-    let tmfxBaseFlags = { tokenmagic: { filters: null, templateData: null } };
-    if (hasFlags) {
+    let tmfxBaseFlags = {tokenmagic: {filters: null, templateData: null, options: null}};
+    if (hasFlags && hasFlagsNoOptions) {
         // the measured template comes with tokenmagic flags ? It is a copy ! We do nothing.
         if (data.flags.hasOwnProperty("tokenmagic")) {
             return;
         }
         data.flags = mergeObject(data.flags, tmfxBaseFlags, true, true);
     } else {
-        data.flags = {};
+        //data.flags = {};
     }
 
     // normalizing color to value if needed
@@ -1953,10 +1967,10 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
 
             let defaultTex = Magic._getPresetTemplateDefaultTexture(pstSearch.name);
             if (!(defaultTex == null) && !hasTexture) {
-                data.texture = defaultTex;
+                document.data.update({texture: defaultTex});
             }
 
-            let state = true;
+            let persist = true;
 
             // Constructing the filter flag parameters
             for (const params of preset) {
@@ -1964,13 +1978,13 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
                 if (!params.hasOwnProperty("filterType")
                     || !FilterType.hasOwnProperty(params.filterType)) {
                     // one invalid ? all rejected.
-                    state = false;
+                    persist = false;
                     break;
                 }
 
                 // getPreset MUST provide a filter id
                 if (!params.hasOwnProperty("filterId") || params.filterId == null) {
-                    state = false;
+                    persist = false;
                     break;
                 }
 
@@ -1983,7 +1997,7 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
                 params.filterOwner = game.data.userId;
                 params.placeableType = PlaceableType.TEMPLATE;
 
-                newFlags.push({
+                newFilters.push({
                     tmFilters: {
                         tmFilterId: params.filterId,
                         tmFilterInternalId: params.filterInternalId,
@@ -1994,8 +2008,9 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
                 });
             }
 
-            if (state) {
-                data.flags = mergeObject(data.flags, { tokenmagic: { filters: newFlags } }, true, true);
+            if (persist) {
+                const tmfxFiltersData = {filters: newFilters};
+                document.data.update({flags: {tokenmagic: tmfxFiltersData}});
             }
         }
     } else {
@@ -2004,14 +2019,14 @@ Hooks.on("preCreateMeasuredTemplate", (scene, data, options, user) => {
 
     if (!hasOpacity) data.tmfxTextureAlpha = 1;
     if (!hasTint) data.tmfxTint = null;
-    
+
     let tmfxTemplateData = {
         templateData: {
             opacity: data.tmfxTextureAlpha,
             tint: data.tmfxTint
         }
     };
-    data.flags = mergeObject(data.flags, { tokenmagic: tmfxTemplateData }, true, true);
+    document.data.update({flags: {tokenmagic: tmfxTemplateData}});
 });
 
 Hooks.on("closeSettingsConfig", () => {

@@ -1,8 +1,8 @@
-import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
-import { DataVersion } from "../migration/migration.js";
-import { TokenMagic, isVideoDisabled, fixPath } from './tokenmagic.js';
-import { AutoTemplateDND5E, dnd5eTemplates } from "./autoTemplate/dnd5e.js";
-import { defaultOpacity, emptyPreset } from './constants.js';
+import {presets as defaultPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
+import {DataVersion} from "../migration/migration.js";
+import {TokenMagic, isVideoDisabled, fixPath} from './tokenmagic.js';
+import {AutoTemplateDND5E, dnd5eTemplates} from "./autoTemplate/dnd5e.js";
+import {defaultOpacity, emptyPreset} from './constants.js';
 
 const Magic = TokenMagic();
 
@@ -86,8 +86,8 @@ export class TokenMagicSettings extends FormApplication {
             default: false,
             type: Boolean,
             onChange: (value) => {
-              TokenMagicSettings.configureAutoFPS(value);
-              canvas ? canvas.draw() : null;
+                TokenMagicSettings.configureAutoFPS(value);
+                canvas ? canvas.draw() : null;
             },
         });
 
@@ -273,7 +273,7 @@ export class TokenMagicSettings extends FormApplication {
             if (a.name > b.name) return 1;
             return 0;
         });
-        data.system = { id: game.system.id, title: game.system.data.title };
+        data.system = {id: game.system.id, title: game.system.data.title};
         data.settings = this.getSettingsData();
         data.submitText = game.i18n.localize('TMFX.save');
         return data;
@@ -314,7 +314,7 @@ export class TokenMagicSettings extends FormApplication {
         updateData[`autoTemplateSettings.overrides.${idx}.tint`] = null;
         updateData[`autoTemplateSettings.overrides.${idx}.preset`] = emptyPreset;
         updateData[`autoTemplateSettings.overrides.${idx}.texture`] = null;
-        await this._onSubmit(event, { updateData: updateData, preventClose: true });
+        await this._onSubmit(event, {updateData: updateData, preventClose: true});
         this.render();
     }
 
@@ -326,7 +326,7 @@ export class TokenMagicSettings extends FormApplication {
             return true;
         }
         el.remove();
-        await this._onSubmit(event, { preventClose: true });
+        await this._onSubmit(event, {preventClose: true});
         this.render();
     }
 }
@@ -353,21 +353,24 @@ Hooks.once("init", () => {
 
         const hasTexture = data.hasOwnProperty("texture");
         const hasPresetData = data.hasOwnProperty("tmfxPreset");
+        const hasOpt = data.flags?.tokenmagic?.options ?? false;
 
         if (hasTexture) {
             data.texture = fixPath(data.texture);
         }
 
-        if (hasPresetData && data.tmfxPreset !== emptyPreset) {
-            let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
-            if (!(defaultTexture == null)) {
-                if (data.texture === '' || data.texture.startsWith('modules/tokenmagic/fx/assets/templates/'))
-                    data.texture = defaultTexture;
-            }
+        if (hasOpt === false) {
+            if (hasPresetData && data.tmfxPreset !== emptyPreset) {
+                let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
+                if (!(defaultTexture == null)) {
+                    if (data.texture === '' || data.texture.startsWith('modules/tokenmagic/fx/assets/templates/'))
+                        data.texture = defaultTexture;
+                }
 
-        } else if (hasTexture && data.texture.startsWith('modules/tokenmagic/fx/assets/templates/')
-            && hasPresetData && data.tmfxPreset === emptyPreset) {
-            data.texture = '';
+            } else if (hasTexture && data.texture.startsWith('modules/tokenmagic/fx/assets/templates/')
+                && hasPresetData && data.tmfxPreset === emptyPreset) {
+                data.texture = '';
+            }
         }
 
         return await wrapped(...args);
@@ -400,7 +403,7 @@ Hooks.once("init", () => {
                 this.position.set(this.data.x, this.data.y);
 
                 // Extract and prepare data
-                let { direction, distance, angle, width } = this.data;
+                let {direction, distance, angle, width} = this.data;
                 distance *= (d.size / d.distance);
                 width *= (d.size / d.distance);
                 direction = _toRadians(direction);
@@ -450,7 +453,7 @@ Hooks.once("init", () => {
                         const d = canvas.dimensions;
 
                         // Extract and prepare data
-                        let { direction, distance, angle } = this.data;
+                        let {direction, distance, angle} = this.data;
                         distance *= (d.size / d.distance);
                         direction = _toRadians(direction);
                         const width = this.data.distance * d.size / d.distance;
@@ -529,7 +532,7 @@ Hooks.once("init", () => {
                 const template = this._original ?? this;
                 const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
 
-                if (!show) {
+                if (!show && template.template?.geometry) {
                     // Hide origin and destination points, i.e., hide everything except the template shape
                     for (const data of template.template.geometry.graphicsData) {
                         if (data.shape !== template.shape) {
@@ -566,12 +569,12 @@ Hooks.once("init", () => {
     if (game.settings.get('tokenmagic', 'defaultTemplateOnHover')) {
         Hooks.on("canvasReady", () => {
             canvas.stage.on("mousemove", event => {
-                const { x: mx, y: my } = event.data.getLocalPosition(canvas.templates);
+                const {x: mx, y: my} = event.data.getLocalPosition(canvas.templates);
                 for (const template of canvas.templates.placeables) {
                     const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
                     const opacity = template.document.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
                     if (template.texture && template.texture !== '') {
-                        const { x: cx, y: cy } = template.center;
+                        const {x: cx, y: cy} = template.center;
                         const mouseover = template.shape.contains(mx - cx, my - cy);
                         hl.renderable = mouseover;
                         template.template.alpha = (mouseover ? 0.5 : 1.0) * opacity;
@@ -597,17 +600,11 @@ Hooks.once("init", () => {
             libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.refresh", wrappedMTR, wrappedMTRType);
         }
     } else {
-        if (isNewerVersion(game.data.version, "0.8")) {
-            const cachedMTU = MeasuredTemplateDocument.prototype.update;
-            MeasuredTemplateDocument.prototype.update = function () {
-                return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
-            };
-        } else {
-            const cachedMTU = MeasuredTemplate.prototype.update;
-            MeasuredTemplate.prototype.update = function () {
-                return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
-            };
-        }
+
+        const cachedMTU = MeasuredTemplateDocument.prototype.update;
+        MeasuredTemplateDocument.prototype.update = function () {
+            return wrappedMTU.call(this, cachedMTU.bind(this), ...arguments);
+        };
 
         const cachedMTD = MeasuredTemplate.prototype.draw;
         MeasuredTemplate.prototype.draw = function () {
