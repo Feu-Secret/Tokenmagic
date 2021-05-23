@@ -131,7 +131,7 @@ function fromConfig(config, template) {
         o.tokenmagic.options.tmfxPreset = config.preset;
     }
     if (config.texture && config.texture !== '') {
-        template.data.texture = config.texture;
+        o.tokenmagic.options.tmfxTexture = config.texture;
     }
     if (config.tint && config.tint !== '') {
         o.tokenmagic.options.tmfxTint = config.tint;

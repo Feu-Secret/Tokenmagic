@@ -353,13 +353,13 @@ Hooks.once("init", () => {
 
         const hasTexture = data.hasOwnProperty("texture");
         const hasPresetData = data.hasOwnProperty("tmfxPreset");
-        const hasOpt = data.flags?.tokenmagic?.options ?? false;
+        const hasOpt = data.flags?.tokenmagic?.options ?? null;
 
         if (hasTexture) {
             data.texture = fixPath(data.texture);
         }
 
-        if (hasOpt === false) {
+        if (hasOpt == null) {
             if (hasPresetData && data.tmfxPreset !== emptyPreset) {
                 let defaultTexture = Magic._getPresetTemplateDefaultTexture(data.tmfxPreset);
                 if (!(defaultTexture == null)) {

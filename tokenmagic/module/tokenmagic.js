@@ -923,7 +923,7 @@ export function TokenMagic() {
         }
     };
 
-    async function _importContent(content, options = {}) {
+    async function _importPresetContent(content, options = {}) {
 
         // In internal, we can force overwrite
         if (!options.hasOwnProperty("overwrite")) {
@@ -1016,6 +1016,28 @@ export function TokenMagic() {
         return true;
     }
 
+    async function _importTemplateSettingsContent(content, options = {}) {
+
+        ///////////////////////////////////////////////
+        // Checking the imported object format
+
+        log("import -> checking import file format...");
+        if (!(content instanceof Object)) {
+            error("import -> file format check KO !");
+            error(i18n("TMFX.preset.import.format.failure"));
+            return false;
+        }
+        log("import -> file format check OK !");
+
+        // check object format end
+        /////////////////////////////////////////////////
+
+        await game.settings.set("tokenmagic", "autoTemplateSettings", content);
+        log("import -> automatic template settings replaced");
+        log(i18n("TMFX.preset.import.success"));
+        return true;
+    }
+
     async function resetPresetLibrary() {
         if (!game.user.isGM) return;
 
@@ -1032,7 +1054,7 @@ export function TokenMagic() {
     async function importPresetLibraryFromURL(url, options = {}) {
         try {
             $.getJSON(url, async function (content) {
-                return await _importContent(content, options);
+                return await _importPresetContent(content, options);
             });
         } catch (e) {
             error(e.message);
@@ -1046,7 +1068,21 @@ export function TokenMagic() {
             const response = await fetch(path);
             const content = await response.json();
 
-            return await _importContent(content, options);
+            return await _importPresetContent(content, options);
+
+        } catch (e) {
+            error(e.message);
+            error(i18n("TMFX.preset.import.failure"));
+            return false;
+        }
+    };
+
+    async function importTemplateSettingsFromPath(path, options = {}) {
+        try {
+            const response = await fetch(path);
+            const content = await response.json();
+
+            return await _importTemplateSettingsContent(content, options);
 
         } catch (e) {
             error(e.message);
@@ -1064,8 +1100,23 @@ export function TokenMagic() {
         }).browse();
     }
 
-    function exportPresetLibrary(exportName = "token-magic-fx-presets") {
+    function exportPresetLibrary(exportName = "tmfx-presets") {
         var pst = game.settings.get("tokenmagic", "presets");
+        if (pst == null || typeof pst !== "object") return false;
+        exportObjectAsJson(pst, exportName);
+    }
+
+    async function importTemplateSettings() {
+        const path = 'modules/tokenmagic/import';
+        new FilePicker({
+            type: "json",
+            current: path,
+            callback: importTemplateSettingsFromPath,
+        }).browse();
+    }
+
+    function exportTemplateSettings(exportName = "tmfx-template-settings") {
+        var pst = game.settings.get("tokenmagic", "autoTemplateSettings");
         if (pst == null || typeof pst !== "object") return false;
         exportObjectAsJson(pst, exportName);
     }
@@ -1272,6 +1323,9 @@ export function TokenMagic() {
         updateFiltersByPlaceable: updateFiltersByPlaceable,
         hasFilterType: hasFilterType,
         hasFilterId: hasFilterId,
+        importTemplateSettings: importTemplateSettings,
+        importTemplateSettingsFromPath: importTemplateSettingsFromPath,
+        exportTemplateSettings: exportTemplateSettings,
         exportPresetLibrary: exportPresetLibrary,
         importPresetLibrary: importPresetLibrary,
         importPresetLibraryFromURL: importPresetLibraryFromURL,
@@ -1757,6 +1811,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
     function getTint() {
         if (updateData.hasOwnProperty("tmfxTint")) {
+            measuredTemplate.tmfxTint = updateData.tmfxTint;
             return updateData.tmfxTint;
         } else if (measuredTemplate.hasOwnProperty("tmfxTint")) {
             return measuredTemplate.tmfxTint;
@@ -1765,6 +1820,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
     function getFX() {
         if (updateData.hasOwnProperty("tmfxPreset")) {
+            measuredTemplate.tmfxPreset = updateData.tmfxPreset;
             return updateData.tmfxPreset;
         } else if (measuredTemplate.hasOwnProperty("tmfxPreset")) {
             return measuredTemplate.tmfxPreset;
@@ -1812,7 +1868,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
         updateTmfxData.tint = (templateTint !== '' ? colorStringToHex(templateTint) : null);
 
     if (Object.keys(updateTmfxData).length > 0)
-        await measuredTemplateInstance.setFlag("tokenmagic", "templateData", updateTmfxData);
+        await measuredTemplateInstance.document.setFlag("tokenmagic", "templateData", updateTmfxData);
 
     if (presetUpdate || tintUpdate
         || directionUpdate || typeUpdate || angleUpdate) {
@@ -1920,6 +1976,10 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
             data.tmfxTextureAlpha = opt.tmfxTextureAlpha;
             hasOpacity = true;
         }
+        if (opt.hasOwnProperty("tmfxTexture")) {
+            data.texture = opt.tmfxTexture;
+            document.data.update({texture: opt.tmfxTexture});
+        }
     }
     else hasFlagsNoOptions = true;
 
@@ -1933,14 +1993,14 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
             return;
         }
         data.flags = mergeObject(data.flags, tmfxBaseFlags, true, true);
-    } else {
-        //data.flags = {};
     }
 
     // normalizing color to value if needed
     if (hasTint && typeof data.tmfxTint !== "number") {
         data.tmfxTint = colorStringToHex(data.tmfxTint);
     }
+
+    let tmfxFiltersData = null;
 
     // FX to add ?
     if (hasPreset) {
@@ -2008,10 +2068,7 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
                 });
             }
 
-            if (persist) {
-                const tmfxFiltersData = {filters: newFilters};
-                document.data.update({flags: {tokenmagic: tmfxFiltersData}});
-            }
+            if (persist) tmfxFiltersData = newFilters;
         }
     } else {
         data.tmfxPreset = emptyPreset;
@@ -2020,13 +2077,15 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
     if (!hasOpacity) data.tmfxTextureAlpha = 1;
     if (!hasTint) data.tmfxTint = null;
 
-    let tmfxTemplateData = {
+    let tmfxFlags = {
         templateData: {
             opacity: data.tmfxTextureAlpha,
             tint: data.tmfxTint
-        }
+        },
+        filters: tmfxFiltersData,
+        options: null
     };
-    document.data.update({flags: {tokenmagic: tmfxTemplateData}});
+    document.data.update({flags: {tokenmagic: tmfxFlags}});
 });
 
 Hooks.on("closeSettingsConfig", () => {
