@@ -62,6 +62,18 @@ In the template settings, you have a tab that display to automatic templates set
 
 ![Template Settings Overrides](images/template-settings-overrides.png)
 
+Automatic template settings are linked to a world. You can import and export the settings with the following code :
+
+To export your template settings in a json file
+```javascript
+TokenMagic.exportTemplateSettings(optional <exportName>);
+```
+
+To import template settings from a json file (open a file picker dialog). ***Warning : your settings are REPLACED ! Before, you may want to save your data with the code above.***
+```javascript
+(async) TokenMagic.importTemplateSettings();
+```
+
 ## Macros
 
 On drawings, tiles, and Tokens. You must work with macros. You will find a lot of predefined macros in the compendium.
@@ -609,7 +621,6 @@ TokenMagic.updateFiltersByPlaceable
 // Example
 TokenMagic.addFiltersOnTargeted("dead");
 ```
-
 The Token Magic API allows templates creation.
 
 When creating templates, you can pass parameters to add special fx, opacity and tint.
@@ -631,9 +642,18 @@ MeasuredTemplate.create({
    distance: 15,
    borderColor: "#FF0000",
    fillColor: "#FF3366",
-   tmfxPreset: "Wild Magic",
-   tmfxTint: 0x00FF90,
-   tmfxTextureAlpha: 0.8
+   flags :
+   {
+     tokenmagic:
+     {
+        options:
+        {
+           tmfxPreset: "Wild Magic",
+           tmfxTint: 0x00FF90,
+           tmfxTextureAlpha: 0.50
+        }
+     }
+   }
  });
 ```
 

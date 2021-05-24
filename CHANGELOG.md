@@ -1,3 +1,13 @@
+# Token Magic FX - Update v0.5.1-beta
+
+*Added/Changed :*
+- ======> Compatibility with FVTT 0.8.6 - Anniversary Edition! <======
+- You can export/import data from/to the "Automatic Template Settings" (useful to share settings between worlds)
+- A reworked README, focused on documentation and useful online resources.
+
+*Fixed Issues :*
+- The `Automatic Framerate` client option now works correctly : "You can release the Kraken with your 144hz screen!"
+
 # Token Magic FX - Update v0.5.0-beta
 
 First of all, I want to thank dev7355608 for his incredible contribution to this release!
