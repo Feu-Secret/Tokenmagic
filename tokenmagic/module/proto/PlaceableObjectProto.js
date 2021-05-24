@@ -29,32 +29,33 @@ PlaceableObject.prototype.TMFXhasFilterId = function (filterId) {
 
 PlaceableObject.prototype._TMFXsetFlag = async function (flag) {
     if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_FLAG);
-    else await this.setFlag("tokenmagic", "filters", flag);
+    else await this.document.setFlag("tokenmagic", "filters", flag);
 }
 
 PlaceableObject.prototype._TMFXsetAnimeFlag = async function (flag) {
     if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_ANIME_FLAG);
-    else await this.setFlag("tokenmagic", "animeInfo", flag);
+    else await this.document.setFlag("tokenmagic", "animeInfo", flag);
 }
 
 PlaceableObject.prototype._TMFXunsetFlag = async function () {
     if (mustBroadCast()) broadcast(this, null, SocketAction.SET_FLAG);
-    else await this.unsetFlag("tokenmagic", "filters");
+    else await this.document.unsetFlag("tokenmagic", "filters");
 }
 
 PlaceableObject.prototype._TMFXunsetAnimeFlag = async function () {
     if (mustBroadCast()) broadcast(this, null, SocketAction.SET_ANIME_FLAG);
-    else await this.unsetFlag("tokenmagic", "animeInfo");
+    else await this.document.unsetFlag("tokenmagic", "animeInfo");
 }
 
 PlaceableObject.prototype._TMFXgetSprite = function () {
 
-    switch (this.constructor.embeddedName) {
+    const type = this._TMFXgetPlaceableType();
+    switch (type) {
         case PlaceableType.TOKEN:
             return this.icon;
             break;
         case PlaceableType.TILE:
-            return this.tile.img;
+            return this.tile;
             break;
         case PlaceableType.TEMPLATE:
             return this.template;
@@ -88,15 +89,15 @@ PlaceableObject.prototype._TMFXgetPlaceablePadding = function () {
 
 PlaceableObject.prototype._TMFXcheckSprite = function () {
 
-    switch (this.constructor.embeddedName) {
+    const type = this._TMFXgetPlaceableType();
+    switch (type) {
         case PlaceableType.TOKEN:
             return (this.hasOwnProperty("icon")
                 && !(this.icon == null));
             break;
         case PlaceableType.TILE:
             return (this.hasOwnProperty("tile")
-                && this.tile.hasOwnProperty("img")
-                && !(this.tile.img == null));
+                && !(this.tile == null));
             break;
         case PlaceableType.TEMPLATE:
             return (this.hasOwnProperty("template")
@@ -179,8 +180,7 @@ PlaceableObject.prototype._TMFXunsetRawFilters = function () {
 }
 
 PlaceableObject.prototype._TMFXgetPlaceableType = function () {
-    if ([PlaceableType.TOKEN, PlaceableType.TILE, PlaceableType.TEMPLATE, PlaceableType.DRAWING]
+    if ([PlaceableType.TOKEN, PlaceableType.TEMPLATE, PlaceableType.TILE, PlaceableType.DRAWING]
         .includes(this.constructor.embeddedName)) return this.constructor.embeddedName;
-
     return PlaceableType.NOT_SUPPORTED;
 }
