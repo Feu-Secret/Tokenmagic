@@ -1306,7 +1306,7 @@ async function compilingShaders() {
     log("Compiling shaders...");
     var tmpRenderTexture = new PIXI.RenderTexture.create({ width: 16, height: 16 });
     // A call to render triggers the compilation of all the shaders bound to the filters.
-    canvas.app.renderer.render(Magic._cachedGraphics, tmpRenderTexture);
+    canvas.app.renderer.render(Magic._cachedGraphics, {renderTexture: tmpRenderTexture});
 
     log("Shaders compiled for the GPU and ready!");
 }
