@@ -184,7 +184,7 @@ function fromItem(wrapped, ...args) {
         return template;
     }
     const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
-    let updated = fromOverrides(Object.values(settings.overrides), item, template);
+    let updated = (settings.overrides ? fromOverrides(Object.values(settings.overrides), item, template) : false);
     if (!updated) {
         fromCategories(settings.categories, item, template);
     }
