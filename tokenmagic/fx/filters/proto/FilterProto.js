@@ -28,7 +28,9 @@ PIXI.Filter.prototype.setTMParams = function (params) {
             }
         });
     } else {
-        this.apply = function () { }
+      this.apply = function (filterManager, input, output, clear) {
+        filterManager.applyFilter(this, input, output, clear);
+      }
     }
 }
 
