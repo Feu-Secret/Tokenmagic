@@ -305,7 +305,7 @@ export function objectAssign(target, ...sources) {
 
 export function TokenMagic() {
 
-    var _cachedGraphics = new PIXI.Graphics;
+    let _cachedContainer = new PIXI.Container;
 
     async function addFiltersOnSelected(paramsArray, replace = false) {
 
@@ -1342,7 +1342,7 @@ export function TokenMagic() {
         _updateFilters: _updateFilters,
         _updateTemplateData: _updateTemplateData,
         _singleLoadFilters: _singleLoadFilters,
-        _cachedGraphics: _cachedGraphics,
+        _cachedContainer: _cachedContainer,
         _checkFilterId: _checkFilterId,
         _getPresetTemplateDefaultTexture: _getPresetTemplateDefaultTexture,
     };
@@ -1356,19 +1356,18 @@ async function compilingShaders() {
 
     let params = {enabled: true, dummy: true};
 
-    Magic._cachedGraphics.filters = [];
+    Magic._cachedContainer.filters = [];
     const filterTypes = Object.keys(FilterType);
     for (const filterType of filterTypes) {
         params.filterType = filterType;
         log(`Caching ${filterType}`);
-        Magic._cachedGraphics.filters.push(new FilterType[filterType](params));
+        Magic._cachedContainer.filters.push(new FilterType[filterType](params));
     }
 
     log("Compiling shaders...");
-    var tmpRenderTexture = new PIXI.RenderTexture.create({width: 16, height: 16});
+    var tmpRenderTexture = new PIXI.RenderTexture.create({width: 4, height: 4});
     // A call to render triggers the compilation of all the shaders bound to the filters.
-    canvas.app.renderer.render(Magic._cachedGraphics, tmpRenderTexture);
-
+    canvas.app.renderer.render(Magic._cachedContainer, {renderTexture: tmpRenderTexture});
     log("Shaders compiled for the GPU and ready!");
 }
 
