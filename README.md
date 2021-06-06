@@ -30,6 +30,7 @@ In short :
 
 ###### In French
 
+- [#jdr Foundry VTT Token Magic FX](https://www.youtube.com/watch?v=heBV1vYPQaQ) by *Ceizyl*
 - [#jdr #foundryvtt jeu de Rôle : Guide du débutant](https://www.youtube.com/watch?v=B0Gwvp-Ns6c&t=1s) by *Ceizyl*
 
 If you are a streamer and want your video about TMFX to be added to these lists, contact me on Discord or Github.
