@@ -2,7 +2,7 @@
     "name": "tokenmagic",
     "title": "Token Magic FX",
     "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "compatibleCoreVersion": "0.8.6",
     "minimumCoreVersion": "0.8.6",
     "author": "SecretFire, sPOiDar, Moerill, dev7355608",
@@ -30,6 +30,9 @@
         },
         {
             "name": "Mestre Digital"
+        },
+        {
+            "name": "BrotherSharper-Touge"
         }
     ],
     "scripts": [
@@ -40,6 +43,8 @@
         "module/tokenmagic.js",
         "module/proto/PlaceableObjectProto.js",
         "fx/Anime.js",
+        "fx/filters/FilterBlurEx.js",
+        "fx/filters/FilterDropShadowEx.js",
         "fx/filters/FilterBevel.js",
         "fx/filters/FilterAdjustment.js",
         "fx/filters/FilterAdvancedBloom.js",
@@ -138,5 +143,5 @@
     "socket": true,
     "url": "https://github.com/Feu-Secret/Tokenmagic",
     "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
-    "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.5.1-beta/Tokenmagic.zip"
+    "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.5.2-beta/Tokenmagic.zip"
 }

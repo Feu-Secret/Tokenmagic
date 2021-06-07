@@ -16,22 +16,6 @@ export class FilterPixelate extends PIXI.filters.PixelateFilter {
         }
     }
 
-    //get sizeX() {
-    //    return this.size.x;
-    //}
-
-    //set sizeX(value) {
-    //    this.size.x = value;
-    //}
-
-    //get sizeY() {
-    //    return this.size.y;
-    //}
-
-    //set sizeY(value) {
-    //    this.size.y = value;
-    //}
-
     handleTransform() {
         this.size.x = this.sizeX * this.placeableImg.parent.worldTransform.a;
         this.size.y = this.sizeY * this.placeableImg.parent.worldTransform.a;
