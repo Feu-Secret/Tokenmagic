@@ -1,7 +1,8 @@
-import { Anime } from "../Anime.js";
+import {Anime} from "../Anime.js";
 import "./proto/FilterProto.js";
+import {FilterBlurEx} from "./FilterBlurEx.js";
 
-export class FilterBlur extends PIXI.filters.BlurFilter {
+export class FilterBlur extends FilterBlurEx {
     constructor(params) {
         super();
         this.enabled = false;
@@ -43,12 +44,9 @@ export class FilterBlur extends PIXI.filters.BlurFilter {
 
     calculatePadding() {
         const scale = this.targetPlaceable.worldTransform.a;
-
         this.blurXFilter.blur = scale * this.strengthX;
         this.blurYFilter.blur = scale * this.strengthY;
-
         this.updatePadding();
-
         super.calculatePadding();
     }
 }

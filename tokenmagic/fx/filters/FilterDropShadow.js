@@ -1,7 +1,8 @@
 import { Anime } from "../Anime.js";
 import "./proto/FilterProto.js";
+import {FilterDropShadowEx} from "./FilterDropShadowEx.js";
 
-export class FilterDropShadow extends PIXI.filters.DropShadowFilter {
+export class FilterDropShadow extends FilterDropShadowEx {
     constructor(params) {
         super();
         this.enabled = false;
@@ -20,5 +21,6 @@ export class FilterDropShadow extends PIXI.filters.DropShadowFilter {
             this.anime = new Anime(this);
             this.normalizeTMParams();
         }
+        this.autoFit = false;
     }
 }

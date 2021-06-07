@@ -156,15 +156,6 @@ export function isVideoDisabled() {
     return game.settings.get("tokenmagic", "disableVideo");
 }
 
-export var isFurnaceDrawingsActive = () => {
-    // module exeption for the Furnace by KaKaRoTo
-    if (isActiveModule("furnace")
-        && game.settings.get("furnace", "enableDrawingTools")) {
-        return true;
-    }
-    return false;
-};
-
 export function isTheOne() {
     const theOne = game.users.find((user) => user.isGM && user.active);
     return theOne && game.user === theOne;
@@ -1411,39 +1402,6 @@ function initSocketListener() {
     });
 };
 
-function initFurnaceDrawingsException() {
-    if (isFurnaceDrawingsActive()) {
-        const wrappedDCR = async function (wrapped, ...args) {
-            // Clear animations and filters if needed
-            let tmfxUpdate = false;
-            if (this.object.data.hasOwnProperty("flags")
-                && this.object.data.flags.hasOwnProperty("tokenmagic")
-                && this.object.data.flags.tokenmagic.hasOwnProperty("filters")) {
-                tmfxUpdate = true;
-                Anime.removeAnimation(this.object.id);
-                Magic._clearImgFiltersByPlaceable(this.object);
-            }
-
-            // Furnace function apply (updating data and full redraw : destruction/reconstruction)
-            await wrapped(...args);
-
-            // Reapply the filters if needed
-            if (tmfxUpdate) {
-                Magic._singleLoadFilters(this.object);
-            }
-        };
-
-        if (game.modules.get("lib-wrapper")?.active) {
-            libWrapper.register("tokenmagic", "FurnaceDrawingConfig.prototype.refresh", wrappedDCR, "WRAPPER");
-        } else {
-            const cachedDCR = FurnaceDrawingConfig.prototype.refresh;
-            FurnaceDrawingConfig.prototype.refresh = function () {
-                return wrappedDCR.call(this, cachedDCR.bind(this), ...arguments);
-            };
-        }
-    }
-}
-
 async function requestLoadFilters(placeable, startTimeout = 0) {
     var reqTimer;
     placeable.loadingRequest = true;
@@ -1578,7 +1536,6 @@ Hooks.on("ready", () => {
     log("Hook -> ready");
     tmfxDataMigration();
     initSocketListener();
-    initFurnaceDrawingsException();
     window.TokenMagic = Magic;
 
     if (!game.modules.get("lib-wrapper")?.active && game.user.isGM)

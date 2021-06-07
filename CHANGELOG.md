@@ -1,3 +1,12 @@
+# Token Magic FX - Update v0.5.2-beta
+
+*Added/Changed :*
+- TMFX Now supports the Japanese language. Many thanks to BrotherSharper and Touge!
+
+*Fixed Issues :*
+- Removed furnace compatibility mode, which was causing issues (only for FVTT 0.8.x and +)
+- Drop Shadow has been reworked and now take into account the zoom level.
+
 # Token Magic FX - Update v0.5.1-beta
 
 *Added/Changed :*
