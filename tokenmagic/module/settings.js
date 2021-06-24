@@ -85,7 +85,10 @@ export class TokenMagicSettings extends FormApplication {
             config: true,
             default: false,
             type: Boolean,
-            onChange: (value) => TokenMagicSettings.configureAutoFPS(value),
+            onChange: (value) => {
+                TokenMagicSettings.configureAutoFPS(value);
+                canvas ? canvas.draw() : null;
+            }
         });
 
         game.settings.register("tokenmagic", "useAdditivePadding", {
@@ -198,7 +201,18 @@ export class TokenMagicSettings extends FormApplication {
     }
 
     static configureAutoFPS(enabled = false) {
-        if (enabled) canvas.app.ticker.maxFPS = 0;
+        if (enabled) {
+            Object.defineProperty(MouseInteractionManager.prototype, "_dragThrottleMS", {
+                get: function () {
+                    return this._dragThrottleMS_;
+                },
+                set: function (value) {
+                    this._dragThrottleMS_ = Math.clamped(value !== Infinity ? value : 0, 17, 1000);
+                },
+                configurable: true
+            });
+            canvas.app.ticker.maxFPS = 0;
+        }
         else canvas.app.ticker.maxFPS = game.settings.get("core", "maxFPS");
     }
 

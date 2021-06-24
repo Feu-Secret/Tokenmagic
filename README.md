@@ -1,3 +1,13 @@
+# Token Magic FX - Update v0.5.0.2-beta
+
+=====> CLOSING VERSION for 0.7.x <=====
+
+*Fixed Issues :*
+- Reported from 0.8.x version:
+  - The Automatic Framerate client option now works correctly : "You can release the Kraken with your 144hz screen!"
+- Some filters were generating artifacts (repeating edge pixels) when positionned at the canvas border, with visible and invisible parts.
+
+
 # Token Magic FX - Update v0.5.0-beta
 
 First of all, I want to thank dev7355608 for his incredible contribution to this release!

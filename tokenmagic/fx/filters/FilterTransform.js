@@ -46,6 +46,7 @@ export class FilterTransform extends CustomFilter {
         });
 
         this.zOrder = 1000;
+        this.autoFit = false;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {

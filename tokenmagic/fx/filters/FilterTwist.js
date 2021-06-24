@@ -5,6 +5,7 @@ export class FilterTwist extends PIXI.filters.TwistFilter {
     constructor(params) {
         super();
         this.enabled = false;
+        this.autoFit = false;
         this.radiusPercent = 50;
         this.angle = 4;
         this.zOrder = 240;
