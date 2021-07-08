@@ -10,6 +10,7 @@ export class FilterTwist extends PIXI.filters.TwistFilter {
         this.zOrder = 240;
         this.animated = {};
         this.offset = [0, 0];
+        this.autoFit = false;
         this.setTMParams(params);
         if (!this.dummy) {
             this.anime = new Anime(this);

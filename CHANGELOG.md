@@ -1,3 +1,9 @@
+# Token Magic FX - Update v0.5.2.1-beta
+
+*Fixed Issues :*
+- Filters could blur placeables with zoom in/out at web-browser level
+- Some filters were generating artifacts (repeating edge pixels) when positionned at the canvas border, with visible and invisible parts.
+
 # Token Magic FX - Update v0.5.2-beta
 
 *Added/Changed :*

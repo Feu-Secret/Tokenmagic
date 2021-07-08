@@ -34,6 +34,7 @@ export class FilterPolymorph extends CustomFilter {
         });
 
         this.zOrder = 1;
+        this.autoFit = false;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {
