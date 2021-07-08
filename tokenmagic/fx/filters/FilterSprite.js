@@ -64,6 +64,7 @@ export class FilterSprite extends CustomFilter {
         });
 
         this.zOrder = 0;
+        this.autoFit = false;
         this.animated = {};
         this.setTMParams(params);
         if (!this.dummy) {
