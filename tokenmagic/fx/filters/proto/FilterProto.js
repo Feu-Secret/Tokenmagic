@@ -101,9 +101,9 @@ PIXI.Filter.prototype.activateTransform = function () {
     this.filterTransform();
 
     const apply = this.apply;
-    this.apply = function () {
+    this.apply = function (filterManager, input, output, clear, state) {
         if ("handleTransform" in this) {
-            this.handleTransform();
+            this.handleTransform(state);
         }
         return apply.apply(this, arguments);
     }
