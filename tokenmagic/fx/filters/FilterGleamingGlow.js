@@ -106,8 +106,8 @@ export class FilterGleamingGlow extends CustomFilter {
     }
 
     apply(filterManager, input, output, clear) {
-        this.uniforms.thickness[0] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.width;
-        this.uniforms.thickness[1] = (this.thickness * this.placeableImg.parent.worldTransform.a) / input._frame.height;
+        this.uniforms.thickness[0] = (this.thickness * this.targetPlaceable.worldTransform.a) / input._frame.width;
+        this.uniforms.thickness[1] = (this.thickness * this.targetPlaceable.worldTransform.a) / input._frame.height;
         super.apply(filterManager, input, output, clear);
     }
 }
