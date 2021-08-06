@@ -111,7 +111,7 @@ PIXI.Filter.prototype.activateTransform = function () {
 
 PIXI.Filter.prototype.filterTransform = function () {
     if (this.hasOwnProperty("zIndex")) {
-        this.placeableImg.parent.zIndex = this.zIndex;
+        this.targetPlaceable.zIndex = this.zIndex;
     }
 }
 

@@ -23,7 +23,7 @@ export class FilterTwist extends PIXI.filters.TwistFilter {
         this.offset[1] = this.placeableImg.worldTransform.ty;
         this.radius =
             (Math.max(this.placeableImg.width, this.placeableImg.height)
-                * this.placeableImg.parent.worldTransform.a
+                * this.targetPlaceable.worldTransform.a
                 * this.radiusPercent) / 200;
     }
 }
