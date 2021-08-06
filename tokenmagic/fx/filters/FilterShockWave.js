@@ -22,17 +22,8 @@ export class FilterShockwave extends PIXI.filters.ShockwaveFilter {
         }
     }
 
-    handleTransform() {
-        let scale = this.targetPlaceable.data?.scale;
-        if (scale == null) scale = 1;
-
-        this.center[0] = (this.placeableImg.localTransform.tx
-            * this.targetPlaceable.worldTransform.a
-            * scale)
-            + this.boundsPadding.x;
-        this.center[1] = (this.placeableImg.localTransform.ty
-            * this.targetPlaceable.worldTransform.a
-            * scale)
-            + this.boundsPadding.y;
+    handleTransform(state) {
+        this.center[0] = 0.5 * state.sourceFrame.width;
+        this.center[1] = 0.5 * state.sourceFrame.height;
     }
 }
