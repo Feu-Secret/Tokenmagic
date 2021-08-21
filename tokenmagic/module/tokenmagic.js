@@ -301,7 +301,7 @@ export function TokenMagic() {
     async function addFiltersOnSelected(paramsArray, replace = false) {
 
         if (typeof paramsArray !== "array") {
-             paramsArray = getPreset(paramsArray);
+            paramsArray = getPreset(paramsArray);
         }
 
         var controlled = getControlledPlaceables();
@@ -411,7 +411,7 @@ export function TokenMagic() {
 
         await placeable._TMFXsetFlag(newFlags);
     }
-    
+
     async function addUpdateFilters(placeable, paramsArray) {
 
         if (!paramsArray instanceof Array || paramsArray.length < 1) {return;}
