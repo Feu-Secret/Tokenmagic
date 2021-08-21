@@ -300,8 +300,8 @@ export function TokenMagic() {
 
     async function addFiltersOnSelected(paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
-            paramsArray = getPreset(paramsArray);
+        if (typeof paramsArray !== "array") {
+             paramsArray = getPreset(paramsArray);
         }
 
         var controlled = getControlledPlaceables();
@@ -315,7 +315,7 @@ export function TokenMagic() {
 
     async function addUpdateFiltersOnSelected(paramsArray) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -330,7 +330,7 @@ export function TokenMagic() {
 
     async function addUpdateFiltersOnTargeted(paramsArray) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -345,7 +345,7 @@ export function TokenMagic() {
 
     async function addFiltersOnTargeted(paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -360,7 +360,7 @@ export function TokenMagic() {
 
     async function addFilters(placeable, paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
         if (!(paramsArray instanceof Array && paramsArray.length > 0)
@@ -411,7 +411,7 @@ export function TokenMagic() {
 
         await placeable._TMFXsetFlag(newFlags);
     }
-
+    
     async function addUpdateFilters(placeable, paramsArray) {
 
         if (!paramsArray instanceof Array || paramsArray.length < 1) {return;}
@@ -725,7 +725,7 @@ export function TokenMagic() {
         workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
         var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
         // Use only powers of two (which seem to work without problems) until PIXI is fixed.
-        filter.resolution = Math.pow(2, Math.ceil(Math.log2(canvas.app.renderer.resolution)));
+        filter.resolution = Math.pow(2, Math.floor(Math.log2(canvas.app.renderer.resolution)));
         setFilter(placeable, filter);
     }
 
