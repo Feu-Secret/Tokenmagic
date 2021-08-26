@@ -40,6 +40,7 @@ import {allPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
 import {tmfxDataMigration} from "../migration/migration.js";
 import {emptyPreset} from './constants.js';
 import "./proto/PlaceableObjectProto.js";
+import { TokenMagicSettings } from "./settings.js";
 
 /*
 
@@ -1911,6 +1912,10 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
 });
 
 Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
+    const templates = TokenMagicSettings.getSystemTemplates();
+    if (templates?.enabled) {
+        templates.preCreateMeasuredTemplate?.(data);
+    }
 
     const hasFlags = data.hasOwnProperty("flags");
     let hasPreset = false;

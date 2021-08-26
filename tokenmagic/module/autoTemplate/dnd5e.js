@@ -97,6 +97,10 @@ export class AutoTemplateDND5E {
         this._enabled = false;
     }
 
+    get enabled() {
+        return this._enabled;
+    }
+
     configure(enabled = false) {
         if (game.system.id !== "dnd5e") return;
 
@@ -122,6 +126,14 @@ export class AutoTemplateDND5E {
         }
 
         this._enabled = enabled;
+    }
+
+    getData() {
+        return {
+            hasAutoTemplates: true,
+            dmgTypes: CONFIG.DND5E.damageTypes,
+            templateTypes: CONFIG.MeasuredTemplate.types
+        }
     }
 }
 

@@ -1,7 +1,8 @@
 import {presets as defaultPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
 import {DataVersion} from "../migration/migration.js";
 import {TokenMagic, isVideoDisabled, fixPath} from './tokenmagic.js';
-import {AutoTemplateDND5E, dnd5eTemplates} from "./autoTemplate/dnd5e.js";
+import {pf2eTemplates} from "./autoTemplate/pf2e.js";
+import {dnd5eTemplates} from "./autoTemplate/dnd5e.js";
 import {defaultOpacity, emptyPreset} from './constants.js';
 
 const Magic = TokenMagic();
@@ -31,21 +32,17 @@ export class TokenMagicSettings extends FormApplication {
             },
         };
 
-        let hasAutoTemplates = false;
-        switch (game.system.id) {
-            case 'dnd5e':
-                hasAutoTemplates = true;
-                game.settings.registerMenu('tokenmagic', menuAutoTemplateSettings.key, menuAutoTemplateSettings.config);
-                game.settings.register(
-                    'tokenmagic',
-                    settingAutoTemplateSettings.key,
-                    mergeObject(settingAutoTemplateSettings.config, {
-                        default: AutoTemplateDND5E.defaultConfiguration
-                    }, true, true),
-                );
-                break;
-            default:
-                break;
+        const templates = this.getSystemTemplates();
+        let hasAutoTemplates = !!templates;
+        if (templates) {
+            game.settings.registerMenu('tokenmagic', menuAutoTemplateSettings.key, menuAutoTemplateSettings.config);
+            game.settings.register(
+                'tokenmagic',
+                settingAutoTemplateSettings.key,
+                mergeObject(settingAutoTemplateSettings.config, {
+                    default: templates.constructor.defaultConfiguration
+                }, true, true),
+            );
         }
 
         game.settings.register('tokenmagic', 'autoTemplateEnabled', {
@@ -187,17 +184,24 @@ export class TokenMagicSettings extends FormApplication {
             'modules/tokenmagic/templates/settings/settings.html',
             'modules/tokenmagic/templates/settings/dnd5e/categories.html',
             'modules/tokenmagic/templates/settings/dnd5e/overrides.html',
+            'modules/tokenmagic/templates/settings/pf2e/categories.html',
+            'modules/tokenmagic/templates/settings/pf2e/overrides.html',
         ]);
+    }
+    
+    static getSystemTemplates() {
+        switch (game.system.id) {
+            case 'dnd5e':
+                return dnd5eTemplates;
+            case 'pf2e':
+                return pf2eTemplates;
+            default:
+                return null;
+        }
     }
 
     static configureAutoTemplate(enabled = false) {
-        switch (game.system.id) {
-            case 'dnd5e':
-                dnd5eTemplates.configure(enabled);
-                break;
-            default:
-                break;
-        }
+        this.getSystemTemplates()?.configure(enabled);
     }
 
     static configureAutoFPS(enabled = false) {
@@ -244,13 +248,11 @@ export class TokenMagicSettings extends FormApplication {
         let settingsData = {
             'autoTemplateEnable': game.settings.get('tokenmagic', 'autoTemplateEnabled'),
         }
-        switch (game.system.id) {
-            case 'dnd5e':
-                settingsData['autoTemplateSettings'] = game.settings.get('tokenmagic', 'autoTemplateSettings');
-                break;
-            default:
-                break;
+
+        if (TokenMagicSettings.getSystemTemplates()) {
+            settingsData['autoTemplateSettings'] = game.settings.get('tokenmagic', 'autoTemplateSettings');
         }
+
         return settingsData;
     }
 
@@ -259,15 +261,12 @@ export class TokenMagicSettings extends FormApplication {
         let data = super.getData();
         data.hasAutoTemplates = false;
         data.emptyPreset = emptyPreset;
-        switch (game.system.id) {
-            case 'dnd5e':
-                data.hasAutoTemplates = true
-                data.dmgTypes = CONFIG.DND5E.damageTypes;
-                data.templateTypes = CONFIG.MeasuredTemplate.types;
-                break;
-            default:
-                break;
+
+        const templates = TokenMagicSettings.getSystemTemplates();
+        if (templates) {
+            mergeObject(data, templates.getData());
         }
+
         data.presets = Magic.getPresets(PresetsLibrary.TEMPLATE).sort(function (a, b) {
             if (a.name < b.name) return -1;
             if (a.name > b.name) return 1;
