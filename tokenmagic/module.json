@@ -142,6 +142,6 @@
     ],
     "socket": true,
     "url": "https://github.com/Feu-Secret/Tokenmagic",
-    "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
+    "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master-v0.5.2.1.x/tokenmagic/module.json",
     "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.5.2.1-beta/Tokenmagic.zip"
 }
