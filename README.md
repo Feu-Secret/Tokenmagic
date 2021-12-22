@@ -1,5 +1,5 @@
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE) 
-![v0.5.2-beta download count](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/latest/tokenmagic.zip)
+![v0.5.2.2-beta download count](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/latest/tokenmagic.zip)
 # Token Magic FX
 
 Token Magic is a module for Foundry VTT that allows you to add graphic effects to tokens, tiles, drawings and templates. These FX can be animated. 
