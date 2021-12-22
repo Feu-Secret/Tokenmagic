@@ -17,22 +17,16 @@ export class FilterZoomBlur extends PIXI.filters.ZoomBlurFilter {
         }
     }
 
-    handleTransform() {
-        this.center[0] =
-            this.boundsPadding.x +
-            ((this.placeableImg.localTransform.tx * this.placeableImg.parent.worldTransform.a)
-                * this.placeableImg.parent.data.scale);
-        this.center[1] =
-            this.boundsPadding.y +
-            ((this.placeableImg.localTransform.ty * this.placeableImg.parent.worldTransform.a)
-                * this.placeableImg.parent.data.scale);
+    handleTransform(state) {
+        this.center[0] = 0.5 * state.sourceFrame.width;
+        this.center[1] = 0.5 * state.sourceFrame.height;
         this.radius =
             (Math.max(this.placeableImg.width, this.placeableImg.height)
-                * this.placeableImg.parent.worldTransform.a
+                * this.targetPlaceable.worldTransform.a
                 * this.radiusPercent) / 200;
         this.innerRadius =
             (Math.max(this.placeableImg.width, this.placeableImg.height)
-                * this.placeableImg.parent.worldTransform.a
+                * this.targetPlaceable.worldTransform.a
                 * this.innerRadiusPercent) / 200;
     }
 }

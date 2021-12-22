@@ -92,7 +92,7 @@ vec4 getToColor(in vec2 uv) {
 
 void main() {
 
-    vec4 fcolor;
+    vec3 fcolor;
 
     // UV transformations
     vec2 uvTex = transform(vTextureCoordExtra);
@@ -106,9 +106,9 @@ void main() {
         tcolor = colorization(tcolor);
     }
 
-    if (top) fcolor = mix(tcolor, icolor, 1.0 - tcolor.a);
-    else fcolor = mix(icolor, tcolor, 1.0 - icolor.a);
+    if (top) fcolor = mix(tcolor.rgb, icolor.rgb, 1.0 - tcolor.a);
+    else fcolor = mix(icolor.rgb, tcolor.rgb, 1.0 - icolor.a);
    
-    gl_FragColor = fcolor;
+    gl_FragColor = vec4(fcolor, max(tcolor.a, icolor.a));
 }
 `;

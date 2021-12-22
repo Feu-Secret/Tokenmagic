@@ -4,10 +4,10 @@ export class CustomFilter extends PIXI.Filter {
     constructor(...args) {
         super(...args);
 
-        if (this.program.uniformData.filterMatrix || this.program.uniformData.filterMatrixInverse)
+        if (!this.uniforms.filterMatrix || !this.uniforms.filterMatrixInverse)
             this.uniforms.filterMatrix = new PIXI.Matrix();
 
-        if (this.program.uniformData.filterMatrixInverse)
+        if (!this.uniforms.filterMatrixInverse)
             this.uniforms.filterMatrixInverse = new PIXI.Matrix();
     }
 

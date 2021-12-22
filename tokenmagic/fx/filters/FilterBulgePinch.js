@@ -24,7 +24,7 @@ export class FilterBulgePinch extends PIXI.filters.BulgePinchFilter {
     handleTransform() {
 
         this.radius = (Math.max(this.placeableImg.width, this.placeableImg.height)
-            * this.placeableImg.parent.worldTransform.a
+            * this.targetPlaceable.worldTransform.a
             * this.radiusPercent) / 200;
     }
 }
