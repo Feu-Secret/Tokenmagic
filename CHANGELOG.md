@@ -1,4 +1,13 @@
-# Token Magic FX - Update v0.5.2.1-beta
+# Token Magic FX - Update v0.5.2.2-beta
+
+*Added/Changed*
+- Update to Foundry V9
+- The Sprite filter now accepts video (experimental)
+
+*Fixed Issues :*
+- The Token Magic GUI has been fixed to handle correctly compendium API changes
+
+# Token Magic FX - Update v0.5.2.1-beta (closing version for Foundry V8)
 
 *Fixed Issues :*
 - Filters could blur placeables with zoom in/out at web-browser level

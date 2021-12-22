@@ -24,7 +24,8 @@ export class FilterSprite extends CustomFilter {
             scaleX,
             scaleY,
             translationX,
-            translationY
+            translationY,
+            play
         } = Object.assign({}, FilterSprite.defaults, params);
 
         const targetSpriteMatrix = new PIXI.Matrix();
@@ -60,7 +61,8 @@ export class FilterSprite extends CustomFilter {
             scaleX,
             scaleY,
             translationX,
-            translationY
+            translationY,
+            play
         });
 
         this.zOrder = 0;
@@ -73,6 +75,9 @@ export class FilterSprite extends CustomFilter {
             this.assignTexture();
         }
     }
+
+    tex = null;
+    _play = true;
 
     get color() {
         return PIXI.utils.rgb2hex(this.uniforms.color);
@@ -209,10 +214,35 @@ export class FilterSprite extends CustomFilter {
         this.uniforms.uSamplerTarget = value;
     }
 
+    get play() {
+        return this._play;
+    }
+
+    set play(value) {
+        if (!(value == null) && typeof value === "boolean") {
+            this._play = value;
+            this._playVideo(this._play);
+        }
+    }
+
+    _playVideo(value) {
+        // Play if baseTexture resource is a video
+        if (this.tex) {
+            const source = getProperty(this.tex, "baseTexture.resource.source")
+            if (source && (source.tagName === "VIDEO")) {
+                source.loop = true;
+                source.muted = true;
+                if (value) game.video.play(source);
+                else game.video.stop(source);
+            }
+        }
+    }
+
     assignTexture() {
         if (this.hasOwnProperty("imagePath")) {
-            let tex = PIXI.Texture.from(this.imagePath);
-            let sprite = new PIXI.Sprite(tex);
+            this.tex = PIXI.Texture.from(this.imagePath);
+
+            let sprite = new PIXI.Sprite(this.tex);
 
             sprite.renderable = false;
             if (this.placeableImg.hasOwnProperty("_texture")) {
@@ -227,6 +257,8 @@ export class FilterSprite extends CustomFilter {
             this.targetSprite = sprite;
             this.uSamplerTarget = sprite._texture;
             this.placeableImg.addChild(sprite);
+
+            this._playVideo(this._play);
         }
     }
 
@@ -271,6 +303,7 @@ FilterSprite.defaults = {
     scaleY: 1,
     translationX: 0,
     translationY: 0,
+    play: true
 };
 
 
