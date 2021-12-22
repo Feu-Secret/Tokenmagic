@@ -1,3 +1,11 @@
+# Token Magic FX - Update v0.5.2.3-beta
+
+*Added/Changed*
+- Replaced deprecated API calls
+
+*Fixed Issues :*
+- Exception throwed when manipulating template under certain circumstances
+
 # Token Magic FX - Update v0.5.2.2-beta
 
 *Added/Changed*
