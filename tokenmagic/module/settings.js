@@ -543,7 +543,7 @@ Hooks.once("init", () => {
                     template.template.geometry.invalidate();
                 }
 
-                template.ruler.renderable = show;
+                template.hud.ruler.renderable = show;
 
                 template.controlIcon.renderable = template.owner;
 
@@ -588,7 +588,7 @@ Hooks.once("init", () => {
     }
 
     if (game.modules.get("lib-wrapper")?.active) {
-        if (isNewerVersion(game.data.version, "0.8")) {
+        if (isNewerVersion(game.version, "0.8")) {
             libWrapper.register("tokenmagic", "MeasuredTemplateDocument.prototype.update", wrappedMTU, "WRAPPER");
         } else {
             libWrapper.register("tokenmagic", "MeasuredTemplate.prototype.update", wrappedMTU, "WRAPPER");
