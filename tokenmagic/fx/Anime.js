@@ -114,7 +114,7 @@ export class Anime {
 
         let animeInfo;
         let doInit = true;
-        let flag = this.puppet.targetPlaceable.getFlag("tokenmagic", "animeInfo");
+        let flag = this.puppet.targetPlaceable.document.getFlag("tokenmagic", "animeInfo");
 
         if (flag) {
             // fastest than array.find

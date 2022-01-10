@@ -1,3 +1,13 @@
+# Token Magic FX - Update v0.5.3-beta
+
+*Added/Changed*
+- Updated the PIXI community filters with version 4.1.5
+
+*Fixed Issues :*
+- The FPS option control has been removed. TMFX now strictly follow Foundry performance modes.
+- An error was raised in permissive mode, when a player attempted to put a filter on a token.
+- Polymorph filter raised an error.
+
 # Token Magic FX - Update v0.5.2.3-beta
 
 *Added/Changed*
