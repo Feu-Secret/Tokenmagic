@@ -300,7 +300,7 @@ export function TokenMagic() {
 
     async function addFiltersOnSelected(paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -315,7 +315,7 @@ export function TokenMagic() {
 
     async function addUpdateFiltersOnSelected(paramsArray) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -330,7 +330,7 @@ export function TokenMagic() {
 
     async function addUpdateFiltersOnTargeted(paramsArray) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -345,7 +345,7 @@ export function TokenMagic() {
 
     async function addFiltersOnTargeted(paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -360,7 +360,7 @@ export function TokenMagic() {
 
     async function addFilters(placeable, paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (typeof paramsArray !== "array") {
             paramsArray = getPreset(paramsArray);
         }
         if (!(paramsArray instanceof Array && paramsArray.length > 0)
