@@ -1387,7 +1387,7 @@ function initSocketListener() {
             updateData["_id"] = data.tmPlaceableId;
 
             // updating the placeable in the scene
-            await scene.updateEmbeddedEntity(data.tmPlaceableType, updateData);
+            await scene.updateEmbeddedDocuments(data.tmPlaceableType, [updateData]);
         }
 
         switch (data.tmAction) {
