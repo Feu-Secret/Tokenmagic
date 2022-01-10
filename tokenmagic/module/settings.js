@@ -78,19 +78,6 @@ export class TokenMagicSettings extends FormApplication {
             onChange: () => window.location.reload()
         });
 
-        game.settings.register('tokenmagic', 'autoFPSEnabled', {
-            name: game.i18n.localize('TMFX.settings.autoFPS.name'),
-            hint: game.i18n.localize('TMFX.settings.autoFPS.hint'),
-            scope: 'client',
-            config: true,
-            default: false,
-            type: Boolean,
-            onChange: (value) => {
-                TokenMagicSettings.configureAutoFPS(value);
-                canvas ? canvas.draw() : null;
-            },
-        });
-
         game.settings.register("tokenmagic", "useAdditivePadding", {
             name: game.i18n.localize("TMFX.settings.useMaxPadding.name"),
             hint: game.i18n.localize("TMFX.settings.useMaxPadding.hint"),
@@ -198,22 +185,6 @@ export class TokenMagicSettings extends FormApplication {
             default:
                 break;
         }
-    }
-
-    static configureAutoFPS(enabled = false) {
-        if (enabled) {
-            Object.defineProperty(MouseInteractionManager.prototype, "_dragThrottleMS", {
-                get: function () {
-                    return this._dragThrottleMS_;
-                },
-                set: function (value) {
-                    this._dragThrottleMS_ = Math.clamped(value !== Infinity ? value : 0, 17, 1000);
-                },
-                configurable: true
-            });
-            canvas.app.ticker.maxFPS = 0;
-        }
-        else canvas.app.ticker.maxFPS = game.settings.get("core", "maxFPS");
     }
 
     /** @override */
@@ -330,10 +301,6 @@ export class TokenMagicSettings extends FormApplication {
         this.render();
     }
 }
-
-Hooks.on("canvasReady", () => {
-    TokenMagicSettings.configureAutoFPS(game.settings.get('tokenmagic', 'autoFPSEnabled'));
-});
 
 Hooks.once("init", () => {
     // Extracted from https://github.com/leapfrogtechnology/just-handlebars-helpers/

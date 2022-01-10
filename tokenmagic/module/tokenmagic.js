@@ -300,7 +300,7 @@ export function TokenMagic() {
 
     async function addFiltersOnSelected(paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (!Array.isArray(paramsArray)) {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -315,7 +315,7 @@ export function TokenMagic() {
 
     async function addUpdateFiltersOnSelected(paramsArray) {
 
-        if (typeof paramsArray === "string") {
+        if (!Array.isArray(paramsArray)) {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -330,7 +330,7 @@ export function TokenMagic() {
 
     async function addUpdateFiltersOnTargeted(paramsArray) {
 
-        if (typeof paramsArray === "string") {
+        if (!Array.isArray(paramsArray)) {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -345,7 +345,7 @@ export function TokenMagic() {
 
     async function addFiltersOnTargeted(paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (!Array.isArray(paramsArray)) {
             paramsArray = getPreset(paramsArray);
         }
 
@@ -360,7 +360,7 @@ export function TokenMagic() {
 
     async function addFilters(placeable, paramsArray, replace = false) {
 
-        if (typeof paramsArray === "string") {
+        if (!Array.isArray(paramsArray)) {
             paramsArray = getPreset(paramsArray);
         }
         if (!(paramsArray instanceof Array && paramsArray.length > 0)
@@ -724,8 +724,6 @@ export function TokenMagic() {
         workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
         workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
         var filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
-        // Use only powers of two (which seem to work without problems) until PIXI is fixed.
-        filter.resolution = Math.pow(2, Math.ceil(Math.log2(canvas.app.renderer.resolution)));
         setFilter(placeable, filter);
     }
 
@@ -1387,7 +1385,7 @@ function initSocketListener() {
             updateData["_id"] = data.tmPlaceableId;
 
             // updating the placeable in the scene
-            await scene.updateEmbeddedEntity(data.tmPlaceableType, updateData);
+            await scene.updateEmbeddedDocuments(data.tmPlaceableType, [updateData]);
         }
 
         switch (data.tmAction) {
