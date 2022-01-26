@@ -413,42 +413,42 @@ By assigning a `zOrder` to your effects, you can determine that the mirror image
 
 You will find below a table with the filters and their default `zOrder`. The default `zOrder` can be overriden in the parameters of the filters.
 
-| Filter  | default zOrder |
-|---|---|
-| Splash (splash) | 5 |
-| Remove Shadow (zapshadow) | 10 |
-| Pixelate (pixel) | 20  |
-| Adjustment (adjustment) | 30 |
-| Bloom (xbloom)  | 40  |
-| Outline (outline) | 50 |
-| Old Film (oldfilm) | 60 |
-| Glow (glow) | 70 |
-| Gleaming Glow (xglow) | 80  |
-| Bevel (bevel) | 90  |
-| Mirror Images (images)  | 100  |
-| Drop Shadow (shadow) | 110 |
-| Rays (ray) | 120  |
-| XRays (xray) | 130 |
-| BulgePinch (bulgepinch) | 140  |
-| Fire (fire) | 150  |
-| Electric (electric) | 160  |
-| Flood (flood) | 170  |
-| Liquid (liquid) | 180  |
-| Fog (fog) | 190  |
-| Smoke (smoke) | 200  |
-| Fumes (fumes) | 210  |
-| Shockwave (shockwave) | 220  |
-| XFog (xfog) | 230  |
-| Twist (twist) | 240  |
-| Solar Ripples (ripples) | 250 |
-| Spiderweb (web) | 260  |
-| Globes (globes) | 270  |
-| Waves  (wave) | 280  |
-| Blur (blur) | 290  |
-| Zoom Blur (zoomblur) | 300  |
-| Transform (transform) | 1000 |
-| Force Field (field) | 2000  |
-| Distortion (distortion) | 4000  |
+| Filter  | default zOrder | Image                                                                                            |
+|---|---|--------------------------------------------------------------------------------------------------|
+| Splash (splash) | 5 | <img src="tokenmagic/gui/macros/images/34 - T01 - Wound - Repeatable (splash).webp" height="24"> |
+| Remove Shadow (zapshadow) | 10 | <img src="tokenmagic/gui/macros/images/14 - Remove Shadow.webp" height="24">                     |
+| Pixelate (pixel) | 20  | <img src="tokenmagic/gui/macros/images/28 - Glory to Pixels.webp" height="24">                   |
+| Adjustment (adjustment) | 30 | <img src="tokenmagic/gui/macros/images/02 - Adjustment.webp" height="24">                        |
+| Bloom (xbloom)  | 40  | <img src="tokenmagic/gui/macros/images/06 - Bloom.webp" height="24">                             |
+| Outline (outline) | 50 | <img src="tokenmagic/gui/macros/images/04 - Outline.webp" height="24">                           |
+| Old Film (oldfilm) | 60 | <img src="tokenmagic/gui/macros/images/08 - Old film.webp" height="24">                          |
+| Glow (glow) | 70 | <img src="tokenmagic/gui/macros/images/05 - Glow.webp" height="24">                              |
+| Gleaming Glow (xglow) | 80  | <img src="tokenmagic/gui/macros/images/27 - T01 - Burning Aura (xglow).webp" height="24">        |
+| Bevel (bevel) | 90  | <img src="tokenmagic/gui/macros/images/01 - Bevel.webp" height="24">                             |
+| Mirror Images (images)  | 100  | <img src="tokenmagic/gui/macros/images/23 - T01 - Mirror Images.webp" height="24">               |
+| Drop Shadow (shadow) | 110 | <img src="tokenmagic/gui/macros/images/03 - Drop Shadow.webp" height="24">                       |
+| Rays (ray) | 120  | <img src="tokenmagic/gui/macros/images/15 - Cosmic Ray.webp" height="24">                        |
+| XRays (xray) | 130 | <img src="tokenmagic/gui/macros/images/25 - T03 - X-ray Scan (xray).webp" height="24">           |
+| BulgePinch (bulgepinch) | 140  | <img src="tokenmagic/gui/macros/images/10 - T01 - Bulge (transform).webp" height="24">           |
+| Fire (fire) | 150  | <img src="tokenmagic/gui/macros/images/19 - T01 - Fire.webp" height="24">                        |
+| Electric (electric) | 160  | <img src="tokenmagic/gui/macros/images/18 - Electric.webp" height="24">                          |
+| Flood (flood) | 170  | <img src="tokenmagic/gui/macros/images/21 - Flood.webp" height="24">                             |
+| Liquid (liquid) | 180  | <img src="tokenmagic/gui/macros/images/26 - T01 - Spectral Body (liquid).webp" height="24">      |
+| Fog (fog) | 190  | <img src="tokenmagic/gui/macros/images/16 - Inner Fog.webp" height="24">                         |
+| Smoke (smoke) | 200  | <img src="tokenmagic/gui/macros/images/22 - Smoke.webp" height="24">                             |
+| Fumes (fumes) | 210  | <img src="tokenmagic/gui/macros/images/17 - Fumes.webp" height="24">                             |
+| Shockwave (shockwave) | 220  | <img src="tokenmagic/gui/macros/images/13 - Shockwave (wave).webp" height="24">                  |
+| XFog (xfog) | 230  | <img src="tokenmagic/gui/macros/images/29 - T01 - Foul Fog (xfog).webp" height="24">             |
+| Twist (twist) | 240  | <img src="tokenmagic/gui/macros/images/09 - T01 - Twist (transform).webp" height="24">           |
+| Solar Ripples (ripples) | 250 | <img src="tokenmagic/gui/macros/images/32 - T01 - Solar Ripples (ripples).webp" height="24">     |
+| Spiderweb (web) | 260  | <img src="tokenmagic/gui/macros/images/30 - T01 - Simple Web (web).webp" height="24">            |
+| Globes (globes) | 270  | <img src="tokenmagic/gui/macros/images/31 - T01 - Glowing Globes (globes).webp" height="24">     |
+| Waves  (wave) | 280  | <img src="tokenmagic/gui/macros/images/20 - Waves.webp" height="24">                             |
+| Blur (blur) | 290  | <img src="tokenmagic/gui/macros/images/11 - Blur.webp" height="24">                              |
+| Zoom Blur (zoomblur) | 300  | <img src="tokenmagic/gui/macros/images/12 - Zoom Blur.webp" height="24">                         |
+| Transform (transform) | 1000 | <img src="tokenmagic/gui/macros/images/33 - T02 - Saving Roll (transform).webp" height="24">     |
+| Force Field (field) | 2000  | <img src="tokenmagic/gui/macros/images/24 - T11 - Grid Force Field.webp" height="24">            |
+| Distortion (distortion) | 4000  | <img src="tokenmagic/gui/macros/images/07 - Distortion.webp" height="24">                        |
 
 You can store your custom effects in a Token Magic library. TMFX comes with two libraries: A main library with all the presets common to drawings, tokens and tiles, and one specific to measured templates.
 
@@ -710,6 +710,7 @@ You can help me to track them by posting issues in Github and taking care to giv
 - **sPoIdAr** for the Automatic Template settings, which is WOW!
 - **Moerill** for his very cool JS algorithms and for allowing me to port some functionnalities from MESS
 - **Mestre Digital** for the first Token Magic video on Youtube (and in a language I haven't learned. ^^), and his cool GUI Macro.
+- **JosephSeraph** for the [art](https://opengameart.org/content/js-actor-witch) used in the macro images (edited under [CC license](https://creativecommons.org/licenses/by/3.0/))
 - **Lozalojo, zimm44, drdwing, zeteticl** for providing translations for the community.
 - **The whole community** for its kindness.
 - **The Forgotten**, sorry for forgetting about you, you don't deserve it! 
