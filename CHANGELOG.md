@@ -1,10 +1,12 @@
 # Token Magic FX - Update v0.5.4-beta
 
 *Added/Changed*
-- All macros have been fixed with "await" prefix if necessary
+- In macros compendium, all calls to asynchronous API have been "prefixed" with await.
+- Macros in compendium have shiny icons now, many thanks to JosephSeraph!
+- Shader caching at load time is deactivated by default.
 
 *Fixed Issues :*
-- An error was thrown with systems which were using different names for canvas layers
+- When using TMFX API, an error was thrown with systems which were using alternative names for some canvas layers.
 
 # Token Magic FX - Update v0.5.3-beta
 
