@@ -6,82 +6,82 @@ import "./proto/FilterProto.js";
 
 export class FilterGlobes extends CustomFilter {
 
-    constructor(params) {
-        let {
-            time,
-            color,
-            scale,
-            distortion,
-            alphaDiscard
-        } = Object.assign({}, FilterGlobes.defaults, params);
+  constructor(params) {
+    let {
+      time,
+      color,
+      scale,
+      distortion,
+      alphaDiscard
+    } = Object.assign({}, FilterGlobes.defaults, params);
 
-        // using specific vertex shader and fragment shader
-        super(customVertex2D, globes);
+    // using specific vertex shader and fragment shader
+    super(customVertex2D, globes);
 
-        this.uniforms.color = new Float32Array([0.75, 0.75, 0.75]);
+    this.uniforms.color = new Float32Array([0.75, 0.75, 0.75]);
 
-        Object.assign(this, {
-            time, color, scale, distortion, alphaDiscard
-        });
+    Object.assign(this, {
+      time, color, scale, distortion, alphaDiscard
+    });
 
-        this.zOrder = 270;
-        this.animated = {};
-        this.setTMParams(params);
-        if (!this.dummy) {
-            this.anime = new Anime(this);
-            this.normalizeTMParams();
-        }
+    this.zOrder = 270;
+    this.animated = {};
+    this.setTMParams(params);
+    if (!this.dummy) {
+      this.anime = new Anime(this);
+      this.normalizeTMParams();
     }
+  }
 
-    get time() {
-        return this.uniforms.time;
-    }
+  get time() {
+    return this.uniforms.time;
+  }
 
-    set time(value) {
-        this.uniforms.time = value;
-    }
+  set time(value) {
+    this.uniforms.time = value;
+  }
 
-    get color() {
-        return PIXI.utils.rgb2hex(this.uniforms.color);
-    }
+  get color() {
+    return PIXI.utils.rgb2hex(this.uniforms.color);
+  }
 
-    set color(value) {
-        PIXI.utils.hex2rgb(value, this.uniforms.color);
-    }
+  set color(value) {
+    PIXI.utils.hex2rgb(value, this.uniforms.color);
+  }
 
-    get scale() {
-        return this.uniforms.scale;
-    }
+  get scale() {
+    return this.uniforms.scale;
+  }
 
-    set scale(value) {
-        this.uniforms.scale = value;
-    }
+  set scale(value) {
+    this.uniforms.scale = value;
+  }
 
-    get distortion() {
-        return this.uniforms.distortion;
-    }
+  get distortion() {
+    return this.uniforms.distortion;
+  }
 
-    set distortion(value) {
-        this.uniforms.distortion = value;
-    }
+  set distortion(value) {
+    this.uniforms.distortion = value;
+  }
 
-    get alphaDiscard() {
-        return this.uniforms.alphaDiscard;
-    }
+  get alphaDiscard() {
+    return this.uniforms.alphaDiscard;
+  }
 
-    set alphaDiscard(value) {
-        if (!(value == null) && typeof value === "boolean") {
-            this.uniforms.alphaDiscard = value;
-        }
+  set alphaDiscard(value) {
+    if (!(value == null) && typeof value === "boolean") {
+      this.uniforms.alphaDiscard = value;
     }
+  }
 }
 
 FilterGlobes.defaults = {
-    time: 0.0,
-    color: 0xAA3050,
-    scale: 20,
-    distortion: 0.25,
-    alphaDiscard: false
+  time: 0.0,
+  color: 0xAA3050,
+  scale: 20,
+  distortion: 0.25,
+  alphaDiscard: false
 };
 
 
