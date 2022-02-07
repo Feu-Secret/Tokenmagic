@@ -1,3 +1,11 @@
+# Token Magic FX - Update v0.5.4-beta
+
+*Added/Changed*
+- All macros have been fixed with "await" prefix if necessary
+
+*Fixed Issues :*
+- An error was thrown with systems which were using different names for canvas layers
+
 # Token Magic FX - Update v0.5.3-beta
 
 *Added/Changed*
