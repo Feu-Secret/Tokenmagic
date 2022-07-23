@@ -630,7 +630,7 @@ export function TokenMagic() {
       || filterType == null
       || !(placeable instanceof PlaceableObject)) { return null; }
 
-    var flags = placeable.getFlag("tokenmagic", "filters");
+    var flags = placeable.document.getFlag("tokenmagic", "filters");
     if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
 
     const found = flags.find(flag => flag.tmFilters.tmFilterType === filterType);
