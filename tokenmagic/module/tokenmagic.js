@@ -229,7 +229,7 @@ export function fixPath(path) {
 }
 
 export function getControlledPlaceables() {
-  const authorizedLayers = [canvas.tokens, canvas.background, canvas.foreground, canvas.drawings];
+  const authorizedLayers = [canvas.tokens, canvas.tiles.placeables.filter(t => !t.document.overhead),canvas.tiles.placeables.filter(t => t.document.overhead), canvas.drawings];
   if (authorizedLayers.some(layer => layer === canvas.activeLayer)) {
     return canvas.activeLayer.placeables.filter(p => p._controlled === true) || [];
   } else return [];
@@ -255,8 +255,8 @@ export function getPlaceableById(id, type) {
       placeable = findPlaceable(canvas.tokens.placeables, id);
       break;
     case PlaceableType.TILE:
-      placeable = findPlaceable(canvas.background.placeables, id);
-      if (placeable == null) placeable = findPlaceable(canvas.foreground.placeables, id);
+      placeable = findPlaceable(canvas.tiles.placeables.filter(t => !t.document.overhead), id);
+      if (placeable == null) placeable = findPlaceable(canvas.tiles.placeables.filter(t => t.document.overhead), id);
       break;
     case PlaceableType.TEMPLATE:
       placeable = findPlaceable(canvas.templates.placeables, id);
@@ -729,8 +729,8 @@ export function TokenMagic() {
     if (placeableType === PlaceableType.TEMPLATE) {
       var updateData = placeable.document.getFlag("tokenmagic", "templateData");
       if (!(updateData == null)) {
-        placeable.data.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
-        placeable.data.tmfxTint = updateData.tint;
+        placeable.document.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
+        placeable.document.tmfxTint = updateData.tint;
       }
     }
 
@@ -738,7 +738,7 @@ export function TokenMagic() {
     if (!(filters == null)) {
       if (placeableType === PlaceableType.TEMPLATE) {
         // get the first filterId to assign tmfxPreset
-        placeable.data.tmfxPreset = filters[0].tmFilters.tmFilterId;
+        placeable.document.tmfxPreset = filters[0].tmFilters.tmFilterId;
       }
       _assignFilters(placeable, filters, bulkLoading);
     }
@@ -1554,9 +1554,9 @@ Hooks.on("canvasReady", (canvas) => {
 
   const tokens = canvas.tokens.placeables;
   Magic._loadFilters(tokens);
-  const bgtiles = canvas.background.placeables;
+  const bgtiles = canvas.tiles.placeables.filter(t => !t.document.overhead);
   Magic._loadFilters(bgtiles);
-  const ohtiles = canvas.foreground.placeables;
+  const ohtiles = canvas.tiles.placeables.filter(t => t.document.overhead);
   Magic._loadFilters(ohtiles);
   const drawings = canvas.drawings.placeables;
   Magic._loadFilters(drawings);
@@ -1896,50 +1896,50 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
   }
 });
 
-Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
+Hooks.on("preCreateMeasuredTemplate", (document) => {
 
-  const hasFlags = data.hasOwnProperty("flags");
+  const hasFlags = document.hasOwnProperty("flags");
   let hasPreset = false;
   let hasTint = false;
   let hasOpacity = false;
   let hasFlagsNoOptions = false;
 
-  if (hasFlags && data.flags.hasOwnProperty("tokenmagic") && data.flags.tokenmagic.hasOwnProperty("options") && data.flags.tokenmagic.options) {
-    const opt = data.flags.tokenmagic.options;
+  if (hasFlags && document.flags.hasOwnProperty("tokenmagic") && document.flags.tokenmagic.hasOwnProperty("options") && document.flags.tokenmagic.options) {
+    const opt = document.flags.tokenmagic.options;
     if (opt.hasOwnProperty("tmfxPreset")) {
-      data.tmfxPreset = opt.tmfxPreset;
+      document.tmfxPreset = opt.tmfxPreset;
       hasPreset = true;
     }
     if (opt.hasOwnProperty("tmfxTint")) {
-      data.tmfxTint = opt.tmfxTint;
+      document.tmfxTint = opt.tmfxTint;
       hasTint = true;
     }
     if (opt.hasOwnProperty("tmfxTextureAlpha")) {
-      data.tmfxTextureAlpha = opt.tmfxTextureAlpha;
+      document.tmfxTextureAlpha = opt.tmfxTextureAlpha;
       hasOpacity = true;
     }
     if (opt.hasOwnProperty("tmfxTexture")) {
-      data.texture = opt.tmfxTexture;
-      document.data.update({ texture: opt.tmfxTexture });
+      document.texture = opt.tmfxTexture;
+      document.update({ texture: opt.tmfxTexture });
     }
   }
   else hasFlagsNoOptions = true;
 
-  let hasTexture = data.hasOwnProperty("texture") && data.texture !== '' && data.texture;
+  let hasTexture = document.hasOwnProperty("texture") && document.texture !== '' && document.texture;
   let newFilters = [];
 
   let tmfxBaseFlags = { tokenmagic: { filters: null, templateData: null, options: null } };
   if (hasFlags && hasFlagsNoOptions) {
     // the measured template comes with tokenmagic flags ? It is a copy ! We do nothing.
-    if (data.flags.hasOwnProperty("tokenmagic")) {
+    if (document.flags.hasOwnProperty("tokenmagic")) {
       return;
     }
-    data.flags = mergeObject(data.flags, tmfxBaseFlags, true, true);
+    document.flags = mergeObject(document.flags, tmfxBaseFlags, true, true);
   }
 
   // normalizing color to value if needed
-  if (hasTint && typeof data.tmfxTint !== "number") {
-    data.tmfxTint = colorStringToHex(data.tmfxTint);
+  if (hasTint && typeof document.tmfxTint !== "number") {
+    document.tmfxTint = colorStringToHex(document.tmfxTint);
   }
 
   let tmfxFiltersData = null;
@@ -1948,19 +1948,19 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
   if (hasPreset) {
 
     // Compute shader anchor point
-    let anchor = getAnchor(data.direction, data.angle, data.t);
+    let anchor = getAnchor(document.direction, document.angle, document.t);
 
     // Constructing the preset search object
     let pstSearch =
     {
-      name: data.tmfxPreset,
+      name: document.tmfxPreset,
       library: PresetsLibrary.TEMPLATE,
       anchorX: anchor.x,
       anchorY: anchor.y
     };
 
     // Adding tint if needed
-    if (hasTint) pstSearch.color = data.tmfxTint;
+    if (hasTint) pstSearch.color = document.tmfxTint;
 
     // Retrieving the preset
     let preset = Magic.getPreset(pstSearch);
@@ -1969,7 +1969,7 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
 
       let defaultTex = Magic._getPresetTemplateDefaultTexture(pstSearch.name);
       if (!(defaultTex == null) && !hasTexture) {
-        document.data.update({ texture: defaultTex });
+        document.update({ texture: defaultTex });
       }
 
       let persist = true;
@@ -2013,21 +2013,21 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
       if (persist) tmfxFiltersData = newFilters;
     }
   } else {
-    data.tmfxPreset = emptyPreset;
+    document.tmfxPreset = emptyPreset;
   }
 
-  if (!hasOpacity) data.tmfxTextureAlpha = 1;
-  if (!hasTint) data.tmfxTint = null;
+  if (!hasOpacity) document.tmfxTextureAlpha = 1;
+  if (!hasTint) document.tmfxTint = null;
 
   let tmfxFlags = {
     templateData: {
-      opacity: data.tmfxTextureAlpha,
-      tint: data.tmfxTint
+      opacity: document.tmfxTextureAlpha,
+      tint: document.tmfxTint
     },
     filters: tmfxFiltersData,
     options: null
   };
-  document.data.update({ flags: { tokenmagic: tmfxFlags } });
+  //document.update({ flags: { tokenmagic: tmfxFlags } });
 });
 
 Hooks.on("closeSettingsConfig", () => {

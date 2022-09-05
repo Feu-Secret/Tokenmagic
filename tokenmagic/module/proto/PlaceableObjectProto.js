@@ -55,7 +55,7 @@ PlaceableObject.prototype._TMFXgetSprite = function () {
       return this.icon;
       break;
     case PlaceableType.TILE:
-      return this.tile;
+      return this.mesh;
       break;
     case PlaceableType.TEMPLATE:
       return this.template;
