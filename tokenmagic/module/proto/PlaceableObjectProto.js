@@ -52,7 +52,7 @@ PlaceableObject.prototype._TMFXgetSprite = function () {
   const type = this._TMFXgetPlaceableType();
   switch (type) {
     case PlaceableType.TOKEN:
-      return this.icon;
+      return this.mesh;
       break;
     case PlaceableType.TILE:
       return this.mesh;

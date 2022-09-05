@@ -229,9 +229,9 @@ export function fixPath(path) {
 }
 
 export function getControlledPlaceables() {
-  const authorizedLayers = [canvas.tokens, canvas.tiles.placeables.filter(t => !t.document.overhead),canvas.tiles.placeables.filter(t => t.document.overhead), canvas.drawings];
+  const authorizedLayers = [canvas.tokens, canvas.tiles, canvas.drawings];
   if (authorizedLayers.some(layer => layer === canvas.activeLayer)) {
-    return canvas.activeLayer.placeables.filter(p => p._controlled === true) || [];
+    return canvas.activeLayer.placeables.filter(p => p.controlled === true) || [];
   } else return [];
 }
 
@@ -1471,8 +1471,8 @@ function onMeasuredTemplateConfig(data, html) {
   // getting custom data
   var tmfxTemplateData = tmTemplate.document.getFlag("tokenmagic", "templateData");
   if (!(tmfxTemplateData == null) && tmfxTemplateData instanceof Object) {
-    opacity = tmTemplate.data.tmfxTextureAlpha = tmfxTemplateData.opacity;
-    tint = tmTemplate.data.tmfxTint = (tmfxTemplateData.tint ? PIXI.utils.hex2string(tmfxTemplateData.tint) : "");
+    opacity = tmTemplate.document.tmfxTextureAlpha = tmfxTemplateData.opacity;
+    tint = tmTemplate.document.tmfxTint = (tmfxTemplateData.tint ? PIXI.utils.hex2string(tmfxTemplateData.tint) : "");
   }
   var flag = tmTemplate.document.getFlag("tokenmagic", "filters");
   var presets = Magic.getPresets(PresetsLibrary.TEMPLATE);
@@ -1584,7 +1584,7 @@ Hooks.on("deleteToken", (parent, doc, options, userId) => {
 Hooks.on("createToken", (scene, data, options) => {
   //log("Hook -> createToken");
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1605,7 +1605,7 @@ Hooks.on("createTile", (scene, data, options) => {
   //log("Hook -> createTile");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1626,7 +1626,7 @@ Hooks.on("createDrawing", (scene, data, options) => {
   //log("Hook -> createDrawing");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1647,7 +1647,7 @@ Hooks.on("updateToken", (scene, data, options) => {
   //log("Hook -> updateToken");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1684,7 +1684,7 @@ Hooks.on("updateTile", (scene, data, options) => {
   //log("Hook -> updateTile");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1716,7 +1716,7 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
   //log("Hook -> updateDrawing");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1747,7 +1747,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
   if (isNewerVersion(game.version, "0.8")) {
     updateData = measuredTemplate;
-    measuredTemplate = scene.data;
+    measuredTemplate = scene;
     scene = scene.parent;
   }
 
@@ -1843,7 +1843,7 @@ Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
   //log("Hook -> updateMeasuredTemplate");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1879,7 +1879,7 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
   //log("Hook -> createMeasuredTemplate");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
