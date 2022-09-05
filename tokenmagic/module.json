@@ -1,10 +1,14 @@
 {
+    "id": "tokenmagic",
     "name": "tokenmagic",
     "title": "Token Magic FX",
     "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
     "version": "0.5.4",
     "compatibleCoreVersion": "9",
     "minimumCoreVersion": "9.235",
+    "compatibility": {
+        "minimum": "9"
+    }
     "author": "SecretFire, sPOiDar, Moerill, dev7355608",
     "authors": [
         {
@@ -92,15 +96,15 @@
             "name": "tmMacros",
             "label": "TokenMagic Portfolio",
             "path": "packs/token-magic-portfolio.db",
-            "entity": "Macro",
-            "module": "tokenmagic"
+            "type": "Macro",
+            "private": false
         },
         {
             "name": "tmSampleCompendium",
             "label": "TokenMagic Book of Fire",
             "path": "packs/token-magic-book-of-fire.db",
-            "entity": "Macro",
-            "module": "tokenmagic"
+            "type": "Macro",
+            "private": false
         }
     ],
     "languages": [
