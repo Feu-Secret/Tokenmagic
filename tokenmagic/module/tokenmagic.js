@@ -1758,7 +1758,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
   function getTint() {
     if (updateData.flags?.tokenmagic?.templateData?.tint !== undefined) {
-      return updateData.tmfxTint;
+      return updateData.flags.tokenmagic.templateData.tint;
     } else if (measuredTemplate.flags?.tokenmagic?.tint !== undefined) {
       return measuredTemplate.flags.tokenmagic.tint;
     } else return "";
@@ -1769,8 +1769,6 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
       return updateData.flags.tokenmagic.templateData.preset;
     } else if (measuredTemplate.flags?.tokenmagic?.templateData?.preset !== undefined) {
       return measuredTemplate.flags.tokenmagic.templateData.preset;
-    } else if (measuredTemplate.flags?.tokenmagic?.filters !== undefined) {
-      return measuredTemplate.flags.tokenmagic.filters;
     } else return emptyPreset;
   }
 
