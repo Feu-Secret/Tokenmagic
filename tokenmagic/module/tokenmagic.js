@@ -255,8 +255,7 @@ export function getPlaceableById(id, type) {
       placeable = findPlaceable(canvas.tokens.placeables, id);
       break;
     case PlaceableType.TILE:
-      placeable = findPlaceable(canvas.tiles.placeables.filter(t => !t.document.overhead), id);
-      if (placeable == null) placeable = findPlaceable(canvas.tiles.placeables.filter(t => t.document.overhead), id);
+      placeable = findPlaceable(canvas.tiles.placeables, id);
       break;
     case PlaceableType.TEMPLATE:
       placeable = findPlaceable(canvas.templates.placeables, id);
