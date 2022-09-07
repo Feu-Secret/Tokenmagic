@@ -1467,22 +1467,29 @@ function onMeasuredTemplateConfig(data, html) {
 
   var opacity = tmTemplate.template.alpha;
   var tint = "";
+  var currentPreset = emptyPreset;
 
   // getting custom data
   var tmfxTemplateData = tmTemplate.document.getFlag("tokenmagic", "templateData");
   if (!(tmfxTemplateData == null) && tmfxTemplateData instanceof Object) {
     opacity = tmTemplate.document.tmfxTextureAlpha = tmfxTemplateData.opacity;
     tint = tmTemplate.document.tmfxTint = (tmfxTemplateData.tint ? PIXI.utils.hex2string(tmfxTemplateData.tint) : "");
+
+    if (tmfxTemplateData.preset !== undefined)
+      currentPreset = tmfxTemplateData.preset;
   }
-  var flag = tmTemplate.document.getFlag("tokenmagic", "filters");
+  var filters = tmTemplate.document.getFlag("tokenmagic", "filters");
   var presets = Magic.getPresets(PresetsLibrary.TEMPLATE);
+
+  if (filters && (filters instanceof Array) && filters.length >= 1)
+    currentPreset = filters[0].tmFilters.tmFilterId;
 
   // forming our injected html
   var tmfxValues = '';
   var selected = '';
   tmfxValues += `<option value="${emptyPreset}"></option>`;
   presets.sort(compare).forEach(preset => {
-    if (flag) (Magic._checkFilterId(tmTemplate, preset.name, flag) ? selected = ' selected' : selected = '');
+    selected = ((preset.name == currentPreset) ? ' selected' : '');
     tmfxValues += `<option value="${preset.name}"${selected}>${preset.name}</option>`;
   });
 
@@ -1490,14 +1497,14 @@ function onMeasuredTemplateConfig(data, html) {
     <div class="form-group">
         <label>${i18n('TMFX.template.opacity')}</label>
         <div class="form-fields">
-            <input type="range" name="tmfxTextureAlpha" value="${opacity}" min="0.0" max="1.0" step="0.05" data-dtype="Number"/>
+            <input type="range" name="flags.tokenmagic.templateData.opacity" value="${opacity}" min="0.0" max="1.0" step="0.05" data-dtype="Number"/>
             <span class="range-value">${opacity}</span>
         </div>
     </div>
 
     <div class="form-group">
         <label>${i18n('TMFX.template.fx')}</label>
-        <select class="tmfx" name="tmfxPreset" data-dtype="String">
+        <select class="tmfx" name="flags.tokenmagic.templateData.preset" data-dtype="String">
         ${tmfxValues}
         </select>
     </div>
@@ -1505,8 +1512,8 @@ function onMeasuredTemplateConfig(data, html) {
     <div class="form-group">
         <label>${i18n('TMFX.template.tint')}</label>
         <div class="form-fields">
-            <input class="color" type="text" name="tmfxTint" value="${tint}"/>
-            <input type="color" value="${tint}" data-edit="tmfxTint"/>
+            <input class="color" type="text" name="flags.tokenmagic.templateData.tint" value="${tint}"/>
+            <input type="color" value="${tint}" data-edit="flags.tokenmagic.templateData.tint"/>
         </div>
     </div>
     `;
@@ -1750,20 +1757,20 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
   }
 
   function getTint() {
-    if (updateData.hasOwnProperty("tmfxTint")) {
-      measuredTemplate.tmfxTint = updateData.tmfxTint;
+    if (updateData.flags?.tokenmagic?.templateData?.tint !== undefined) {
       return updateData.tmfxTint;
-    } else if (measuredTemplate.hasOwnProperty("tmfxTint")) {
-      return measuredTemplate.tmfxTint;
+    } else if (measuredTemplate.flags?.tokenmagic?.tint !== undefined) {
+      return measuredTemplate.flags.tokenmagic.tint;
     } else return "";
   }
 
   function getFX() {
-    if (updateData.hasOwnProperty("tmfxPreset")) {
-      measuredTemplate.tmfxPreset = updateData.tmfxPreset;
-      return updateData.tmfxPreset;
-    } else if (measuredTemplate.hasOwnProperty("tmfxPreset")) {
-      return measuredTemplate.tmfxPreset;
+    if (updateData.flags?.tokenmagic?.templateData?.preset !== undefined) {
+      return updateData.flags.tokenmagic.templateData.preset;
+    } else if (measuredTemplate.flags?.tokenmagic?.templateData?.preset !== undefined) {
+      return measuredTemplate.flags.tokenmagic.templateData.preset;
+    } else if (measuredTemplate.flags?.tokenmagic?.filters !== undefined) {
+      return measuredTemplate.flags.tokenmagic.filters;
     } else return emptyPreset;
   }
 
@@ -1793,26 +1800,16 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
   let measuredTemplateInstance = canvas.templates.get(measuredTemplate._id);
   let templateTint = getTint();
-  let updateTmfxData = {};
-  let presetUpdate = updateData.hasOwnProperty("tmfxPreset");
-  let tintUpdate = updateData.hasOwnProperty("tmfxTint");
-  let textureUpdate = updateData.hasOwnProperty("tmfxTextureAlpha");
+  let presetUpdate = (updateData.flags?.tokenmagic?.templateData?.preset !== undefined);
+  let tintUpdate = (updateData.flags?.tokenmagic?.templateData?.tint !== undefined);
   let directionUpdate = updateData.hasOwnProperty("direction");
   let angleUpdate = updateData.hasOwnProperty("angle");
   let typeUpdate = updateData.hasOwnProperty("t");
 
-  if (textureUpdate)
-    updateTmfxData.opacity = updateData.tmfxTextureAlpha;
-
   if (tintUpdate)
-    updateTmfxData.tint = (templateTint !== '' ? colorStringToHex(templateTint) : null);
+    updateData.flags.tokenmagic.templateData.tint = (templateTint !== '' ? Color.from(templateTint) : null);
 
-  if (Object.keys(updateTmfxData).length > 0)
-    await measuredTemplateInstance.document.setFlag("tokenmagic", "templateData", updateTmfxData);
-
-  if (presetUpdate || tintUpdate
-    || directionUpdate || typeUpdate || angleUpdate) {
-
+  if (presetUpdate || tintUpdate || directionUpdate || typeUpdate || angleUpdate) {
     let templateFX = getFX();
     if (templateFX !== emptyPreset) {
       let anchor = getAnchor(getDirection(), getAngle(), getShapeType());
@@ -1824,7 +1821,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
         anchorY: anchor.y
       };
       if (templateTint && templateTint !== "") {
-        if (typeof templateTint !== "number") presetOptions.color = colorStringToHex(templateTint);
+        if (typeof templateTint !== "number") presetOptions.color = Color.from(templateTint);
         else presetOptions.color = templateTint;
       }
       var preset = Magic.getPreset(presetOptions);
@@ -1938,7 +1935,7 @@ Hooks.on("createMeasuredTemplate", (document) => {
 
   // normalizing color to value if needed
   if (hasTint && typeof document.tmfxTint !== "number") {
-    document.tmfxTint = colorStringToHex(document.tmfxTint);
+    document.tmfxTint = Color.from(document.tmfxTint);
   }
 
   let tmfxFiltersData = null;
