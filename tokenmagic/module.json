@@ -1,42 +1,52 @@
 {
     "id": "tokenmagic",
-    "name": "tokenmagic",
     "title": "Token Magic FX",
     "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
     "version": "0.5.4",
-    "compatibleCoreVersion": "9",
-    "minimumCoreVersion": "9.235",
     "compatibility": {
-        "minimum": "9"
-    }
-    "author": "SecretFire, sPOiDar, Moerill, dev7355608",
+        "minimum": "10",
+        "verified": "10"
+    },
     "authors": [
         {
-            "name": "SecretFire"
+            "name": "SecretFire",
+            "flags": {}
         },
         {
-            "name": "sPOiDar"
+            "name": "sPOiDar",
+            "flags": {}
         },
         {
-            "name": "Zimm"
+            "name": "Zimm",
+            "flags": {}
         },
         {
-            "name": "Lozalojo"
+            "name": "Lozalojo",
+            "flags": {}
         },
         {
-            "name": "Moerill"
+            "name": "Moerill",
+            "flags": {}
         },
         {
-            "name": "KLO"
+            "name": "KLO",
+            "flags": {}
         },
         {
-            "name": "dev7355608"
+            "name": "dev7355608",
+            "flags": {}
         },
         {
-            "name": "Mestre Digital"
+            "name": "Mestre Digital",
+            "flags": {}
         },
         {
-            "name": "BrotherSharper-Touge"
+            "name": "BrotherSharper-Touge",
+            "flags": {}
+        },
+        {
+            "name": "OsiJr",
+            "flags": {}
         }
     ],
     "scripts": [
@@ -97,51 +107,60 @@
             "label": "TokenMagic Portfolio",
             "path": "packs/token-magic-portfolio.db",
             "type": "Macro",
-            "private": false
+            "private": false,
+            "flags": {}
         },
         {
             "name": "tmSampleCompendium",
             "label": "TokenMagic Book of Fire",
             "path": "packs/token-magic-book-of-fire.db",
             "type": "Macro",
-            "private": false
+            "private": false,
+            "flags": {}
         }
     ],
     "languages": [
         {
             "lang": "en",
             "name": "English",
-            "path": "lang/en.json"
+            "path": "lang/en.json",
+            "flags": {}
         },
         {
             "lang": "fr",
             "name": "French (FRANCE)",
-            "path": "lang/fr.json"
+            "path": "lang/fr.json",
+            "flags": {}
         },
         {
             "lang": "pt-BR",
             "name": "Português (Brasil)",
-            "path": "lang/pt-BR.json"
+            "path": "lang/pt-BR.json",
+            "flags": {}
         },
         {
             "lang": "es",
             "name": "Spanish",
-            "path": "lang/es.json"
+            "path": "lang/es.json",
+            "flags": {}
         },
         {
             "lang": "ko",
             "name": "Korean",
-            "path": "lang/ko.json"
+            "path": "lang/ko.json",
+            "flags": {}
         },
         {
             "lang": "zh-tw",
             "name": "正體中文",
-            "path": "lang/zh-tw.json"
+            "path": "lang/zh-tw.json",
+            "flags": {}
         },
         {
             "lang": "ja",
             "name": "日本語",
-            "path": "lang/ja.json"
+            "path": "lang/ja.json",
+            "flags": {}
         }
     ],
     "socket": true,
