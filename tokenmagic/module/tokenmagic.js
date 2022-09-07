@@ -517,7 +517,7 @@ export function TokenMagic() {
     if (typeof paramsArray === "string") {
       paramsArray = getPreset(paramsArray);
     }
-    if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+    if (!(paramsArray instanceof Array) || paramsArray.length < 1) { return; }
 
     for (const placeable of placeables) {
       await updateFiltersByPlaceable(placeable, paramsArray);
@@ -533,7 +533,7 @@ export function TokenMagic() {
       paramsArray = getPreset(paramsArray);
     }
 
-    if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+    if (!(paramsArray instanceof Array) || paramsArray.length < 1) { return; }
 
     for (const token of targeted) {
       await updateFiltersByPlaceable(token, paramsArray);
@@ -542,10 +542,10 @@ export function TokenMagic() {
 
   async function updateFiltersByPlaceable(placeable, paramsArray) {
 
-    if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+    if (!(paramsArray instanceof Array) || paramsArray.length < 1) { return; }
 
     var flags = placeable.document.getFlag("tokenmagic", "filters");
-    if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to update...
+    if (flags == null || !(flags instanceof Array) || flags.length < 1) { return; } // nothing to update...
 
     var workingFlags = new Array();
     flags.forEach(flag => {
@@ -598,7 +598,7 @@ export function TokenMagic() {
     } else if (typeof filterId === "string") {
 
       var flags = placeable.document.getFlag("tokenmagic", "filters");
-      if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+      if (flags == null || !(flags instanceof Array) || flags.length < 1) { return; } // nothing to delete...
 
       var workingFlags = [];
       flags.forEach(flag => {
@@ -611,7 +611,7 @@ export function TokenMagic() {
       else await placeable._TMFXunsetFlag();
 
       flags = placeable.document.getFlag("tokenmagic", "animeInfo");
-      if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+      if (flags == null || !(flags instanceof Array) || flags.length < 1) { return; } // nothing to delete...
 
       workingFlags = [];
       flags.forEach(flag => {
@@ -631,7 +631,7 @@ export function TokenMagic() {
       || !(placeable instanceof PlaceableObject)) { return null; }
 
     var flags = placeable.getFlag("tokenmagic", "filters");
-    if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+    if (flags == null || !(flags instanceof Array) || flags.length < 1) { return false; }
 
     const found = flags.find(flag => flag.tmFilters.tmFilterType === filterType);
     if (found === undefined) {
@@ -652,7 +652,7 @@ export function TokenMagic() {
       || filterId == null
       || !(placeable instanceof PlaceableObject)) { return null; }
 
-    if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+    if (flags == null || !(flags instanceof Array) || flags.length < 1) { return false; }
 
     const found = flags.find(flag => flag.tmFilters.tmFilterId === filterId);
     if (found === undefined) {
@@ -1478,7 +1478,7 @@ function onMeasuredTemplateConfig(data, html) {
   var presets = Magic.getPresets(PresetsLibrary.TEMPLATE);
 
   // forming our injected html
-  var tmfxValues;
+  var tmfxValues = '';
   var selected = '';
   tmfxValues += `<option value="${emptyPreset}"></option>`;
   presets.sort(compare).forEach(preset => {
@@ -1554,10 +1554,8 @@ Hooks.on("canvasReady", (canvas) => {
 
   const tokens = canvas.tokens.placeables;
   Magic._loadFilters(tokens);
-  const bgtiles = canvas.tiles.placeables.filter(t => !t.document.overhead);
-  Magic._loadFilters(bgtiles);
-  const ohtiles = canvas.tiles.placeables.filter(t => t.document.overhead);
-  Magic._loadFilters(ohtiles);
+  const tiles = canvas.tiles.placeables
+  Magic._loadFilters(tiles);
   const drawings = canvas.drawings.placeables;
   Magic._loadFilters(drawings);
   const templates = canvas.templates.placeables;
@@ -1896,7 +1894,8 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
   }
 });
 
-Hooks.on("preCreateMeasuredTemplate", (document) => {
+Hooks.on("createMeasuredTemplate", (document) => {
+  // This would ideally be `preCreateMeasuredTemplate` and/or merged with the createMeasuredTemplate
 
   const hasFlags = document.hasOwnProperty("flags");
   let hasPreset = false;
@@ -2027,7 +2026,7 @@ Hooks.on("preCreateMeasuredTemplate", (document) => {
     filters: tmfxFiltersData,
     options: null
   };
-  //document.update({ flags: { tokenmagic: tmfxFlags } });
+  document.update({ _id: document._id, flags: { tokenmagic: tmfxFlags } });
 });
 
 Hooks.on("closeSettingsConfig", () => {

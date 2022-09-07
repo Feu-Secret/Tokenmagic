@@ -408,22 +408,22 @@ Hooks.once("init", () => {
             mat.scale(this.shape.radius * 2 / this.texture.height, this.shape.radius * 2 / this.texture.width)
             // Circle center is texture start...
             mat.translate(-this.shape.radius, -this.shape.radius);
-          } else if (this.data.t === "ray") {
+          } else if (this.document.t === "ray") {
             const d = canvas.dimensions,
-              height = this.data.width * d.size / d.distance,
-              width = this.data.distance * d.size / d.distance;
+              height = this.document.width * d.size / d.distance,
+              width = this.document.distance * d.size / d.distance;
             mat.scale(width / this.texture.width, height / this.texture.height);
             mat.translate(0, -height * 0.5);
 
-            mat.rotate(_toRadians(this.data.direction));
+            mat.rotate(_toRadians(this.document.direction));
           } else {// cone
             const d = canvas.dimensions;
 
             // Extract and prepare data
-            let { direction, distance, angle } = this.data;
+            let { direction, distance, angle } = this.document;
             distance *= (d.size / d.distance);
             direction = _toRadians(direction);
-            const width = this.data.distance * d.size / d.distance;
+            const width = this.document.distance * d.size / d.distance;
 
             const angles = [(angle / -2), (angle / 2)];
             distance = distance / Math.cos(_toRadians(angle / 2));
@@ -434,7 +434,7 @@ Hooks.once("init", () => {
               + (rays[0].B.y - rays[1].B.y) * (rays[0].B.y - rays[1].B.y));
             mat.scale(width / this.texture.width, height / this.texture.height);
             mat.translate(0, -height / 2)
-            mat.rotate(_toRadians(this.data.direction));
+            mat.rotate(_toRadians(this.document.direction));
           }
           this.template.beginTextureFill({
             texture: this.texture,
