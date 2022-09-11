@@ -344,8 +344,8 @@ Hooks.once("init", () => {
   };
 
   const wrappedMTD = async function (wrapped, ...args) {
-    if (this.data.hasOwnProperty("texture")) {
-      this.data.texture = fixPath(this.data.texture);
+    if (this.document.hasOwnProperty("texture")) {
+      this.document.texture = fixPath(this.document.texture);
     }
 
     const retVal = await wrapped(...args);
@@ -367,19 +367,19 @@ Hooks.once("init", () => {
         // INTEGRATION FROM MESS
         // THANKS TO MOERILL !!
         let d = canvas.dimensions;
-        this.position.set(this.data.x, this.data.y);
+        this.position.set(this.document.x, this.document.y);
 
         // Extract and prepare data
-        let { direction, distance, angle, width } = this.data;
+        let { direction, distance, angle, width } = this.document;
         distance *= (d.size / d.distance);
         width *= (d.size / d.distance);
         direction = _toRadians(direction);
 
         // Create ray and bounding rectangle
-        this.ray = Ray.fromAngle(this.data.x, this.data.y, direction, distance);
+        this.ray = Ray.fromAngle(this.document.x, this.document.y, direction, distance);
 
         // Get the Template shape
-        switch (this.data.t) {
+        switch (this.document.t) {
           case "circle":
             this.shape = this._getCircleShape(distance);
             break;
@@ -408,22 +408,22 @@ Hooks.once("init", () => {
             mat.scale(this.shape.radius * 2 / this.texture.height, this.shape.radius * 2 / this.texture.width)
             // Circle center is texture start...
             mat.translate(-this.shape.radius, -this.shape.radius);
-          } else if (this.data.t === "ray") {
+          } else if (this.document.t === "ray") {
             const d = canvas.dimensions,
-              height = this.data.width * d.size / d.distance,
-              width = this.data.distance * d.size / d.distance;
+              height = this.document.width * d.size / d.distance,
+              width = this.document.distance * d.size / d.distance;
             mat.scale(width / this.texture.width, height / this.texture.height);
             mat.translate(0, -height * 0.5);
 
-            mat.rotate(_toRadians(this.data.direction));
+            mat.rotate(_toRadians(this.document.direction));
           } else {// cone
             const d = canvas.dimensions;
 
             // Extract and prepare data
-            let { direction, distance, angle } = this.data;
+            let { direction, distance, angle } = this.document;
             distance *= (d.size / d.distance);
             direction = _toRadians(direction);
-            const width = this.data.distance * d.size / d.distance;
+            const width = this.document.distance * d.size / d.distance;
 
             const angles = [(angle / -2), (angle / 2)];
             distance = distance / Math.cos(_toRadians(angle / 2));
@@ -434,7 +434,7 @@ Hooks.once("init", () => {
               + (rays[0].B.y - rays[1].B.y) * (rays[0].B.y - rays[1].B.y));
             mat.scale(width / this.texture.width, height / this.texture.height);
             mat.translate(0, -height / 2)
-            mat.rotate(_toRadians(this.data.direction));
+            mat.rotate(_toRadians(this.document.direction));
           }
           this.template.beginTextureFill({
             texture: this.texture,
@@ -461,8 +461,8 @@ Hooks.once("init", () => {
           .drawCircle(this.ray.dx, this.ray.dy, 6);
 
         // Update visibility
-        this.controlIcon.visible = this.layer._active;
-        this.controlIcon.border.visible = this._hover;
+        this.controlIcon.visible = this.layer.active;
+        this.controlIcon.border.visible = this.hover;
 
         // Draw ruler text
         this._refreshRulerText();
@@ -484,7 +484,7 @@ Hooks.once("init", () => {
       }
 
       // Show border outline only on hover if the template is textured
-      if (this.texture && this.texture !== '' && !this._hover) {
+      if (this.texture && this.texture !== '' && !this.hover) {
         this._borderThickness = 0;
       }
 
@@ -497,7 +497,7 @@ Hooks.once("init", () => {
       {
         // Show the origin/destination points and ruler text only on hover or while creating but not while moving
         const template = this._original ?? this;
-        const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
+        const show = !this._original && (this.hover || this.parent === canvas.templates.preview);
 
         if (!show && template.template?.geometry) {
           // Hide origin and destination points, i.e., hide everything except the template shape
@@ -510,7 +510,7 @@ Hooks.once("init", () => {
           template.template.geometry.invalidate();
         }
 
-        template.hud.ruler.renderable = show;
+        template.ruler.renderable = show;
 
         template.controlIcon.renderable = template.owner;
 
@@ -538,7 +538,7 @@ Hooks.once("init", () => {
       canvas.stage.on("mousemove", event => {
         const { x: mx, y: my } = event.data.getLocalPosition(canvas.templates);
         for (const template of canvas.templates.placeables) {
-          const hl = canvas.grid.getHighlightLayer(`Template.${template.id}`);
+          const hl = canvas.grid.getHighlightLayer(`MeasuredTemplate.${template.id}`);
           const opacity = template.document.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
           if (template.texture && template.texture !== '') {
             const { x: cx, y: cy } = template.center;
