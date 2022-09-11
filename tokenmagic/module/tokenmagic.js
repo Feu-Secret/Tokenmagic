@@ -233,9 +233,9 @@ export function fixPath(path) {
 }
 
 export function getControlledPlaceables() {
-  const authorizedLayers = [canvas.tokens, canvas.background, canvas.foreground, canvas.drawings];
+  const authorizedLayers = [canvas.tokens, canvas.tiles, canvas.drawings];
   if (authorizedLayers.some(layer => layer === canvas.activeLayer)) {
-    return canvas.activeLayer.placeables.filter(p => p._controlled === true) || [];
+    return canvas.activeLayer.placeables.filter(p => p.controlled === true) || [];
   } else return [];
 }
 
@@ -259,8 +259,7 @@ export function getPlaceableById(id, type) {
       placeable = findPlaceable(canvas.tokens.placeables, id);
       break;
     case PlaceableType.TILE:
-      placeable = findPlaceable(canvas.background.placeables, id);
-      if (placeable == null) placeable = findPlaceable(canvas.foreground.placeables, id);
+      placeable = findPlaceable(canvas.tiles.placeables, id);
       break;
     case PlaceableType.TEMPLATE:
       placeable = findPlaceable(canvas.templates.placeables, id);
@@ -521,7 +520,7 @@ export function TokenMagic() {
     if (typeof paramsArray === "string") {
       paramsArray = getPreset(paramsArray);
     }
-    if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+    if (!(paramsArray instanceof Array) || paramsArray.length < 1) { return; }
 
     for (const placeable of placeables) {
       await updateFiltersByPlaceable(placeable, paramsArray);
@@ -537,7 +536,7 @@ export function TokenMagic() {
       paramsArray = getPreset(paramsArray);
     }
 
-    if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+    if (!(paramsArray instanceof Array) || paramsArray.length < 1) { return; }
 
     for (const token of targeted) {
       await updateFiltersByPlaceable(token, paramsArray);
@@ -546,10 +545,10 @@ export function TokenMagic() {
 
   async function updateFiltersByPlaceable(placeable, paramsArray) {
 
-    if (!paramsArray instanceof Array || paramsArray.length < 1) { return; }
+    if (!(paramsArray instanceof Array) || paramsArray.length < 1) { return; }
 
     var flags = placeable.document.getFlag("tokenmagic", "filters");
-    if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to update...
+    if (flags == null || !(flags instanceof Array) || flags.length < 1) { return; } // nothing to update...
 
     var workingFlags = new Array();
     flags.forEach(flag => {
@@ -602,7 +601,7 @@ export function TokenMagic() {
     } else if (typeof filterId === "string") {
 
       var flags = placeable.document.getFlag("tokenmagic", "filters");
-      if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+      if (flags == null || !(flags instanceof Array) || flags.length < 1) { return; } // nothing to delete...
 
       var workingFlags = [];
       flags.forEach(flag => {
@@ -615,7 +614,7 @@ export function TokenMagic() {
       else await placeable._TMFXunsetFlag();
 
       flags = placeable.document.getFlag("tokenmagic", "animeInfo");
-      if (flags == null || !flags instanceof Array || flags.length < 1) { return; } // nothing to delete...
+      if (flags == null || !(flags instanceof Array) || flags.length < 1) { return; } // nothing to delete...
 
       workingFlags = [];
       flags.forEach(flag => {
@@ -635,7 +634,7 @@ export function TokenMagic() {
       || !(placeable instanceof PlaceableObject)) { return null; }
 
     var flags = placeable.document.getFlag("tokenmagic", "filters");
-    if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+    if (flags == null || !(flags instanceof Array) || flags.length < 1) { return false; }
 
     const found = flags.find(flag => flag.tmFilters.tmFilterType === filterType);
     if (found === undefined) {
@@ -656,7 +655,7 @@ export function TokenMagic() {
       || filterId == null
       || !(placeable instanceof PlaceableObject)) { return null; }
 
-    if (flags == null || !flags instanceof Array || flags.length < 1) { return false; }
+    if (flags == null || !(flags instanceof Array) || flags.length < 1) { return false; }
 
     const found = flags.find(flag => flag.tmFilters.tmFilterId === filterId);
     if (found === undefined) {
@@ -733,8 +732,8 @@ export function TokenMagic() {
     if (placeableType === PlaceableType.TEMPLATE) {
       var updateData = placeable.document.getFlag("tokenmagic", "templateData");
       if (!(updateData == null)) {
-        placeable.data.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
-        placeable.data.tmfxTint = updateData.tint;
+        placeable.document.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
+        placeable.document.tmfxTint = updateData.tint;
       }
     }
 
@@ -742,7 +741,7 @@ export function TokenMagic() {
     if (!(filters == null)) {
       if (placeableType === PlaceableType.TEMPLATE) {
         // get the first filterId to assign tmfxPreset
-        placeable.data.tmfxPreset = filters[0].tmFilters.tmFilterId;
+        placeable.document.tmfxPreset = filters[0].tmFilters.tmFilterId;
       }
       _assignFilters(placeable, filters, bulkLoading);
     }
@@ -1471,22 +1470,29 @@ function onMeasuredTemplateConfig(data, html) {
 
   var opacity = tmTemplate.template.alpha;
   var tint = "";
+  var currentPreset = emptyPreset;
 
   // getting custom data
   var tmfxTemplateData = tmTemplate.document.getFlag("tokenmagic", "templateData");
   if (!(tmfxTemplateData == null) && tmfxTemplateData instanceof Object) {
-    opacity = tmTemplate.data.tmfxTextureAlpha = tmfxTemplateData.opacity;
-    tint = tmTemplate.data.tmfxTint = (tmfxTemplateData.tint ? PIXI.utils.hex2string(tmfxTemplateData.tint) : "");
+    opacity = tmTemplate.document.tmfxTextureAlpha = tmfxTemplateData.opacity;
+    tint = tmTemplate.document.tmfxTint = (tmfxTemplateData.tint ? PIXI.utils.hex2string(tmfxTemplateData.tint) : "");
+
+    if (tmfxTemplateData.preset !== undefined)
+      currentPreset = tmfxTemplateData.preset;
   }
-  var flag = tmTemplate.document.getFlag("tokenmagic", "filters");
+  var filters = tmTemplate.document.getFlag("tokenmagic", "filters");
   var presets = Magic.getPresets(PresetsLibrary.TEMPLATE);
 
+  if (filters && (filters instanceof Array) && filters.length >= 1)
+    currentPreset = filters[0].tmFilters.tmFilterId;
+
   // forming our injected html
-  var tmfxValues;
+  var tmfxValues = '';
   var selected = '';
   tmfxValues += `<option value="${emptyPreset}"></option>`;
   presets.sort(compare).forEach(preset => {
-    if (flag) (Magic._checkFilterId(tmTemplate, preset.name, flag) ? selected = ' selected' : selected = '');
+    selected = ((preset.name == currentPreset) ? ' selected' : '');
     tmfxValues += `<option value="${preset.name}"${selected}>${preset.name}</option>`;
   });
 
@@ -1494,14 +1500,14 @@ function onMeasuredTemplateConfig(data, html) {
     <div class="form-group">
         <label>${i18n('TMFX.template.opacity')}</label>
         <div class="form-fields">
-            <input type="range" name="tmfxTextureAlpha" value="${opacity}" min="0.0" max="1.0" step="0.05" data-dtype="Number"/>
+            <input type="range" name="flags.tokenmagic.templateData.opacity" value="${opacity}" min="0.0" max="1.0" step="0.05" data-dtype="Number"/>
             <span class="range-value">${opacity}</span>
         </div>
     </div>
 
     <div class="form-group">
         <label>${i18n('TMFX.template.fx')}</label>
-        <select class="tmfx" name="tmfxPreset" data-dtype="String">
+        <select class="tmfx" name="flags.tokenmagic.templateData.preset" data-dtype="String">
         ${tmfxValues}
         </select>
     </div>
@@ -1509,8 +1515,8 @@ function onMeasuredTemplateConfig(data, html) {
     <div class="form-group">
         <label>${i18n('TMFX.template.tint')}</label>
         <div class="form-fields">
-            <input class="color" type="text" name="tmfxTint" value="${tint}"/>
-            <input type="color" value="${tint}" data-edit="tmfxTint"/>
+            <input class="color" type="text" name="flags.tokenmagic.templateData.tint" value="${tint}"/>
+            <input type="color" value="${tint}" data-edit="flags.tokenmagic.templateData.tint"/>
         </div>
     </div>
     `;
@@ -1558,10 +1564,8 @@ Hooks.on("canvasReady", (canvas) => {
 
   const tokens = canvas.tokens.placeables;
   Magic._loadFilters(tokens);
-  const bgtiles = canvas.background.placeables;
-  Magic._loadFilters(bgtiles);
-  const ohtiles = canvas.foreground.placeables;
-  Magic._loadFilters(ohtiles);
+  const tiles = canvas.tiles.placeables
+  Magic._loadFilters(tiles);
   const drawings = canvas.drawings.placeables;
   Magic._loadFilters(drawings);
   const templates = canvas.templates.placeables;
@@ -1588,7 +1592,7 @@ Hooks.on("deleteToken", (parent, doc, options, userId) => {
 Hooks.on("createToken", (scene, data, options) => {
   //log("Hook -> createToken");
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1609,7 +1613,7 @@ Hooks.on("createTile", (scene, data, options) => {
   //log("Hook -> createTile");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1630,7 +1634,7 @@ Hooks.on("createDrawing", (scene, data, options) => {
   //log("Hook -> createDrawing");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1651,7 +1655,7 @@ Hooks.on("updateToken", (scene, data, options) => {
   //log("Hook -> updateToken");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1688,7 +1692,7 @@ Hooks.on("updateTile", (scene, data, options) => {
   //log("Hook -> updateTile");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1720,7 +1724,7 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
   //log("Hook -> updateDrawing");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1751,25 +1755,23 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
   if (isNewerVersion(game.version, "0.8")) {
     updateData = measuredTemplate;
-    measuredTemplate = scene.data;
+    measuredTemplate = scene;
     scene = scene.parent;
   }
 
   function getTint() {
-    if (updateData.hasOwnProperty("tmfxTint")) {
-      measuredTemplate.tmfxTint = updateData.tmfxTint;
-      return updateData.tmfxTint;
-    } else if (measuredTemplate.hasOwnProperty("tmfxTint")) {
-      return measuredTemplate.tmfxTint;
+    if (updateData.flags?.tokenmagic?.templateData?.tint !== undefined) {
+      return updateData.flags.tokenmagic.templateData.tint;
+    } else if (measuredTemplate.flags?.tokenmagic?.tint !== undefined) {
+      return measuredTemplate.flags.tokenmagic.tint;
     } else return "";
   }
 
   function getFX() {
-    if (updateData.hasOwnProperty("tmfxPreset")) {
-      measuredTemplate.tmfxPreset = updateData.tmfxPreset;
-      return updateData.tmfxPreset;
-    } else if (measuredTemplate.hasOwnProperty("tmfxPreset")) {
-      return measuredTemplate.tmfxPreset;
+    if (updateData.flags?.tokenmagic?.templateData?.preset !== undefined) {
+      return updateData.flags.tokenmagic.templateData.preset;
+    } else if (measuredTemplate.flags?.tokenmagic?.templateData?.preset !== undefined) {
+      return measuredTemplate.flags.tokenmagic.templateData.preset;
     } else return emptyPreset;
   }
 
@@ -1799,26 +1801,16 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
   let measuredTemplateInstance = canvas.templates.get(measuredTemplate._id);
   let templateTint = getTint();
-  let updateTmfxData = {};
-  let presetUpdate = updateData.hasOwnProperty("tmfxPreset");
-  let tintUpdate = updateData.hasOwnProperty("tmfxTint");
-  let textureUpdate = updateData.hasOwnProperty("tmfxTextureAlpha");
+  let presetUpdate = (updateData.flags?.tokenmagic?.templateData?.preset !== undefined);
+  let tintUpdate = (updateData.flags?.tokenmagic?.templateData?.tint !== undefined);
   let directionUpdate = updateData.hasOwnProperty("direction");
   let angleUpdate = updateData.hasOwnProperty("angle");
   let typeUpdate = updateData.hasOwnProperty("t");
 
-  if (textureUpdate)
-    updateTmfxData.opacity = updateData.tmfxTextureAlpha;
-
   if (tintUpdate)
-    updateTmfxData.tint = (templateTint !== '' ? colorStringToHex(templateTint) : null);
+    updateData.flags.tokenmagic.templateData.tint = (templateTint !== '' ? Color.from(templateTint) : null);
 
-  if (Object.keys(updateTmfxData).length > 0)
-    await measuredTemplateInstance.document.setFlag("tokenmagic", "templateData", updateTmfxData);
-
-  if (presetUpdate || tintUpdate
-    || directionUpdate || typeUpdate || angleUpdate) {
-
+  if (presetUpdate || tintUpdate || directionUpdate || typeUpdate || angleUpdate) {
     let templateFX = getFX();
     if (templateFX !== emptyPreset) {
       let anchor = getAnchor(getDirection(), getAngle(), getShapeType());
@@ -1830,7 +1822,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
         anchorY: anchor.y
       };
       if (templateTint && templateTint !== "") {
-        if (typeof templateTint !== "number") presetOptions.color = colorStringToHex(templateTint);
+        if (typeof templateTint !== "number") presetOptions.color = Color.from(templateTint);
         else presetOptions.color = templateTint;
       }
       var preset = Magic.getPreset(presetOptions);
@@ -1847,7 +1839,7 @@ Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
   //log("Hook -> updateMeasuredTemplate");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1883,7 +1875,7 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
   //log("Hook -> createMeasuredTemplate");
 
   if (isNewerVersion(game.version, "0.8")) {
-    [data, options] = [scene.data, data];
+    [data, options] = [scene, data];
     scene = scene.parent;
   }
 
@@ -1900,50 +1892,51 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
   }
 });
 
-Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
+Hooks.on("createMeasuredTemplate", (document) => {
+  // This would ideally be `preCreateMeasuredTemplate` and/or merged with the createMeasuredTemplate
 
-  const hasFlags = data.hasOwnProperty("flags");
+  const hasFlags = document.hasOwnProperty("flags");
   let hasPreset = false;
   let hasTint = false;
   let hasOpacity = false;
   let hasFlagsNoOptions = false;
 
-  if (hasFlags && data.flags.hasOwnProperty("tokenmagic") && data.flags.tokenmagic.hasOwnProperty("options") && data.flags.tokenmagic.options) {
-    const opt = data.flags.tokenmagic.options;
+  if (hasFlags && document.flags.hasOwnProperty("tokenmagic") && document.flags.tokenmagic.hasOwnProperty("options") && document.flags.tokenmagic.options) {
+    const opt = document.flags.tokenmagic.options;
     if (opt.hasOwnProperty("tmfxPreset")) {
-      data.tmfxPreset = opt.tmfxPreset;
+      document.tmfxPreset = opt.tmfxPreset;
       hasPreset = true;
     }
     if (opt.hasOwnProperty("tmfxTint")) {
-      data.tmfxTint = opt.tmfxTint;
+      document.tmfxTint = opt.tmfxTint;
       hasTint = true;
     }
     if (opt.hasOwnProperty("tmfxTextureAlpha")) {
-      data.tmfxTextureAlpha = opt.tmfxTextureAlpha;
+      document.tmfxTextureAlpha = opt.tmfxTextureAlpha;
       hasOpacity = true;
     }
     if (opt.hasOwnProperty("tmfxTexture")) {
-      data.texture = opt.tmfxTexture;
-      document.data.update({ texture: opt.tmfxTexture });
+      document.texture = opt.tmfxTexture;
+      document.update({ texture: opt.tmfxTexture });
     }
   }
   else hasFlagsNoOptions = true;
 
-  let hasTexture = data.hasOwnProperty("texture") && data.texture !== '' && data.texture;
+  let hasTexture = document.hasOwnProperty("texture") && document.texture !== '' && document.texture;
   let newFilters = [];
 
   let tmfxBaseFlags = { tokenmagic: { filters: null, templateData: null, options: null } };
   if (hasFlags && hasFlagsNoOptions) {
     // the measured template comes with tokenmagic flags ? It is a copy ! We do nothing.
-    if (data.flags.hasOwnProperty("tokenmagic")) {
+    if (document.flags.hasOwnProperty("tokenmagic")) {
       return;
     }
-    data.flags = mergeObject(data.flags, tmfxBaseFlags, true, true);
+    document.flags = mergeObject(document.flags, tmfxBaseFlags, true, true);
   }
 
   // normalizing color to value if needed
-  if (hasTint && typeof data.tmfxTint !== "number") {
-    data.tmfxTint = colorStringToHex(data.tmfxTint);
+  if (hasTint && typeof document.tmfxTint !== "number") {
+    document.tmfxTint = Color.from(document.tmfxTint);
   }
 
   let tmfxFiltersData = null;
@@ -1952,19 +1945,19 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
   if (hasPreset) {
 
     // Compute shader anchor point
-    let anchor = getAnchor(data.direction, data.angle, data.t);
+    let anchor = getAnchor(document.direction, document.angle, document.t);
 
     // Constructing the preset search object
     let pstSearch =
     {
-      name: data.tmfxPreset,
+      name: document.tmfxPreset,
       library: PresetsLibrary.TEMPLATE,
       anchorX: anchor.x,
       anchorY: anchor.y
     };
 
     // Adding tint if needed
-    if (hasTint) pstSearch.color = data.tmfxTint;
+    if (hasTint) pstSearch.color = document.tmfxTint;
 
     // Retrieving the preset
     let preset = Magic.getPreset(pstSearch);
@@ -1973,7 +1966,7 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
 
       let defaultTex = Magic._getPresetTemplateDefaultTexture(pstSearch.name);
       if (!(defaultTex == null) && !hasTexture) {
-        document.data.update({ texture: defaultTex });
+        document.update({ texture: defaultTex });
       }
 
       let persist = true;
@@ -2017,21 +2010,21 @@ Hooks.on("preCreateMeasuredTemplate", (document, data, options, user) => {
       if (persist) tmfxFiltersData = newFilters;
     }
   } else {
-    data.tmfxPreset = emptyPreset;
+    document.tmfxPreset = emptyPreset;
   }
 
-  if (!hasOpacity) data.tmfxTextureAlpha = 1;
-  if (!hasTint) data.tmfxTint = null;
+  if (!hasOpacity) document.tmfxTextureAlpha = 1;
+  if (!hasTint) document.tmfxTint = null;
 
   let tmfxFlags = {
     templateData: {
-      opacity: data.tmfxTextureAlpha,
-      tint: data.tmfxTint
+      opacity: document.tmfxTextureAlpha,
+      tint: document.tmfxTint
     },
     filters: tmfxFiltersData,
     options: null
   };
-  document.data.update({ flags: { tokenmagic: tmfxFlags } });
+  document.update({ _id: document._id, flags: { tokenmagic: tmfxFlags } });
 });
 
 Hooks.on("closeSettingsConfig", () => {
