@@ -35,6 +35,8 @@ import { FilterSplash } from "../fx/filters/FilterSplash.js";
 import { FilterPolymorph } from "../fx/filters/FilterPolymorph.js";
 import { FilterXFire } from "../fx/filters/FilterXFire.js";
 import { FilterSprite } from "../fx/filters/FilterSprite.js";
+import { FilterReplaceColor } from "../fx/filters/FilterReplaceColor.js";
+import { FilterDDTint } from "../fx/filters/FilterDDTint.js";
 import { Anime } from "../fx/Anime.js";
 import { allPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
 import { tmfxDataMigration } from "../migration/migration.js";
@@ -90,6 +92,8 @@ export const FilterType = {
   polymorph: FilterPolymorph,
   xfire: FilterXFire,
   sprite: FilterSprite,
+  replaceColor: FilterReplaceColor,
+  ddTint: FilterDDTint,
 };
 
 export const PlaceableType = {
@@ -629,7 +633,7 @@ export function TokenMagic() {
       || filterType == null
       || !(placeable instanceof PlaceableObject)) { return null; }
 
-    var flags = placeable.getFlag("tokenmagic", "filters");
+    var flags = placeable.document.getFlag("tokenmagic", "filters");
     if (flags == null || !(flags instanceof Array) || flags.length < 1) { return false; }
 
     const found = flags.find(flag => flag.tmFilters.tmFilterType === filterType);
