@@ -1,3 +1,23 @@
+# Token Magic FX - Update v0.6.0-beta
+
+Token Magic FX is now v10 compatible!
+
+**Big thanks to OsiJr to have done most of the work!**
+
+*Added/Changed*
+- V10 Compatibility
+- New filter : *Replace Color* and its new macro => *38 - Replace Color* 
+- New filter : *Dungeon Draft Tint* and its new macro => *39 - Dungeon Draft Tint*
+
+*Fixed Issues :*
+- `hasFilterType` API was broken
+- And other some small issues and code lifting
+
+*Big Thanks to:*
+- OsiJr for V10 compatibility.
+- Elizeuangelo for adding the two new filters.
+- Averrin for fixing `hasFilterType`.
+
 # Token Magic FX - Update v0.5.4-beta
 
 *Added/Changed*
