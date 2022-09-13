@@ -1,3 +1,11 @@
+# Token Magic FX - Update v0.6.1-beta
+
+*Fixed Issues :*
+- Template effects were not working properly.
+- Automatic templates settings were not applied correctly.
+- Assigning a filter on a drawing had no effect.
+- Fixed the template config UI.
+
 # Token Magic FX - Update v0.6.0-beta
 
 Token Magic FX is now v10 compatible!
