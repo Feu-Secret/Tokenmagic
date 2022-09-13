@@ -137,7 +137,7 @@ function fromConfig(config, template) {
     o.tokenmagic.options.tmfxTint = config.tint;
   }
   o.tokenmagic.options.tmfxTextureAlpha = config.opacity;
-  template.data.update({ 'flags.tokenmagic': o.tokenmagic });
+  template.document.updateSource({flags: {tokenmagic : o.tokenmagic}});
 }
 
 function fromOverrides(overrides = [], item, template) {
@@ -192,3 +192,4 @@ function fromItem(wrapped, ...args) {
 }
 
 export const dnd5eTemplates = new AutoTemplateDND5E();
+
