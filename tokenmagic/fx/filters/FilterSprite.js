@@ -1,11 +1,13 @@
-import { sprite } from '../glsl/fragmentshaders/sprite.js';
-import { customVertex2DSampler } from '../glsl/vertexshaders/customvertex2DSampler.js';
-import { CustomFilter } from './CustomFilter.js';
-import { Anime } from "../Anime.js";
+import {sprite} from "../glsl/fragmentshaders/sprite.js";
+import {customVertex2DSampler} from "../glsl/vertexshaders/customvertex2DSampler.js";
+import {CustomFilter} from "./CustomFilter.js";
+import {Anime} from "../Anime.js";
 import "./proto/FilterProto.js";
-import { fixPath } from "../../module/tokenmagic.js";
+import {fixPath} from "../../module/tokenmagic.js";
 
 export class FilterSprite extends CustomFilter {
+
+  tex = null;
 
   constructor(params) {
     let {
@@ -25,7 +27,8 @@ export class FilterSprite extends CustomFilter {
       scaleY,
       translationX,
       translationY,
-      play
+      play,
+      loop
     } = Object.assign({}, FilterSprite.defaults, params);
 
     const targetSpriteMatrix = new PIXI.Matrix();
@@ -62,22 +65,45 @@ export class FilterSprite extends CustomFilter {
       scaleY,
       translationX,
       translationY,
-      play
+      play,
+      loop
     });
 
     this.zOrder = 0;
     this.autoFit = false;
     this.animated = {};
     this.setTMParams(params);
-    if (!this.dummy) {
+    if ( !this.dummy ) {
       this.anime = new Anime(this);
       this.normalizeTMParams();
       this.assignTexture();
     }
   }
 
-  tex = null;
   _play = true;
+  _loop = true;
+
+  get play() {
+    return this._play;
+  }
+
+  set play(value) {
+    if ( !(value == null) && typeof value === "boolean" ) {
+      this._play = value;
+      this._playVideo(this._play);
+    }
+  }
+
+  get loop() {
+    return this._loop;
+  }
+
+  set loop(value) {
+    if ( !(value == null) && typeof value === "boolean" ) {
+      this._loop = value;
+      this._playVideo(this._play);
+    }
+  }
 
   get color() {
     return PIXI.utils.rgb2hex(this.uniforms.color);
@@ -92,7 +118,7 @@ export class FilterSprite extends CustomFilter {
   }
 
   set colorize(value) {
-    if (!(value == null) && typeof value === "boolean") {
+    if ( !(value == null) && typeof value === "boolean" ) {
       this.uniforms.colorize = value;
     }
   }
@@ -102,7 +128,7 @@ export class FilterSprite extends CustomFilter {
   }
 
   set inverse(value) {
-    if (!(value == null) && typeof value === "boolean") {
+    if ( !(value == null) && typeof value === "boolean" ) {
       this.uniforms.inverse = value;
     }
   }
@@ -112,7 +138,7 @@ export class FilterSprite extends CustomFilter {
   }
 
   set top(value) {
-    if (!(value == null) && typeof value === "boolean") {
+    if ( !(value == null) && typeof value === "boolean" ) {
       this.uniforms.top = value;
     }
   }
@@ -214,42 +240,32 @@ export class FilterSprite extends CustomFilter {
     this.uniforms.uSamplerTarget = value;
   }
 
-  get play() {
-    return this._play;
-  }
-
-  set play(value) {
-    if (!(value == null) && typeof value === "boolean") {
-      this._play = value;
-      this._playVideo(this._play);
-    }
-  }
-
   _playVideo(value) {
     // Play if baseTexture resource is a video
-    if (this.tex) {
-      const source = getProperty(this.tex, "baseTexture.resource.source")
-      if (source && (source.tagName === "VIDEO")) {
-        source.loop = true;
+    if ( this.tex ) {
+      const source = getProperty(this.tex, "baseTexture.resource.source");
+      if ( source && (source.tagName === "VIDEO") ) {
+        source.loop = this._loop;
         source.muted = true;
-        if (value) game.video.play(source);
+        if ( value ) game.video.play(source);
         else game.video.stop(source);
       }
     }
   }
 
   assignTexture() {
-    if (this.hasOwnProperty("imagePath")) {
+    if ( this.hasOwnProperty("imagePath") ) {
       this.tex = PIXI.Texture.from(this.imagePath);
 
       let sprite = new PIXI.Sprite(this.tex);
 
       sprite.renderable = false;
-      if (this.placeableImg.hasOwnProperty("_texture")) {
+      if ( this.placeableImg._texture ) {
         sprite.width = this.placeableImg._texture.baseTexture.realWidth;
         sprite.height = this.placeableImg._texture.baseTexture.realHeight;
         sprite.anchor.set(0.5);
-      } else {
+      }
+      else {
         sprite.width = this.placeableImg.width;
         sprite.height = this.placeableImg.height;
       }
@@ -267,8 +283,8 @@ export class FilterSprite extends CustomFilter {
     const targetSprite = this.targetSprite;
     const tex = targetSprite._texture;
 
-    if (tex.valid) {
-      if (!tex.uvMatrix) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
+    if ( tex.valid ) {
+      if ( !tex.uvMatrix ) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
       tex.uvMatrix.update();
 
       this.uniforms.uSamplerTarget = tex;
@@ -284,8 +300,7 @@ export class FilterSprite extends CustomFilter {
   // override
   destroy() {
     super.destroy();
-    if (this.placeableImg && !this.placeableImg._destroyed) this.placeableImg.removeChild(this.targetSprite);
-    this.targetSprite.destroy({ children: true, texture: false, baseTexture: false });
+    if ( !this.targetSprite.destroyed ) this.targetSprite.destroy({children: true, texture: false, baseTexture: false});
   }
 }
 
@@ -303,7 +318,8 @@ FilterSprite.defaults = {
   scaleY: 1,
   translationX: 0,
   translationY: 0,
-  play: true
+  play: true,
+  loop: true
 };
 
 

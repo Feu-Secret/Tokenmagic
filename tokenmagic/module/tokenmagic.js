@@ -1604,7 +1604,7 @@ function onMeasuredTemplateConfig(data, html) {
   const htmlForm = html.find(".form-group");
   htmlForm.last().after(divPreset);
 
-  $(html).css({"min-height": "490px"});
+  $(html).css({"min-height": "525px"});
 }
 
 Hooks.on("ready", () => {
@@ -1756,7 +1756,6 @@ Hooks.on("updateToken", (scene, data, options) => {
 
     // querying filters reload (when pixi containers are ready)
     requestLoadFilters(placeable, 250);
-
   }
   else {
     Magic._updateFilters(data, options, PlaceableType.TOKEN);
@@ -1813,9 +1812,7 @@ Hooks.on("updateDrawing", (scene, data, options, action) => {
 
   if ( scene.id !== game.user.viewedScene ) return;
 
-  if ( (action.hasOwnProperty("diff") && action.diff
-      && !(options.hasOwnProperty("flags") && options.flags.hasOwnProperty("tokenmagic")))
-    || (options.hasOwnProperty("x") || options.hasOwnProperty("y")) ) {
+  if ( !(options.flags?.tokenmagic) || options.x || options.y ) {
 
     let placeable = getPlaceableById(data._id, PlaceableType.DRAWING);
 
@@ -1864,30 +1861,30 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
   }
 
   function getDirection() {
-    if ( updateData.hasOwnProperty("direction") ) {
+    if ( updateData.direction ) {
       return updateData.direction;
     }
-    else if ( measuredTemplate.hasOwnProperty("direction") ) {
+    else if ( measuredTemplate.direction ) {
       return measuredTemplate.direction;
     }
     else return 0;
   }
 
   function getAngle() {
-    if ( updateData.hasOwnProperty("angle") ) {
+    if ( updateData.angle ) {
       return updateData.angle;
     }
-    else if ( measuredTemplate.hasOwnProperty("angle") ) {
+    else if ( measuredTemplate.angle ) {
       return measuredTemplate.angle;
     }
     else return 0;
   }
 
   function getShapeType() {
-    if ( updateData.hasOwnProperty("t") ) {
+    if ( updateData.t ) {
       return updateData.t;
     }
-    else if ( measuredTemplate.hasOwnProperty("t") ) {
+    else if ( measuredTemplate.t ) {
       return measuredTemplate.t;
     }
     else return "ITSBAD";
@@ -1902,7 +1899,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
   let typeUpdate = updateData.hasOwnProperty("t");
 
   if ( tintUpdate )
-    updateData.flags.tokenmagic.templateData.tint = (templateTint !== "" ? Color.from(templateTint) : null);
+    updateData.flags.tokenmagic.templateData.tint = (templateTint !== "" ? Color.from(templateTint).valueOf() : null);
 
   if ( presetUpdate || tintUpdate || directionUpdate || typeUpdate || angleUpdate ) {
     let templateFX = getFX();
@@ -1916,8 +1913,7 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
           anchorY: anchor.y
         };
       if ( templateTint && templateTint !== "" ) {
-        if ( typeof templateTint !== "number" ) presetOptions.color = Color.from(templateTint);
-        else presetOptions.color = templateTint;
+        presetOptions.color = Color.from(templateTint).valueOf();
       }
       let preset = Magic.getPreset(presetOptions);
       if ( !(preset == null) ) {
@@ -1987,43 +1983,43 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
   }
 });
 
-Hooks.on("createMeasuredTemplate", (document) => {
+Hooks.on("preCreateMeasuredTemplate", (document, updateData) => {
   // This would ideally be `preCreateMeasuredTemplate` and/or merged with the createMeasuredTemplate
 
-  const hasFlags = document.hasOwnProperty("flags");
+  const hasFlags = document.flags;
   let hasPreset = false;
   let hasTint = false;
   let hasOpacity = false;
   let hasFlagsNoOptions = false;
 
-  if ( hasFlags && document.flags.hasOwnProperty("tokenmagic") && document.flags.tokenmagic.hasOwnProperty("options") && document.flags.tokenmagic.options ) {
+  if ( hasFlags && document.flags.tokenmagic?.options ) {
     const opt = document.flags.tokenmagic.options;
-    if ( opt.hasOwnProperty("tmfxPreset") ) {
+    if ( opt.tmfxPreset ) {
       document.tmfxPreset = opt.tmfxPreset;
       hasPreset = true;
     }
-    if ( opt.hasOwnProperty("tmfxTint") ) {
+    if ( opt.tmfxTint ) {
       document.tmfxTint = opt.tmfxTint;
       hasTint = true;
     }
-    if ( opt.hasOwnProperty("tmfxTextureAlpha") ) {
+    if ( opt.tmfxTextureAlpha ) {
       document.tmfxTextureAlpha = opt.tmfxTextureAlpha;
       hasOpacity = true;
     }
-    if ( opt.hasOwnProperty("tmfxTexture") ) {
+    if ( opt.tmfxTexture ) {
       document.texture = opt.tmfxTexture;
       document.update({texture: opt.tmfxTexture});
     }
   }
   else hasFlagsNoOptions = true;
 
-  let hasTexture = document.hasOwnProperty("texture") && document.texture !== "" && document.texture;
+  let hasTexture = document.texture && document.texture !== "";
   let newFilters = [];
 
   let tmfxBaseFlags = {tokenmagic: {filters: null, templateData: null, options: null}};
   if ( hasFlags && hasFlagsNoOptions ) {
     // the measured template comes with tokenmagic flags ? It is a copy ! We do nothing.
-    if ( document.flags.hasOwnProperty("tokenmagic") ) {
+    if ( document.flags.tokenmagic ) {
       return;
     }
     document.flags = mergeObject(document.flags, tmfxBaseFlags, true, true);
@@ -2031,7 +2027,7 @@ Hooks.on("createMeasuredTemplate", (document) => {
 
   // normalizing color to value if needed
   if ( hasTint && typeof document.tmfxTint !== "number" ) {
-    document.tmfxTint = Color.from(document.tmfxTint);
+    document.tmfxTint = Color.from(document.tmfxTint).valueOf();
   }
 
   let tmfxFiltersData = null;
@@ -2061,7 +2057,7 @@ Hooks.on("createMeasuredTemplate", (document) => {
 
       let defaultTex = Magic._getPresetTemplateDefaultTexture(pstSearch.name);
       if ( !(defaultTex == null) && !hasTexture ) {
-        document.update({texture: defaultTex});
+        document.updateSource({texture: defaultTex});
       }
 
       let persist = true;
@@ -2069,20 +2065,19 @@ Hooks.on("createMeasuredTemplate", (document) => {
       // Constructing the filter flag parameters
       for ( const params of preset ) {
 
-        if ( !params.hasOwnProperty("filterType")
-          || !FilterType.hasOwnProperty(params.filterType) ) {
+        if ( !params.filterType || !FilterType.hasOwnProperty(params.filterType) ) {
           // one invalid ? all rejected.
           persist = false;
           break;
         }
 
         // getPreset MUST provide a filter id
-        if ( !params.hasOwnProperty("filterId") || params.filterId == null ) {
+        if ( !params.filterId ) {
           persist = false;
           break;
         }
 
-        if ( !params.hasOwnProperty("enabled") || !(typeof params.enabled === "boolean") ) {
+        if ( !params.enabled || !(typeof params.enabled === "boolean") ) {
           params.enabled = true;
         }
 
@@ -2120,7 +2115,7 @@ Hooks.on("createMeasuredTemplate", (document) => {
     filters: tmfxFiltersData,
     options: null
   };
-  document.update({_id: document._id, flags: {tokenmagic: tmfxFlags}});
+  document.updateSource({flags: {tokenmagic: tmfxFlags}});
 });
 
 Hooks.on("closeSettingsConfig", () => {
