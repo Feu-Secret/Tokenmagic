@@ -1,5 +1,18 @@
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE) 
-![v0.6.1-beta download count](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/latest/tokenmagic.zip)
+![Latest Release Download Count](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/latest/tokenmagic.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) 
+
+[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ftokenmagic&colorB=006400&style=for-the-badge)](https://forge-vtt.com/bazaar#package=tokenmagic) 
+
+![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fp4535992%2Ftokenmagic%2Fmaster%2Ftokenmagic%2Fmodule.json&label=Foundry%20Version&query=$.compatibility.verified&colorB=orange&style=for-the-badge)
+
+![Latest Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FFeu-Secret%2Ftokenmagic%2Fmaster%2Ftokenmagic%2Fmodule.json&label=Latest%20Release&prefix=v&query=$.version&colorB=red&style=for-the-badge)
+
+[![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ftokenmagic%2Fshield%2Fendorsements&style=for-the-badge)](https://www.foundryvtt-hub.com/package/tokenmagic/)
+
+![GitHub all releases](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/total?style=for-the-badge)
+
+## If you want to support more modules of this kind, I invite you to go and support the original author [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE) , or [my paypal](https://www.paypal.me/silentFire "Paypal")
+
+
 # Token Magic FX
 
 Token Magic is a module for Foundry VTT that allows you to add graphic effects to tokens, tiles, drawings and templates. These FX can be animated. 
@@ -15,7 +28,9 @@ In short :
 - For computer geek, an easy way to play with existing macros and create an infinite number of custom effects!
 - For module developpers, a complete API to use Token Magic capabilities.
 
-#### Various tutorials on Youtube
+### ![Here you can find a table with  all the previews of the effects](./wiki/TokenMagicPreview.md)
+
+### Various tutorials on Youtube
 ###### In English
 
 - [Foundry VTT Creating Amazing Visuals: Token Magic and Custom Animations](https://www.youtube.com/watch?v=1cmRd6FadY8) by *Mr. Weaver*
@@ -36,13 +51,15 @@ In short :
 
 If you are a streamer and want your video about TMFX to be added to these lists, contact me on Discord or Github.
 
-## Special effects
+## Features
+
+### Special effects
 
 TokenMagic can apply the following effects:
 Bloom, distortion, old film effect, glow, outline, bevel, shadow drop, shadow zap, twist, blur, zoom blur, shockwave, bulge, pinch, inner rays, inner fog, color adjustment (transparency, contrast, brightness, color balance, etc.), and many more!
 All properties linked to these effects can be animated.
 
-## Measurement Template improvements
+### Measurement Template improvements
 
 Token Magic is adding four options :
 - You can choose a template texture (classic texture or webm video)
@@ -52,7 +69,7 @@ Token Magic is adding four options :
 
 ![Templates Ex](images/templates-ex.png)
 
-## Automatic Templates
+### Automatic Templates
 
 You can configure automatic templates in the module option panel. You also have options to disable automatic templates and the display of the grid.
 
@@ -693,6 +710,11 @@ let glowFunc = async function() {
 glowFunc();
 ```
 
+
+## Issues
+
+Any issues, bugs, or feature requests are always welcome to be reported directly to the [Issue Tracker](https://github.com/Feu-Secret/tokenmagic/issues ), or using the [Bug Reporter Module](https://foundryvtt.com/packages/bug-reporter/).
+
 ### For module developers
 If you want to use TokenMagic in your modules, know that you are welcome. I await your feedback and I will listen to your needs.
 
@@ -708,7 +730,7 @@ You can help me to track them by posting issues in Github and taking care to giv
 - **Atropos** for the jewel that is Foundry, and also because he's a good man.
 - **dev7355608** for his patience, his advices and his awesome contributions.
 - **sPoIdAr** for the Automatic Template settings, which is WOW!
-- **Moerill** for his very cool JS algorithms and for allowing me to port some functionnalities from MESS
+- **Moerill** for his very cool JS algorithms and for allowing me to port some functionalities from MESS
 - **Mestre Digital** for the first Token Magic video on Youtube (and in a language I haven't learned. ^^), and his cool GUI Macro.
 - **JosephSeraph** for the [art](https://opengameart.org/content/js-actor-witch) used in the macro images (edited under [CC license](https://creativecommons.org/licenses/by/3.0/))
 - **Lozalojo, zimm44, drdwing, zeteticl** for providing translations for the community.
@@ -719,7 +741,7 @@ You can help me to track them by posting issues in Github and taking care to giv
 *The wise man knows how to `await`.*
 
 ### Donations
-For those who wish to make a donation : [my paypal](https://www.paypal.me/silentFire "Paypal")
+For those who wish to make a donation : [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE), [my paypal](https://www.paypal.me/silentFire "Paypal")
 
 My most sincere thanks.
 
