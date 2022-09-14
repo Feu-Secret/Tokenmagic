@@ -1,3 +1,11 @@
+# Token Magic FX - Update v0.6.1.1-beta
+
+*Fixed Issues :*
+- Optional textures from dnd5e template settings were not applied.
+- Some changes (like `direction` or `angle`) in a template with a FX applied from settings could break the effect.
+- Some filter properties were not applied after a filter update (like `clockWise`).
+- Some minor changes to ease compatibility with other modules.
+
 # Token Magic FX - Update v0.6.1-beta
 
 *Added/Changed*

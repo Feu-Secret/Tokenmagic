@@ -1857,6 +1857,9 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
     else if ( measuredTemplate.flags?.tokenmagic?.templateData?.preset !== undefined ) {
       return measuredTemplate.flags.tokenmagic.templateData.preset;
     }
+    else if ( measuredTemplate.tmfxPreset !== undefined ) {
+      return measuredTemplate.tmfxPreset;
+    }
     else return emptyPreset;
   }
 
@@ -2008,7 +2011,7 @@ Hooks.on("preCreateMeasuredTemplate", (document, updateData) => {
     }
     if ( opt.tmfxTexture ) {
       document.texture = opt.tmfxTexture;
-      document.update({texture: opt.tmfxTexture});
+      document.updateSource({texture: opt.tmfxTexture});
     }
   }
   else hasFlagsNoOptions = true;

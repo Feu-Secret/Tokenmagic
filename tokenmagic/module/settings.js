@@ -244,7 +244,7 @@ export class TokenMagicSettings extends FormApplication {
       if ( a.name > b.name ) return 1;
       return 0;
     });
-    data.system = {id: game.system.id, title: game.system.data.title};
+    data.system = {id: game.system.id, title: game.system.title};
     data.settings = this.getSettingsData();
     data.submitText = game.i18n.localize("TMFX.save");
     return data;
@@ -254,7 +254,7 @@ export class TokenMagicSettings extends FormApplication {
   async _updateObject(_, formData) {
     const data = expandObject(formData);
     for ( let [key, value] of Object.entries(data) ) {
-      if ( key == "autoTemplateSettings" && value.overrides ) {
+      if ( key === "autoTemplateSettings" && value.overrides ) {
         const compacted = {};
         Object.values(value.overrides).forEach((val, idx) => compacted[idx] = val);
         value.overrides = compacted;
@@ -553,13 +553,9 @@ Hooks.once("init", () => {
           template.template.geometry.invalidate();
         }
 
-        template.ruler.renderable = show;
-
-        template.controlIcon.renderable = template.owner;
-
-        if ( template.handle ) {
-          template.handle.renderable = template.owner;
-        }
+        if ( template.hud.ruler ) template.hud.ruler.renderable = show;
+        if ( template.controlIcon ) template.controlIcon.renderable = template.owner;
+        if ( template.handle ) template.handle.renderable = template.owner;
       }
       return retVal;
     };
