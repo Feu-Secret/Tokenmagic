@@ -1,17 +1,13 @@
 ![Latest Release Download Count](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/latest/tokenmagic.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) 
-
 [![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ftokenmagic&colorB=006400&style=for-the-badge)](https://forge-vtt.com/bazaar#package=tokenmagic) 
-
 ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fp4535992%2Ftokenmagic%2Fmaster%2Ftokenmagic%2Fmodule.json&label=Foundry%20Version&query=$.compatibility.verified&colorB=orange&style=for-the-badge)
-
 ![Latest Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FFeu-Secret%2Ftokenmagic%2Fmaster%2Ftokenmagic%2Fmodule.json&label=Latest%20Release&prefix=v&query=$.version&colorB=red&style=for-the-badge)
-
 [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ftokenmagic%2Fshield%2Fendorsements&style=for-the-badge)](https://www.foundryvtt-hub.com/package/tokenmagic/)
-
 ![GitHub all releases](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/total?style=for-the-badge)
 
-## If you want to support more modules of this kind, I invite you to go and support the original author [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE) , or [my paypal](https://www.paypal.me/silentFire "Paypal")
+*If you want to support more modules of this kind, I invite you to go and support the original author to [ko-fi](https://ko-fi.com/K3K24XAWE) , or with [paypal](https://www.paypal.me/silentFire "Paypal")*
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE)
 
 # Token Magic FX
 
