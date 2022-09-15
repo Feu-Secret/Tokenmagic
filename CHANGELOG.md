@@ -1,3 +1,8 @@
+# Token Magic FX - Update v0.6.1.2-beta
+
+*Hotfix :*
+- Placing template was throwing an error.
+
 # Token Magic FX - Update v0.6.1.1-beta
 
 *Fixed Issues :*

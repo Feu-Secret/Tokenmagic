@@ -553,7 +553,7 @@ Hooks.once("init", () => {
           template.template.geometry.invalidate();
         }
 
-        if ( template.hud.ruler ) template.hud.ruler.renderable = show;
+        if ( template.ruler ) template.ruler.renderable = show;
         if ( template.controlIcon ) template.controlIcon.renderable = template.owner;
         if ( template.handle ) template.handle.renderable = template.owner;
       }
