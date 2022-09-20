@@ -16,7 +16,7 @@
   "TMFX.preset.reset.success": "您的預設集已成功重置。",
   "TMFX.settings.importOverwrite.name": "滙入時覆蓋",
   "TMFX.settings.importOverwrite.hint": "如果要在滙入過程中用相同的名稱替換預設，請勾選此項。",
-  "TMFX.template.opacity": "內部不透明度:",
+  "TMFX.template.opacity": "紋理不透明度:",
   "TMFX.template.fx": "特殊效果:",
   "TMFX.template.tint": "效果色調:",
   "TMFX.settings.autoFPS.name": "自動FPS",
