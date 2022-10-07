@@ -77,7 +77,7 @@ void main() {
     vec4 pixel = texture2D(uSampler,vTextureCoord);
     vec3 splashed = splash(vFilterCoord - anchor);
 
-    if (all(lessThanEqual(splashed,vec3(0.35)))) 
+    if (splashed == vec3(0.0))
     {
         if (pixel.a > 0. && !cut)
         {
