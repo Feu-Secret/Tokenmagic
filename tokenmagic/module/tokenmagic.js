@@ -1747,9 +1747,10 @@ Hooks.on("deleteTile", (_, document) => {
 Hooks.on("updateTile", (document, options) => {
   if ( document.parent.id !== game.user.viewedScene ) return;
 
-  if ( options.img || options.overhead ) {
+  if ( options.texture?.src || options.overhead ) {
     const placeable = getPlaceableById(document._id, PlaceableType.TILE);
     Anime.removeAnimation(document._id); // removing animations on this placeable
+    Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
     requestLoadFilters(placeable, 250);
   }
   else {
