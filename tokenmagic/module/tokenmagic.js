@@ -42,6 +42,7 @@ import {allPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
 import {tmfxDataMigration} from "../migration/migration.js";
 import {emptyPreset} from "./constants.js";
 import "./proto/PlaceableObjectProto.js";
+import { TokenMagicSettings } from "./settings.js";
 
 /*
 
@@ -1530,7 +1531,6 @@ function getAnchor(direction, angle, shapeType) {
 }
 
 function onMeasuredTemplateConfig(data, html) {
-
   if ( !isVideoDisabled() ) {
     html[0].querySelector(".file-picker").dataset.type = "imagevideo";
   }
@@ -1930,7 +1930,6 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
 
 Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
   //log("Hook -> updateMeasuredTemplate");
-
   if ( isNewerVersion(game.version, "0.8") ) {
     [data, options] = [scene, data];
     scene = scene.parent;
@@ -1967,7 +1966,6 @@ Hooks.on("deleteMeasuredTemplate", (parent, doc, options, userId) => {
 
 Hooks.on("createMeasuredTemplate", (scene, data, options) => {
   //log("Hook -> createMeasuredTemplate");
-
   if ( isNewerVersion(game.version, "0.8") ) {
     [data, options] = [scene, data];
     scene = scene.parent;
@@ -1988,6 +1986,10 @@ Hooks.on("createMeasuredTemplate", (scene, data, options) => {
 
 Hooks.on("preCreateMeasuredTemplate", (document, updateData) => {
   // This would ideally be `preCreateMeasuredTemplate` and/or merged with the createMeasuredTemplate
+  const templates = TokenMagicSettings.getSystemTemplates();
+  if (templates?.enabled) {
+      templates.preCreateMeasuredTemplate?.(document);
+  }
 
   const hasFlags = document.flags;
   let hasPreset = false;

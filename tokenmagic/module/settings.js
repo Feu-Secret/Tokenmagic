@@ -1,8 +1,9 @@
-import {presets as defaultPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
-import {DataVersion} from "../migration/migration.js";
-import {TokenMagic, isVideoDisabled, fixPath} from "./tokenmagic.js";
-import {AutoTemplateDND5E, dnd5eTemplates} from "./autoTemplate/dnd5e.js";
-import {defaultOpacity, emptyPreset} from "./constants.js";
+import { presets as defaultPresets, PresetsLibrary } from "../fx/presets/defaultpresets.js";
+import { DataVersion } from "../migration/migration.js";
+import { TokenMagic, isVideoDisabled, fixPath } from "./tokenmagic.js";
+import { AutoTemplateDND5E, dnd5eTemplates } from "./autoTemplate/dnd5e.js";
+import { AutoTemplateTheWitcherTRPG, witcherTemplates } from "./autoTemplate/TheWitcherTRPG.js";
+import { defaultOpacity, emptyPreset } from "./constants.js";
 
 const Magic = TokenMagic();
 
@@ -55,21 +56,17 @@ export class TokenMagicSettings extends FormApplication {
       }
     };
 
-    let hasAutoTemplates = false;
-    switch ( game.system.id ) {
-      case "dnd5e":
-        hasAutoTemplates = true;
-        game.settings.registerMenu("tokenmagic", menuAutoTemplateSettings.key, menuAutoTemplateSettings.config);
-        game.settings.register(
-          "tokenmagic",
-          settingAutoTemplateSettings.key,
-          mergeObject(settingAutoTemplateSettings.config, {
-            default: AutoTemplateDND5E.defaultConfiguration
-          }, true, true)
-        );
-        break;
-      default:
-        break;
+    const templates = this.getSystemTemplates();
+    let hasAutoTemplates = !!templates;
+    if (templates) {
+      game.settings.registerMenu("tokenmagic", menuAutoTemplateSettings.key, menuAutoTemplateSettings.config);
+      game.settings.register(
+        "tokenmagic",
+        settingAutoTemplateSettings.key,
+        mergeObject(settingAutoTemplateSettings.config, {
+          default: templates.constructor.defaultConfiguration
+        }, true, true),
+      );
     }
 
     game.settings.register("tokenmagic", "autoTemplateEnabled", {
@@ -197,30 +194,33 @@ export class TokenMagicSettings extends FormApplication {
     loadTemplates([
       "modules/tokenmagic/templates/settings/settings.html",
       "modules/tokenmagic/templates/settings/dnd5e/categories.html",
-      "modules/tokenmagic/templates/settings/dnd5e/overrides.html"
+      "modules/tokenmagic/templates/settings/dnd5e/overrides.html",
+      "modules/tokenmagic/templates/settings/TheWitcherTRPG/categories.html",
+      "modules/tokenmagic/templates/settings/TheWitcherTRPG/overrides.html"
     ]);
   }
 
-  static configureAutoTemplate(enabled = false) {
-    switch ( game.system.id ) {
+  static getSystemTemplates() {
+    switch (game.system.id) {
       case "dnd5e":
-        dnd5eTemplates.configure(enabled);
-        break;
+        return dnd5eTemplates;
+      case "TheWitcherTRPG":
+        return witcherTemplates;
       default:
-        break;
+        return null;
     }
+  }
+
+  static configureAutoTemplate(enabled = false) {
+    this.getSystemTemplates()?.configure(enabled);
   }
 
   getSettingsData() {
     let settingsData = {
       "autoTemplateEnable": game.settings.get("tokenmagic", "autoTemplateEnabled")
     };
-    switch ( game.system.id ) {
-      case "dnd5e":
-        settingsData["autoTemplateSettings"] = game.settings.get("tokenmagic", "autoTemplateSettings");
-        break;
-      default:
-        break;
+    if (TokenMagicSettings.getSystemTemplates()) {
+      settingsData["autoTemplateSettings"] = game.settings.get("tokenmagic", "autoTemplateSettings");
     }
     return settingsData;
   }
@@ -230,21 +230,17 @@ export class TokenMagicSettings extends FormApplication {
     let data = super.getData();
     data.hasAutoTemplates = false;
     data.emptyPreset = emptyPreset;
-    switch ( game.system.id ) {
-      case "dnd5e":
-        data.hasAutoTemplates = true;
-        data.dmgTypes = CONFIG.DND5E.damageTypes;
-        data.templateTypes = CONFIG.MeasuredTemplate.types;
-        break;
-      default:
-        break;
+    const templates = TokenMagicSettings.getSystemTemplates();
+    if (templates) {
+      mergeObject(data, templates.getData());
     }
-    data.presets = Magic.getPresets(PresetsLibrary.TEMPLATE).sort(function(a, b) {
-      if ( a.name < b.name ) return -1;
-      if ( a.name > b.name ) return 1;
+
+    data.presets = Magic.getPresets(PresetsLibrary.TEMPLATE).sort(function (a, b) {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
       return 0;
     });
-    data.system = {id: game.system.id, title: game.system.title};
+    data.system = { id: game.system.id, title: game.system.title };
     data.settings = this.getSettingsData();
     data.submitText = game.i18n.localize("TMFX.save");
     return data;
@@ -253,8 +249,8 @@ export class TokenMagicSettings extends FormApplication {
   /** @override */
   async _updateObject(_, formData) {
     const data = expandObject(formData);
-    for ( let [key, value] of Object.entries(data) ) {
-      if ( key === "autoTemplateSettings" && value.overrides ) {
+    for (let [key, value] of Object.entries(data)) {
+      if (key === "autoTemplateSettings" && value.overrides) {
         const compacted = {};
         Object.values(value.overrides).forEach((val, idx) => compacted[idx] = val);
         value.overrides = compacted;
@@ -276,7 +272,7 @@ export class TokenMagicSettings extends FormApplication {
     let idx = 0;
     const entries = event.target.closest("div.tab").querySelectorAll("div.override-entry");
     const last = entries[entries.length - 1];
-    if ( last ) {
+    if (last) {
       idx = last.dataset.idx + 1;
     }
     let updateData = {};
@@ -285,7 +281,7 @@ export class TokenMagicSettings extends FormApplication {
     updateData[`autoTemplateSettings.overrides.${idx}.tint`] = null;
     updateData[`autoTemplateSettings.overrides.${idx}.preset`] = emptyPreset;
     updateData[`autoTemplateSettings.overrides.${idx}.texture`] = null;
-    await this._onSubmit(event, {updateData: updateData, preventClose: true});
+    await this._onSubmit(event, { updateData: updateData, preventClose: true });
     this.render();
   }
 
@@ -293,20 +289,20 @@ export class TokenMagicSettings extends FormApplication {
     event.preventDefault();
     let idx = event.target.dataset.idx;
     const el = event.target.closest(`div[data-idx="${idx}"]`);
-    if ( !el ) {
+    if (!el) {
       return true;
     }
     el.remove();
-    await this._onSubmit(event, {preventClose: true});
+    await this._onSubmit(event, { preventClose: true });
     this.render();
   }
 }
 
 Hooks.once("init", () => {
   // Extracted from https://github.com/leapfrogtechnology/just-handlebars-helpers/
-  Handlebars.registerHelper("concat", function(...params) {
+  Handlebars.registerHelper("concat", function (...params) {
     // Ignore the object appended by handlebars.
-    if ( typeof params[params.length - 1] === "object" ) {
+    if (typeof params[params.length - 1] === "object") {
       params.pop();
     }
 
@@ -315,14 +311,14 @@ Hooks.once("init", () => {
   TokenMagicSettings.init();
   TokenMagicSettings.configureAutoTemplate(game.settings.get("tokenmagic", "autoTemplateEnabled"));
 
-  const wmtdUpdate = async function(wrapped, ...args) {
+  const wmtdUpdate = async function (wrapped, ...args) {
     const [document] = args;
     let preset, hasPresetData;
 
     const tex = document.texture ?? "";
     const hasTexture = !!document.texture;
     const opt = document.flags?.tokenmagic?.options ?? null;
-    if ( !opt ) {
+    if (!opt) {
       preset = document["flags.tokenmagic.templateData.preset"];
     }
     hasPresetData = !!preset;
@@ -330,21 +326,21 @@ Hooks.once("init", () => {
 
     //const hasOpt = data["flags.tokenmagic"]?.options ?? null;
 
-    if ( hasTexture ) {
+    if (hasTexture) {
       document.texture = fixPath(document.texture);
     }
 
-    if ( opt == null ) {
-      if ( hasPresetData && preset !== emptyPreset ) {
+    if (opt == null) {
+      if (hasPresetData && preset !== emptyPreset) {
         let defaultTexture = Magic._getPresetTemplateDefaultTexture(preset);
-        if ( !(defaultTexture == null) ) {
-          if ( tex === "" || tex.startsWith("modules/tokenmagic/fx/assets/templates/") )
+        if (!(defaultTexture == null)) {
+          if (tex === "" || tex.startsWith("modules/tokenmagic/fx/assets/templates/"))
             document.texture = defaultTexture;
         }
 
       }
-      else if ( hasTexture && tex.startsWith("modules/tokenmagic/fx/assets/templates/")
-        && hasPresetData && preset === emptyPreset ) {
+      else if (hasTexture && tex.startsWith("modules/tokenmagic/fx/assets/templates/")
+        && hasPresetData && preset === emptyPreset) {
         document.texture = "";
       }
     }
@@ -352,8 +348,8 @@ Hooks.once("init", () => {
     return await wrapped(...args);
   };
 
-  const wmtDraw = async function(wrapped, ...args) {
-    if ( this.document.texture ) {
+  const wmtDraw = async function (wrapped, ...args) {
+    if (this.document.texture) {
       this.document.texture = fixPath(this.document.texture);
     }
     const retVal = await wrapped(...args);
@@ -367,7 +363,7 @@ Hooks.once("init", () => {
   let wmtRefreshTemplate;
   let wmtRefreshTemplateType;
 
-  if ( !isVideoDisabled() ) {
+  if (!isVideoDisabled()) {
     const toRadians = Math.toRadians;
 
     wmtRefreshType = "OVERRIDE";
@@ -376,9 +372,9 @@ Hooks.once("init", () => {
      *
      * @return {wmtRefresh}
      */
-    wmtRefresh = function() {
-      if ( this.template && !this.template._destroyed ) {
-        let {x, y, direction, distance, angle, width} = this.document;
+    wmtRefresh = function () {
+      if (this.template && !this.template._destroyed) {
+        let { x, y, direction, distance, angle, width } = this.document;
         let d = canvas.dimensions;
         this.position.set(x, y);
 
@@ -391,7 +387,7 @@ Hooks.once("init", () => {
         this.ray = Ray.fromAngle(x, y, direction, distance);
 
         // Get the Template shape
-        switch ( this.document.t ) {
+        switch (this.document.t) {
           case "circle":
             this.shape = this._getCircleShape(distance);
             break;
@@ -424,25 +420,25 @@ Hooks.once("init", () => {
      *
      * @return {wmtRefreshTemplate}
      */
-    wmtRefreshTemplate = function() {
+    wmtRefreshTemplate = function () {
       const t = this.template.clear();
-      if ( !this.isVisible ) return;
+      if (!this.isVisible) return;
 
       // Draw the Template outline
       t.lineStyle(this._borderThickness, this.borderColor, 0.75).beginFill(0x000000, 0.0);
 
       // Fill Color or Texture
-      if ( this.texture ) {
+      if (this.texture) {
         let mat = PIXI.Matrix.IDENTITY;
         // rectangle
-        if ( this.shape.width && this.shape.height )
+        if (this.shape.width && this.shape.height)
           mat.scale(this.shape.width / this.texture.width, this.shape.height / this.texture.height);
-        else if ( this.shape.radius ) {
+        else if (this.shape.radius) {
           mat.scale(this.shape.radius * 2 / this.texture.height, this.shape.radius * 2 / this.texture.width);
           // Circle center is texture start...
           mat.translate(-this.shape.radius, -this.shape.radius);
         }
-        else if ( this.document.t === "ray" ) {
+        else if (this.document.t === "ray") {
           const d = canvas.dimensions,
             height = this.document.width * d.size / d.distance,
             width = this.document.distance * d.size / d.distance;
@@ -455,7 +451,7 @@ Hooks.once("init", () => {
           const d = canvas.dimensions;
 
           // Extract and prepare data
-          let {direction, distance, angle} = this.document;
+          let { direction, distance, angle } = this.document;
           distance *= (d.size / d.distance);
           direction = Math.toRadians(direction);
           const width = this.document.distance * d.size / d.distance;
@@ -478,7 +474,7 @@ Hooks.once("init", () => {
           alpha: 1.0
         });
         const source = getProperty(this.texture, "baseTexture.resource.source");
-        if ( source && (source.tagName === "VIDEO") ) {
+        if (source && (source.tagName === "VIDEO")) {
           source.loop = true;
           source.muted = true;
           game.video.play(source);
@@ -508,7 +504,7 @@ Hooks.once("init", () => {
 
   }
 
-  if ( game.settings.get("tokenmagic", "autohideTemplateElements") ) {
+  if (game.settings.get("tokenmagic", "autohideTemplateElements")) {
 
     /**
      *
@@ -516,18 +512,18 @@ Hooks.once("init", () => {
      * @param args
      * @return {*}
      */
-    const autohideTemplateElements = function(wrapped, ...args) {
+    const autohideTemplateElements = function (wrapped, ...args) {
       // Save texture and border thickness
       const texture = this.texture;
       const borderThickness = this._borderThickness;
 
       // Hide template texture while moving
-      if ( this._original || this.parent === canvas.templates.preview ) {
+      if (this._original || this.parent === canvas.templates.preview) {
         this.texture = null;
       }
 
       // Show border outline only on hover if the template is textured
-      if ( this.texture && this.texture !== "" && !this._hover ) {
+      if (this.texture && this.texture !== "" && !this._hover) {
         this._borderThickness = 0;
       }
 
@@ -542,10 +538,10 @@ Hooks.once("init", () => {
         const template = this._original ?? this;
         const show = !this._original && (this._hover || this.parent === canvas.templates.preview);
 
-        if ( !show && template.template?.geometry ) {
+        if (!show && template.template?.geometry) {
           // Hide origin and destination points, i.e., hide everything except the template shape
-          for ( const document of template.template.geometry.graphicsData ) {
-            if ( document.shape !== template.shape ) {
+          for (const document of template.template.geometry.graphicsData) {
+            if (document.shape !== template.shape) {
               document.fillStyle.visible = false;
               document.lineStyle.visible = false;
             }
@@ -553,18 +549,18 @@ Hooks.once("init", () => {
           template.template.geometry.invalidate();
         }
 
-        if ( template.ruler ) template.ruler.renderable = show;
-        if ( template.controlIcon ) template.controlIcon.renderable = template.owner;
-        if ( template.handle ) template.handle.renderable = template.owner;
+        if (template.ruler) template.ruler.renderable = show;
+        if (template.controlIcon) template.controlIcon.renderable = template.owner;
+        if (template.handle) template.handle.renderable = template.owner;
       }
       return retVal;
     };
 
     /* ------------------------------------------------------------------------------------ */
 
-    if ( wmtRefresh ) {
+    if (wmtRefresh) {
       const _wmtRefresh = wmtRefresh;
-      wmtRefresh = function() {
+      wmtRefresh = function () {
         return autohideTemplateElements.call(this, _wmtRefresh.bind(this), ...arguments);
       };
     }
@@ -574,15 +570,15 @@ Hooks.once("init", () => {
     }
   }
 
-  if ( game.settings.get("tokenmagic", "defaultTemplateOnHover") ) {
+  if (game.settings.get("tokenmagic", "defaultTemplateOnHover")) {
     Hooks.on("canvasReady", () => {
       canvas.stage.on("mousemove", event => {
-        const {x: mx, y: my} = event.data.getLocalPosition(canvas.templates);
-        for ( const template of canvas.templates.placeables ) {
+        const { x: mx, y: my } = event.data.getLocalPosition(canvas.templates);
+        for (const template of canvas.templates.placeables) {
           const hl = canvas.grid.getHighlightLayer(`MeasuredTemplate.${template.id}`);
           const opacity = template.document.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
-          if ( template.texture && template.texture !== "" ) {
-            const {x: cx, y: cy} = template.center;
+          if (template.texture && template.texture !== "") {
+            const { x: cx, y: cy } = template.center;
             const mouseover = template.shape.contains(mx - cx, my - cy);
             hl.renderable = mouseover;
             template.template.alpha = (mouseover ? 0.5 : 1.0) * opacity;
@@ -596,26 +592,26 @@ Hooks.once("init", () => {
     });
   }
 
-  if ( game.modules.get("lib-wrapper")?.active ) {
+  if (game.modules.get("lib-wrapper")?.active) {
     libWrapper.register("tokenmagic", "MeasuredTemplateDocument.prototype.update", wmtdUpdate, "WRAPPER");
     libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._draw", wmtDraw, "WRAPPER");
-    if ( wmtRefresh ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._refresh", wmtRefresh, wmtRefreshType);
-    if ( wmtRefreshTemplate ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._refreshTemplate", wmtRefreshTemplate, wmtRefreshTemplateType);
+    if (wmtRefresh) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._refresh", wmtRefresh, wmtRefreshType);
+    if (wmtRefreshTemplate) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._refreshTemplate", wmtRefreshTemplate, wmtRefreshTemplateType);
   }
   else {
     const cmtdUpdate = MeasuredTemplateDocument.prototype.update;
-    MeasuredTemplateDocument.prototype.update = function() {
+    MeasuredTemplateDocument.prototype.update = function () {
       return wmtdUpdate.call(this, cmtdUpdate.bind(this), ...arguments);
     };
     const cmtDraw = MeasuredTemplate.prototype._draw;
-    MeasuredTemplate.prototype._draw = function() {
+    MeasuredTemplate.prototype._draw = function () {
       return wmtDraw.call(this, cmtDraw.bind(this), ...arguments);
     };
 
-    if ( wmtRefresh ) {
-      if ( wmtRefreshType && wmtRefreshType !== "OVERRIDE" ) {
+    if (wmtRefresh) {
+      if (wmtRefreshType && wmtRefreshType !== "OVERRIDE") {
         const cmtRefresh = MeasuredTemplate.prototype._refresh;
-        MeasuredTemplate.prototype._refresh = function() {
+        MeasuredTemplate.prototype._refresh = function () {
           return wmtRefresh.call(this, cmtRefresh.bind(this), ...arguments);
         };
       }
@@ -624,10 +620,10 @@ Hooks.once("init", () => {
       }
     }
 
-    if ( wmtRefreshTemplate ) {
-      if ( wmtRefreshTemplateType && wmtRefreshTemplateType !== "OVERRIDE" ) {
+    if (wmtRefreshTemplate) {
+      if (wmtRefreshTemplateType && wmtRefreshTemplateType !== "OVERRIDE") {
         const cmtRefreshTemplate = MeasuredTemplate.prototype._refreshTemplate;
-        MeasuredTemplate.prototype._refreshTemplate = function() {
+        MeasuredTemplate.prototype._refreshTemplate = function () {
           return wmtRefreshTemplate.call(this, cmtRefreshTemplate.bind(this), ...arguments);
         };
       }
