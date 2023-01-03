@@ -1,7 +1,7 @@
 {
   "I18N.LANGUAGE": "Español",
   "I18N.MAINTAINERS": "@Viriato139ac#0342",
-  
+
   "TMFX.TokenMagic": "TokenMagic",
   "TMFX.preset.add.success": "FX añadido con éxito a la biblioteca de parámetros predeterminados",
   "TMFX.preset.add.permission.failure": "No tiene permisos para añadir el FX a la biblioteca de parámetros predeterminados",
@@ -19,7 +19,7 @@
   "TMFX.preset.reset.success": "Su biblioteca de parámetros predeterminados ha sido reiniciada con éxito",
   "TMFX.settings.importOverwrite.name": "Sobrescribir al importar",
   "TMFX.settings.importOverwrite.hint": "Marque esta opción si quiere reemplazar los parámetros predeterminados que tengan los mismos nombres al importar",
-  "TMFX.template.opacity": "Opacidad Interior:",
+  "TMFX.template.opacity": "Opacidad de la Textura:",
   "TMFX.template.fx": "Efectos Especiales:",
   "TMFX.template.tint": "Efecto de Tono:",
   "TMFX.settings.autoFPS.name": "Fotogramas por segundo automático",
