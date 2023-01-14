@@ -7,7 +7,7 @@ export class FilterRGBSplit extends PIXI.filters.RGBSplitFilter {
     this.red = new Float32Array([-10, 0]);
     this.green = new Float32Array([0, 10]);
     this.blue = new Float32Array([0, 0]);
-    this.zOrder = 60;
+    this.zOrder = 340;
     this.animated = {};
     this.setTMParams(params);
     if (!this.dummy) {

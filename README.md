@@ -459,6 +459,10 @@ You will find below a table with the filters and their default `zOrder`. The def
 | Waves  (wave) | 280  | <img src="tokenmagic/gui/macros/images/20 - Waves.webp" height="24">                             |
 | Blur (blur) | 290  | <img src="tokenmagic/gui/macros/images/11 - Blur.webp" height="24">                              |
 | Zoom Blur (zoomblur) | 300  | <img src="tokenmagic/gui/macros/images/12 - Zoom Blur.webp" height="24">                         |
+| Ascii (ascii) | 310  | <img src="tokenmagic/gui/macros/images/40 - Ascii.webp" height="24">                         |
+| Dot Shade (dot) | 320  | <img src="tokenmagic/gui/macros/images/41 - Dot.webp" height="24">                         |
+| CRT Monitor (crt) | 330  | <img src="tokenmagic/gui/macros/images/42 - CRT.webp" height="24">                         |
+| RGB Split (rgbSplit) | 340  | <img src="tokenmagic/gui/macros/images/43 - RGB Split.webp" height="24">                         |
 | Transform (transform) | 1000 | <img src="tokenmagic/gui/macros/images/33 - T02 - Saving Roll (transform).webp" height="24">     |
 | Force Field (field) | 2000  | <img src="tokenmagic/gui/macros/images/24 - T11 - Grid Force Field.webp" height="24">            |
 | Distortion (distortion) | 4000  | <img src="tokenmagic/gui/macros/images/07 - Distortion.webp" height="24">                        |

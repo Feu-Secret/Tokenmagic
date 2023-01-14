@@ -12,7 +12,7 @@ export class FilterCRT extends PIXI.filters.CRTFilter {
     this.noiseSize = 1.0;
     this.seed = 0;
     this.vignetting = 0;
-    this.zOrder = 60;
+    this.zOrder = 320;
     this.animated = {};
     this.setTMParams(params);
     if (!this.dummy) {
