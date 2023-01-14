@@ -12,6 +12,7 @@ uniform bool alphaDiscard;
 uniform bool inverse;
 uniform bool top;
 uniform bool colorize;
+uniform bool repeat;
 
 uniform vec2 scale;
 uniform vec2 translation;
@@ -103,7 +104,12 @@ void main() {
     vec4 icolor = getFromColor(vTextureCoord);
     if(alphaDiscard && icolor.a == 0.0) discard;
 
-    vec4 tcolor = getToColor(uvTex + translation);
+    vec4 tcolor;
+    if(repeat) {
+        tcolor = getToColor(fract(uvTex + translation));
+    } else {
+        tcolor = getToColor(uvTex + translation);
+    }
     tcolor.a = min(tcolor.a, alpha);
 
     // colorize if necessary

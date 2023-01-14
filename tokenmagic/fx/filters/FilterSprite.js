@@ -17,6 +17,7 @@ export class FilterSprite extends CustomFilter {
       inverse,
       alpha,
       alphaDiscard,
+      repeat,
       top,
       rotation,
       twRadiusPercent,
@@ -57,6 +58,7 @@ export class FilterSprite extends CustomFilter {
       inverse,
       alpha,
       alphaDiscard,
+      repeat,
       top,
       rotation,
       twRadiusPercent,
@@ -152,6 +154,16 @@ export class FilterSprite extends CustomFilter {
   set alphaDiscard(value) {
     if ( !(value == null) && typeof value === "boolean" ) {
       this.uniforms.alphaDiscard = value;
+    }
+  }
+
+  get repeat() {
+    return this.uniforms.repeat;
+  }
+
+  set repeat(value) {
+    if ( !(value == null) && typeof value === "boolean" ) {
+      this.uniforms.repeat = value;
     }
   }
 
@@ -332,6 +344,7 @@ FilterSprite.defaults = {
   inverse: false,
   alpha: 1,
   alphaDiscard: false,
+  repeat: false,
   top: false,
   rotation: 0.0,
   twRadiusPercent: 0,
