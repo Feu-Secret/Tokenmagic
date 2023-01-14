@@ -10,6 +10,7 @@ export class FilterGlow extends PIXI.filters.GlowFilter {
     this.outerStrength = 6.5;
     this.color = 0x0020ff;
     this.quality = 1;
+    this.alpha = 1,
     this.zOrder = 70;
     this.animated = {};
     this.setTMParams(params);

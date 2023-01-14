@@ -15,6 +15,8 @@ export class FilterSprite extends CustomFilter {
       color,
       colorize,
       inverse,
+      alpha,
+      alphaDiscard,
       top,
       rotation,
       twRadiusPercent,
@@ -53,6 +55,8 @@ export class FilterSprite extends CustomFilter {
       color,
       colorize,
       inverse,
+      alpha,
+      alphaDiscard,
       top,
       rotation,
       twRadiusPercent,
@@ -130,6 +134,24 @@ export class FilterSprite extends CustomFilter {
   set inverse(value) {
     if ( !(value == null) && typeof value === "boolean" ) {
       this.uniforms.inverse = value;
+    }
+  }
+
+  get alpha() {
+    return this.uniforms.alpha;
+  }
+
+  set alpha(value) {
+    this.uniforms.alpha = value;
+  }
+
+  get alphaDiscard() {
+    return this.uniforms.alphaDiscard;
+  }
+
+  set alphaDiscard(value) {
+    if ( !(value == null) && typeof value === "boolean" ) {
+      this.uniforms.alphaDiscard = value;
     }
   }
 
@@ -308,6 +330,8 @@ FilterSprite.defaults = {
   color: 0x000000,
   colorize: false,
   inverse: false,
+  alpha: 1,
+  alphaDiscard: false,
   top: false,
   rotation: 0.0,
   twRadiusPercent: 0,
