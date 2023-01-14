@@ -6,6 +6,8 @@ uniform float twRadius;
 uniform float twAngle;
 uniform float bpRadius;
 uniform float bpStrength;
+uniform float alpha;
+uniform bool alphaDiscard;
 
 uniform bool inverse;
 uniform bool top;
@@ -98,8 +100,11 @@ void main() {
     vec2 uvTex = transform(vTextureCoordExtra);
 
     // get samplers color
-    vec4 tcolor = getToColor(uvTex + translation);
     vec4 icolor = getFromColor(vTextureCoord);
+    if(alphaDiscard && icolor.a == 0.0) discard;
+
+    vec4 tcolor = getToColor(uvTex + translation);
+    tcolor.a = min(tcolor.a, alpha);
 
     // colorize if necessary
     if (colorize) {
@@ -108,7 +113,7 @@ void main() {
 
     if (top) fcolor = mix(tcolor.rgb, icolor.rgb, 1.0 - tcolor.a);
     else fcolor = mix(icolor.rgb, tcolor.rgb, 1.0 - icolor.a);
-   
+
     gl_FragColor = vec4(fcolor, max(tcolor.a, icolor.a));
 }
 `;

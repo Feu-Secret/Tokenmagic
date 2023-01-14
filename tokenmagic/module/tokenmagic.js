@@ -1,5 +1,7 @@
 import {FilterAdjustment} from "../fx/filters/FilterAdjustment.js";
+import { FilterAscii } from "../fx/filters/FilterAscii.js";
 import {FilterXBloom} from "../fx/filters/FilterAdvancedBloom.js";
+import { FilterDot } from "../fx/filters/FilterDot.js";
 import {FilterDistortion} from "../fx/filters/FilterDistortion.js";
 import {FilterOldFilm} from "../fx/filters/FilterOldFilm.js";
 import {FilterGlow} from "../fx/filters/FilterGlow.js";
@@ -42,6 +44,8 @@ import {allPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
 import {tmfxDataMigration} from "../migration/migration.js";
 import {emptyPreset} from "./constants.js";
 import "./proto/PlaceableObjectProto.js";
+import { FilterCRT } from "../fx/filters/FilterCRT.js";
+import { FilterRGBSplit } from "../fx/filters/FilterRGBSplit.js";
 
 /*
 
@@ -56,7 +60,10 @@ const moduleTM = "module.tokenmagic";
 // Filters Class Keys
 export const FilterType = {
   adjustment: FilterAdjustment,
+  ascii: FilterAscii,
+  dot: FilterDot,
   distortion: FilterDistortion,
+  crt: FilterCRT,
   oldfilm: FilterOldFilm,
   glow: FilterGlow,
   outline: FilterOutline,
@@ -93,7 +100,8 @@ export const FilterType = {
   xfire: FilterXFire,
   sprite: FilterSprite,
   replaceColor: FilterReplaceColor,
-  ddTint: FilterDDTint
+  ddTint: FilterDDTint,
+  rgbSplit: FilterRGBSplit,
 };
 
 export const PlaceableType = {
