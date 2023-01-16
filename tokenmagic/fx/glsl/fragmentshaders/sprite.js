@@ -107,7 +107,6 @@ void main() {
 
     // get samplers color
     vec4 icolor = getFromColor(vTextureCoord);
-    if(alphaDiscard && icolor.a == 0.0) discard;
 
     vec4 tcolor;
     if(repeat) {
@@ -115,7 +114,9 @@ void main() {
     } else {
         tcolor = getToColor(uvTex + translation);
     }
-    tcolor.a = min(tcolor.a, alpha);
+
+    tcolor.a *= alpha;
+    if(alphaDiscard) tcolor.a *= icolor.a;
 
     // colorize if necessary
     if (colorize) {
