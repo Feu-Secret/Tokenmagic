@@ -1,4 +1,4 @@
-export const polymorph = `
+export const polymorph = `#version 300 es
 precision mediump float;
 
 uniform float progress;
@@ -10,9 +10,11 @@ uniform sampler2D uSampler;
 uniform sampler2D uSamplerTarget;
 uniform mat3 filterMatrixInverse;
 
-varying vec2 vTextureCoord;
-varying vec2 vTextureCoordExtra;
-varying vec2 vFilterCoord;
+in vec2 vTextureCoord;
+in vec2 vTextureCoordExtra;
+in vec2 vFilterCoord;
+
+out vec4 outputColor;
 
 const float PI = 3.14159265358;
 
@@ -25,11 +27,11 @@ float getClip(vec2 uv) {
 }
 
 vec4 getFromColor(vec2 uv) {
-    return texture2D(uSampler,clamp(uv,inputClamp.xy,inputClamp.zw));
+    return texture(uSampler,clamp(uv,inputClamp.xy,inputClamp.zw));
 }
 
 vec4 getToColor(vec2 uv) {
-    return texture2D(uSamplerTarget,clamp(uv,inputClampTarget.xy,inputClampTarget.zw))*getClip(uv);
+    return texture(uSamplerTarget,clamp(uv,inputClampTarget.xy,inputClampTarget.zw))*getClip(uv);
 }
 
 float rand(vec2 co) {
@@ -188,12 +190,12 @@ void main() {
 
     // shortcut to prevent a lot of computation if progress is equal to 0 or 1
     if (progress == 1.) {
-        gl_FragColor = getToColor(uvExtra);
+        outputColor = getToColor(uvExtra);
         return;
     }
 
     if (progress == 0.) {
-        gl_FragColor = getFromColor(vTextureCoord);
+        outputColor = getFromColor(vTextureCoord);
         return;
     }
 
@@ -217,6 +219,6 @@ void main() {
         result = hologram(vTextureCoord, uvExtra);
     } 
    
-    gl_FragColor = result;
+    outputColor = result;
 }
 `;
