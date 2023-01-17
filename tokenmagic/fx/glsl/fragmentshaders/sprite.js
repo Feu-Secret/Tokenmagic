@@ -100,7 +100,6 @@ vec4 getToColorFract(in vec2 uv) {
 }
 
 void main() {
-    vec3 fcolor;
 
     // UV transformations
     vec2 uvTex = transform(vTextureCoordExtra);
@@ -115,17 +114,18 @@ void main() {
         tcolor = getToColor(uvTex + translation);
     }
 
-    tcolor.a *= alpha;
-    if(alphaDiscard) tcolor.a *= icolor.a;
+    tcolor = mix(tcolor, icolor, 1.0 - alpha);
+    if(alphaDiscard) tcolor = mix(tcolor, icolor, 1.0 - icolor.a);
 
     // colorize if necessary
     if (colorize) {
         tcolor = colorization(tcolor);
     }
 
-    if (top) fcolor = mix(tcolor.rgb, icolor.rgb, 1.0 - tcolor.a);
-    else fcolor = mix(icolor.rgb, tcolor.rgb, 1.0 - icolor.a);
-
+    vec3 fcolor = tcolor.rgb;
+    if(top && icolor.a > 0.) fcolor = mix(tcolor.rgb, icolor.rgb, 1.0 - tcolor.a);
+    else if(!top) fcolor = mix(icolor.rgb, tcolor.rgb, 1.0 - icolor.a);
+   
     outputColor = vec4(fcolor, max(tcolor.a, icolor.a));
 }
 `;
