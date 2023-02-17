@@ -1252,7 +1252,7 @@ export function TokenMagic() {
           }
         }
       }
-      return preset.params;
+      return deepClone(preset.params);
     }
     return undefined;
   }
