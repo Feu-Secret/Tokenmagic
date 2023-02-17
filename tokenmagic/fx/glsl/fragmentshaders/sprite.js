@@ -114,7 +114,7 @@ void main() {
         tcolor = getToColor(uvTex + translation);
     }
 
-    tcolor = mix(tcolor, icolor, 1.0 - alpha);
+    tcolor.a *= alpha;
     if(alphaDiscard) tcolor = mix(tcolor, icolor, 1.0 - icolor.a);
 
     // colorize if necessary
