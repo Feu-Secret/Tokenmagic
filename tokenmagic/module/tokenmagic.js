@@ -284,6 +284,18 @@ export function getPlaceableById(id, type) {
   return placeable;
 }
 
+function randomizeParams(params) {
+  for(const [param, opts] of Object.entries(params.randomized)){
+    const min = Math.min(opts.val1, opts.val2);
+    const max = Math.max(opts.val1, opts.val2);
+    const stepsInRange = (max - min + (Number.isInteger(opts.step) ? 1 : 0)) / opts.step;
+    params[param] = Math.floor(Math.random() * stepsInRange) * opts.step + min;
+    if('link' in opts){
+      params[opts.link] = params[param];
+    }
+  }
+}
+
 export function objectAssign(target, ...sources) {
   sources.forEach(source => {
     Object.keys(source).forEach(key => {
@@ -391,6 +403,10 @@ export function TokenMagic() {
         params.enabled = true;
       }
 
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       params.placeableId = placeable.id;
       params.filterInternalId = randomID();
       params.filterOwner = game.data.userId;
@@ -436,6 +452,10 @@ export function TokenMagic() {
 
       updateParams = false;
       params.updateId = randomID();
+
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
 
       workingFlags.forEach(flag => {
         if ( flag.tmFilters.tmFilterId === params.filterId
@@ -587,6 +607,11 @@ export function TokenMagic() {
 
     for ( const params of paramsArray ) {
       params.updateId = randomID();
+
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       workingFlags.forEach(flag => {
         if ( flag.tmFilters.tmFilterId === params.filterId
           && flag.tmFilters.tmFilterType === params.filterType ) {
@@ -1227,7 +1252,7 @@ export function TokenMagic() {
           }
         }
       }
-      return preset.params;
+      return deepClone(preset.params);
     }
     return undefined;
   }
