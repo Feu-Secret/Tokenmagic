@@ -284,14 +284,32 @@ export function getPlaceableById(id, type) {
   return placeable;
 }
 
-function randomizeParams(params) {
+/**
+ * Randomizes params using 'randomized' field. 
+ * 'randomized' is an object consisting of keys named after params to be randomized, which map either to arrays or ranges
+ * which will be used to generate a random value.
+ * e.g.
+ * {
+ *  param1: ['foo1', 'foo2', 'foo3'],
+ *  param2: { list: ['foo1', 'foo2', 'foo3'], link: 'param5'},
+ *  param3: { val1: 0, val2: 1, step: 0.1},
+ *  param4: { val1: 0, val2: 10, step: 1, link: 'param6'},
+ * }
+ * 'link' will assign the same generated value to one other param.
+ */
+async function randomizeParams(params) {
   for(const [param, opts] of Object.entries(params.randomized)){
-    const min = Math.min(opts.val1, opts.val2);
-    const max = Math.max(opts.val1, opts.val2);
-    const stepsInRange = (max - min + (Number.isInteger(opts.step) ? 1 : 0)) / opts.step;
-    params[param] = Math.floor(Math.random() * stepsInRange) * opts.step + min;
-    if('link' in opts){
-      params[opts.link] = params[param];
+    if(Array.isArray(opts) || opts.hasOwnProperty('list')){
+      const list = opts.list ?? opts;
+      params[param] = list[Math.floor(Math.random() * list.length)];
+    } else {
+      const min = Math.min(opts.val1, opts.val2);
+      const max = Math.max(opts.val1, opts.val2);
+      const stepsInRange = (max - min + (Number.isInteger(opts.step) ? 1 : 0)) / opts.step;
+      params[param] = Math.floor(Math.random() * stepsInRange) * opts.step + min;
+    }
+    if (opts.hasOwnProperty('link')) {
+        params[opts.link] = params[param];
     }
   }
 }
@@ -404,7 +422,7 @@ export function TokenMagic() {
       }
 
       if( params.hasOwnProperty("randomized")) {
-        randomizeParams(params);
+        await randomizeParams(params);
       }
 
       params.placeableId = placeable.id;
@@ -454,7 +472,7 @@ export function TokenMagic() {
       params.updateId = randomID();
 
       if( params.hasOwnProperty("randomized")) {
-        randomizeParams(params);
+        await randomizeParams(params);
       }
 
       workingFlags.forEach(flag => {
@@ -476,7 +494,7 @@ export function TokenMagic() {
 
         if ( !params.hasOwnProperty("rank") ) {
           params.rank = placeable._TMFXgetMaxFilterRank();
-        }
+        } 
 
         if ( !params.hasOwnProperty("filterId") || params.filterId == null ) {
           params.filterId = randomID();
@@ -609,7 +627,7 @@ export function TokenMagic() {
       params.updateId = randomID();
 
       if( params.hasOwnProperty("randomized")) {
-        randomizeParams(params);
+        await randomizeParams(params);
       }
 
       workingFlags.forEach(flag => {
