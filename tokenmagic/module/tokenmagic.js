@@ -286,8 +286,8 @@ export function getPlaceableById(id, type) {
 
 /**
  * Randomizes params using 'randomized' field. 
- * 'randomized' is an object consisting of keys named after params to be randomized, which map either to arrays or ranges
- * which will be used to generate a random value.
+ * 'randomized' is an object consisting of keys named after params to be randomized, which map either
+ * to arrays or ranges which will be used to generate a random value.
  * e.g.
  * {
  *  param1: ['foo1', 'foo2', 'foo3'],
@@ -297,7 +297,7 @@ export function getPlaceableById(id, type) {
  * }
  * 'link' will assign the same generated value to one other param.
  */
-async function randomizeParams(params) {
+function randomizeParams(params) {
   for(const [param, opts] of Object.entries(params.randomized)){
     if(Array.isArray(opts) || opts.hasOwnProperty('list')){
       const list = opts.list ?? opts;
@@ -305,8 +305,9 @@ async function randomizeParams(params) {
     } else {
       const min = Math.min(opts.val1, opts.val2);
       const max = Math.max(opts.val1, opts.val2);
-      const stepsInRange = (max - min + (Number.isInteger(opts.step) ? 1 : 0)) / opts.step;
-      params[param] = Math.floor(Math.random() * stepsInRange) * opts.step + min;
+      const step = opts.step ?? 1;
+      const stepsInRange = (max - min + (Number.isInteger(step) ? 1 : 0)) / step;
+      params[param] = Math.floor(Math.random() * stepsInRange) * step + min;
     }
     if (opts.hasOwnProperty('link')) {
         params[opts.link] = params[param];
@@ -422,7 +423,7 @@ export function TokenMagic() {
       }
 
       if( params.hasOwnProperty("randomized")) {
-        await randomizeParams(params);
+        randomizeParams(params);
       }
 
       params.placeableId = placeable.id;
@@ -472,7 +473,7 @@ export function TokenMagic() {
       params.updateId = randomID();
 
       if( params.hasOwnProperty("randomized")) {
-        await randomizeParams(params);
+        randomizeParams(params);
       }
 
       workingFlags.forEach(flag => {
@@ -627,7 +628,7 @@ export function TokenMagic() {
       params.updateId = randomID();
 
       if( params.hasOwnProperty("randomized")) {
-        await randomizeParams(params);
+        randomizeParams(params);
       }
 
       workingFlags.forEach(flag => {
