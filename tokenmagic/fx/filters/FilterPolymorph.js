@@ -40,6 +40,12 @@ export class FilterPolymorph extends CustomFilter {
     if (!this.dummy) {
       this.anime = new Anime(this);
       this.normalizeTMParams();
+    }
+  }
+
+  setTMParams(params) {
+    super.setTMParams(params);
+    if(!this.dummy && 'imagePath' in params){
       this.assignTexture();
     }
   }

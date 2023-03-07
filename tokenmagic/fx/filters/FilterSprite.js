@@ -82,6 +82,12 @@ export class FilterSprite extends CustomFilter {
     if ( !this.dummy ) {
       this.anime = new Anime(this);
       this.normalizeTMParams();
+    }
+  }
+
+  setTMParams(params) {
+    super.setTMParams(params);
+    if(!this.dummy && 'imagePath' in params){
       this.assignTexture();
     }
   }
@@ -289,6 +295,9 @@ export class FilterSprite extends CustomFilter {
 
   assignTexture() {
     if ( this.hasOwnProperty("imagePath") ) {
+      // Destroy the previous sprite
+      if ( this.targetSprite && !this.targetSprite.destroyed ) 
+        this.targetSprite.destroy({children: true, texture: false, baseTexture: false});
       this.tex = PIXI.Texture.from(this.imagePath);
 
       let sprite = new PIXI.Sprite(this.tex);

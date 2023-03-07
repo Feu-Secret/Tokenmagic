@@ -284,6 +284,37 @@ export function getPlaceableById(id, type) {
   return placeable;
 }
 
+/**
+ * Randomizes params using 'randomized' field. 
+ * 'randomized' is an object consisting of keys named after params to be randomized, which map either
+ * to arrays or ranges which will be used to generate a random value.
+ * e.g.
+ * {
+ *  param1: ['foo1', 'foo2', 'foo3'],
+ *  param2: { list: ['foo1', 'foo2', 'foo3'], link: 'param5'},
+ *  param3: { val1: 0, val2: 1, step: 0.1},
+ *  param4: { val1: 0, val2: 10, step: 1, link: 'param6'},
+ * }
+ * 'link' will assign the same generated value to one other param.
+ */
+function randomizeParams(params) {
+  for(const [param, opts] of Object.entries(params.randomized)){
+    if(Array.isArray(opts) || opts.hasOwnProperty('list')){
+      const list = opts.list ?? opts;
+      params[param] = list[Math.floor(Math.random() * list.length)];
+    } else {
+      const min = Math.min(opts.val1, opts.val2);
+      const max = Math.max(opts.val1, opts.val2);
+      const step = opts.step ?? 1;
+      const stepsInRange = (max - min + (Number.isInteger(step) ? 1 : 0)) / step;
+      params[param] = Math.floor(Math.random() * stepsInRange) * step + min;
+    }
+    if (opts.hasOwnProperty('link')) {
+        params[opts.link] = params[param];
+    }
+  }
+}
+
 export function objectAssign(target, ...sources) {
   sources.forEach(source => {
     Object.keys(source).forEach(key => {
@@ -391,6 +422,10 @@ export function TokenMagic() {
         params.enabled = true;
       }
 
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       params.placeableId = placeable.id;
       params.filterInternalId = randomID();
       params.filterOwner = game.data.userId;
@@ -437,6 +472,10 @@ export function TokenMagic() {
       updateParams = false;
       params.updateId = randomID();
 
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       workingFlags.forEach(flag => {
         if ( flag.tmFilters.tmFilterId === params.filterId
           && flag.tmFilters.tmFilterType === params.filterType ) {
@@ -456,7 +495,7 @@ export function TokenMagic() {
 
         if ( !params.hasOwnProperty("rank") ) {
           params.rank = placeable._TMFXgetMaxFilterRank();
-        }
+        } 
 
         if ( !params.hasOwnProperty("filterId") || params.filterId == null ) {
           params.filterId = randomID();
@@ -587,6 +626,11 @@ export function TokenMagic() {
 
     for ( const params of paramsArray ) {
       params.updateId = randomID();
+
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       workingFlags.forEach(flag => {
         if ( flag.tmFilters.tmFilterId === params.filterId
           && flag.tmFilters.tmFilterType === params.filterType ) {
@@ -1227,7 +1271,7 @@ export function TokenMagic() {
           }
         }
       }
-      return preset.params;
+      return deepClone(preset.params);
     }
     return undefined;
   }
