@@ -418,6 +418,59 @@ generate a random color per complete loop.
 **Mandatory properties:** `active` `speed`
 increment a property value by his speed, in pixel / ms.
 
+---
+
+To randomize filter properties you can use the `randomized` keyword property:
+
+```JS
+// Randomization example
+{
+    filterType: "sprite",
+    filterId: "randomOverlay",
+    repeat: true,
+    alphaDiscard: true,
+    inverse: true,
+    gridPadding: 1,
+    translationX: 0,
+    translationY: 0,
+    top: true,
+    randomized: {
+        imagePath: [
+            "modules/tokenmagic/fx/assets/distortion-1.png",
+            "modules/tokenmagic/fx/assets/dots-1.png",
+            "modules/tokenmagic/fx/assets/extrusion-1.png",
+            "modules/tokenmagic/fx/assets/noise-2.jpg",
+            "modules/tokenmagic/fx/assets/symbols-1.png",
+            "modules/tokenmagic/fx/assets/waves-1.png",
+        ],
+        rotation: { val1: 0, val2: 360, step: 1 },
+        scaleX: { val1: 0.1, val2: 0.6, step: 0.01, link: 'scaleY' },
+    },
+}
+```
+
+In the above example, `imagePath`, `scaleX`, and `rotation` values are randomized.
+- `imagePath` will pick one value from the provided list
+- `rotation` will pick a random integer in the range of 0 and 360 as defined by`val1` and `val`
+- `scaleX` will pack a random float between 0.1 and 0.6 and will assign the same value to `scaleY`
+
+
+```
+randomized :
+{
+    <property to randomize> :
+      {
+         val1: <value>, // value limit 1
+         val2: <value>, // value limit 2
+         step: <value greater than 0(default:1)>  // granularity of randomized value
+         list: <a list of values> // list that can be used instead of a range defined by 'val1' and 'val2'
+         link: <"property name"> // property to be assigned the same randomized value
+      },
+    <property to randomize> : <a list of values> // list of values to be randomly picked from
+    <,<other properties to animate>…>
+}
+```
+
 You can control the ordering of the filters with the `zOrder` property.
 If you want to work with this new property, you must activate the option in the module option panel. The `zOrder` allows the filters to be applied on a Placeable in a specific order: from the smallest `zOrder` to the highest.
 
