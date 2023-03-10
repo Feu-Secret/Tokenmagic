@@ -299,19 +299,19 @@ export function getPlaceableById(id, type) {
  */
 function randomizeParams(params) {
   for(const [param, opts] of Object.entries(params.randomized)){
+    let rVal;
     if(Array.isArray(opts) || opts.hasOwnProperty('list')){
       const list = opts.list ?? opts;
-      params[param] = list[Math.floor(Math.random() * list.length)];
+      rVal = list[Math.floor(Math.random() * list.length)];
     } else {
       const min = Math.min(opts.val1, opts.val2);
       const max = Math.max(opts.val1, opts.val2);
       const step = opts.step ?? 1;
       const stepsInRange = (max - min + (Number.isInteger(step) ? 1 : 0)) / step;
-      params[param] = Math.floor(Math.random() * stepsInRange) * step + min;
+      rVal = Math.floor(Math.random() * stepsInRange) * step + min;
     }
-    if (opts.hasOwnProperty('link')) {
-        params[opts.link] = params[param];
-    }
+    setProperty(params, param, rVal);
+    if (opts.hasOwnProperty('link')) setProperty(params, opts.link, rVal);
   }
 }
 

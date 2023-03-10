@@ -16,9 +16,11 @@ uniform mat3 filterMatrixInverse;
 
 const float timeSpeed = 3.;
 
+#define TWOPI 6.28318531
+
 float randomVal (float inVal)
 {
-    return fract(sin(dot(vec2(inVal, 2523.2361) ,vec2(12.9898,78.233))) * 43758.5453)-0.5;
+    return fract(sin(mod(dot(vec2(inVal, 2523.2361) , vec2(12.9898,78.233)), TWOPI)) * 43758.5453)-0.5;
 }
 
 vec2 randomVec2 (float inVal)
@@ -38,7 +40,7 @@ float makeWaves(vec2 uv, float theTime, float offset)
         i = float(n)+offset;
         randVec = randomVec2(float(i));
   		direction = (uv.x*randVec.x+uv.y*randVec.y);
-        sineWave = sin(direction*randomVal(i+1.6516)+theTime*timeSpeed);
+        sineWave = sin(mod(direction*randomVal(i+1.6516)+theTime*timeSpeed, TWOPI));
         sineWave = smoothstep(0.2,1.,sineWave);
     	result += randomVal(i+123.0)*sineWave;
     }
@@ -67,7 +69,7 @@ vec4 water( vec2 fragCoord )
     
     result = 2.0*smoothstep(0.35,1.8,(result+result2)*glint);
 
-    vec2 p = vec2(result, result2)*0.019 + (cos(uv*1.1 - sin(uv.yx + time*timeSpeed/20.))*0.012);
+    vec2 p = vec2(result, result2)*0.019 + (cos( mod(  uv*1.1 - sin(mod(uv.yx + time*timeSpeed/20., TWOPI)), TWOPI) )*0.012);
     uv.x -= shift.x;
     uv.y -= shift.y;
     uv += p * billowy;
