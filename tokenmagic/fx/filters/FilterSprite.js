@@ -280,14 +280,15 @@ export class FilterSprite extends CustomFilter {
     this.uniforms.uSamplerTarget = value;
   }
 
-  _playVideo(value) {
+  async _playVideo(value) {
     // Play if baseTexture resource is a video
     if ( this.tex ) {
       const source = getProperty(this.tex, "baseTexture.resource.source");
       if ( source && (source.tagName === "VIDEO") ) {
-        source.loop = this._loop;
-        source.muted = true;
-        if ( value ) game.video.play(source);
+        if(isNaN(source.duration)){
+          await new Promise(resolve => { source.onloadedmetadata = () => resolve(); });
+        }
+        if ( value ) game.video.play(source, {loop: this._loop, volume: 0 });
         else game.video.stop(source);
       }
     }
