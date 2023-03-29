@@ -298,20 +298,22 @@ export function getPlaceableById(id, type) {
  * 'link' will assign the same generated value to one other param.
  */
 function randomizeParams(params) {
+  if(params.randomized.hasOwnProperty('active') && !params.randomized.active) return;
+
   for(const [param, opts] of Object.entries(params.randomized)){
+    let rVal;
     if(Array.isArray(opts) || opts.hasOwnProperty('list')){
       const list = opts.list ?? opts;
-      params[param] = list[Math.floor(Math.random() * list.length)];
+      rVal = list[Math.floor(Math.random() * list.length)];
     } else {
       const min = Math.min(opts.val1, opts.val2);
       const max = Math.max(opts.val1, opts.val2);
       const step = opts.step ?? 1;
       const stepsInRange = (max - min + (Number.isInteger(step) ? 1 : 0)) / step;
-      params[param] = Math.floor(Math.random() * stepsInRange) * step + min;
+      rVal = Math.floor(Math.random() * stepsInRange) * step + min;
     }
-    if (opts.hasOwnProperty('link')) {
-        params[opts.link] = params[param];
-    }
+    setProperty(params, param, rVal);
+    if (opts.hasOwnProperty('link')) setProperty(params, opts.link, rVal);
   }
 }
 
@@ -320,7 +322,8 @@ export function objectAssign(target, ...sources) {
     Object.keys(source).forEach(key => {
       const s_val = source[key];
       const t_val = target[key];
-      target[key] = t_val && s_val && typeof t_val === "object" && typeof s_val === "object"
+      if(s_val instanceof Array) target[key] =  [...s_val];
+      else target[key] = t_val && s_val && typeof t_val === "object" && typeof s_val === "object"
         ? objectAssign(t_val, s_val)
         : s_val;
     });
@@ -728,6 +731,19 @@ export function TokenMagic() {
     return true;
   }
 
+  function isApplicableUser(tmParams) {
+    const hasUser = (arr) => {
+      return arr.includes(game.user.name) || arr.includes(game.user.id);
+    }
+
+    if((tmParams.users?.include?.length && !hasUser(tmParams.users.include)) 
+      || (tmParams.users?.exclude?.length && hasUser(tmParams.users?.exclude))){
+      return false;
+    }
+
+    return true;
+  }
+
   function hasFilterId(placeable, filterId) {
     if ( placeable == null
       || !(placeable instanceof PlaceableObject) ) {
@@ -810,6 +826,12 @@ export function TokenMagic() {
     if ( filterInfo == null ) {
       return;
     }
+
+    // Do not assign the filter if it has been explicitly set as not applicable to the current user
+    if(!isApplicableUser(filterInfo.tmFilters.tmParams)){
+      return;
+    }
+
     let workingFilterInfo = duplicate(filterInfo);
     workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
     workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
@@ -931,11 +953,13 @@ export function TokenMagic() {
       // we test all the animes that are supposed to be on the placeable
       if ( anime.puppet.placeableId === placeable.id ) {
         // is the animation present in the tokenmagic flags for this placeable ?
+        // and is it applicable to the current user?
         let foundFilter = false;
         filters.forEach((filterFlag) => {
           if ( anime.puppet.filterId === filterFlag.tmFilters.tmFilterId
             && anime.puppet.filterInternalId === filterFlag.tmFilters.tmFilterInternalId
-            && anime.puppet.placeableId === filterFlag.tmFilters.tmParams.placeableId ) {
+            && anime.puppet.placeableId === filterFlag.tmFilters.tmParams.placeableId 
+            && isApplicableUser(filterFlag.tmFilters.tmParams)) {
             // we find it !
             foundFilter = true;
           }
@@ -962,8 +986,8 @@ export function TokenMagic() {
               if ( !puppet.hasOwnProperty("updateId")
                 || (puppet.hasOwnProperty("updateId")
                   && puppet.updateId !== filterFlag.tmFilters.tmParams.updateId) ) {
-                puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
-                puppet.normalizeTMParams();
+                  puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
+                  puppet.normalizeTMParams();
               }
             }
           }
