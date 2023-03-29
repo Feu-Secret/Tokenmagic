@@ -16,7 +16,7 @@
   "TMFX.preset.reset.success": "Sua biblioteca foi resetada com sucesso.",
   "TMFX.settings.importOverwrite.name": "Sobrescrever na importação",
   "TMFX.settings.importOverwrite.hint": "Marque esta opção se deseja sobrescrever efeitos com mesmo nome durante a importação.",
-  "TMFX.template.opacity": "Opacidade Interna:",
+  "TMFX.template.opacity": "Opacidade da textura:",
   "TMFX.template.fx": "Efeitos Especiais:",
   "TMFX.template.tint": "Efeito Matiz:",
   "TMFX.settings.useMaxPadding.name": "Efeito em modo de preenchimento aditivo",

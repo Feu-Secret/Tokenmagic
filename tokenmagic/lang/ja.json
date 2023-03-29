@@ -16,7 +16,7 @@
     "TMFX.preset.reset.success": "プリセットライブラリが正常にリセットされました。",
     "TMFX.settings.importOverwrite.name": "インポート時に上書きする",
     "TMFX.settings.importOverwrite.hint": "インポート中にプリセットを同じ名前で置き換える場合は、このオプションをオンにします。",
-    "TMFX.template.opacity": "内側の不透明度:",
+    "TMFX.template.opacity": "テクスチャの不透明度:",
     "TMFX.template.fx": "特殊効果:",
     "TMFX.template.tint": "効果の色合い:",
     "TMFX.settings.autoFPS.name": "自動フレームレート",

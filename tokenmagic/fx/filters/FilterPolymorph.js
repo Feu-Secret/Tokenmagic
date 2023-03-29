@@ -40,6 +40,12 @@ export class FilterPolymorph extends CustomFilter {
     if (!this.dummy) {
       this.anime = new Anime(this);
       this.normalizeTMParams();
+    }
+  }
+
+  setTMParams(params) {
+    super.setTMParams(params);
+    if(!this.dummy && 'imagePath' in params){
       this.assignTexture();
     }
   }
@@ -76,22 +82,32 @@ export class FilterPolymorph extends CustomFilter {
     this.uniforms.uSamplerTarget = value;
   }
 
+  _setTargetSpriteSize() {
+    const sprite = this.targetSprite;
+    let ratioW = this.placeableImg._texture.baseTexture.realWidth / sprite.texture.baseTexture.realWidth;
+    sprite.width = sprite.texture.baseTexture.realWidth * ratioW;
+    sprite.height = sprite.texture.baseTexture.realHeight * ratioW;
+    sprite.anchor.set(0.5);
+  }
+
   assignTexture() {
     if (this.hasOwnProperty("imagePath")) {
       let tex = PIXI.Texture.from(this.imagePath);
       let sprite = new PIXI.Sprite(tex);
 
       sprite.renderable = false;
-      if (this.placeableImg.hasOwnProperty("_texture")) {
-        sprite.width = this.placeableImg._texture.baseTexture.realWidth;
-        sprite.height = this.placeableImg._texture.baseTexture.realHeight;
-        sprite.anchor.set(0.5);
+      this.targetSprite = sprite;
+
+      // We may need to wait for the texture to be loaded before accessing it's width and height
+      // In such a case register an update listener which should be called when the texture is loaded/becomes valid
+      if(tex.valid){
+        this._setTargetSpriteSize();
       } else {
-        sprite.width = this.placeableImg.width;
-        sprite.height = this.placeableImg.height;
+        tex.on('update', () => {
+          this._setTargetSpriteSize();
+        })
       }
 
-      this.targetSprite = sprite;
       this.uSamplerTarget = sprite._texture;
       this.placeableImg.addChild(sprite);
     }

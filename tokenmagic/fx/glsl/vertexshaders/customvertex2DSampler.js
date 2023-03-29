@@ -1,17 +1,17 @@
-// Custom vertex shader with filter matrix to map for additionnal sampler
+// Custom vertex shader with filter matrix to map for additional sampler
 
-export const customVertex2DSampler = `
+export const customVertex2DSampler = `#version 300 es
 precision mediump float;
 
-attribute vec2 aVertexPosition;
+in vec2 aVertexPosition;
 
 uniform mat3 projectionMatrix;
 uniform mat3 filterMatrix;
 uniform mat3 targetUVMatrix;
 
-varying vec2 vTextureCoord;
-varying vec2 vTextureCoordExtra;
-varying vec2 vFilterCoord;
+out vec2 vTextureCoord;
+out vec2 vTextureCoordExtra;
+out vec2 vFilterCoord;
 
 uniform vec4 inputSize;
 uniform vec4 outputFrame;

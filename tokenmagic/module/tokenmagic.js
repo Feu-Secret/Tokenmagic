@@ -1,5 +1,7 @@
 import {FilterAdjustment} from "../fx/filters/FilterAdjustment.js";
+import { FilterAscii } from "../fx/filters/FilterAscii.js";
 import {FilterXBloom} from "../fx/filters/FilterAdvancedBloom.js";
+import { FilterDot } from "../fx/filters/FilterDot.js";
 import {FilterDistortion} from "../fx/filters/FilterDistortion.js";
 import {FilterOldFilm} from "../fx/filters/FilterOldFilm.js";
 import {FilterGlow} from "../fx/filters/FilterGlow.js";
@@ -42,6 +44,8 @@ import {allPresets, PresetsLibrary} from "../fx/presets/defaultpresets.js";
 import {tmfxDataMigration} from "../migration/migration.js";
 import {emptyPreset} from "./constants.js";
 import "./proto/PlaceableObjectProto.js";
+import { FilterCRT } from "../fx/filters/FilterCRT.js";
+import { FilterRGBSplit } from "../fx/filters/FilterRGBSplit.js";
 
 /*
 
@@ -56,7 +60,10 @@ const moduleTM = "module.tokenmagic";
 // Filters Class Keys
 export const FilterType = {
   adjustment: FilterAdjustment,
+  ascii: FilterAscii,
+  dot: FilterDot,
   distortion: FilterDistortion,
+  crt: FilterCRT,
   oldfilm: FilterOldFilm,
   glow: FilterGlow,
   outline: FilterOutline,
@@ -93,7 +100,8 @@ export const FilterType = {
   xfire: FilterXFire,
   sprite: FilterSprite,
   replaceColor: FilterReplaceColor,
-  ddTint: FilterDDTint
+  ddTint: FilterDDTint,
+  rgbSplit: FilterRGBSplit,
 };
 
 export const PlaceableType = {
@@ -276,12 +284,46 @@ export function getPlaceableById(id, type) {
   return placeable;
 }
 
+/**
+ * Randomizes params using 'randomized' field. 
+ * 'randomized' is an object consisting of keys named after params to be randomized, which map either
+ * to arrays or ranges which will be used to generate a random value.
+ * e.g.
+ * {
+ *  param1: ['foo1', 'foo2', 'foo3'],
+ *  param2: { list: ['foo1', 'foo2', 'foo3'], link: 'param5'},
+ *  param3: { val1: 0, val2: 1, step: 0.1},
+ *  param4: { val1: 0, val2: 10, step: 1, link: 'param6'},
+ * }
+ * 'link' will assign the same generated value to one other param.
+ */
+function randomizeParams(params) {
+  if(params.randomized.hasOwnProperty('active') && !params.randomized.active) return;
+
+  for(const [param, opts] of Object.entries(params.randomized)){
+    let rVal;
+    if(Array.isArray(opts) || opts.hasOwnProperty('list')){
+      const list = opts.list ?? opts;
+      rVal = list[Math.floor(Math.random() * list.length)];
+    } else {
+      const min = Math.min(opts.val1, opts.val2);
+      const max = Math.max(opts.val1, opts.val2);
+      const step = opts.step ?? 1;
+      const stepsInRange = (max - min + (Number.isInteger(step) ? 1 : 0)) / step;
+      rVal = Math.floor(Math.random() * stepsInRange) * step + min;
+    }
+    setProperty(params, param, rVal);
+    if (opts.hasOwnProperty('link')) setProperty(params, opts.link, rVal);
+  }
+}
+
 export function objectAssign(target, ...sources) {
   sources.forEach(source => {
     Object.keys(source).forEach(key => {
       const s_val = source[key];
       const t_val = target[key];
-      target[key] = t_val && s_val && typeof t_val === "object" && typeof s_val === "object"
+      if(s_val instanceof Array) target[key] =  [...s_val];
+      else target[key] = t_val && s_val && typeof t_val === "object" && typeof s_val === "object"
         ? objectAssign(t_val, s_val)
         : s_val;
     });
@@ -383,6 +425,10 @@ export function TokenMagic() {
         params.enabled = true;
       }
 
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       params.placeableId = placeable.id;
       params.filterInternalId = randomID();
       params.filterOwner = game.data.userId;
@@ -429,6 +475,10 @@ export function TokenMagic() {
       updateParams = false;
       params.updateId = randomID();
 
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       workingFlags.forEach(flag => {
         if ( flag.tmFilters.tmFilterId === params.filterId
           && flag.tmFilters.tmFilterType === params.filterType ) {
@@ -448,7 +498,7 @@ export function TokenMagic() {
 
         if ( !params.hasOwnProperty("rank") ) {
           params.rank = placeable._TMFXgetMaxFilterRank();
-        }
+        } 
 
         if ( !params.hasOwnProperty("filterId") || params.filterId == null ) {
           params.filterId = randomID();
@@ -579,6 +629,11 @@ export function TokenMagic() {
 
     for ( const params of paramsArray ) {
       params.updateId = randomID();
+
+      if( params.hasOwnProperty("randomized")) {
+        randomizeParams(params);
+      }
+
       workingFlags.forEach(flag => {
         if ( flag.tmFilters.tmFilterId === params.filterId
           && flag.tmFilters.tmFilterType === params.filterType ) {
@@ -676,6 +731,19 @@ export function TokenMagic() {
     return true;
   }
 
+  function isApplicableUser(tmParams) {
+    const hasUser = (arr) => {
+      return arr.includes(game.user.name) || arr.includes(game.user.id);
+    }
+
+    if((tmParams.users?.include?.length && !hasUser(tmParams.users.include)) 
+      || (tmParams.users?.exclude?.length && hasUser(tmParams.users?.exclude))){
+      return false;
+    }
+
+    return true;
+  }
+
   function hasFilterId(placeable, filterId) {
     if ( placeable == null
       || !(placeable instanceof PlaceableObject) ) {
@@ -758,6 +826,12 @@ export function TokenMagic() {
     if ( filterInfo == null ) {
       return;
     }
+
+    // Do not assign the filter if it has been explicitly set as not applicable to the current user
+    if(!isApplicableUser(filterInfo.tmFilters.tmParams)){
+      return;
+    }
+
     let workingFilterInfo = duplicate(filterInfo);
     workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
     workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
@@ -879,11 +953,13 @@ export function TokenMagic() {
       // we test all the animes that are supposed to be on the placeable
       if ( anime.puppet.placeableId === placeable.id ) {
         // is the animation present in the tokenmagic flags for this placeable ?
+        // and is it applicable to the current user?
         let foundFilter = false;
         filters.forEach((filterFlag) => {
           if ( anime.puppet.filterId === filterFlag.tmFilters.tmFilterId
             && anime.puppet.filterInternalId === filterFlag.tmFilters.tmFilterInternalId
-            && anime.puppet.placeableId === filterFlag.tmFilters.tmParams.placeableId ) {
+            && anime.puppet.placeableId === filterFlag.tmFilters.tmParams.placeableId 
+            && isApplicableUser(filterFlag.tmFilters.tmParams)) {
             // we find it !
             foundFilter = true;
           }
@@ -910,8 +986,8 @@ export function TokenMagic() {
               if ( !puppet.hasOwnProperty("updateId")
                 || (puppet.hasOwnProperty("updateId")
                   && puppet.updateId !== filterFlag.tmFilters.tmParams.updateId) ) {
-                puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
-                puppet.normalizeTMParams();
+                  puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
+                  puppet.normalizeTMParams();
               }
             }
           }
@@ -1219,7 +1295,7 @@ export function TokenMagic() {
           }
         }
       }
-      return preset.params;
+      return deepClone(preset.params);
     }
     return undefined;
   }
@@ -1607,6 +1683,10 @@ function onMeasuredTemplateConfig(data, html) {
   $(html).css({"min-height": "525px"});
 }
 
+/* -------------------------------------------- */
+/*  Setup Management                            */
+/* -------------------------------------------- */
+
 Hooks.on("ready", () => {
   log("Hook -> ready");
   tmfxDataMigration();
@@ -1619,12 +1699,9 @@ Hooks.on("ready", () => {
   Hooks.on("renderMeasuredTemplateConfig", onMeasuredTemplateConfig);
 });
 
-Hooks.on("canvasInit", (canvas) => {
-  log("Hook -> canvasInit");
-  autosetPaddingMode();
-  Anime.deactivateAnimation();
-  Anime.resetAnimation();
-});
+/* -------------------------------------------- */
+/*  Canvas Management                           */
+/* -------------------------------------------- */
 
 Hooks.once("canvasInit", (canvas) => {
   if ( !isFilterCachingDisabled() ) {
@@ -1633,9 +1710,19 @@ Hooks.once("canvasInit", (canvas) => {
   }
 });
 
+/* -------------------------------------------- */
+
+Hooks.on("canvasInit", (canvas) => {
+  log("Hook -> canvasInit");
+  autosetPaddingMode();
+  Anime.deactivateAnimation();
+  Anime.resetAnimation();
+});
+
+/* -------------------------------------------- */
+
 Hooks.on("canvasReady", (canvas) => {
   log("Hook -> canvasReady");
-
   if ( !window.hasOwnProperty("TokenMagic") ) {
     window.TokenMagic = Magic;
   }
@@ -1655,254 +1742,240 @@ Hooks.on("canvasReady", (canvas) => {
   Anime.activateAnimation();
 });
 
-Hooks.on("deleteScene", (scene, data, options) => {
-  //log("Hook -> deleteScene");
-  if ( !(scene == null) && scene.id === game.user.viewedScene ) {
-    Anime.deactivateAnimation();
-    Anime.resetAnimation();
-  }
+/* -------------------------------------------- */
+/*  Scenes Management                           */
+/* -------------------------------------------- */
+
+Hooks.on("deleteScene", (document) => {
+  if ( document.id !== game.user.viewedScene ) return;
+  Anime.deactivateAnimation();
+  Anime.resetAnimation();
 });
 
-Hooks.on("deleteToken", (parent, doc, options, userId) => {
-  //log("Hook -> deleteToken");
-  if ( !(doc == null || !doc.hasOwnProperty("_id")) ) {
-    Anime.removeAnimation(doc._id);
-  }
+/* -------------------------------------------- */
+/*  Settings Management                         */
+/* -------------------------------------------- */
+
+Hooks.on("closeSettingsConfig", () => {
+  autosetPaddingMode();
 });
 
-Hooks.on("createToken", (scene, data, options) => {
-  //log("Hook -> createToken");
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
-  }
+/* -------------------------------------------- */
+/*  Tokens Management                           */
+/* -------------------------------------------- */
 
-  if ( !(scene == null)
-    && scene.id === game.user.viewedScene
-    && data.hasOwnProperty("flags")
-    && data.flags.hasOwnProperty("tokenmagic")
-    && data.flags.tokenmagic.hasOwnProperty("filters") ) {
+Hooks.on("createToken", (document) => {
+  if ( document.parent.id !== game.user.viewedScene ) return;
 
-    let placeable = getPlaceableById(data._id, PlaceableType.TOKEN);
-
-    // request to load filters (when pixi containers are ready)
+  if ( document.flags?.tokenmagic?.filters ) {
+    let placeable = getPlaceableById(document._id, PlaceableType.TOKEN);
     requestLoadFilters(placeable, 250);
   }
 });
 
-Hooks.on("createTile", (scene, data, options) => {
-  //log("Hook -> createTile");
+/* -------------------------------------------- */
 
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
-  }
-
-  if ( !(scene == null)
-    && scene.id === game.user.viewedScene
-    && data.hasOwnProperty("flags")
-    && data.flags.hasOwnProperty("tokenmagic")
-    && data.flags.tokenmagic.hasOwnProperty("filters") ) {
-
-    const placeable = getPlaceableById(data._id, PlaceableType.TILE);
-
-    // request to load filters (when pixi containers are ready)
-    requestLoadFilters(placeable, 250);
+Hooks.on("deleteToken", (_, document) => {
+  if ( !(document == null || !document._id) ) {
+    Anime.removeAnimation(document._id);
   }
 });
 
-Hooks.on("createDrawing", (scene, data, options) => {
-  //log("Hook -> createDrawing");
+/* -------------------------------------------- */
 
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
-  }
+Hooks.on("updateToken", (document, options) => {
+  if ( document.parent.id !== game.user.viewedScene ) return;
 
-  if ( !(scene == null)
-    && scene.id === game.user.viewedScene
-    && data.hasOwnProperty("flags")
-    && data.flags.hasOwnProperty("tokenmagic")
-    && data.flags.tokenmagic.hasOwnProperty("filters") ) {
-
-    let placeable = getPlaceableById(data._id, PlaceableType.DRAWING);
-
-    // request to load filters (when pixi containers are ready)
-    requestLoadFilters(placeable, 250);
-  }
-});
-
-Hooks.on("updateToken", (scene, data, options) => {
-  //log("Hook -> updateToken");
-
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
-  }
-
-  if ( scene.id !== game.user.viewedScene ) return;
-
-  if ( options.hasOwnProperty("img") || options.hasOwnProperty("tint")
-    || options.hasOwnProperty("height") || options.hasOwnProperty("width")
-    || options.hasOwnProperty("name") ) {
-
-    let placeable = getPlaceableById(data._id, PlaceableType.TOKEN);
-
-    // removing animations on this placeable
-    Anime.removeAnimation(data._id);
-
-    // clearing the filters (owned by tokenmagic)
-    Magic._clearImgFiltersByPlaceable(placeable);
-
-    // querying filters reload (when pixi containers are ready)
+  if ( ["img", "tint", "height", "width", "name"].some(k => k in options) ) {
+    let placeable = getPlaceableById(document._id, PlaceableType.TOKEN);
+    Anime.removeAnimation(document._id);          // removing animations on this placeable
+    Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
     requestLoadFilters(placeable, 250);
   }
   else {
-    Magic._updateFilters(data, options, PlaceableType.TOKEN);
+    Magic._updateFilters(document, options, PlaceableType.TOKEN);
   }
 });
 
-Hooks.on("deleteTile", (parent, doc, options, userId) => {
-  //log("Hook -> deleteTile");
-  if ( !(doc == null || !doc.hasOwnProperty("_id")) ) {
-    Anime.removeAnimation(doc._id);
-  }
-});
+/* -------------------------------------------- */
+/*  Tiles Management                            */
+/* -------------------------------------------- */
 
-Hooks.on("updateTile", (scene, data, options) => {
-  //log("Hook -> updateTile");
+Hooks.on("createTile", (document) => {
+  if ( document.parent.id !== game.user.viewedScene ) return;
 
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
-  }
-
-  if ( scene.id !== game.user.viewedScene ) return;
-
-  if ( options.hasOwnProperty("img") || options.hasOwnProperty("overhead") ) {
-
-    const placeable = getPlaceableById(data._id, PlaceableType.TILE);
-
-    // removing animations on this placeable
-    Anime.removeAnimation(data._id);
-
-    // querying filters reload (when pixi containers are ready)
+  if ( document.flags?.tokenmagic?.filters ) {
+    const placeable = getPlaceableById(document._id, PlaceableType.TILE);
     requestLoadFilters(placeable, 250);
+  }
+});
 
+/* -------------------------------------------- */
+
+Hooks.on("deleteTile", (_, document) => {
+  if ( !(document == null || !document._id) ) {
+    Anime.removeAnimation(document._id);
+  }
+});
+
+/* -------------------------------------------- */
+
+Hooks.on("updateTile", (document, options) => {
+  if ( document.parent.id !== game.user.viewedScene ) return;
+
+  if ( options.texture?.src || options.overhead ) {
+    const placeable = getPlaceableById(document._id, PlaceableType.TILE);
+    Anime.removeAnimation(document._id); // removing animations on this placeable
+    Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
+    requestLoadFilters(placeable, 250);
   }
   else {
-    Magic._updateFilters(data, options, PlaceableType.TILE);
+    Magic._updateFilters(document, options, PlaceableType.TILE);
   }
 });
 
-Hooks.on("deleteDrawing", (parent, doc, options, userId) => {
-  //log("Hook -> deleteDrawing");
-  if ( !(doc == null || !doc.hasOwnProperty("_id")) ) {
-    Anime.removeAnimation(doc._id);
+/* -------------------------------------------- */
+/*  Drawings Management                         */
+/* -------------------------------------------- */
+
+Hooks.on("createDrawing", (document) => {
+  if ( document.parent.id !== game.user.viewedScene ) return;
+
+  if ( document.flags?.tokenmagic?.filters ) {
+    let placeable = getPlaceableById(document._id, PlaceableType.DRAWING);
+    requestLoadFilters(placeable, 250);
   }
 });
 
-Hooks.on("updateDrawing", (scene, data, options, action) => {
-  //log("Hook -> updateDrawing");
+/* -------------------------------------------- */
 
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
+Hooks.on("deleteDrawing", (_, document) => {
+  if ( !(document == null || !document._id) ) {
+    Anime.removeAnimation(document._id);
   }
+});
 
-  if ( scene.id !== game.user.viewedScene ) return;
+/* -------------------------------------------- */
+
+Hooks.on("updateDrawing", (document, options) => {
+  if ( document.parent.id !== game.user.viewedScene ) return;
 
   if ( !(options.flags?.tokenmagic) || options.x || options.y ) {
-
-    let placeable = getPlaceableById(data._id, PlaceableType.DRAWING);
-
-    // removing animations on this placeable
-    Anime.removeAnimation(data._id);
-
-    // clearing the filters (owned by tokenmagic)
-    Magic._clearImgFiltersByPlaceable(placeable);
-
-    // querying filters reload (when pixi containers are ready)
+    let placeable = getPlaceableById(document._id, PlaceableType.DRAWING);
+    Anime.removeAnimation(document._id);          // removing animations on this placeable
+    Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
     requestLoadFilters(placeable, 250);
-
   }
   else {
-    Magic._updateFilters(data, options, PlaceableType.DRAWING);
+    Magic._updateFilters(document, options, PlaceableType.DRAWING);
   }
 });
 
-Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData, options) => {
-  //log("Hook -> preUpdateMeasuredTemplate");
+/* -------------------------------------------- */
+/*  Measured Templates Management               */
+/* -------------------------------------------- */
 
-  if ( isNewerVersion(game.version, "0.8") ) {
-    updateData = measuredTemplate;
-    measuredTemplate = scene;
-    scene = scene.parent;
+Hooks.on("createMeasuredTemplate", (document) => {
+  const scene = document.parent;
+  if ( !(scene == null) && (scene.id === game.user.viewedScene) && document.flags?.tokenmagic?.filters ) {
+    let placeable = getPlaceableById(document._id, PlaceableType.TEMPLATE);
+    requestLoadFilters(placeable, 250); // request to load filters (when pixi containers are ready)
   }
+});
 
-  function getTint() {
-    if ( updateData.flags?.tokenmagic?.templateData?.tint !== undefined ) {
-      return updateData.flags.tokenmagic.templateData.tint;
+/* -------------------------------------------- */
+
+Hooks.on("deleteMeasuredTemplate", (_, document) => {
+  if ( !(document == null || !document._id) ) {
+    Anime.removeAnimation(document._id);
+  }
+});
+
+/* -------------------------------------------- */
+
+Hooks.on("updateMeasuredTemplate", (document, options) => {
+  if ( document.parent.id !== game.user.viewedScene ) return;
+  let placeable = getPlaceableById(document._id, PlaceableType.TEMPLATE);
+
+  if ( options.texture ) {
+    Anime.removeAnimation(document._id);          // removing animations on this placeable
+    Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
+    requestLoadFilters(placeable, 250);           // querying filters reload (when pixi containers are ready)
+  }
+  else {
+    if ( !placeable.loadingRequest ) {
+      Magic._updateFilters(document, options, PlaceableType.TEMPLATE);
+      Magic._updateTemplateData(document, options, PlaceableType.TEMPLATE);
     }
-    else if ( measuredTemplate.flags?.tokenmagic?.tint !== undefined ) {
-      return measuredTemplate.flags.tokenmagic.tint;
+  }
+});
+
+/* -------------------------------------------- */
+
+Hooks.on("preUpdateMeasuredTemplate", async (document, options) => {
+  function getTint() {
+    if ( options.flags?.tokenmagic?.templateData?.tint !== undefined ) {
+      return options.flags.tokenmagic.templateData.tint;
+    }
+    else if ( document.flags?.tokenmagic?.tint !== undefined ) {
+      return document.flags.tokenmagic.tint;
     }
     else return "";
   }
 
   function getFX() {
-    if ( updateData.flags?.tokenmagic?.templateData?.preset !== undefined ) {
-      return updateData.flags.tokenmagic.templateData.preset;
+    if ( options.flags?.tokenmagic?.templateData?.preset !== undefined ) {
+      return options.flags.tokenmagic.templateData.preset;
     }
-    else if ( measuredTemplate.flags?.tokenmagic?.templateData?.preset !== undefined ) {
-      return measuredTemplate.flags.tokenmagic.templateData.preset;
+    else if ( document.flags?.tokenmagic?.templateData?.preset !== undefined ) {
+      return document.flags.tokenmagic.templateData.preset;
     }
-    else if ( measuredTemplate.tmfxPreset !== undefined ) {
-      return measuredTemplate.tmfxPreset;
+    else if ( document.tmfxPreset !== undefined ) {
+      return document.tmfxPreset;
     }
     else return emptyPreset;
   }
 
   function getDirection() {
-    if ( updateData.direction ) {
-      return updateData.direction;
+    if ( options.direction ) {
+      return options.direction;
     }
-    else if ( measuredTemplate.direction ) {
-      return measuredTemplate.direction;
+    else if ( document.direction ) {
+      return document.direction;
     }
     else return 0;
   }
 
   function getAngle() {
-    if ( updateData.angle ) {
-      return updateData.angle;
+    if ( options.angle ) {
+      return options.angle;
     }
-    else if ( measuredTemplate.angle ) {
-      return measuredTemplate.angle;
+    else if ( document.angle ) {
+      return document.angle;
     }
     else return 0;
   }
 
   function getShapeType() {
-    if ( updateData.t ) {
-      return updateData.t;
+    if ( options.t ) {
+      return options.t;
     }
-    else if ( measuredTemplate.t ) {
-      return measuredTemplate.t;
+    else if ( document.t ) {
+      return document.t;
     }
     else return "ITSBAD";
   }
 
-  let measuredTemplateInstance = canvas.templates.get(measuredTemplate._id);
+  let measuredTemplateInstance = canvas.templates.get(document._id);
   let templateTint = getTint();
-  let presetUpdate = (updateData.flags?.tokenmagic?.templateData?.preset !== undefined);
-  let tintUpdate = (updateData.flags?.tokenmagic?.templateData?.tint !== undefined);
-  let directionUpdate = updateData.hasOwnProperty("direction");
-  let angleUpdate = updateData.hasOwnProperty("angle");
-  let typeUpdate = updateData.hasOwnProperty("t");
+  let presetUpdate = (options.flags?.tokenmagic?.templateData?.preset !== undefined);
+  let tintUpdate = (options.flags?.tokenmagic?.templateData?.tint !== undefined);
+  let directionUpdate = options.hasOwnProperty("direction");
+  let angleUpdate = options.hasOwnProperty("angle");
+  let typeUpdate = options.hasOwnProperty("t");
 
   if ( tintUpdate )
-    updateData.flags.tokenmagic.templateData.tint = (templateTint !== "" ? Color.from(templateTint).valueOf() : null);
+    options.flags.tokenmagic.templateData.tint = (templateTint !== "" ? Color.from(templateTint).valueOf() : null);
 
   if ( presetUpdate || tintUpdate || directionUpdate || typeUpdate || angleUpdate ) {
     let templateFX = getFX();
@@ -1928,67 +2001,9 @@ Hooks.on("preUpdateMeasuredTemplate", async (scene, measuredTemplate, updateData
   }
 });
 
-Hooks.on("updateMeasuredTemplate", (scene, data, options) => {
-  //log("Hook -> updateMeasuredTemplate");
+/* -------------------------------------------- */
 
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
-  }
-
-  if ( scene.id !== game.user.viewedScene ) return;
-
-  let placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
-  if ( options.hasOwnProperty("texture") ) {
-    // removing animations on this placeable
-    Anime.removeAnimation(data._id);
-
-    // clearing the filters (owned by tokenmagic)
-    Magic._clearImgFiltersByPlaceable(placeable);
-
-    // querying filters reload (when pixi containers are ready)
-    requestLoadFilters(placeable, 250);
-
-  }
-  else {
-    if ( !placeable.loadingRequest ) {
-      Magic._updateFilters(data, options, PlaceableType.TEMPLATE);
-      Magic._updateTemplateData(data, options, PlaceableType.TEMPLATE);
-    }
-  }
-});
-
-Hooks.on("deleteMeasuredTemplate", (parent, doc, options, userId) => {
-  //log("Hook -> deleteMeasuredTemplate");
-  if ( !(doc == null || !doc.hasOwnProperty("_id")) ) {
-    Anime.removeAnimation(doc._id);
-  }
-});
-
-Hooks.on("createMeasuredTemplate", (scene, data, options) => {
-  //log("Hook -> createMeasuredTemplate");
-
-  if ( isNewerVersion(game.version, "0.8") ) {
-    [data, options] = [scene, data];
-    scene = scene.parent;
-  }
-
-  if ( !(scene == null)
-    && scene.id === game.user.viewedScene
-    && data.hasOwnProperty("flags")
-    && data.flags.hasOwnProperty("tokenmagic")
-    && data.flags.tokenmagic.hasOwnProperty("filters") ) {
-
-    let placeable = getPlaceableById(data._id, PlaceableType.TEMPLATE);
-
-    // request to load filters (when pixi containers are ready)
-    requestLoadFilters(placeable, 250);
-  }
-});
-
-Hooks.on("preCreateMeasuredTemplate", (document, updateData) => {
-  // This would ideally be `preCreateMeasuredTemplate` and/or merged with the createMeasuredTemplate
-
+Hooks.on("preCreateMeasuredTemplate", (document) => {
   const hasFlags = document.flags;
   let hasPreset = false;
   let hasTint = false;
@@ -2119,8 +2134,4 @@ Hooks.on("preCreateMeasuredTemplate", (document, updateData) => {
     options: null
   };
   document.updateSource({flags: {tokenmagic: tmfxFlags}});
-});
-
-Hooks.on("closeSettingsConfig", () => {
-  autosetPaddingMode();
 });

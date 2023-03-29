@@ -14,7 +14,7 @@
   "TMFX.preset.import.failure": "L'importation n'a pas pu aboutir.",
   "TMFX.preset.reset.message": "Voulez-vous vraiment réinitialiser votre bibliothèque de prédéfinitions ?",
   "TMFX.preset.reset.success": "Votre bibliothèque de prédéfinitions a été réinitialisée avec succès.",
-  "TMFX.template.opacity": "Opacité Interne:",
+  "TMFX.template.opacity": "Opacité de la Texture:",
   "TMFX.template.fx": "Effets Spéciaux:",
   "TMFX.template.tint": "Teinte de l'Effet:",
   "TMFX.settings.disableCaching.name": "Désactiver la mise en cache des filtres",

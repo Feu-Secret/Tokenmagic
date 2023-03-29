@@ -16,7 +16,7 @@
   "TMFX.preset.reset.success": "프리셋 라이브러리가 성공적으로 재설정 되었습니다.",
   "TMFX.settings.importOverwrite.name": "가져오기시 덮어쓰기",
   "TMFX.settings.importOverwrite.hint": "가져오기시 프리셋을 동일한 이름으로 대체하려면 이 옵션을 선택하십시오.",
-  "TMFX.template.opacity": "내부 불투명도:",
+  "TMFX.template.opacity": "텍스처 불투명도:",
   "TMFX.template.fx": "특수 효과:",
   "TMFX.template.tint": "효과 색조:",
   "TMFX.settings.useMaxPadding.name": "부가적 패딩 모드 FX",

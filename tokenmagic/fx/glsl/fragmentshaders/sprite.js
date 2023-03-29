@@ -1,4 +1,4 @@
-export const sprite = `
+export const sprite = `#version 300 es
 precision mediump float;
 
 uniform float rotation;
@@ -6,10 +6,13 @@ uniform float twRadius;
 uniform float twAngle;
 uniform float bpRadius;
 uniform float bpStrength;
+uniform float alpha;
+uniform bool alphaDiscard;
 
 uniform bool inverse;
 uniform bool top;
 uniform bool colorize;
+uniform bool repeat;
 
 uniform vec2 scale;
 uniform vec2 translation;
@@ -22,10 +25,12 @@ uniform vec4 inputClampTarget;
 uniform sampler2D uSampler;
 uniform sampler2D uSamplerTarget;
 
-varying vec2 vTextureCoord;
-varying vec2 vTextureCoordExtra;
-varying vec2 vFilterCoord;
-varying mat3 vTargetUVMatrix;
+in vec2 vTextureCoord;
+in vec2 vTextureCoordExtra;
+in vec2 vFilterCoord;
+in mat3 vTargetUVMatrix;
+
+out vec4 outputColor;
 
 const float PI = 3.14159265358;
 
@@ -83,32 +88,44 @@ vec2 transform(in vec2 uv) {
 }
 
 vec4 getFromColor(in vec2 uv) {
-    return texture2D(uSampler, clamp(uv, inputClamp.xy, inputClamp.zw));
+    return texture(uSampler, clamp(uv, inputClamp.xy, inputClamp.zw));
 }
 
 vec4 getToColor(in vec2 uv) {
-    return texture2D(uSamplerTarget, clamp(uv, inputClampTarget.xy, inputClampTarget.zw)) * getClip(uv);
+    return texture(uSamplerTarget, clamp(uv, inputClampTarget.xy, inputClampTarget.zw)) * getClip(uv);
+}
+
+vec4 getToColorFract(in vec2 uv) {
+    return textureGrad(uSamplerTarget, fract(uv), dFdx(uv), dFdy(uv));
 }
 
 void main() {
-
-    vec3 fcolor;
 
     // UV transformations
     vec2 uvTex = transform(vTextureCoordExtra);
 
     // get samplers color
-    vec4 tcolor = getToColor(uvTex + translation);
     vec4 icolor = getFromColor(vTextureCoord);
+
+    vec4 tcolor;
+    if(repeat) {
+        tcolor = getToColorFract(uvTex + translation);
+    } else {
+        tcolor = getToColor(uvTex + translation);
+    }
+
+    tcolor.a *= alpha;
+    if(alphaDiscard) tcolor = mix(tcolor, icolor, 1.0 - icolor.a);
 
     // colorize if necessary
     if (colorize) {
         tcolor = colorization(tcolor);
     }
 
-    if (top) fcolor = mix(tcolor.rgb, icolor.rgb, 1.0 - tcolor.a);
-    else fcolor = mix(icolor.rgb, tcolor.rgb, 1.0 - icolor.a);
+    vec3 fcolor = tcolor.rgb;
+    if(top && icolor.a > 0.) fcolor = mix(tcolor.rgb, icolor.rgb, 1.0 - tcolor.a);
+    else if(!top) fcolor = mix(icolor.rgb, tcolor.rgb, 1.0 - icolor.a);
    
-    gl_FragColor = vec4(fcolor, max(tcolor.a, icolor.a));
+    outputColor = vec4(fcolor, max(tcolor.a, icolor.a));
 }
 `;

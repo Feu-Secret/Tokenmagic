@@ -418,6 +418,61 @@ generate a random color per complete loop.
 **Mandatory properties:** `active` `speed`
 increment a property value by his speed, in pixel / ms.
 
+---
+
+To randomize filter properties you can use the `randomized` keyword property:
+
+```JS
+// Randomization example
+{
+    filterType: "sprite",
+    filterId: "randomOverlay",
+    repeat: true,
+    alphaDiscard: true,
+    inverse: true,
+    gridPadding: 1,
+    translationX: 0,
+    translationY: 0,
+    top: true,
+    randomized: {
+        active: true,
+        imagePath: [
+            "modules/tokenmagic/fx/assets/distortion-1.png",
+            "modules/tokenmagic/fx/assets/dots-1.png",
+            "modules/tokenmagic/fx/assets/extrusion-1.png",
+            "modules/tokenmagic/fx/assets/noise-2.jpg",
+            "modules/tokenmagic/fx/assets/symbols-1.png",
+            "modules/tokenmagic/fx/assets/waves-1.png",
+        ],
+        rotation: { val1: 0, val2: 360, step: 1 },
+        scaleX: { val1: 0.1, val2: 0.6, step: 0.01, link: 'scaleY' },
+    },
+}
+```
+
+In the above example, `imagePath`, `scaleX`, and `rotation` values are randomized.
+- `imagePath` will pick one value from the provided list
+- `rotation` will pick a random integer in the range of 0 and 360 as defined by`val1` and `val`
+- `scaleX` will pack a random float between 0.1 and 0.6 and will assign the same value to `scaleY`
+
+
+```
+randomized :
+{
+    active: <true|false(default:false)>, // randomizer active/inactive
+    <property to randomize> :
+      {
+         val1: <value>, // value limit 1
+         val2: <value>, // value limit 2
+         step: <value greater than 0(default:1)>  // granularity of randomized value
+         list: <a list of values> // list that can be used instead of a range defined by 'val1' and 'val2'
+         link: <"property name"> // property to be assigned the same randomized value
+      },
+    <property to randomize> : <a list of values> // list of values to be randomly picked from
+    <,<other properties to animate>…>
+}
+```
+
 You can control the ordering of the filters with the `zOrder` property.
 If you want to work with this new property, you must activate the option in the module option panel. The `zOrder` allows the filters to be applied on a Placeable in a specific order: from the smallest `zOrder` to the highest.
 
@@ -459,6 +514,10 @@ You will find below a table with the filters and their default `zOrder`. The def
 | Waves  (wave) | 280  | <img src="tokenmagic/gui/macros/images/20 - Waves.webp" height="24">                             |
 | Blur (blur) | 290  | <img src="tokenmagic/gui/macros/images/11 - Blur.webp" height="24">                              |
 | Zoom Blur (zoomblur) | 300  | <img src="tokenmagic/gui/macros/images/12 - Zoom Blur.webp" height="24">                         |
+| Ascii (ascii) | 310  | <img src="tokenmagic/gui/macros/images/40 - Ascii.webp" height="24">                         |
+| Dot Shade (dot) | 320  | <img src="tokenmagic/gui/macros/images/41 - Dot.webp" height="24">                         |
+| CRT Monitor (crt) | 330  | <img src="tokenmagic/gui/macros/images/42 - CRT.webp" height="24">                         |
+| RGB Split (rgbSplit) | 340  | <img src="tokenmagic/gui/macros/images/43 - RGB Split.webp" height="24">                         |
 | Transform (transform) | 1000 | <img src="tokenmagic/gui/macros/images/33 - T02 - Saving Roll (transform).webp" height="24">     |
 | Force Field (field) | 2000  | <img src="tokenmagic/gui/macros/images/24 - T11 - Grid Force Field.webp" height="24">            |
 | Distortion (distortion) | 4000  | <img src="tokenmagic/gui/macros/images/07 - Distortion.webp" height="24">                        |

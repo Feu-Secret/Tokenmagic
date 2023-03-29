@@ -16,7 +16,7 @@
   "TMFX.preset.reset.success": "Your preset library has been successfully reset.",
   "TMFX.settings.importOverwrite.name": "Overwrite on import",
   "TMFX.settings.importOverwrite.hint": "Check this option if you want to replace presets with the same name during an import.",
-  "TMFX.template.opacity": "Inner Opacity:",
+  "TMFX.template.opacity": "Texture Opacity:",
   "TMFX.template.fx": "Special Effects:",
   "TMFX.template.tint": "Effect Tint:",
   "TMFX.settings.autoFPS.name": "Auto framerate",
