@@ -435,6 +435,7 @@ To randomize filter properties you can use the `randomized` keyword property:
     translationY: 0,
     top: true,
     randomized: {
+        active: true,
         imagePath: [
             "modules/tokenmagic/fx/assets/distortion-1.png",
             "modules/tokenmagic/fx/assets/dots-1.png",
@@ -458,6 +459,7 @@ In the above example, `imagePath`, `scaleX`, and `rotation` values are randomize
 ```
 randomized :
 {
+    active: <true|false(default:false)>, // randomizer active/inactive
     <property to randomize> :
       {
          val1: <value>, // value limit 1

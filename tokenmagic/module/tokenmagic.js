@@ -298,6 +298,8 @@ export function getPlaceableById(id, type) {
  * 'link' will assign the same generated value to one other param.
  */
 function randomizeParams(params) {
+  if(params.randomized.hasOwnProperty('active') && !params.randomized.active) return;
+
   for(const [param, opts] of Object.entries(params.randomized)){
     let rVal;
     if(Array.isArray(opts) || opts.hasOwnProperty('list')){
