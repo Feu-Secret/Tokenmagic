@@ -31,7 +31,9 @@ export class FilterSprite extends CustomFilter {
       translationX,
       translationY,
       play,
-      loop
+      loop,
+      maintainAspectRatio,
+      maintainScale
     } = Object.assign({}, FilterSprite.defaults, params);
 
     const targetSpriteMatrix = new PIXI.Matrix();
@@ -72,7 +74,9 @@ export class FilterSprite extends CustomFilter {
       translationX,
       translationY,
       play,
-      loop
+      loop,
+      maintainAspectRatio,
+      maintainScale
     });
 
     this.zOrder = 0;
@@ -94,6 +98,8 @@ export class FilterSprite extends CustomFilter {
 
   _play = true;
   _loop = true;
+  _maintainAspectRatio = false;
+  _maintainScale = false;
 
   get play() {
     return this._play;
@@ -114,6 +120,26 @@ export class FilterSprite extends CustomFilter {
     if ( !(value == null) && typeof value === "boolean" ) {
       this._loop = value;
       this._playVideo(this._play);
+    }
+  }
+
+  get maintainAspectRatio() {
+    return this._maintainAspectRatio;
+  }
+
+  set maintainAspectRatio(value) {
+    if ( !(value == null) && typeof value === "boolean" ) {
+      this._maintainAspectRatio = value;
+    }
+  }
+
+  get maintainScale() {
+    return this._maintainScale;
+  }
+
+  set maintainScale(value) {
+    if ( !(value == null) && typeof value === "boolean" ) {
+      this._maintainScale = value;
     }
   }
 
@@ -332,9 +358,18 @@ export class FilterSprite extends CustomFilter {
       tex.uvMatrix.update();
 
       this.uniforms.uSamplerTarget = tex;
-      this.uniforms.targetUVMatrix =
-        filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite)
-          .prepend(tex.uvMatrix.mapCoord);
+      if(this.maintainScale){
+        let pScale = targetSprite.parent.scale;
+        targetSprite.scale.set(1/pScale.x, 1/pScale.y);
+      }
+
+      let w = targetSprite.worldTransform;
+      if(this.maintainAspectRatio) {
+        let scale = Math.min(w.a, w.d);
+        w.set(scale, w.b, w.c, scale, w.tx, w.ty);
+      }
+
+      this.uniforms.targetUVMatrix = filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite);
       this.uniforms.inputClampTarget = tex.uvMatrix.uClampFrame;
     }
 
@@ -366,7 +401,9 @@ FilterSprite.defaults = {
   translationX: 0,
   translationY: 0,
   play: true,
-  loop: true
+  loop: true,
+  maintainAspectRatio: false,
+  maintainScale: false
 };
 
 
