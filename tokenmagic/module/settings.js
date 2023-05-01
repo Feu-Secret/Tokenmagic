@@ -2,6 +2,7 @@ import {presets as defaultPresets, PresetsLibrary} from "../fx/presets/defaultpr
 import {DataVersion} from "../migration/migration.js";
 import {TokenMagic, isVideoDisabled, fixPath} from "./tokenmagic.js";
 import {AutoTemplateDND5E, dnd5eTemplates} from "./autoTemplate/dnd5e.js";
+import {AutoTemplatePF2E, pf2eTemplates} from "./autoTemplate/pf2e.js";
 import {defaultOpacity, emptyPreset} from "./constants.js";
 
 const Magic = TokenMagic();
@@ -65,6 +66,17 @@ export class TokenMagicSettings extends FormApplication {
           settingAutoTemplateSettings.key,
           mergeObject(settingAutoTemplateSettings.config, {
             default: AutoTemplateDND5E.defaultConfiguration
+          }, true, true)
+        );
+        break;
+      case "pf2e":
+        hasAutoTemplates = true;
+        game.settings.registerMenu("tokenmagic", menuAutoTemplateSettings.key, menuAutoTemplateSettings.config);
+        game.settings.register(
+          "tokenmagic",
+          settingAutoTemplateSettings.key,
+          mergeObject(settingAutoTemplateSettings.config, {
+            default: AutoTemplatePF2E.defaultConfiguration
           }, true, true)
         );
         break;
@@ -197,17 +209,24 @@ export class TokenMagicSettings extends FormApplication {
     loadTemplates([
       "modules/tokenmagic/templates/settings/settings.html",
       "modules/tokenmagic/templates/settings/dnd5e/categories.html",
-      "modules/tokenmagic/templates/settings/dnd5e/overrides.html"
+      "modules/tokenmagic/templates/settings/dnd5e/overrides.html",
+      "modules/tokenmagic/templates/settings/pf2e/categories.html",
+      "modules/tokenmagic/templates/settings/pf2e/overrides.html"
     ]);
   }
 
   static configureAutoTemplate(enabled = false) {
-    switch ( game.system.id ) {
+    this.getSystemTemplates()?.configure(enabled);
+  }
+
+  static getSystemTemplates() {
+    switch (game.system.id) {
       case "dnd5e":
-        dnd5eTemplates.configure(enabled);
-        break;
+        return dnd5eTemplates;
+      case "pf2e":
+        return pf2eTemplates;
       default:
-        break;
+        return null;
     }
   }
 
@@ -217,6 +236,7 @@ export class TokenMagicSettings extends FormApplication {
     };
     switch ( game.system.id ) {
       case "dnd5e":
+      case "pf2e":
         settingsData["autoTemplateSettings"] = game.settings.get("tokenmagic", "autoTemplateSettings");
         break;
       default:
@@ -234,6 +254,11 @@ export class TokenMagicSettings extends FormApplication {
       case "dnd5e":
         data.hasAutoTemplates = true;
         data.dmgTypes = CONFIG.DND5E.damageTypes;
+        data.templateTypes = CONFIG.MeasuredTemplate.types;
+        break;
+      case "pf2e":
+        data.hasAutoTemplates = true;
+        data.dmgTypes = CONFIG.PF2E.damageTraits;
         data.templateTypes = CONFIG.MeasuredTemplate.types;
         break;
       default:
