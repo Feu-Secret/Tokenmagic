@@ -1,3 +1,43 @@
+# Token Magic FX - Update v0.6.3-beta
+
+- Automatic Template Effect support for PF2e system
+- New FilterSprite options:
+  - `maintainAspectRatio`
+    - Prevents sprite from being stretched by the underlying texture
+  - `maintainScale`
+    - Presents sprite from being scaled by the underlying texture
+
+# Token Magic FX - Update v0.6.2-beta
+
+- New filters under `TokenMagic Portfolio`
+  - 40 - Ascii (ascii)
+  - 41 - Dot Shade (dot)
+  - 42 - CRT Monitor (crt)
+  - 43 - RGB Split (rgbSplit)
+  - 44 - Criss-Cross Overlay (sprite)
+  - G - Randomization Example
+
+- New properties
+  - Added `alpha`, `alphaDiscard`, and `repeat` properties to the `FilterSprite` filter
+  - Added `alpha` property to `FilterGlow`
+  - Added `randomized` property to all filters (more information on the module page)
+  - Added `users` property to all filters.
+    - Allows to limit filter to specific users using `include` and `exclude` user lists
+    - e.g. `users: { exclude: ['Player2', 'UTH9wXZFkTza6igr'] }
+
+- Fixes
+  - Fixed `top` option in `FilterSprite` discouloring underlayed semi-transparent sprites
+  - Fixed `FilterSprite` video `loop` property not having effect
+  - Fixed `FilterSprite` throwing errors on initial assignment of a video
+  - Fixed aspect ratio of `FilterPolymorph` sprite
+  - Fixed `FilterSprite` and `FilterPolymorph` textures not being re-assigned upon `imagePath` property change
+  - Fixed `TokenMagic.getPreset(...)` returning presets in a dirty state 
+  - Fixed filters on tiles not being reset on image change
+  - Fixed `FilterFlood` not producing waveforms on some GPUs
+
+- Misc
+  - Tweaked `FilterSplash` to not discard unless the value is completely black 
+
 # Token Magic FX - Update v0.6.1.2-beta
 
 *Hotfix :*
