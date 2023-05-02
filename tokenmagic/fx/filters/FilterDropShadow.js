@@ -16,6 +16,7 @@ export class FilterDropShadow extends FilterDropShadowEx {
     this.padding = 10;
     this.zOrder = 110;
     this.animated = {};
+    this.resolution = game.settings.get('core', 'pixelRatioResolutionScaling') ? window.devicePixelRatio : PIXI.settings.FILTER_RESOLUTION;
     this.setTMParams(params);
     if (!this.dummy) {
       this.anime = new Anime(this);
