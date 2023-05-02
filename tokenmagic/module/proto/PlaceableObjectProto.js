@@ -58,7 +58,7 @@ PlaceableObject.prototype._TMFXgetSprite = function() {
     case PlaceableType.TEMPLATE:
       return this.template;
     case PlaceableType.DRAWING:
-      return this.shape;
+      return this.hasText ? this.text : this.shape;
     default:
       return null;
   }
