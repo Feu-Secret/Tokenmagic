@@ -1,3 +1,14 @@
+# Token Magic FX - Update v0.6.3-beta
+
+- Text within drawing will now be prioritized as targets for effects
+- Fixed sprites blurring when FilterDropShadow is applied on a high DPI screen
+- Automatic Template Effect support for PF2e system
+- New FilterSprite options:
+  - `maintainAspectRatio`
+    - Prevents sprite from being stretched by the underlying texture
+  - `maintainScale`
+    - Presents sprite from being scaled by the underlying texture
+
 # Token Magic FX - Update v0.6.2-beta
 
 - New filters under `TokenMagic Portfolio`

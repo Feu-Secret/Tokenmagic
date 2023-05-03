@@ -46,6 +46,7 @@ import {emptyPreset} from "./constants.js";
 import "./proto/PlaceableObjectProto.js";
 import { FilterCRT } from "../fx/filters/FilterCRT.js";
 import { FilterRGBSplit } from "../fx/filters/FilterRGBSplit.js";
+import { TokenMagicSettings } from "./settings.js";
 
 /*
 
@@ -2004,6 +2005,12 @@ Hooks.on("preUpdateMeasuredTemplate", async (document, options) => {
 /* -------------------------------------------- */
 
 Hooks.on("preCreateMeasuredTemplate", (document) => {
+  // Apply auto-preset if needed
+  const templates = TokenMagicSettings.getSystemTemplates();
+  if (templates?.enabled) {
+    templates.preCreateMeasuredTemplate?.(document);
+  }
+
   const hasFlags = document.flags;
   let hasPreset = false;
   let hasTint = false;
