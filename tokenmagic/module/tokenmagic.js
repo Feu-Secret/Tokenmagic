@@ -1897,6 +1897,7 @@ Hooks.on("deleteMeasuredTemplate", (_, document) => {
 Hooks.on("updateMeasuredTemplate", (document, options) => {
   if ( document.parent.id !== game.user.viewedScene ) return;
   let placeable = getPlaceableById(document._id, PlaceableType.TEMPLATE);
+  if( !placeable ) return;
 
   if ( options.texture ) {
     Anime.removeAnimation(document._id);          // removing animations on this placeable
@@ -2005,6 +2006,9 @@ Hooks.on("preUpdateMeasuredTemplate", async (document, options) => {
 /* -------------------------------------------- */
 
 Hooks.on("preCreateMeasuredTemplate", (document) => {
+  // Do nothing if we're on a 3D Canvas scene
+  if(game.Levels3DPreview?._active) return;
+
   // Apply auto-preset if needed
   const templates = TokenMagicSettings.getSystemTemplates();
   if (templates?.enabled) {

@@ -54,7 +54,7 @@ PlaceableObject.prototype._TMFXgetSprite = function() {
     case PlaceableType.TOKEN:
       return this.mesh;
     case PlaceableType.TILE:
-      return this.mesh;
+      return this.mesh ?? this.bg;
     case PlaceableType.TEMPLATE:
       return this.template;
     case PlaceableType.DRAWING:
