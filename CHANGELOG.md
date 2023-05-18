@@ -1,7 +1,12 @@
+# Token Magic FX - Update v0.6.3.1-beta
+
+- Filters can now be applied to empty tiles
+- 3D Canvas compatibility fix
+
 # Token Magic FX - Update v0.6.3-beta
 
-- Text within drawing will now be prioritized as targets for effects
-- Fixed sprites blurring when FilterDropShadow is applied on a high DPI screen
+- Text within drawings will now be prioritized as targets for effects
+- Fixed sprites blurring when FilterDropShadow is applied on high DPI screens
 - Automatic Template Effect support for PF2e system
 - New FilterSprite options:
   - `maintainAspectRatio`
