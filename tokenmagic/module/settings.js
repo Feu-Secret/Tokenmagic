@@ -395,50 +395,16 @@ Hooks.once("init", () => {
   if ( !isVideoDisabled() ) {
     const toRadians = Math.toRadians;
 
-    wmtRefreshType = "OVERRIDE";
+    wmtRefreshType = "WRAPPER";
 
     /**
      *
      * @return {wmtRefresh}
      */
-    wmtRefresh = function() {
-      if ( this.template && !this.template._destroyed ) {
-        let {x, y, direction, distance, angle, width} = this.document;
-        let d = canvas.dimensions;
-        this.position.set(x, y);
-
-        // Extract and prepare data
-        distance *= (d.size / d.distance);
-        width *= (d.size / d.distance);
-        direction = toRadians(direction);
-
-        // Create ray and bounding rectangle
-        this.ray = Ray.fromAngle(x, y, direction, distance);
-
-        // Get the Template shape
-        switch ( this.document.t ) {
-          case "circle":
-            this.shape = this._getCircleShape(distance);
-            break;
-          case "cone":
-            this.shape = this._getConeShape(direction, angle, distance);
-            break;
-          case "rect":
-            this.shape = this._getRectShape(direction, distance);
-            break;
-          case "ray":
-            this.shape = this._getRayShape(direction, distance, width);
-        }
-
-        // Draw the template shape and highlight the grid
-        this._refreshTemplate();
-        this.highlightGrid();
-
-        // Update the HUD
-        this._refreshControlIcon();
-        this._refreshRulerText();
-      }
-      return this;
+    wmtRefresh = function(wrapped, ...args) {
+      const [flags] = args;
+      if(flags) flags.refreshShape = this.template && !this.template._destroyed;
+      return wrapped(...args);
     };
 
     /* ------------------------------------------------------------------------------------ */
@@ -608,7 +574,7 @@ Hooks.once("init", () => {
           const opacity = template.document.getFlag("tokenmagic", "templateData")?.opacity ?? 1;
           if ( template.texture && template.texture !== "" ) {
             const {x: cx, y: cy} = template.center;
-            const mouseover = template.shape.contains(mx - cx, my - cy);
+            const mouseover = template.shape?.contains(mx - cx, my - cy);
             hl.renderable = mouseover;
             template.template.alpha = (mouseover ? 0.5 : 1.0) * opacity;
           }
@@ -624,7 +590,7 @@ Hooks.once("init", () => {
   if ( game.modules.get("lib-wrapper")?.active ) {
     libWrapper.register("tokenmagic", "MeasuredTemplateDocument.prototype.update", wmtdUpdate, "WRAPPER");
     libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._draw", wmtDraw, "WRAPPER");
-    if ( wmtRefresh ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._refresh", wmtRefresh, wmtRefreshType);
+    if ( wmtRefresh ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._applyRenderFlags", wmtRefresh, wmtRefreshType);
     if ( wmtRefreshTemplate ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._refreshTemplate", wmtRefreshTemplate, wmtRefreshTemplateType);
   }
   else {
@@ -639,13 +605,13 @@ Hooks.once("init", () => {
 
     if ( wmtRefresh ) {
       if ( wmtRefreshType && wmtRefreshType !== "OVERRIDE" ) {
-        const cmtRefresh = MeasuredTemplate.prototype._refresh;
-        MeasuredTemplate.prototype._refresh = function() {
+        const cmtRefresh = MeasuredTemplate.prototype._applyRenderFlags;
+        MeasuredTemplate.prototype._applyRenderFlags = function() {
           return wmtRefresh.call(this, cmtRefresh.bind(this), ...arguments);
         };
       }
       else {
-        MeasuredTemplate.prototype._refresh = wmtRefresh;
+        MeasuredTemplate.prototype._applyRenderFlags = wmtRefresh;
       }
     }
 
