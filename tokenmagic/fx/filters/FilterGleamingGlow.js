@@ -1,129 +1,122 @@
 import { magicGlow } from '../glsl/fragmentshaders/magicglow.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
 import { CustomFilter } from './CustomFilter.js';
-import { Anime } from "../Anime.js";
-import "./proto/FilterProto.js";
+import { Anime } from '../Anime.js';
+import './proto/FilterProto.js';
 
 export class FilterGleamingGlow extends CustomFilter {
+	constructor(params) {
+		let { time, color, thickness, scale, auraIntensity, subAuraIntensity, discard, threshold, auraType } =
+			Object.assign({}, FilterGleamingGlow.defaults, params);
 
-  constructor(params) {
+		// using specific vertex shader and fragment shader
+		super(customVertex2D, magicGlow);
 
-    let {
-      time,
-      color,
-      thickness,
-      scale,
-      auraIntensity,
-      subAuraIntensity,
-      discard,
-      threshold,
-      auraType
-    } = Object.assign({}, FilterGleamingGlow.defaults, params);
+		this.uniforms.color = new Float32Array([1.0, 0.4, 0.1, 1.0]);
+		this.uniforms.thickness = new Float32Array([0.01, 0.01]);
 
-    // using specific vertex shader and fragment shader
-    super(customVertex2D, magicGlow);
+		Object.assign(this, {
+			time,
+			color,
+			thickness,
+			scale,
+			auraIntensity,
+			subAuraIntensity,
+			discard,
+			threshold,
+			auraType,
+		});
 
-    this.uniforms.color = new Float32Array([1.0, 0.4, 0.1, 1.0]);
-    this.uniforms.thickness = new Float32Array([0.01, 0.01]);
+		this.zOrder = 80;
+		this.animated = {};
+		this.setTMParams(params);
+		if (!this.dummy) {
+			this.anime = new Anime(this);
+			this.normalizeTMParams();
+		}
+	}
 
-    Object.assign(this, {
-      time, color, thickness, scale, auraIntensity, subAuraIntensity, discard, threshold, auraType
-    });
+	get time() {
+		return this.uniforms.time;
+	}
 
-    this.zOrder = 80;
-    this.animated = {};
-    this.setTMParams(params);
-    if (!this.dummy) {
-      this.anime = new Anime(this);
-      this.normalizeTMParams();
-    }
-  }
+	set time(value) {
+		this.uniforms.time = value;
+	}
 
-  get time() {
-    return this.uniforms.time;
-  }
+	get scale() {
+		return this.uniforms.scale;
+	}
 
-  set time(value) {
-    this.uniforms.time = value;
-  }
+	set scale(value) {
+		this.uniforms.scale = value;
+	}
 
-  get scale() {
-    return this.uniforms.scale;
-  }
+	get auraIntensity() {
+		return this.uniforms.auraIntensity;
+	}
 
-  set scale(value) {
-    this.uniforms.scale = value;
-  }
+	set auraIntensity(value) {
+		this.uniforms.auraIntensity = value;
+	}
 
-  get auraIntensity() {
-    return this.uniforms.auraIntensity;
-  }
+	get subAuraIntensity() {
+		return this.uniforms.subAuraIntensity;
+	}
 
-  set auraIntensity(value) {
-    this.uniforms.auraIntensity = value;
-  }
+	set subAuraIntensity(value) {
+		this.uniforms.subAuraIntensity = value;
+	}
 
-  get subAuraIntensity() {
-    return this.uniforms.subAuraIntensity;
-  }
+	get threshold() {
+		return this.uniforms.threshold;
+	}
 
-  set subAuraIntensity(value) {
-    this.uniforms.subAuraIntensity = value;
-  }
+	set threshold(value) {
+		this.uniforms.threshold = value;
+	}
 
-  get threshold() {
-    return this.uniforms.threshold;
-  }
+	get color() {
+		return PIXI.utils.rgb2hex(this.uniforms.color);
+	}
 
-  set threshold(value) {
-    this.uniforms.threshold = value;
-  }
+	set color(value) {
+		PIXI.utils.hex2rgb(value, this.uniforms.color);
+	}
 
-  get color() {
-    return PIXI.utils.rgb2hex(this.uniforms.color);
-  }
+	get discard() {
+		return this.uniforms.holes;
+	}
 
-  set color(value) {
-    PIXI.utils.hex2rgb(value, this.uniforms.color);
-  }
+	set discard(value) {
+		if (!(value == null) && typeof value === 'boolean') {
+			this.uniforms.holes = value;
+		}
+	}
 
-  get discard() {
-    return this.uniforms.holes;
-  }
+	get auraType() {
+		return this.uniforms.auraType;
+	}
 
-  set discard(value) {
-    if (!(value == null) && typeof value === "boolean") {
-      this.uniforms.holes = value;
-    }
-  }
+	set auraType(value) {
+		this.uniforms.auraType = Math.floor(value);
+	}
 
-  get auraType() {
-    return this.uniforms.auraType;
-  }
-
-  set auraType(value) {
-    this.uniforms.auraType = Math.floor(value);
-  }
-
-  apply(filterManager, input, output, clear) {
-    this.uniforms.thickness[0] = (this.thickness * this.targetPlaceable.worldTransform.a) / input._frame.width;
-    this.uniforms.thickness[1] = (this.thickness * this.targetPlaceable.worldTransform.a) / input._frame.height;
-    super.apply(filterManager, input, output, clear);
-  }
+	apply(filterManager, input, output, clear) {
+		this.uniforms.thickness[0] = (this.thickness * this.targetPlaceable.worldTransform.a) / input._frame.width;
+		this.uniforms.thickness[1] = (this.thickness * this.targetPlaceable.worldTransform.a) / input._frame.height;
+		super.apply(filterManager, input, output, clear);
+	}
 }
 
 FilterGleamingGlow.defaults = {
-  time: 0,
-  color: 0xFF8010,
-  thickness: 5,
-  scale: 1,
-  auraIntensity: 1,
-  subAuraIntensity: 1,
-  discard: false,
-  threshold: 0.5,
-  auraType: 1,
+	time: 0,
+	color: 0xff8010,
+	thickness: 5,
+	scale: 1,
+	auraIntensity: 1,
+	subAuraIntensity: 1,
+	discard: false,
+	threshold: 0.5,
+	auraType: 1,
 };
-
-
-
-

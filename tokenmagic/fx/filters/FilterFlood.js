@@ -1,118 +1,115 @@
 import { seaFlood } from '../glsl/fragmentshaders/flood.js';
 import { customVertex2D } from '../glsl/vertexshaders/customvertex2D.js';
 import { CustomFilter } from './CustomFilter.js';
-import { Anime } from "../Anime.js";
-import "./proto/FilterProto.js";
+import { Anime } from '../Anime.js';
+import './proto/FilterProto.js';
 
 export class FilterFlood extends CustomFilter {
+	constructor(params) {
+		let { time, scale, glint, billowy, color, shiftX, shiftY, tintIntensity } = Object.assign(
+			{},
+			FilterFlood.defaults,
+			params
+		);
 
-  constructor(params) {
-    let {
-      time,
-      scale,
-      glint,
-      billowy,
-      color,
-      shiftX,
-      shiftY,
-      tintIntensity
-    } = Object.assign({}, FilterFlood.defaults, params);
+		// using specific vertex shader and fragment shader
+		super(customVertex2D, seaFlood);
 
-    // using specific vertex shader and fragment shader
-    super(customVertex2D, seaFlood);
+		this.uniforms.waterColor = new Float32Array([0.0, 0.18, 0.54]);
+		this.uniforms.shift = new Float32Array([0.0, 0.0]);
 
-    this.uniforms.waterColor = new Float32Array([0.00, 0.18, 0.54]);
-    this.uniforms.shift = new Float32Array([0.0, 0.0]);
+		Object.assign(this, {
+			time,
+			scale,
+			glint,
+			billowy,
+			color,
+			shiftX,
+			shiftY,
+			tintIntensity,
+		});
 
-    Object.assign(this, {
-      time, scale, glint, billowy, color, shiftX, shiftY, tintIntensity
-    });
+		this.zOrder = 170;
+		this.animated = {};
+		this.setTMParams(params);
+		if (!this.dummy) {
+			this.anime = new Anime(this);
+			this.normalizeTMParams();
+		}
+	}
 
-    this.zOrder = 170;
-    this.animated = {};
-    this.setTMParams(params);
-    if (!this.dummy) {
-      this.anime = new Anime(this);
-      this.normalizeTMParams();
-    }
-  }
+	get time() {
+		return this.uniforms.time;
+	}
 
-  get time() {
-    return this.uniforms.time;
-  }
+	set time(value) {
+		this.uniforms.time = value;
+	}
 
-  set time(value) {
-    this.uniforms.time = value;
-  }
+	get color() {
+		return PIXI.utils.rgb2hex(this.uniforms.waterColor);
+	}
 
+	set color(value) {
+		PIXI.utils.hex2rgb(value, this.uniforms.waterColor);
+	}
 
-  get color() {
-    return PIXI.utils.rgb2hex(this.uniforms.waterColor);
-  }
+	get scale() {
+		return this.uniforms.scale;
+	}
 
-  set color(value) {
-    PIXI.utils.hex2rgb(value, this.uniforms.waterColor);
-  }
+	set scale(value) {
+		this.uniforms.scale = value;
+	}
 
-  get scale() {
-    return this.uniforms.scale;
-  }
+	get glint() {
+		return this.uniforms.glint;
+	}
 
-  set scale(value) {
-    this.uniforms.scale = value;
-  }
+	set glint(value) {
+		this.uniforms.glint = value;
+	}
 
-  get glint() {
-    return this.uniforms.glint;
-  }
+	get billowy() {
+		return this.uniforms.billowy;
+	}
 
-  set glint(value) {
-    this.uniforms.glint = value;
-  }
+	set billowy(value) {
+		this.uniforms.billowy = value;
+	}
 
-  get billowy() {
-    return this.uniforms.billowy;
-  }
+	get tintIntensity() {
+		return this.uniforms.tintIntensity;
+	}
 
-  set billowy(value) {
-    this.uniforms.billowy = value;
-  }
+	set tintIntensity(value) {
+		this.uniforms.tintIntensity = value;
+	}
 
-  get tintIntensity() {
-    return this.uniforms.tintIntensity;
-  }
+	get shiftX() {
+		return this.uniforms.shift[0];
+	}
 
-  set tintIntensity(value) {
-    this.uniforms.tintIntensity = value;
-  }
+	set shiftX(value) {
+		this.uniforms.shift[0] = value;
+	}
 
-  get shiftX() {
-    return this.uniforms.shift[0];
-  }
+	get shiftY() {
+		this.uniforms.shift[1];
+	}
 
-  set shiftX(value) {
-    this.uniforms.shift[0] = value;
-  }
-
-  get shiftY() {
-    this.uniforms.shift[1];
-  }
-
-  set shiftY(value) {
-    this.uniforms.shift[1] = value;
-  }
+	set shiftY(value) {
+		this.uniforms.shift[1] = value;
+	}
 }
 
 FilterFlood.defaults = {
-  time: 0,
-  glint: 0.5,
-  scale: 70,
-  billowy: 0.5,
-  color: 0x0020A9,
-  shiftX: 0,
-  shiftY: 0,
-  tintIntensity: 0.2,
+	time: 0,
+	glint: 0.5,
+	scale: 70,
+	billowy: 0.5,
+	color: 0x0020a9,
+	shiftX: 0,
+	shiftY: 0,
+	tintIntensity: 0.2,
 };
-
-
-

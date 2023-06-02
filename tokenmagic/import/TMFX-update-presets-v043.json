@@ -1,409 +1,409 @@
 [
-  {
-    "name": "Flames 4 (colorizable)",
-    "library": "tmfx-template",
-    "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Flames 4 (colorizable)",
-        "color": 0,
-        "blend": 1,
-        "amplitude": 1,
-        "dispersion": 0,
-        "inlay": false,
-        "zOrder": 1,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Flames 5 (colorizable)",
-    "library": "tmfx-template",
-    "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Flames 5 (colorizable)",
-        "color": 0,
-        "blend": 1,
-        "amplitude": 1,
-        "dispersion": 0,
-        "inlay": false,
-        "alphaDiscard": true,
-        "discardThreshold": 0.35,
-        "zOrder": 1,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Flames 6 (colorizable)",
-    "library": "tmfx-template",
-    "defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Flames 6 (colorizable)",
-        "color": 0,
-        "blend": 1,
-        "amplitude": 1,
-        "dispersion": 0,
-        "inlay": false,
-        "alphaDiscard": true,
-        "discardThreshold": 0.35,
-        "zOrder": 1,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      },
-      {
-        "filterType": "blur",
-        "filterId": "Flames 6 (colorizable)",
-        "padding": 30,
-        "quality": 4.0,
-        "blur": 2,
-        "zOrder": 2
-      }
-    ]
-  },
-  {
-    "name": "Fire v2",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Fire v2",
-        "time": 0,
-        "blend": 1,
-        "amplitude": 1,
-        "dispersion": 0,
-        "chromatic": false,
-        "scaleX": 1.5,
-        "scaleY": 1,
-        "inlay": false,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Fire v2 (chromatic)",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Fire v2 (chromatic)",
-        "time": 0,
-        "blend": 2,
-        "amplitude": 1.1,
-        "dispersion": 0,
-        "chromatic": true,
-        "scaleX": 1,
-        "scaleY": 1,
-        "inlay": false,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Fire v2 (sparks)",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Fire v2 (sparks)",
-        "time": 0,
-        "blend": 2,
-        "amplitude": 0.7,
-        "dispersion": 0,
-        "chromatic": false,
-        "scaleX": 2,
-        "scaleY": 2,
-        "inlay": false,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Fire v2 (coldfire)",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Fire v2 (coldfire)",
-        "time": 0,
-        "color": 12312046,
-        "blend": 1,
-        "amplitude": 1,
-        "dispersion": 0,
-        "chromatic": false,
-        "scaleX": 1,
-        "scaleY": 1,
-        "inlay": false,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Fire v2 (blackfire)",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Fire v2 (blackfire)",
-        "time": 0,
-        "color": 7368816,
-        "blend": 11,
-        "amplitude": 1,
-        "dispersion": 2.2,
-        "chromatic": false,
-        "scaleX": 2.5,
-        "scaleY": 2,
-        "inlay": false,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0015,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Super-Frost",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Super-Frost",
-        "color": 11322821,
-        "time": 0,
-        "blend": 5,
-        "amplitude": 1,
-        "dispersion": 0,
-        "chromatic": false,
-        "scaleX": 1,
-        "scaleY": 1,
-        "inlay": true,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0020,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Super-Heat",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "xfire",
-        "filterId": "Super-Heat",
-        "time": 0,
-        "blend": 5,
-        "amplitude": 0.25,
-        "dispersion": -1,
-        "chromatic": false,
-        "scaleX": 1,
-        "scaleY": 1,
-        "inlay": true,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": -0.0090,
-            "animType": "move"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Evade Stance",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "transform",
-        "filterId": "Evade Stance",
-        "padding": 50,
-        "animated": {
-          "translationX": {
-            "animType": "sinOscillation",
-            "val1": -0.125,
-            "val2": 0.125,
-            "loopDuration": 1400
-          },
-          "translationY": {
-            "animType": "cosOscillation",
-            "val1": -0.035,
-            "val2": 0.035,
-            "loopDuration": 1400
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Saving Roll",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "transform",
-        "filterId": "Saving Roll",
-        "autoDestroy": true,
-        "padding": 80,
-        "pivotX": 0.5,
-        "pivotY": 0.55,
-        "animated": {
-          "translationX": {
-            "animType": "sinOscillation",
-            "val1": -0.220,
-            "val2": 0.220,
-            "loops": 1,
-            "loopDuration": 1250
-          },
-          "rotation": {
-            "animType": "sinOscillation",
-            "val1": -360,
-            "val2": 360,
-            "loops": 1,
-            "loopDuration": 1250
-          },
-          "scaleY": {
-            "animType": "cosOscillation",
-            "val1": 1,
-            "val2": 1.3,
-            "loops": 2,
-            "loopDuration": 625
-          },
-          "scaleX": {
-            "animType": "cosOscillation",
-            "val1": 1,
-            "val2": 1.4,
-            "loops": 2,
-            "loopDuration": 625
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Dodge Jump",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "transform",
-        "filterId": "Dodge Jump",
-        "autoDestroy": true,
-        "padding": 80,
-        "animated": {
-          "translationY": {
-            "animType": "cosOscillation",
-            "val1": 0,
-            "val2": -0.225,
-            "loops": 1,
-            "loopDuration": 900
-          },
-          "scaleY": {
-            "animType": "cosOscillation",
-            "val1": 1,
-            "val2": 0.65,
-            "loops": 2,
-            "loopDuration": 450
-          },
-          "scaleX": {
-            "animType": "cosOscillation",
-            "val1": 1,
-            "val2": 0.65,
-            "loops": 2,
-            "loopDuration": 450
-          }
-        }
-      }
-    ]
-  },
-  {
-    "name": "Fairy Outline",
-    "library": "tmfx-main",
-    "params": [
-      {
-        "filterType": "globes",
-        "filterId": "Fairy Outline",
-        "time": 0,
-        "color": 3178734,
-        "distortion": 0.9,
-        "scale": 320,
-        "alphaDiscard": true,
-        "zOrder": 1,
-        "animated": {
-          "time": {
-            "active": true,
-            "speed": 0.0015,
-            "animType": "move"
-          }
-        }
-      },
-      {
-        "filterType": "glow",
-        "filterId": "Fairy Outline",
-        "outerStrength": 4,
-        "innerStrength": 0,
-        "color": 16723968,
-        "quality": 0.5,
-        "padding": 10,
-        "animated": {
-          "color": {
-            "active": true,
-            "loopDuration": 3000,
-            "animType": "colorOscillation",
-            "val1": 16723968,
-            "val2": 3211008
-          }
-        }
-      }
-    ]
-  }
+	{
+		"name": "Flames 4 (colorizable)",
+		"library": "tmfx-template",
+		"defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Flames 4 (colorizable)",
+				"color": 0,
+				"blend": 1,
+				"amplitude": 1,
+				"dispersion": 0,
+				"inlay": false,
+				"zOrder": 1,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Flames 5 (colorizable)",
+		"library": "tmfx-template",
+		"defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Flames 5 (colorizable)",
+				"color": 0,
+				"blend": 1,
+				"amplitude": 1,
+				"dispersion": 0,
+				"inlay": false,
+				"alphaDiscard": true,
+				"discardThreshold": 0.35,
+				"zOrder": 1,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Flames 6 (colorizable)",
+		"library": "tmfx-template",
+		"defaultTexture": "modules/tokenmagic/fx/assets/templates/black-tone-vstrong-opacity.png",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Flames 6 (colorizable)",
+				"color": 0,
+				"blend": 1,
+				"amplitude": 1,
+				"dispersion": 0,
+				"inlay": false,
+				"alphaDiscard": true,
+				"discardThreshold": 0.35,
+				"zOrder": 1,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			},
+			{
+				"filterType": "blur",
+				"filterId": "Flames 6 (colorizable)",
+				"padding": 30,
+				"quality": 4.0,
+				"blur": 2,
+				"zOrder": 2
+			}
+		]
+	},
+	{
+		"name": "Fire v2",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Fire v2",
+				"time": 0,
+				"blend": 1,
+				"amplitude": 1,
+				"dispersion": 0,
+				"chromatic": false,
+				"scaleX": 1.5,
+				"scaleY": 1,
+				"inlay": false,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Fire v2 (chromatic)",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Fire v2 (chromatic)",
+				"time": 0,
+				"blend": 2,
+				"amplitude": 1.1,
+				"dispersion": 0,
+				"chromatic": true,
+				"scaleX": 1,
+				"scaleY": 1,
+				"inlay": false,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Fire v2 (sparks)",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Fire v2 (sparks)",
+				"time": 0,
+				"blend": 2,
+				"amplitude": 0.7,
+				"dispersion": 0,
+				"chromatic": false,
+				"scaleX": 2,
+				"scaleY": 2,
+				"inlay": false,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Fire v2 (coldfire)",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Fire v2 (coldfire)",
+				"time": 0,
+				"color": 12312046,
+				"blend": 1,
+				"amplitude": 1,
+				"dispersion": 0,
+				"chromatic": false,
+				"scaleX": 1,
+				"scaleY": 1,
+				"inlay": false,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Fire v2 (blackfire)",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Fire v2 (blackfire)",
+				"time": 0,
+				"color": 7368816,
+				"blend": 11,
+				"amplitude": 1,
+				"dispersion": 2.2,
+				"chromatic": false,
+				"scaleX": 2.5,
+				"scaleY": 2,
+				"inlay": false,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.0015,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Super-Frost",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Super-Frost",
+				"color": 11322821,
+				"time": 0,
+				"blend": 5,
+				"amplitude": 1,
+				"dispersion": 0,
+				"chromatic": false,
+				"scaleX": 1,
+				"scaleY": 1,
+				"inlay": true,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.002,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Super-Heat",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "xfire",
+				"filterId": "Super-Heat",
+				"time": 0,
+				"blend": 5,
+				"amplitude": 0.25,
+				"dispersion": -1,
+				"chromatic": false,
+				"scaleX": 1,
+				"scaleY": 1,
+				"inlay": true,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": -0.009,
+						"animType": "move"
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Evade Stance",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "transform",
+				"filterId": "Evade Stance",
+				"padding": 50,
+				"animated": {
+					"translationX": {
+						"animType": "sinOscillation",
+						"val1": -0.125,
+						"val2": 0.125,
+						"loopDuration": 1400
+					},
+					"translationY": {
+						"animType": "cosOscillation",
+						"val1": -0.035,
+						"val2": 0.035,
+						"loopDuration": 1400
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Saving Roll",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "transform",
+				"filterId": "Saving Roll",
+				"autoDestroy": true,
+				"padding": 80,
+				"pivotX": 0.5,
+				"pivotY": 0.55,
+				"animated": {
+					"translationX": {
+						"animType": "sinOscillation",
+						"val1": -0.22,
+						"val2": 0.22,
+						"loops": 1,
+						"loopDuration": 1250
+					},
+					"rotation": {
+						"animType": "sinOscillation",
+						"val1": -360,
+						"val2": 360,
+						"loops": 1,
+						"loopDuration": 1250
+					},
+					"scaleY": {
+						"animType": "cosOscillation",
+						"val1": 1,
+						"val2": 1.3,
+						"loops": 2,
+						"loopDuration": 625
+					},
+					"scaleX": {
+						"animType": "cosOscillation",
+						"val1": 1,
+						"val2": 1.4,
+						"loops": 2,
+						"loopDuration": 625
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Dodge Jump",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "transform",
+				"filterId": "Dodge Jump",
+				"autoDestroy": true,
+				"padding": 80,
+				"animated": {
+					"translationY": {
+						"animType": "cosOscillation",
+						"val1": 0,
+						"val2": -0.225,
+						"loops": 1,
+						"loopDuration": 900
+					},
+					"scaleY": {
+						"animType": "cosOscillation",
+						"val1": 1,
+						"val2": 0.65,
+						"loops": 2,
+						"loopDuration": 450
+					},
+					"scaleX": {
+						"animType": "cosOscillation",
+						"val1": 1,
+						"val2": 0.65,
+						"loops": 2,
+						"loopDuration": 450
+					}
+				}
+			}
+		]
+	},
+	{
+		"name": "Fairy Outline",
+		"library": "tmfx-main",
+		"params": [
+			{
+				"filterType": "globes",
+				"filterId": "Fairy Outline",
+				"time": 0,
+				"color": 3178734,
+				"distortion": 0.9,
+				"scale": 320,
+				"alphaDiscard": true,
+				"zOrder": 1,
+				"animated": {
+					"time": {
+						"active": true,
+						"speed": 0.0015,
+						"animType": "move"
+					}
+				}
+			},
+			{
+				"filterType": "glow",
+				"filterId": "Fairy Outline",
+				"outerStrength": 4,
+				"innerStrength": 0,
+				"color": 16723968,
+				"quality": 0.5,
+				"padding": 10,
+				"animated": {
+					"color": {
+						"active": true,
+						"loopDuration": 3000,
+						"animType": "colorOscillation",
+						"val1": 16723968,
+						"val2": 3211008
+					}
+				}
+			}
+		]
+	}
 ]
