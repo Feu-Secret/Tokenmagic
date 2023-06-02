@@ -1,6 +1,9 @@
 # IDE
 .vs/
+.vscode/
 .idea/
 tokenmagic.zip
 tokenmagic/fx/assets/particles/
+tokenmagic/packs/token-magic-book-of-fire/
+tokenmagic/packs/token-magic-portfolio/
 foundry.js

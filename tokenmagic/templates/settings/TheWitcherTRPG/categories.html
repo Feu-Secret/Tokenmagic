@@ -1,0 +1,85 @@
+<div class='settings-list'>
+	{{#each meleeSkills as |dmgType dmgKey|}}
+	<h2>
+		{{dmgType}}
+	</h2>
+	<div class='form-group'>
+		<label for="autoTemplateSettings.categories.{{dmgKey}}.opacity">
+			{{localize 'TMFX.template.opacity'}}
+		</label>
+		<div class='form-fields'>
+			<input 
+				   type='range'
+				   name="autoTemplateSettings.categories.{{dmgKey}}.opacity"
+				   value="{{lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) 'opacity'}}"
+				   min='0.0'
+				   max='1.0'
+				   step='0.05'
+				   data-dtype='Number'
+			/>
+			<span class='range-value'>
+				{{lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) 'opacity'}}
+			</span>
+		</div>
+	</div>
+	<div class='form-group'>
+		<label for="autoTemplateSettings.categories.{{dmgKey}}.tint">
+			{{localize 'TMFX.template.tint'}}
+		</label>
+		<div class='form-fields'>
+			<input 
+				   class='color'
+				   type='text'
+				   name="autoTemplateSettings.categories.{{dmgKey}}.tint"
+				   value="{{lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) 'tint'}}"
+			/>
+			<input 
+				   type='color'
+				   value="{{lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) 'tint'}}"
+				   data-edit="autoTemplateSettings.categories.{{dmgKey}}.tint" 
+			/>
+		</div>
+	</div>
+	{{#each @root.templateTypes as |tplType tplKey|}}
+	<hr />
+	<h3>
+		{{tplType}}
+	</h3>
+	<div class='form-group'>
+		<label for="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.preset">
+			{{localize 'TMFX.template.fx'}}
+		</label>
+		<select name="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.preset" data-dtype='String'>
+			{{#select (lookup (lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) tplKey) 'preset')}}
+			<option value="{{@root.emptyPreset}}"></option>
+			{{#each @root.presets as |preset|}}
+			<option value="{{preset.name}}">
+				{{preset.name}}
+			</option>
+			{{/each}}
+			{{/select}}
+		</select>
+	</div>
+	<div class='form-group'>
+		<label for="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.texture">
+			{{localize 'TMFX.settings.autoTemplateSettings.texture.label'}}
+		</label>
+		<div class='form-fields'>
+			{{
+						filePicker
+						target=(concat (concat (concat (concat 'autoTemplateSettings.categories.' dmgKey)'.') tplKey) '.texture')
+						type='imagevideo'
+			}}
+			<input 
+				   class='image'
+				   type='text'
+				   name="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.texture"
+				   placeholder='path/image.png'
+				   value="{{lookup (lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) tplKey) 'texture'}}"
+				   data-dtype='String' 
+			/>
+		</div>
+	</div>
+	{{/each}}
+	{{/each}}
+</div>
