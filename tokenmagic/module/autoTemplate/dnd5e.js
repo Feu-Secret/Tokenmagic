@@ -97,6 +97,10 @@ export class AutoTemplateDND5E {
     this._enabled = false;
   }
 
+  get enabled() {
+    return this._enabled;
+  }
+
   configure(enabled = false) {
     if (game.system.id !== "dnd5e") return;
 
@@ -123,6 +127,14 @@ export class AutoTemplateDND5E {
 
     this._enabled = enabled;
   }
+
+  getData() {
+    return {
+      hasAutoTemplates: true,
+      dmgTypes: CONFIG.DND5E.damageTypes,
+      templateTypes: CONFIG.MeasuredTemplate.types
+    }
+  }
 }
 
 function fromConfig(config, template) {
@@ -137,7 +149,7 @@ function fromConfig(config, template) {
     o.tokenmagic.options.tmfxTint = config.tint;
   }
   o.tokenmagic.options.tmfxTextureAlpha = config.opacity;
-  template.document.updateSource({flags: {tokenmagic : o.tokenmagic}});
+  template.document.updateSource({ flags: { tokenmagic: o.tokenmagic } });
 }
 
 function fromOverrides(overrides = [], item, template) {

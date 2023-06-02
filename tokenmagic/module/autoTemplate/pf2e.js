@@ -129,6 +129,14 @@ export class AutoTemplatePF2E {
 
   set enabled(value) {}
 
+  getData() {
+    return {
+      hasAutoTemplates: true,
+      dmgTypes: CONFIG.PF2E.damageTraits,
+      templateTypes: CONFIG.MeasuredTemplate.types
+    }
+  }
+
   preCreateMeasuredTemplate(template) {
     let hasPreset = template.hasOwnProperty("tmfxPreset");
     if (hasPreset) {
