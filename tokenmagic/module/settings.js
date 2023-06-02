@@ -386,8 +386,8 @@ Hooks.once("init", () => {
     return retVal;
   };
 
-  let wmtRefresh;
-  let wmtRefreshType;
+  let wmtApplyRenderFlags;
+  let wmtApplyRenderFlagsType;
 
   let wmtRefreshTemplate;
   let wmtRefreshTemplateType;
@@ -395,15 +395,11 @@ Hooks.once("init", () => {
   if ( !isVideoDisabled() ) {
     const toRadians = Math.toRadians;
 
-    wmtRefreshType = "WRAPPER";
+    wmtApplyRenderFlagsType = "WRAPPER";
 
-    /**
-     *
-     * @return {wmtRefresh}
-     */
-    wmtRefresh = function(wrapped, ...args) {
+    wmtApplyRenderFlags = function(wrapped, ...args) {
       const [flags] = args;
-      if(flags) flags.refreshShape = this.template && !this.template._destroyed;
+      if(flags?.refreshShape) flags.refreshShape = this.template && !this.template._destroyed;
       return wrapped(...args);
     };
 
@@ -553,15 +549,15 @@ Hooks.once("init", () => {
 
     /* ------------------------------------------------------------------------------------ */
 
-    if ( wmtRefresh ) {
-      const _wmtRefresh = wmtRefresh;
-      wmtRefresh = function() {
-        return autohideTemplateElements.call(this, _wmtRefresh.bind(this), ...arguments);
+    if ( wmtApplyRenderFlags ) {
+      const _wmtApplyRenderFlags = wmtApplyRenderFlags;
+      wmtApplyRenderFlags = function() {
+        return autohideTemplateElements.call(this, _wmtApplyRenderFlags.bind(this), ...arguments);
       };
     }
     else {
-      wmtRefreshType = "WRAPPER";
-      wmtRefresh = autohideTemplateElements;
+      wmtApplyRenderFlagsType = "WRAPPER";
+      wmtApplyRenderFlags = autohideTemplateElements;
     }
   }
 
@@ -590,7 +586,7 @@ Hooks.once("init", () => {
   if ( game.modules.get("lib-wrapper")?.active ) {
     libWrapper.register("tokenmagic", "MeasuredTemplateDocument.prototype.update", wmtdUpdate, "WRAPPER");
     libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._draw", wmtDraw, "WRAPPER");
-    if ( wmtRefresh ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._applyRenderFlags", wmtRefresh, wmtRefreshType);
+    if ( wmtApplyRenderFlags ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._applyRenderFlags", wmtApplyRenderFlags, wmtApplyRenderFlagsType);
     if ( wmtRefreshTemplate ) libWrapper.register("tokenmagic", "MeasuredTemplate.prototype._refreshTemplate", wmtRefreshTemplate, wmtRefreshTemplateType);
   }
   else {
@@ -603,15 +599,15 @@ Hooks.once("init", () => {
       return wmtDraw.call(this, cmtDraw.bind(this), ...arguments);
     };
 
-    if ( wmtRefresh ) {
-      if ( wmtRefreshType && wmtRefreshType !== "OVERRIDE" ) {
-        const cmtRefresh = MeasuredTemplate.prototype._applyRenderFlags;
+    if ( wmtApplyRenderFlags ) {
+      if ( wmtApplyRenderFlagsType && wmtApplyRenderFlagsType !== "OVERRIDE" ) {
+        const cmtApplyRenderFlags = MeasuredTemplate.prototype._applyRenderFlags;
         MeasuredTemplate.prototype._applyRenderFlags = function() {
-          return wmtRefresh.call(this, cmtRefresh.bind(this), ...arguments);
+          return wmtApplyRenderFlags.call(this, cmtApplyRenderFlags.bind(this), ...arguments);
         };
       }
       else {
-        MeasuredTemplate.prototype._applyRenderFlags = wmtRefresh;
+        MeasuredTemplate.prototype._applyRenderFlags = wmtApplyRenderFlags;
       }
     }
 
