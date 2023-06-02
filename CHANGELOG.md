@@ -1,3 +1,7 @@
+# Token Magic FX - Update v0.6.3.2-beta
+
+- Russian language and Auto-template support for `TheWitcherTRPG` (credit to pkonshik)
+
 # Token Magic FX - Update v0.6.3.1-beta
 
 - Filters can now be applied to empty tiles
@@ -17,6 +21,7 @@
 # Token Magic FX - Update v0.6.2-beta
 
 - New filters under `TokenMagic Portfolio`
+
   - 40 - Ascii (ascii)
   - 41 - Dot Shade (dot)
   - 42 - CRT Monitor (crt)
@@ -25,6 +30,7 @@
   - G - Randomization Example
 
 - New properties
+
   - Added `alpha`, `alphaDiscard`, and `repeat` properties to the `FilterSprite` filter
   - Added `alpha` property to `FilterGlow`
   - Added `randomized` property to all filters (more information on the module page)
@@ -33,26 +39,29 @@
     - e.g. `users: { exclude: ['Player2', 'UTH9wXZFkTza6igr'] }
 
 - Fixes
+
   - Fixed `top` option in `FilterSprite` discouloring underlayed semi-transparent sprites
   - Fixed `FilterSprite` video `loop` property not having effect
   - Fixed `FilterSprite` throwing errors on initial assignment of a video
   - Fixed aspect ratio of `FilterPolymorph` sprite
   - Fixed `FilterSprite` and `FilterPolymorph` textures not being re-assigned upon `imagePath` property change
-  - Fixed `TokenMagic.getPreset(...)` returning presets in a dirty state 
+  - Fixed `TokenMagic.getPreset(...)` returning presets in a dirty state
   - Fixed filters on tiles not being reset on image change
   - Fixed `FilterFlood` not producing waveforms on some GPUs
 
 - Misc
-  - Tweaked `FilterSplash` to not discard unless the value is completely black 
+  - Tweaked `FilterSplash` to not discard unless the value is completely black
 
 # Token Magic FX - Update v0.6.1.2-beta
 
-*Hotfix :*
+_Hotfix :_
+
 - Placing template was throwing an error.
 
 # Token Magic FX - Update v0.6.1.1-beta
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Optional textures from dnd5e template settings were not applied.
 - Some changes (like `direction` or `angle`) in a template with a FX applied from settings could break the effect.
 - Some filter properties were not applied after a filter update (like `clockWise`).
@@ -60,10 +69,12 @@
 
 # Token Magic FX - Update v0.6.1-beta
 
-*Added/Changed*
+_Added/Changed_
+
 - Sprite Filter can now handle video with play and loop properties.
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Template effects were not working properly.
 - Automatic templates settings were not applied correctly.
 - Assigning a filter on a drawing had no effect.
@@ -75,80 +86,96 @@ Token Magic FX is now v10 compatible!
 
 **Big thanks to OsiJr to have done most of the work!**
 
-*Added/Changed*
-- V10 Compatibility
-- New filter : *Replace Color* and its new macro => *38 - Replace Color* 
-- New filter : *Dungeon Draft Tint* and its new macro => *39 - Dungeon Draft Tint*
+_Added/Changed_
 
-*Fixed Issues :*
+- V10 Compatibility
+- New filter : _Replace Color_ and its new macro => _38 - Replace Color_
+- New filter : _Dungeon Draft Tint_ and its new macro => _39 - Dungeon Draft Tint_
+
+_Fixed Issues :_
+
 - `hasFilterType` API was broken
 - And other some small issues and code lifting
 
-*Big Thanks to:*
+_Big Thanks to:_
+
 - OsiJr for V10 compatibility.
 - Elizeuangelo for adding the two new filters.
 - Averrin for fixing `hasFilterType`.
 
 # Token Magic FX - Update v0.5.4-beta
 
-*Added/Changed*
+_Added/Changed_
+
 - In macros compendium, all calls to asynchronous API have been "prefixed" with await.
 - Macros in compendium have shiny icons now, many thanks to JosephSeraph!
 - Shader caching at load time is deactivated by default.
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - When using TMFX API, an error was thrown with systems which were using alternative names for some canvas layers.
 
 # Token Magic FX - Update v0.5.3-beta
 
-*Added/Changed*
+_Added/Changed_
+
 - Updated the PIXI community filters with version 4.1.5
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - The FPS option control has been removed. TMFX now strictly follow Foundry performance modes.
 - An error was raised in permissive mode, when a player attempted to put a filter on a token.
 - Polymorph filter raised an error.
 
 # Token Magic FX - Update v0.5.2.3-beta
 
-*Added/Changed*
+_Added/Changed_
+
 - Replaced deprecated API calls
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Exception throwed when manipulating template under certain circumstances
 
 # Token Magic FX - Update v0.5.2.2-beta
 
-*Added/Changed*
+_Added/Changed_
+
 - Update to Foundry V9
 - The Sprite filter now accepts video (experimental)
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - The Token Magic GUI has been fixed to handle correctly compendium API changes
 
 # Token Magic FX - Update v0.5.2.1-beta (closing version for Foundry V8)
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Filters could blur placeables with zoom in/out at web-browser level
 - Some filters were generating artifacts (repeating edge pixels) when positionned at the canvas border, with visible and invisible parts.
 
 # Token Magic FX - Update v0.5.2-beta
 
-*Added/Changed :*
+_Added/Changed :_
+
 - TMFX Now supports the Japanese language. Many thanks to BrotherSharper and Touge!
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Removed furnace compatibility mode, which was causing issues (only for FVTT 0.8.x and +)
 - Drop Shadow has been reworked and now take into account the zoom level.
 
 # Token Magic FX - Update v0.5.1-beta
 
-*Added/Changed :*
+_Added/Changed :_
+
 - ======> Compatibility with FVTT 0.8.6 - Anniversary Edition! <======
 - You can export/import data from/to the "Automatic Template Settings" (useful to share settings between worlds)
 - A reworked README, focused on documentation and useful online resources.
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - The `Automatic Framerate` client option now works correctly : "You can release the Kraken with your 144hz screen!"
 
 # Token Magic FX - Update v0.5.0-beta
@@ -156,11 +183,13 @@ Token Magic FX is now v10 compatible!
 First of all, I want to thank dev7355608 for his incredible contribution to this release!
 Long live to dev7355608!
 
-*New filter :*
+_New filter :_
+
 - Sprite filter (beta) : to link sprites and manipulate them (color, translation, rotation, etc.)
 - The token magic compendium has been updated with 3 new sprite filter macro
 
-*Added/Changed :*
+_Added/Changed :_
+
 - An effect selector macro has been added to the token magic compendium, it works in tandem with any TMFX compendium (many thanks to Bruno Calado!)
 - New automatic framerate setting to "release the kraken!"
 - New automatically hide template effects setting that hides the border of textured templates.
@@ -173,85 +202,94 @@ Long live to dev7355608!
 - Updated PIXI community filters
 - A lot of framework improvements!
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Filters were not working properly if the target was rotated.
 - Distortion and Blur filters were not working properly when zooming in/out.
 - Token Magic was not working if a route prefix was set.
-- Some filters were not working properly on some MacOs and Linux distributions. 
+- Some filters were not working properly on some MacOs and Linux distributions.
 - And a lot of other small fixes!
 
 # Token Magic FX - Update v0.4.4-alpha (Mess edition PART I)
 
-*News :*
+_News :_
+
 - Integration of Mess Moerill's Supersuit(e) (for templates) part I :
   - Video support in templates :
     - You can set webm, mp4, etc. as video texture.
     - You can define videos in the automatic spell templates options (for dd5 only).
   - Texture autoresize :
     - The choosen texture is resized to fit the template.
-- TMFX now supports the Spanish language! 
+- TMFX now supports the Spanish language!
 
 Many thanks to Lozalojo (Spanish translation) and Moerill (video) for this release!
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Template effect tint was badly formatted during an automatic template creation.
 
 # Token Magic FX - Update v0.4.3-alpha
 
-*News :*
+_News :_
+
 - Polymorph effect :
-    - Allow image transition between a source image (token, tile, etc.) and a target image of your choice.
-    - 9 types of transition are provided :
-      - Morphing, waterdrop, waving, twisting, take off/put on your disguise!, tvnoise, hologram, wind and basic alpha transition.
-    - Properties to reduce or enlarge the target image.
+  - Allow image transition between a source image (token, tile, etc.) and a target image of your choice.
+  - 9 types of transition are provided :
+    - Morphing, waterdrop, waving, twisting, take off/put on your disguise!, tvnoise, hologram, wind and basic alpha transition.
+  - Properties to reduce or enlarge the target image.
 - XFire effect :
-    - A fire filter with advanced properties, designed to be easily colorizable.
-    - specific blend modes that do not alter the visual quality of the filter depending on the brightness and intensity of the source image.
-    - An advanced mode allows you to choose up to 4 colors to compose your perfect fire.
-    - An inlay mode to create new effects, like superfrost or superheat.
-    - A chromatic mode.
-    - Adjustable scale on the x and y axis.
+  - A fire filter with advanced properties, designed to be easily colorizable.
+  - specific blend modes that do not alter the visual quality of the filter depending on the brightness and intensity of the source image.
+  - An advanced mode allows you to choose up to 4 colors to compose your perfect fire.
+  - An inlay mode to create new effects, like superfrost or superheat.
+  - A chromatic mode.
+  - Adjustable scale on the x and y axis.
 - New macros have been added to the TMFX compendium (+ new presets for main library and templates)
 - Added two new `animType` :
-    - `halfCosOscillation` and `halfSinOscillation` :
-      - The half of the given oscillation in one loop.
-      - A tutorial is provided in the following macro : "36 - T01 - Turn into Mystery Man (polymorph)"
+  - `halfCosOscillation` and `halfSinOscillation` :
+    - The half of the given oscillation in one loop.
+    - A tutorial is provided in the following macro : "36 - T01 - Turn into Mystery Man (polymorph)"
 
-*Updates :*
+_Updates :_
+
 - Rank your effects :
-    - The order in which you put your filters is important.
-    - A new property called `rank` allow you to force the ordering of filters on a given target.
-      - Filters with lowest rank are executed first, etc.
-      - If you do not specify a rank, TMFX will automatically assign rank within its reserved range (10000 to 20000).
-      - This system is the default mode and an alternative to the zOrder option, you can use either.
+  - The order in which you put your filters is important.
+  - A new property called `rank` allow you to force the ordering of filters on a given target.
+    - Filters with lowest rank are executed first, etc.
+    - If you do not specify a rank, TMFX will automatically assign rank within its reserved range (10000 to 20000).
+    - This system is the default mode and an alternative to the zOrder option, you can use either.
 - Transform filter :
-    - The twist and bulge/pinch filters have been reengineered and put in the transform filter : 
-      - with better performance and the elimination of flicker.
-- Updated PIXI libs 
+  - The twist and bulge/pinch filters have been reengineered and put in the transform filter :
+    - with better performance and the elimination of flicker.
+- Updated PIXI libs
 
-*Deprecated :*
-- Twist and Bulge/Pinch effects : 
-    - Use transform effect instead, which is more efficient.
+_Deprecated :_
+
+- Twist and Bulge/Pinch effects :
+  - Use transform effect instead, which is more efficient.
 - Shockwave effect :
-    - Use wave effect instead, which is more efficient and versatile.
+  - Use wave effect instead, which is more efficient and versatile.
 - Deprecated effects will no longer be maintained and will be removed from TMFX v1.0.0-beta (you have time.)
 - Consider migrating your personal macros.
 - Macros in the TMFX compendium have been migrated, with detailed examples.
 
-*Fixed Issues :*
+_Fixed Issues :_
+
 - Sometimes, a filter update could fail or update the wrong filter.
 - Due to gaps between frames, when an animation loop terminated, an animated property might have a slight deviation from its termination value.
 
 # Token Magic FX - Update v0.4.2-alpha
 
-*Improvements :*
-- Force Field Filters, with new properties:
-    - hideRadius : To create rings.
-    - alphaDiscard and discardThreshold : To add local transparency, based on a threshold related to color intensity.
-    - New properties to move the ambient light : combined with the above properties, you can create disks.
-    - New example macros have been added to the compendium. Check them and play with the values.
+_Improvements :_
 
-*Fixed Issues :*
+- Force Field Filters, with new properties:
+  - hideRadius : To create rings.
+  - alphaDiscard and discardThreshold : To add local transparency, based on a threshold related to color intensity.
+  - New properties to move the ambient light : combined with the above properties, you can create disks.
+  - New example macros have been added to the compendium. Check them and play with the values.
+
+_Fixed Issues :_
+
 - A problem with template effects could arise when changing texture (depending of the texture load time)
 - Incorrect interpretation of the "clockwise" animation property by the "Transform" filter
 - A problem with the "Fumes" filter, which initialized twice.
@@ -259,7 +297,8 @@ Many thanks to Lozalojo (Spanish translation) and Moerill (video) for this relea
 - The force field filters could not be stacked correctly.
 - Possibility for the animation loop to attach itself several times to the pixi ticker (which could lead to severe performance problems)
 
-*Need contributors :*
+_Need contributors :_
+
 - To translate in several languages. Currently, TMFX supports English and French.
 - To create user interface (which can be complex). Because html is my weakness.
 - To allow auto-templates on other game systems than DD5.
@@ -268,142 +307,161 @@ Many thanks to Lozalojo (Spanish translation) and Moerill (video) for this relea
 
 # Token Magic FX - Update v0.4.1-alpha (splash edition)
 
-*Improvements :*
-- Cached filters : Shaders are compiled for the GPU at startup (when entering a world). It may take a few more seconds to start a world.
-    - No more freeze when you apply an effect for the first time. You can enjoy your effects instantly. 
-    - A new option to desactivate cached filters at startup.
+_Improvements :_
 
-*New FX :*
+- Cached filters : Shaders are compiled for the GPU at startup (when entering a world). It may take a few more seconds to start a world.
+  - No more freeze when you apply an effect for the first time. You can enjoy your effects instantly.
+  - A new option to desactivate cached filters at startup.
+
+_New FX :_
+
 - Splash filter
-    - To simulate splashes, injuries and bloodbaths! 
-    - Many properties to configure the perfect splash (color, anchor, spread, splash factor, etc.)  
+  - To simulate splashes, injuries and bloodbaths!
+  - Many properties to configure the perfect splash (color, anchor, spread, splash factor, etc.)
 - Transform filter
-    - To enlarge, shrink, rotate, skew, translate... what you want, where you want!
-    - Foundry properties are left untouched, this is a pure graphic transformation.
+  - To enlarge, shrink, rotate, skew, translate... what you want, where you want!
+  - Foundry properties are left untouched, this is a pure graphic transformation.
 - Macro examples with the new FX have been added to the TMFX compendium.
 
-*New presets for templates :*
+_New presets for templates :_
+
 - 3 new presets for templates : it's time to splash.
 
-*A new collaborator :*
+_A new collaborator :_
 I would like to thank sPOiDar for his outstanding work on auto templates for dd5. He joins the list of authors.
 
 # Token Magic FX - Update v0.4.0-alpha
 
-*New Features :*
+_New Features :_
+
 - DnD5e Automatic templates support (contributions are welcome for other systems!)
-    - Configure your auto-templates by damage type and template shape.
-    - Create overrides for specific spells or items.
-    - Choose color, opacity, special effect, and an optional texture.
+  - Configure your auto-templates by damage type and template shape.
+  - Create overrides for specific spells or items.
+  - Choose color, opacity, special effect, and an optional texture.
 - Added an option to activate zOrder property on filters
-    - If used, the zOrder determines the order in which the FX are applied (see documentation)
+  - If used, the zOrder determines the order in which the FX are applied (see documentation)
 - Added a client option to desactivate FX animations
 - Added a new blend mode for the force field/shield/aura filters
-    - blend: 14 put your tokens or tiles on top of the effect (interesting for auras)
+  - blend: 14 put your tokens or tiles on top of the effect (interesting for auras)
 
-*New presets for templates :*
+_New presets for templates :_
+
 - A lot of new effects to use for your templates
-    - Fairy fireflies, Ripples, Living Fluid, Fire Rays, two new Spiderweb, and much more!
+  - Fairy fireflies, Ripples, Living Fluid, Fire Rays, two new Spiderweb, and much more!
 
-*New FX :*
+_New FX :_
+
 - Solar Ripples filter
-    - To create new kinds of fire, ripples, and other effects
+  - To create new kinds of fire, ripples, and other effects
 - Globes filter
-    - To add a fairy touch
+  - To add a fairy touch
 - Macro examples with the new FX have been added to the TMFX compendium.
- 
-*Fixed issues :*
+
+_Fixed issues :_
+
 - The XFog shader has been reworked due to performance issues.
 
 # Token Magic FX - Update v0.3.0-alpha
 
-*New Features :*
-- Template support with an updated user interface.
-    - Combo-box to choose the FX you want to apply.
-    - Color picker to choose tint of the FX.
-    - Slider to change opacity of the inner texture and/or FX.
-    - 23 new presets, specifically designed for templates.
-    - Possibility to add your own presets into the library of templates effects.
-    - 100% Compatible with mess' module (and video textures !)
+_New Features :_
 
-*New FX :*
+- Template support with an updated user interface.
+  - Combo-box to choose the FX you want to apply.
+  - Color picker to choose tint of the FX.
+  - Slider to change opacity of the inner texture and/or FX.
+  - 23 new presets, specifically designed for templates.
+  - Possibility to add your own presets into the library of templates effects.
+  - 100% Compatible with mess' module (and video textures !)
+
+_New FX :_
+
 - Spider-Web filter
-    - To stick the characters of your players
+  - To stick the characters of your players
 - XFog filter
-    - A thick and shifting fog.
+  - A thick and shifting fog.
 - Macro examples with the new FX have been added to the TMFX compendium.
- 
-*Fixed issues :*
+
+_Fixed issues :_
+
 - Some critical issues in filters Shockwave and Twist (regression of v0.2.2).
 - Adding filters triggered too many updates (one by filter).
 
 # Token Magic FX - Update v0.2.2b-alpha
 
-*Fixed issues :*
+_Fixed issues :_
+
 - Compatibility problem with furnace module drawings tools.
 
 # Token Magic FX - Update v0.2.2-alpha
 
-*Added :*
+_Added :_
+
 - You can now add FX on drawings. the operating principles are the same as with tokens and tiles.
 - Some optimizations in the shaders
 
 # Token Magic FX - Update v0.2.1-alpha
 
-*Added :*
+_Added :_
+
 - An option to allow non-GM players to add, modify or delete FX on tokens which they do not own.
-- Mirror-images filter overhaul with new properties : 
-    - number of images
-    - alpha properties on images and character
-    - movement amplitude along the X and Y axis.
-    - 2 new macro in the portfolio (with an emphasis on new properties)
+- Mirror-images filter overhaul with new properties :
+  - number of images
+  - alpha properties on images and character
+  - movement amplitude along the X and Y axis.
+  - 2 new macro in the portfolio (with an emphasis on new properties)
 - Library of stored FX presets :
-    - comes with a default library (the same as in the portfolio)
-    - functions to add or delete presets in your library
-    - functions to export presets from your library into a json file
-    - functions to import presets into your library (local or URL)
+  - comes with a default library (the same as in the portfolio)
+  - functions to add or delete presets in your library
+  - functions to export presets from your library into a json file
+  - functions to import presets into your library (local or URL)
 - Added smooth edges on Force Field filter
 
-*New FX :*
+_New FX :_
+
 - A pixelate filter (sample added in the portfolio)
 
-*Fixed issues :*
+_Fixed issues :_
+
 - Added the v0.2.0 missing macros in the portfolio.
-    - X-rays, liquid and x-glow macros
-- Force field filter had a brightness and contrast problem. 
-    - The colors are now more vivid.
-    - You may have to review your macros by adjusting color intensity.
-    - The Force field macros have been rewritten.
+  - X-rays, liquid and x-glow macros
+- Force field filter had a brightness and contrast problem.
+  - The colors are now more vivid.
+  - You may have to review your macros by adjusting color intensity.
+  - The Force field macros have been rewritten.
 - Corrected some performances issues in the shaders
 - Some animations could freeze with a large video or texture (animated tokens, etc.)
 
-*Thanks :*
-- special thanks to @tposney 
+_Thanks :_
+
+- special thanks to @tposney
 
 # Token Magic FX - Update v0.2.0-alpha
 
-*Added :*
+_Added :_
+
 - A copy of a token also copies the FX
 - FX are now stored on prototype tokens (if you update your prototype with a FXified Token)
 - An option panel is now available :
-    - You can desactivate additive padding in favor of max padding
-    - You can set a minimum padding for all applied FX
+  - You can desactivate additive padding in favor of max padding
+  - You can set a minimum padding for all applied FX
 
-*New FX :*
+_New FX :_
+
 - An advanced Ray filter (with better quality than cosmic ray filter)
-    - blending options
+  - blending options
 - Another liquid filter (complementary with the flood filter)
-    - blending options
-    - spectral property
+  - blending options
+  - spectral property
 - A gleaming glow filter
-    - two glow types
-    - adjustable FX scale
-    - adjustable thickness
-    - and lot more options to create magical glows.
+  - two glow types
+  - adjustable FX scale
+  - adjustable thickness
+  - and lot more options to create magical glows.
 
 The new filters have been added to the TokenMagic macro compendium.
 
-*Fixed issues :*
+_Fixed issues :_
+
 - autoDestroy property did not work properly (the effect was restored when reloading the scene)
 - Freezing when updating image, dimensions or tint of a token.
 - Freezing when updating image of a tile.
@@ -414,18 +472,20 @@ The new filters have been added to the TokenMagic macro compendium.
 
 ## FX
 
-*Added :*
+_Added :_
+
 - Force Field/Aura/Shield Filters
-    - Ultra customizable (intensity, blend modes, lights, color, grid padding, etc.)
-    - 12 filter types + 1 simple aura.
-    - Usables by both Scifi, fantasy and modern universes.
-    - The simple aura can be used to "bind" other filters
+  - Ultra customizable (intensity, blend modes, lights, color, grid padding, etc.)
+  - 12 filter types + 1 simple aura.
+  - Usables by both Scifi, fantasy and modern universes.
+  - The simple aura can be used to "bind" other filters
 - Mirror image Filter
-    - A simple 4 pass mirroring, with moving images.
+  - A simple 4 pass mirroring, with moving images.
 
 The new filters have been added to the TokenMagic macro compendium.
 
-*Fixed issues :*
+_Fixed issues :_
+
 - The padding property value is now multiplied by the zoom factor.
 - Some internal improvements and refactoring.
 - Freezing when a scene is updated
@@ -436,16 +496,18 @@ The new filters have been added to the TokenMagic macro compendium.
 
 ## FX
 
-*Added :*
+_Added :_
+
 - Smoke Filter
-    - A high quality "fog/smoke/fume" filter who support blend modes.
+  - A high quality "fog/smoke/fume" filter who support blend modes.
 - Flood Filter
-    - Ideal to simulate reflective surfaces on small or large areas.
-    - A lot of customizable properties (see compendium)
+  - Ideal to simulate reflective surfaces on small or large areas.
+  - A lot of customizable properties (see compendium)
 
 The new filters have been added to the TokenMagic macro compendium
 
-*Fixed issues :*
+_Fixed issues :_
+
 - The blend modes performed their calculations using all channels, including the alpha channel, which was not correct. Now they only use RGB channels. Impacted filters are Fumes, Fire and Electricity in some special properties configuration. Check your effects.
 - Some effects were distorted if part of the image was in an invisible area of the screen (especially the edges).
 
@@ -453,20 +515,20 @@ The new filters have been added to the TokenMagic macro compendium
 
 ## FX
 
-*Added :*
+_Added :_
+
 - Fumes Filter
 - Fire Filter
 - Electric Filter
 - Waves Filter
 
-*Improvements and modifications :*
-- Fog Filter : 
-Better performances and better blending with alpha channel. Corrected an issue with the intensity property : the value range from 0 (no fog), to 1 (opaque fog). You may need to update your macros.
-- Cosmic Ray Filter : 
-Better performances and better blending with alpha channel. Added anchor properties (anchorX, anchorY)
+_Improvements and modifications :_
+
+- Fog Filter :
+  Better performances and better blending with alpha channel. Corrected an issue with the intensity property : the value range from 0 (no fog), to 1 (opaque fog). You may need to update your macros.
+- Cosmic Ray Filter :
+  Better performances and better blending with alpha channel. Added anchor properties (anchorX, anchorY)
 - Distortion Filter :
-The path to the assets has changed. You may need to update your macros.
+  The path to the assets has changed. You may need to update your macros.
 
 The new filters have been added to the TokenMagic macro compendium. The distortion, cosmic ray and fog macros have been updated.
-
-
