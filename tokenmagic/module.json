@@ -1,170 +1,166 @@
 {
-    "id": "tokenmagic",
-    "title": "Token Magic FX",
-    "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
-    "version": "0.6.3.1",
-    "compatibility": {
-        "minimum": "10",
-        "verified": "10.291"
-    },
-    "authors": [
-        {
-            "name": "SecretFire",
-            "flags": {}
-        },
-        {
-            "name": "sPOiDar",
-            "flags": {}
-        },
-        {
-            "name": "Zimm",
-            "flags": {}
-        },
-        {
-            "name": "Lozalojo",
-            "flags": {}
-        },
-        {
-            "name": "Moerill",
-            "flags": {}
-        },
-        {
-            "name": "KLO",
-            "flags": {}
-        },
-        {
-            "name": "dev7355608",
-            "flags": {}
-        },
-        {
-            "name": "Mestre Digital",
-            "flags": {}
-        },
-        {
-            "name": "BrotherSharper-Touge",
-            "flags": {}
-        },
-        {
-            "name": "OsiJr",
-            "flags": {}
-        }
-    ],
-    "scripts": [
-        "libs/filters/pixi-filters.js"
-    ],
-    "esmodules": [
-        "module/settings.js",
-        "module/tokenmagic.js",
-        "module/proto/PlaceableObjectProto.js",
-        "fx/Anime.js",
-        "fx/filters/FilterBlurEx.js",
-        "fx/filters/FilterDropShadowEx.js",
-        "fx/filters/FilterBevel.js",
-        "fx/filters/FilterAdjustment.js",
-        "fx/filters/FilterAdvancedBloom.js",
-        "fx/filters/FilterDistortion.js",
-        "fx/filters/FilterGlow.js",
-        "fx/filters/FilterOldFilm.js",
-        "fx/filters/FilterDropShadow.js",
-        "fx/filters/FilterOutline.js",
-        "fx/filters/FilterTwist.js",
-        "fx/filters/FilterZoomBlur.js",
-        "fx/filters/FilterBlur.js",
-        "fx/filters/FilterBulgePinch.js",
-        "fx/filters/FilterRemoveShadow.js",
-        "fx/filters/FilterRays.js",
-        "fx/filters/FilterFog.js",
-        "fx/filters/FilterXFog.js",
-        "fx/filters/FilterElectric.js",
-        "fx/filters/FilterShockWave.js",
-        "fx/filters/FilterFumes.js",
-        "fx/filters/FilterWaves.js",
-        "fx/filters/FilterFire.js",
-        "fx/filters/FilterFlood.js",
-        "fx/filters/FilterSmoke.js",
-        "fx/filters/FilterForceField.js",
-        "fx/filters/FilterMirrorImages.js",
-        "fx/filters/FilterXRays.js",
-        "fx/filters/FilterLiquid.js",
-        "fx/filters/FilterGleamingGlow.js",
-        "fx/filters/FilterPixelate.js",
-        "fx/filters/FilterSpiderWeb.js",
-        "fx/filters/FilterSolarRipples.js",
-        "fx/filters/FilterGlobes.js",
-        "fx/filters/FilterTransform.js",
-        "fx/filters/FilterSplash.js",
-        "fx/filters/FilterPolymorph.js",
-        "fx/filters/FilterXFire.js",
-        "fx/filters/FilterSprite.js",
-        "fx/filters/proto/FilterProto.js"
-    ],
-    "styles": [
-        "styles/tokenmagic.css"
-    ],
-    "packs": [
-        {
-            "name": "tmMacros",
-            "label": "TokenMagic Portfolio",
-            "path": "packs/token-magic-portfolio.db",
-            "type": "Macro",
-            "private": false,
-            "flags": {}
-        },
-        {
-            "name": "tmSampleCompendium",
-            "label": "TokenMagic Book of Fire",
-            "path": "packs/token-magic-book-of-fire.db",
-            "type": "Macro",
-            "private": false,
-            "flags": {}
-        }
-    ],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "lang/en.json",
-            "flags": {}
-        },
-        {
-            "lang": "fr",
-            "name": "French (FRANCE)",
-            "path": "lang/fr.json",
-            "flags": {}
-        },
-        {
-            "lang": "pt-BR",
-            "name": "Português (Brasil)",
-            "path": "lang/pt-BR.json",
-            "flags": {}
-        },
-        {
-            "lang": "es",
-            "name": "Spanish",
-            "path": "lang/es.json",
-            "flags": {}
-        },
-        {
-            "lang": "ko",
-            "name": "Korean",
-            "path": "lang/ko.json",
-            "flags": {}
-        },
-        {
-            "lang": "zh-tw",
-            "name": "正體中文",
-            "path": "lang/zh-tw.json",
-            "flags": {}
-        },
-        {
-            "lang": "ja",
-            "name": "日本語",
-            "path": "lang/ja.json",
-            "flags": {}
-        }
-    ],
-    "socket": true,
-    "url": "https://github.com/Feu-Secret/Tokenmagic",
-    "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
-    "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.3.1-beta/Tokenmagic.zip"
+	"id": "tokenmagic",
+	"title": "Token Magic FX",
+	"description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
+	"version": "0.6.4",
+	"compatibility": {
+		"minimum": "11",
+		"verified": "11.300"
+	},
+	"authors": [
+		{
+			"name": "SecretFire",
+			"flags": {}
+		},
+		{
+			"name": "sPOiDar",
+			"flags": {}
+		},
+		{
+			"name": "Zimm",
+			"flags": {}
+		},
+		{
+			"name": "Lozalojo",
+			"flags": {}
+		},
+		{
+			"name": "Moerill",
+			"flags": {}
+		},
+		{
+			"name": "KLO",
+			"flags": {}
+		},
+		{
+			"name": "dev7355608",
+			"flags": {}
+		},
+		{
+			"name": "Mestre Digital",
+			"flags": {}
+		},
+		{
+			"name": "BrotherSharper-Touge",
+			"flags": {}
+		},
+		{
+			"name": "OsiJr",
+			"flags": {}
+		}
+	],
+	"scripts": ["libs/filters/pixi-filters.js"],
+	"esmodules": [
+		"module/settings.js",
+		"module/tokenmagic.js",
+		"module/proto/PlaceableObjectProto.js",
+		"fx/Anime.js",
+		"fx/filters/FilterBlurEx.js",
+		"fx/filters/FilterDropShadowEx.js",
+		"fx/filters/FilterBevel.js",
+		"fx/filters/FilterAdjustment.js",
+		"fx/filters/FilterAdvancedBloom.js",
+		"fx/filters/FilterDistortion.js",
+		"fx/filters/FilterGlow.js",
+		"fx/filters/FilterOldFilm.js",
+		"fx/filters/FilterDropShadow.js",
+		"fx/filters/FilterOutline.js",
+		"fx/filters/FilterTwist.js",
+		"fx/filters/FilterZoomBlur.js",
+		"fx/filters/FilterBlur.js",
+		"fx/filters/FilterBulgePinch.js",
+		"fx/filters/FilterRemoveShadow.js",
+		"fx/filters/FilterRays.js",
+		"fx/filters/FilterFog.js",
+		"fx/filters/FilterXFog.js",
+		"fx/filters/FilterElectric.js",
+		"fx/filters/FilterShockWave.js",
+		"fx/filters/FilterFumes.js",
+		"fx/filters/FilterWaves.js",
+		"fx/filters/FilterFire.js",
+		"fx/filters/FilterFlood.js",
+		"fx/filters/FilterSmoke.js",
+		"fx/filters/FilterForceField.js",
+		"fx/filters/FilterMirrorImages.js",
+		"fx/filters/FilterXRays.js",
+		"fx/filters/FilterLiquid.js",
+		"fx/filters/FilterGleamingGlow.js",
+		"fx/filters/FilterPixelate.js",
+		"fx/filters/FilterSpiderWeb.js",
+		"fx/filters/FilterSolarRipples.js",
+		"fx/filters/FilterGlobes.js",
+		"fx/filters/FilterTransform.js",
+		"fx/filters/FilterSplash.js",
+		"fx/filters/FilterPolymorph.js",
+		"fx/filters/FilterXFire.js",
+		"fx/filters/FilterSprite.js",
+		"fx/filters/proto/FilterProto.js"
+	],
+	"styles": ["styles/tokenmagic.css"],
+	"packs": [
+		{
+			"name": "tmMacros",
+			"label": "TokenMagic Portfolio",
+			"path": "packs/token-magic-portfolio.db",
+			"type": "Macro",
+			"private": false,
+			"flags": {}
+		},
+		{
+			"name": "tmSampleCompendium",
+			"label": "TokenMagic Book of Fire",
+			"path": "packs/token-magic-book-of-fire.db",
+			"type": "Macro",
+			"private": false,
+			"flags": {}
+		}
+	],
+	"languages": [
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "lang/en.json",
+			"flags": {}
+		},
+		{
+			"lang": "fr",
+			"name": "French (FRANCE)",
+			"path": "lang/fr.json",
+			"flags": {}
+		},
+		{
+			"lang": "pt-BR",
+			"name": "Português (Brasil)",
+			"path": "lang/pt-BR.json",
+			"flags": {}
+		},
+		{
+			"lang": "es",
+			"name": "Spanish",
+			"path": "lang/es.json",
+			"flags": {}
+		},
+		{
+			"lang": "ko",
+			"name": "Korean",
+			"path": "lang/ko.json",
+			"flags": {}
+		},
+		{
+			"lang": "zh-tw",
+			"name": "正體中文",
+			"path": "lang/zh-tw.json",
+			"flags": {}
+		},
+		{
+			"lang": "ja",
+			"name": "日本語",
+			"path": "lang/ja.json",
+			"flags": {}
+		}
+	],
+	"socket": true,
+	"url": "https://github.com/Feu-Secret/Tokenmagic",
+	"manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
+	"download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.4/Tokenmagic.zip"
 }
