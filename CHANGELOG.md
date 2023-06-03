@@ -2,6 +2,10 @@
 
 - Compatibility support for v11
 
+# Token Magic FX - Update v0.6.3.2-beta
+
+- Russian language and Auto-template support for `TheWitcherTRPG` (credit to pkonshik)
+
 # Token Magic FX - Update v0.6.3.1-beta
 
 - Filters can now be applied to empty tiles

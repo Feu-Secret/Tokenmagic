@@ -123,6 +123,13 @@
 			"flags": {}
 		},
 		{
+			"lang": "ru",
+			"name": "Russian",
+			"path": "lang/ru.json",
+			"flags": {}
+		},
+		{
+
 			"lang": "fr",
 			"name": "French (FRANCE)",
 			"path": "lang/fr.json",

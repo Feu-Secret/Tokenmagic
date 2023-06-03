@@ -91,5 +91,3 @@ void main()
 	gl_FragColor = blenderVec3(blend, fog, pixel) * pixel.a;
 }
 `;
-
-

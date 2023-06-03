@@ -14,4 +14,4 @@ void main() {
         color.b = lesser + range * tint.b;
     }
     gl_FragColor = color;
-}`
+}`;
