@@ -2,10 +2,10 @@
 	"id": "tokenmagic",
 	"title": "Token Magic FX",
 	"description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
-	"version": "0.6.3.2",
+	"version": "0.6.4",
 	"compatibility": {
-		"minimum": "10",
-		"verified": "10.291"
+		"minimum": "11",
+		"verified": "11.300"
 	},
 	"authors": [
 		{
@@ -129,6 +129,7 @@
 			"flags": {}
 		},
 		{
+
 			"lang": "fr",
 			"name": "French (FRANCE)",
 			"path": "lang/fr.json",
@@ -168,5 +169,5 @@
 	"socket": true,
 	"url": "https://github.com/Feu-Secret/Tokenmagic",
 	"manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
-	"download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.3.2-beta/tokenmagic.zip"
+	"download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.4/Tokenmagic.zip"
 }
