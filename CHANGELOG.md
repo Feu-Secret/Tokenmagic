@@ -1,3 +1,7 @@
+# Token Magic FX - Update v0.6.4
+
+- Compatibility support for v11
+
 # Token Magic FX - Update v0.6.3.2-beta
 
 - Russian language and Auto-template support for `TheWitcherTRPG` (credit to pkonshik)

@@ -368,8 +368,8 @@ Hooks.once('init', () => {
 		return retVal;
 	};
 
-	let wmtRefresh;
-	let wmtRefreshType;
+	let wmtApplyRenderFlags;
+	let wmtApplyRenderFlagsType;
 
 	let wmtRefreshTemplate;
 	let wmtRefreshTemplateType;
@@ -377,50 +377,12 @@ Hooks.once('init', () => {
 	if (!isVideoDisabled()) {
 		const toRadians = Math.toRadians;
 
-		wmtRefreshType = 'OVERRIDE';
+		wmtApplyRenderFlagsType = 'WRAPPER';
 
-		/**
-		 *
-		 * @return {wmtRefresh}
-		 */
-		wmtRefresh = function () {
-			if (this.template && !this.template._destroyed) {
-				let { x, y, direction, distance, angle, width } = this.document;
-				let d = canvas.dimensions;
-				this.position.set(x, y);
-
-				// Extract and prepare data
-				distance *= d.size / d.distance;
-				width *= d.size / d.distance;
-				direction = toRadians(direction);
-
-				// Create ray and bounding rectangle
-				this.ray = Ray.fromAngle(x, y, direction, distance);
-
-				// Get the Template shape
-				switch (this.document.t) {
-					case 'circle':
-						this.shape = this._getCircleShape(distance);
-						break;
-					case 'cone':
-						this.shape = this._getConeShape(direction, angle, distance);
-						break;
-					case 'rect':
-						this.shape = this._getRectShape(direction, distance);
-						break;
-					case 'ray':
-						this.shape = this._getRayShape(direction, distance, width);
-				}
-
-				// Draw the template shape and highlight the grid
-				this._refreshTemplate();
-				this.highlightGrid();
-
-				// Update the HUD
-				this._refreshControlIcon();
-				this._refreshRulerText();
-			}
-			return this;
+		wmtApplyRenderFlags = function (wrapped, ...args) {
+			const [flags] = args;
+			if (flags?.refreshShape) flags.refreshShape = this.template && !this.template._destroyed;
+			return wrapped(...args);
 		};
 
 		/* ------------------------------------------------------------------------------------ */
@@ -567,14 +529,14 @@ Hooks.once('init', () => {
 
 		/* ------------------------------------------------------------------------------------ */
 
-		if (wmtRefresh) {
-			const _wmtRefresh = wmtRefresh;
-			wmtRefresh = function () {
-				return autohideTemplateElements.call(this, _wmtRefresh.bind(this), ...arguments);
+		if (wmtApplyRenderFlags) {
+			const _wmtApplyRenderFlags = wmtApplyRenderFlags;
+			wmtApplyRenderFlags = function () {
+				return autohideTemplateElements.call(this, _wmtApplyRenderFlags.bind(this), ...arguments);
 			};
 		} else {
-			wmtRefreshType = 'WRAPPER';
-			wmtRefresh = autohideTemplateElements;
+			wmtApplyRenderFlagsType = 'WRAPPER';
+			wmtApplyRenderFlags = autohideTemplateElements;
 		}
 	}
 
@@ -587,7 +549,7 @@ Hooks.once('init', () => {
 					const opacity = template.document.getFlag('tokenmagic', 'templateData')?.opacity ?? 1;
 					if (template.texture && template.texture !== '') {
 						const { x: cx, y: cy } = template.center;
-						const mouseover = template.shape.contains(mx - cx, my - cy);
+						const mouseover = template.shape?.contains(mx - cx, my - cy);
 						hl.renderable = mouseover;
 						template.template.alpha = (mouseover ? 0.5 : 1.0) * opacity;
 					} else {
@@ -602,8 +564,13 @@ Hooks.once('init', () => {
 	if (game.modules.get('lib-wrapper')?.active) {
 		libWrapper.register('tokenmagic', 'MeasuredTemplateDocument.prototype.update', wmtdUpdate, 'WRAPPER');
 		libWrapper.register('tokenmagic', 'MeasuredTemplate.prototype._draw', wmtDraw, 'WRAPPER');
-		if (wmtRefresh)
-			libWrapper.register('tokenmagic', 'MeasuredTemplate.prototype._refresh', wmtRefresh, wmtRefreshType);
+		if (wmtApplyRenderFlags)
+			libWrapper.register(
+				'tokenmagic',
+				'MeasuredTemplate.prototype._applyRenderFlags',
+				wmtApplyRenderFlags,
+				wmtApplyRenderFlagsType
+			);
 		if (wmtRefreshTemplate)
 			libWrapper.register(
 				'tokenmagic',
@@ -621,14 +588,14 @@ Hooks.once('init', () => {
 			return wmtDraw.call(this, cmtDraw.bind(this), ...arguments);
 		};
 
-		if (wmtRefresh) {
-			if (wmtRefreshType && wmtRefreshType !== 'OVERRIDE') {
-				const cmtRefresh = MeasuredTemplate.prototype._refresh;
-				MeasuredTemplate.prototype._refresh = function () {
-					return wmtRefresh.call(this, cmtRefresh.bind(this), ...arguments);
+		if (wmtApplyRenderFlags) {
+			if (wmtApplyRenderFlagsType && wmtApplyRenderFlagsType !== 'OVERRIDE') {
+				const cmtApplyRenderFlags = MeasuredTemplate.prototype._applyRenderFlags;
+				MeasuredTemplate.prototype._applyRenderFlags = function () {
+					return wmtApplyRenderFlags.call(this, cmtApplyRenderFlags.bind(this), ...arguments);
 				};
 			} else {
-				MeasuredTemplate.prototype._refresh = wmtRefresh;
+				MeasuredTemplate.prototype._applyRenderFlags = wmtApplyRenderFlags;
 			}
 		}
 
