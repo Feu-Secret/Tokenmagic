@@ -44,7 +44,7 @@ export class FilterFumes extends CustomFilter {
 	}
 
 	set color(value) {
-		PIXI.utils.hex2rgb(value, this.uniforms.color);
+		new PIXI.Color(value).toRgbArray(this.uniforms.color);
 	}
 
 	get blend() {

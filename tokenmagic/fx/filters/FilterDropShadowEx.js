@@ -101,7 +101,7 @@ export class FilterDropShadowEx extends CustomFilter {
 		return PIXI.utils.rgb2hex(this._tintFilter.uniforms.color);
 	}
 	set color(value) {
-		PIXI.utils.hex2rgb(value, this._tintFilter.uniforms.color);
+		new PIXI.Color(value).toRgbArray(this._tintFilter.uniforms.color);
 	}
 
 	get kernels() {

@@ -51,7 +51,7 @@ export class FilterFlood extends CustomFilter {
 	}
 
 	set color(value) {
-		PIXI.utils.hex2rgb(value, this.uniforms.waterColor);
+		new PIXI.Color(value).toRgbArray(this.uniforms.waterColor);
 	}
 
 	get scale() {
