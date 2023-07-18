@@ -1,3 +1,8 @@
+# Token Magic FX - Update v0.6.4.1
+
+- fixed v11 compatibility warnings
+- Fixed distortion filter
+
 # Token Magic FX - Update v0.6.4
 
 - Compatibility support for v11
