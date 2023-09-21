@@ -50,7 +50,7 @@
 		}
 	],
 	"scripts": ["libs/filters/pixi-filters.js"],
-	"esmodules": ["module/bundle.js"],
+	"esmodules": ["module/tokenmagicBundle.js"],
 	"styles": ["styles/tokenmagic.css"],
 	"packs": [
 		{

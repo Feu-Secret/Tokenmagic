@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"source:": "tokenmagic/module/tokenmagic.js",
-	"main": "tokenmagic/module/bundle.js",
+	"main": "tokenmagic/module/tokenmagicBundle.js",
 	"targets": {
 		"main": {
 			"optimize": true
