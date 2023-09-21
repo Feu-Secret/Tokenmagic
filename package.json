@@ -1,0 +1,20 @@
+{
+	"name": "tokenmagic",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"source:": "tokenmagic/module/tokenmagic.js",
+	"main": "tokenmagic/module/bundle.js",
+	"targets": {
+		"main": {
+			"optimize": true
+		}
+	},
+	"devDependencies": {
+		"parcel": "latest"
+	},
+	"scripts": {
+		"build": "npx parcel build tokenmagic/module/tokenmagic.js",
+		"watch": "npx parcel tokenmagic/module/tokenmagic.js"
+	}
+}

@@ -1,0 +1,7 @@
+2023/09/21-13:48:13.289 cac Recovering log #176
+2023/09/21-13:48:13.297 cac Delete type=0 #176
+2023/09/21-13:48:13.298 cac Delete type=3 #174
+2023/09/21-14:06:22.310 6218 Level-0 table #181: started
+2023/09/21-14:06:22.311 6218 Level-0 table #181: 0 bytes OK
+2023/09/21-14:06:22.314 6218 Delete type=0 #179
+2023/09/21-14:06:22.314 6218 Manual compaction at level-0 from '!macros!8aHbX9wGc5ih56Gx' @ 72057594037927935 : 1 .. '!macros!ygP4EwZGwIChqLwG' @ 0 : 0; will stop at (end)
