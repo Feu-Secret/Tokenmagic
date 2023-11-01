@@ -5,9 +5,8 @@
 [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ftokenmagic%2Fshield%2Fendorsements&style=for-the-badge)](https://www.foundryvtt-hub.com/package/tokenmagic/)
 ![GitHub all releases](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/total?style=for-the-badge)
 
-*If you want to support more modules of this kind, I invite you to go and support the original author to [ko-fi](https://ko-fi.com/K3K24XAWE) , or with [paypal](https://www.paypal.me/silentFire "Paypal")*
+## If you want to support more modules of this kind, I invite you to go and support the original author [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE) , or [my paypal](https://www.paypal.me/silentFire "Paypal")
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE)
 
 # Token Magic FX
 
@@ -765,6 +764,51 @@ let glowFunc = async function() {
 glowFunc();
 ```
 
+## Api
+
+TODO
+
+# Build
+
+## Install all packages
+
+```bash
+npm install
+```
+
+### dev
+
+`dev` will let you develop you own code with hot reloading on the browser
+
+```bash
+npm run dev
+```
+
+## npm build scripts
+
+### build
+
+`build` will build and set up a symlink between `dist` and your `dataPath`.
+
+```bash
+npm run build
+```
+
+### build-watch
+
+`build-watch` will build and watch for changes, rebuilding automatically.
+
+```bash
+npm run build-watch
+```
+
+### prettier-format
+
+`prettier-format` launch the prettier plugin based on the configuration [here](./.prettierrc)
+
+```bash
+npm run-script prettier-format
+```
 
 ## Issues
 
@@ -803,5 +847,4 @@ My most sincere thanks.
 **SecretFire**
 
 *Discord : SecretFire#4843*
-
 

@@ -1,13 +1,3 @@
-# Token Magic FX - Update v0.6.5.0
-
-- Source files have been bundled to reduce number of requests
-- New filter added under `TokenMagic Portfolio`
-  - `45 - Star Mask (spriteMask)`
-  - Uses the provided image's alpha component to mask the target
-- New GUI added under `TokenMagic Portfolio
-  - `00 - D - TMFX GUI - Toggle Presets`
-  - Allows searching for and toggling of presets on currently selected placeables
-
 # Token Magic FX - Update v0.6.4.1
 
 - fixed v11 compatibility warnings
