@@ -1426,6 +1426,9 @@ export function TokenMagic() {
 		getControlledPlaceables: getControlledPlaceables,
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
+		get filterTypes() {
+			return FilterType;
+		},
 		_assignFilters: _assignFilters,
 		_loadFilters: _loadFilters,
 		_clearImgFiltersByPlaceable: _clearImgFiltersByPlaceable,

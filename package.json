@@ -15,6 +15,6 @@
 	},
 	"scripts": {
 		"build": "npx parcel build tokenmagic/module/tokenmagic.js",
-		"watch": "npx parcel tokenmagic/module/tokenmagic.js"
+		"watch": "npx parcel watch tokenmagic/module/tokenmagic.js"
 	}
 }
