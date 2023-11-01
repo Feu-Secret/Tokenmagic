@@ -37,6 +37,7 @@ import { FilterSplash } from '../fx/filters/FilterSplash.js';
 import { FilterPolymorph } from '../fx/filters/FilterPolymorph.js';
 import { FilterXFire } from '../fx/filters/FilterXFire.js';
 import { FilterSprite } from '../fx/filters/FilterSprite.js';
+import { FilterSpriteMask } from '../fx/filters/FilterSpriteMask.js';
 import { FilterReplaceColor } from '../fx/filters/FilterReplaceColor.js';
 import { FilterDDTint } from '../fx/filters/FilterDDTint.js';
 import { Anime } from '../fx/Anime.js';
@@ -100,6 +101,7 @@ export const FilterType = {
 	polymorph: FilterPolymorph,
 	xfire: FilterXFire,
 	sprite: FilterSprite,
+	spriteMask: FilterSpriteMask,
 	replaceColor: FilterReplaceColor,
 	ddTint: FilterDDTint,
 	rgbSplit: FilterRGBSplit,
@@ -1424,6 +1426,9 @@ export function TokenMagic() {
 		getControlledPlaceables: getControlledPlaceables,
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
+		get filterTypes() {
+			return FilterType;
+		},
 		_assignFilters: _assignFilters,
 		_loadFilters: _loadFilters,
 		_clearImgFiltersByPlaceable: _clearImgFiltersByPlaceable,
