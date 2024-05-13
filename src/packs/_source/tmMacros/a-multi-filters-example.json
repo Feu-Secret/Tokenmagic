@@ -1,0 +1,24 @@
+{
+  "_id": "tvDGSwbeQ97HNS8v",
+  "name": "A - Multi-Filters Example",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/A%20-%20Multi-Filters%20Example.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"fog\",\n    color: 0x00FF50,\n    density: 0.20,\n    time: 0,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 1.2, \n        animType: \"move\" \n      }\n    }\n},\n{\n    filterType: \"ray\",\n    time: 0,\n    color: 0x00DE50,\n    alpha: 0.25,\n    divisor: 32,\n    anchorY: 0,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0005, \n          animType: \"move\" \n       }\n    }\n},\n{\n    filterType: \"glow\",\n    distance: 10,\n    outerStrength: 8,\n    innerStrength: 0,\n    color: 0x003000,\n    quality: 0.5,\n    padding: 10,\n    animated:\n    {\n        color: \n        {\n           active: true, \n           loopDuration: 3000, \n           animType: \"colorOscillation\", \n           val1:0x003000, \n           val2:0x00EF00\n        }\n    }\n}\n];\n\nawait TokenMagic.addFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 10700000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!tvDGSwbeQ97HNS8v"
+}

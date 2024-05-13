@@ -1,0 +1,24 @@
+{
+  "_id": "lZefFMIYs8WYRpdZ",
+  "name": "36 - T01 - Turn into Mystery Man (polymorph)",
+  "type": "script",
+  "flags": {},
+  "scope": "global",
+  "command": "// This macro contains a small tutorial : how to work with non-infinite loops and halfCosOscillation animType\n\n// Click once to transform your token and again to revert to the original shape (thank to halfCosOscillation)\n\n// There is 9 types of metamorphose\n// 1 - Simple transition\n// 2 - Dreamy\n// 3 - Twist\n// 4 - Water drop\n// 5 - TV Noise\n// 6 - Morphing\n// 7 - Take off/Put on you disguise!\n// 8 - Wind\n// 9 - Hologram\n\n// change the type here\nlet transitionType = 4;\n\n// change the target image here\nlet targetImagePath = \"icons/svg/mystery-man.svg\";\n\n// declare filter id (think to change the id for personal macros)\n// each filterId should be unique to a player or gm to prevent collisions\n// example : \"brutusChthulhuPolymorph\"\nlet polymorphFilterId = \"myPolymorph\";\n\n// we put our code into an async function that will be called later\nlet polymorphFunc = async function () {\n\n    for (const token of canvas.tokens.controlled) {\n        let params;\n        \n        // Is the filter already activated on the placeable ? \n        if (token.TMFXhasFilterId(polymorphFilterId)) {\n           \n            // Yes. So we update the type in the general section and loops + active in the progress animated section, to activate the animation for just one loop.\n            // \"type\" to allow you to change the animation type\n            // \"active\" to say at Token Magic : \"Hey filter! It's time to work again!\"\n            // \"loops\" so that Token Magic can know how many loops it needs to schedule for the animation.\n            // Each animation loop decreases \"loops\" by one. When \"loops\" reach 0, \"active\" becomes \"false\" and the animation will be dormant again.\n            // Thank to the halfCosOscillation, a loop brings the value of the property from val1 to val2. A second loop is needed to bring val2 to val1. This is useful for monitoring progress with back and forth movements.\n            params =\n                [{\n                    filterType: \"polymorph\",\n                    filterId: polymorphFilterId,\n                    type: transitionType,\n                    animated:\n                    {\n                        progress:\n                        {\n                            active: true,\n                            loops: 1\n                        }\n                    }\n                }];\n\n        } else {\n\n            // No. So we create the entirety of the filter\n            params =\n                [{\n                    filterType: \"polymorph\",\n                    filterId: polymorphFilterId,\n                    type: transitionType,\n                    padding: 70,\n                    magnify: 1,\n                    imagePath: targetImagePath,\n                    animated:\n                    {\n                        progress:\n                        {\n                            active: true,\n                            animType: \"halfCosOscillation\",\n                            val1: 0,\n                            val2: 100,\n                            loops: 1,\n                            loopDuration: 1000\n                        }\n                    }\n                }];\n        }\n\n        // all functions that add, update or delete filters are asynchronous\n        // if you are in a loop AND/OR you chain these functions, it is MANDATORY to await them\n        // otherwise, data persistence may not works.\n        // this is the reason why we use an async function (we cant use await in a non-async function)\n        // avoid awaiting in a forEach loop, use \"for\" or \"for/of\" loop.\n        await token.TMFXaddUpdateFilters(params);\n    }\n\n};\n\n// polymorph async function call\npolymorphFunc();",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/36%20-%20T01%20-%20Turn%20into%20Mystery%20Man%20%28polymorph%29.webp",
+  "ownership": {
+    "default": 0
+  },
+  "folder": null,
+  "sort": 9600000,
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!lZefFMIYs8WYRpdZ"
+}

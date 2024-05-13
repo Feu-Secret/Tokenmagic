@@ -1,0 +1,28 @@
+{
+  "name": "38 - Replace Color",
+  "type": "script",
+  "author": "SyH1ydCe6TgtPGAR",
+  "img": "icons/magic/time/arrows-circling-pink.webp",
+  "scope": "global",
+  "command": "async function applyFilter() {\n\tlet params = [\n\t\t{\n\t\t\tfilterType: 'replaceColor',\n\t\t\tfilterId: 'ReplaceColor',\n\t\t\toriginalColor: PIXI.utils.hex2rgb(originalColor),\n\t\t\tnewColor: PIXI.utils.hex2rgb(newColor),\n\t\t\tepsilon,\n\t\t},\n\t];\n\n\tawait TokenMagic.addUpdateFiltersOnSelected(params);\n}\n\nlet originalColor = 0xff0000;\nlet newColor = 0x00ff00;\nlet epsilon = 0.7;\n\nconst filter = TokenMagic.getControlledPlaceables()[0].children.find((child) => child.filters?.[0]?.filterId === 'ReplaceColor')?.filters[0];\nif (filter) {\n\toriginalColor = PIXI.utils.rgb2hex(filter.uniforms.originalColor);\n\tnewColor = PIXI.utils.rgb2hex(filter.uniforms.newColor);\n\tepsilon = filter.uniforms.epsilon;\n}\n\nconst originalColorString = PIXI.utils.hex2string(originalColor);\nconst newColorString = PIXI.utils.hex2string(newColor);\n\nnew Dialog(\n\t{\n\t\ttitle: 'Replace Color',\n\t\tcontent: `\n              <form autocomplete=\"off\">\n                  <p class=\"notes\">Select the parameters you wish to change</p>\n                  <hr/>\n  \n                  <div class=\"form-group\">\n                      <label>Original Color:</label>\n                      <input class=\"color\" type=\"text\" name=\"originalColor\" value=\"${originalColorString}\" />\n                      <input type=\"color\" id=\"originalColorText\" value=\"${originalColorString}\" data-edit=\"originalColor\"/>\n                  </div>\n                  <div class=\"form-group\">\n                      <label>New Color:</label>\n                      <input class=\"color\" type=\"text\" name=\"replacementColor\" value=\"${newColorString}\" />\n                      <input type=\"color\" id=\"replacementColorText\" value=\"${newColorString}\" data-edit=\"replacementColor\"/>\n                  </div>\n                  <div class=\"form-group\">\n                      <label>Tolerance:</label>\n                      <input type=\"range\" name=\"tolerance\" value=\"${epsilon}\" min=\"0\" max=\"1\" step=\"0.05\"/>\n                      <span id=\"toleranceSpan\" class=\"range-value\">${epsilon}</span>\n                      </select>\n                  </div>\n              </form>\n          `,\n\t\tbuttons: {\n\t\t\tsave: {\n\t\t\t\ticon: `<i class=\"fas fa-check\"></i>`,\n\t\t\t\tlabel: 'Set',\n\t\t\t\tcallback: async (html) => applyFilter(),\n\t\t\t},\n\t\t\tcancel: {\n\t\t\t\ticon: `<i class=\"fas fa-times\"></i>`,\n\t\t\t\tlabel: 'Cancel',\n\t\t\t\tcallback: async (html) => {\n\t\t\t\t\tif (!filter) TokenMagic.deleteFiltersOnSelected();\n\t\t\t\t},\n\t\t\t},\n\t\t},\n\t\tdefault: 'yes',\n\t\trender: (html) => {\n\t\t\tfunction updateFilterParams() {\n\t\t\t\toriginalColor = PIXI.utils.string2hex(html.querySelector('#originalColorText').value);\n\t\t\t\tnewColor = PIXI.utils.string2hex(html.querySelector('#replacementColorText').value);\n\t\t\t\tepsilon = +html.querySelector('input[name=tolerance]').value;\n\n\t\t\t\tapplyFilter();\n\t\t\t}\n\n\t\t\tconst oldColor = html.querySelector('input[name=originalColor]');\n\t\t\tconst oldColorBar = html.querySelector('#originalColorText');\n\t\t\tconst replacementColor = html.querySelector('input[name=replacementColor]');\n\t\t\tconst replacementColorBar = html.querySelector('#replacementColorText');\n\t\t\tconst tolerance = html.querySelector('input[name=tolerance]');\n\t\t\tconst toleranceSpan = html.querySelector('#toleranceSpan');\n\n\t\t\toldColor.addEventListener('change', (ev) => (oldColorBar.value = ev.target.value));\n\t\t\toldColorBar.addEventListener('change', (ev) => (oldColor.value = ev.target.value));\n\t\t\treplacementColor.addEventListener('change', (ev) => (replacementColorBar.value = ev.target.value));\n\t\t\treplacementColorBar.addEventListener('change', (ev) => (replacementColor.value = ev.target.value));\n\t\t\ttolerance.addEventListener('change', (ev) => (toleranceSpan.textContent = ev.target.value));\n\t\t\thtml.addEventListener('change', () => updateFilterParams());\n\n\t\t\tapplyFilter();\n\t\t},\n\t},\n\t{ jQuery: false }\n).render(true);",
+  "folder": null,
+  "sort": 11900000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "_id": "zLsUrLWfdJn7BjTw",
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!zLsUrLWfdJn7BjTw"
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "LrfXNjrImAWK5Hb2",
+  "name": "24 - T05 - Mega - Chroma Shell (on top)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T05%20-%20Mega%20-%20Chroma%20Shell%20%28on%20top%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myEarthFieldTop\",\n    shieldType: 5,\n    gridPadding: 3,\n    color: 0xAAAAAA,\n    time: 0,\n    blend: 5,\n    intensity: 1.9,\n    lightAlpha: 1,\n    lightSize: 0.7,\n    scale: 1,\n    radius: 1,\n    zIndex: 5,\n    chromatic: true,\n    zOrder: 512,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 4700000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!LrfXNjrImAWK5Hb2"
+}

@@ -1,0 +1,28 @@
+{
+  "_id": "7078QmgtTEjnbAv0",
+  "name": "24 - T12 - Warp Time Aura 2",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T12%20-%20Warp%20Time%20Aura%202.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myMageField\",\n    shieldType: 7,\n    gridPadding: 2,\n    color: 0xFFFFFF,\n    time: 0,\n    blend: 4,\n    intensity: 0.8,\n    lightAlpha: 1,\n    lightSize: 0.45,\n    scale: 1,\n    radius: 1,\n    chromatic: true,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0080, \n        animType: \"move\" \n      }\n    }\n},{\n    filterType: \"field\",\n    filterId: \"myWarpField\",\n    shieldType: 12,\n    gridPadding: 2,\n    color: 0xFFFFFF,\n    time: 0,\n    blend: 2,\n    intensity: 1,\n    lightAlpha: 0,\n    lightSize: 0,\n    scale: 0.7,\n    radius: 1,\n    chromatic: false,\n    alphaDiscard: true,\n    discardThreshold: 0.1,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0009, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 1300000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!7078QmgtTEjnbAv0"
+}

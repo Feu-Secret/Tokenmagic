@@ -1,0 +1,24 @@
+{
+  "_id": "cqKydeDi9ay4PKdf",
+  "name": "24 - T01 - Hexa Force Field 2",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T01%20-%20Hexa%20Force%20Field%202.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myHexaField\",\n    shieldType: 2,\n    gridPadding: 2,\n    color: 0x00CCDD,\n    time: 0,\n    blend: 2,\n    intensity: 0.95,\n    lightAlpha: 0,\n    lightSize: 0,\n    scale: 0.75,\n    radius: 1,\n    chromatic: false,\n    alphaDiscard: true,\n    zOrder: 5000,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7800000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!cqKydeDi9ay4PKdf"
+}

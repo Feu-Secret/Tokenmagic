@@ -1,0 +1,24 @@
+{
+  "_id": "2zRNjnw7Ps26h5xz",
+  "name": "22 - Smoke",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/22%20-%20Smoke.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"smoke\",\n    filterId: \"mySmoke\",\n    color: 0x50FFAA,\n    time: 0,\n    blend: 2,\n    dimX: 1,\n    dimY: 1,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\"\n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 400000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!2zRNjnw7Ps26h5xz"
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "YPOoPH63FqcEoVTk",
+  "name": "25 - T02 - Lucky Clover (xray)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/25%20-%20T02%20-%20Lucky%20Clover%20%28xray%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xray\",\n    filterId: \"myLuckyRays\",\n    time: 0,\n    color: 0x00FF00,\n    blend: 9,\n    dimX: 0.05,\n    dimY: 0.05,\n    anchorX: 0.5,\n    anchorY: 0.5,\n    divisor: 4,\n    intensity: 1,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0012, \n          animType: \"move\" \n       },\n       anchorX:\n       {\n          animType: \"syncCosOscillation\",\n          loopDuration : 6000,\n          val1: 0.40,\n          val2: 0.60\n       },\n       anchorY:\n       {\n          animType: \"syncSinOscillation\",\n          loopDuration : 6000,\n          val1: 0.40,\n          val2: 0.60\n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!YPOoPH63FqcEoVTk"
+}

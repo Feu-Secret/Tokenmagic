@@ -1,0 +1,24 @@
+{
+  "_id": "OWgJD9lvBlDzXALz",
+  "name": "09 - T01 - Twist (transform)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/09%20-%20T01%20-%20Twist%20%28transform%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"transform\",\n        filterId: \"myTwistTransform\",\n        twRadiusPercent: 70,\n        padding: 10,\n        animated:\n        {\n            twRotation:\n            {\n                animType: \"sinOscillation\",\n                val1: -90,\n                val2: +90,\n                loopDuration: 5000,\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 4800000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!OWgJD9lvBlDzXALz"
+}

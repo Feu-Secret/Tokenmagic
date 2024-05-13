@@ -1,0 +1,28 @@
+{
+  "_id": "Edw0KaZiBtWEG86g",
+  "name": "16 - Inner Fog",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/16%20-%20Inner%20Fog.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"fog\",\n    filterId: \"myFog\",\n    color: 0x000000,\n    density: 0.65,\n    time: 0,\n    dimX: 1,\n    dimY: 1,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 2.2, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 2900000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!Edw0KaZiBtWEG86g"
+}

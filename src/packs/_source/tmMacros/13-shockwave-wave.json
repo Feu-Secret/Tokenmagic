@@ -1,0 +1,28 @@
+{
+  "_id": "r3JzTibAUnlpgPsD",
+  "name": "13 - Shockwave (wave)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/13%20-%20Shockwave%20%28wave%29.webp",
+  "scope": "global",
+  "command": "// Below, you can turn on the anchor animation.\nlet params =\n[{\n    filterType: \"wave\",\n    filterId: \"myShockwave\",\n    time: 0,\n    strength: 0.03,\n    frequency: 15,\n    maxIntensity: 4.0,\n    minIntensity: 0.5,\n    padding:25,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0180,\n        animType: \"move\",\n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 9900000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!r3JzTibAUnlpgPsD"
+}

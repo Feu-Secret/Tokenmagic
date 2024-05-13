@@ -1,0 +1,24 @@
+{
+  "_id": "BGz9j7xPy0H2QlBf",
+  "name": "E - Click, click, click and click !",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/E%20-%20Click%2C%20click%2C%20click%20and%20click%20%21.webp",
+  "scope": "global",
+  "command": "let glowFunc = async function() {\n\n   const myTokens = canvas.tokens.placeables;\n\n   for (const myToken of myTokens ){\n       if (myToken.TMFXhasFilterId(\"funnyAlternateGlow\")) {\n           await myToken.TMFXdeleteFilters(\"funnyAlternateGlow\");\n       } else {\n           let params =\n           [{\n               filterType: \"glow\",\n               filterId: \"funnyAlternateGlow\",\n               color: Math.floor(Math.random() * 16777215),\n               animated: null\n           }];\n           await myToken.TMFXaddUpdateFilters(params);\n       }\n   }\n};\n\nglowFunc();",
+  "folder": null,
+  "sort": 2000000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!BGz9j7xPy0H2QlBf"
+}

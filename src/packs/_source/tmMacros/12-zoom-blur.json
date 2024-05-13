@@ -1,0 +1,24 @@
+{
+  "_id": "t2MjFs4cVUCYsbMr",
+  "name": "12 - Zoom Blur",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/12%20-%20Zoom%20Blur.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"zoomblur\",\n    filterId: \"myZoomBlur\",\n    strength: 0.15,\n    innerRadiusPercent: 65,\n    radiusPercent: 100,\n    padding: 30,\n    animated:\n    {\n        innerRadiusPercent: \n        { \n           active: true, \n           animType: \"sinOscillation\", \n           loopDuration: 500, \n           val1: 65, \n           val2: 75\n        }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 10400000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!t2MjFs4cVUCYsbMr"
+}

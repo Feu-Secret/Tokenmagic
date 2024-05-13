@@ -1,0 +1,17 @@
+{
+  "_id": "Nnty2Oba51s6pLYd",
+  "name": "24 - T02 - Fire Shield 4 - Lava Zone",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T02%20-%20Fire%20Shield%204%20-%20Lava%20Zone.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"zapshadow\",\n    filterId: \"myZap\",\n    alphaTolerance: 0.45\n},{\n    filterType: \"field\",\n    filterId: \"myLavaRing\",\n    shieldType: 6,\n    gridPadding: 1.25,\n    color: 0xFFAA00,\n    time: 0,\n    blend: 14,\n    intensity: 1,\n    lightAlpha: 0,\n    lightSize: 0.7,\n    scale: 1,\n    radius: 1,\n    chromatic: false,\n    discardThreshold: 0.30,\n    hideRadius: 0.95,\n    alphaDiscard: true,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      },\n      radius: \n       {\n          active: true, \n          loopDuration: 6000, \n          animType: \"cosOscillation\", \n          val1:1, \n          val2:0.8\n       },\n      hideRadius: \n       {\n          active: true, \n          loopDuration: 3000, \n          animType: \"cosOscillation\", \n          val1:0.75, \n          val2:0.4\n       }\n    }\n},{\n    filterType: \"xglow\",\n    filterId: \"myBurningAura\",\n    auraType: 2,\n    color: 0xFF5000,\n    thickness: 9.8,\n    scale: 1.,\n    time: 0,\n    auraIntensity: 2,\n    subAuraIntensity: 1,\n    threshold: 0.30,\n    discard: true,\n    zOrder: 3000,\n    animated:\n    {\n        time : \n        {  \n           active: true,\n           speed: 0.0027, \n           animType: \"move\" \n        },\n        thickness:\n        {\n           active: true,\n           loopDuration: 600, \n           animType: \"cosOscillation\", \n           val1:4, \n           val2:8\n        }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "f8mJy0XxrFT8Pzt3": 3
+  },
+  "flags": {},
+  "_key": "!macros!Nnty2Oba51s6pLYd"
+}

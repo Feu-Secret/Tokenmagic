@@ -1,0 +1,17 @@
+{
+  "_id": "A1qb9Vho5PFpPwOr",
+  "name": "32 - T01 - Solar Ripples (ripples)",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/32%20-%20T01%20-%20Solar%20Ripples%20%28ripples%29.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n    filterType: \"ripples\",\n    filterId: \"SolarRipples\",\n    color: 0xCC9000,\n    time: 0,\n    alphaDiscard: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0009, \n        animType: \"move\" \n      }\n    }\n}]\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "f8mJy0XxrFT8Pzt3": 3
+  },
+  "flags": {},
+  "_key": "!macros!A1qb9Vho5PFpPwOr"
+}

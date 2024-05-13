@@ -1,0 +1,24 @@
+{
+  "_id": "H3rF4XGEf76ZylwP",
+  "name": "14 - Remove Shadow",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/14%20-%20Remove%20Shadow.webp",
+  "scope": "global",
+  "command": "// this simple filter remove pixels with a certain amount of alpha\n// it can be useful to remove shadows before using glow or outline filters.\n\nlet params =\n[{\n    filterType: \"zapshadow\",\n    filterId: \"myZap\",\n    alphaTolerance: 0.45,\n    rank: 2\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 3700000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!H3rF4XGEf76ZylwP"
+}

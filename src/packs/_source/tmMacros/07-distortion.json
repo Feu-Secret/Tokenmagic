@@ -1,0 +1,24 @@
+{
+  "_id": "yHYwADWdYDAMTuCR",
+  "name": "07 - Distortion",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/07%20-%20Distortion.webp",
+  "scope": "global",
+  "command": "// you can change the mask of the filter\n// the mask must have a power of 2 h and w (512x512, 128x128, ...) \n// the distortion applies on black and white and shades of grey\n// after testing the first version of this macro try this :\n// -> maskPath: \"modules/tokenmagic/fx/assets/waves-2.png\"\n\nlet params =\n[{\n    filterType: \"distortion\",\n    filterId: \"myDistortion\",\n    maskPath: \"modules/tokenmagic/fx/assets/distortion-1.png\",\n    maskSpriteScaleX: 5,\n    maskSpriteScaleY: 5,\n    padding: 20,\n    animated:\n    {\n        maskSpriteX: { active: true, speed: 0.05, animType: \"move\" },\n        maskSpriteY: { active: true, speed: 0.07, animType: \"move\" }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 11400000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!yHYwADWdYDAMTuCR"
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "Ia0tPcllVQq96yXF",
+  "name": "C - Electric Multi-Filters",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/C%20-%20Electric%20Multi-Filters.webp",
+  "scope": "global",
+  "command": "// works better with tokens or tiles with no shadows\nlet params =\n[{\n    filterType: \"shadow\",\n    blur: 2,\n    quality: 5,\n    distance: 0,\n    alpha: 1.,\n    padding: 100,\n    color: 0xFFFFFF,\n    animated:\n    {\n        blur:     \n        { \n           active: true, \n           loopDuration: 500, \n           animType: \"syncCosOscillation\", \n           val1: 2, \n           val2: 4\n        },\n     }\n},\n{\n    filterType: \"electric\",\n    color: 0xFFFFFF,\n    time: 0,\n    blend: 2,\n    intensity: 5,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0020, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 4200000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!Ia0tPcllVQq96yXF"
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "bRUq2B72Idhb4uVR",
+  "name": "35 - T09 - SuperHeat (xfire)",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T09%20-%20SuperHeat%20%28xfire%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xfire\",\n    filterId: \"mySuperHeat\",\n    time: 0,\n    blend: 5,\n    amplitude: 0.25,\n    dispersion: -1,\n    chromatic: false,\n    scaleX: 1,\n    scaleY: 1,\n    inlay: true,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0090, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "f8mJy0XxrFT8Pzt3": 3
+  },
+  "flags": {},
+  "_key": "!macros!bRUq2B72Idhb4uVR"
+}

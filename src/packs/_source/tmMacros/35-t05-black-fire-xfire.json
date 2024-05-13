@@ -1,0 +1,24 @@
+{
+  "_id": "Zvg3xCOOPTtPH1MY",
+  "name": "35 - T05 - Black Fire (xfire)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T05%20-%20Black%20Fire%20%28xfire%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xfire\",\n    filterId: \"myBlackXFire\",\n    time: 0,\n    color: 0x707070,\n    blend: 11,\n    amplitude: 1,\n    dispersion: 2.2,\n    chromatic: false,\n    scaleX: 2.5,\n    scaleY: 2,\n    inlay: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7200000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!Zvg3xCOOPTtPH1MY"
+}

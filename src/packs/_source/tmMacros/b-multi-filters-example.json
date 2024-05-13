@@ -1,0 +1,24 @@
+{
+  "_id": "eJnsq5g4Pldh8Z6Q",
+  "name": "B - Multi-Filters Example",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/B%20-%20Multi-Filters%20Example.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"distortion\",\n    maskPath: \"modules/tokenmagic/fx/assets/waves-2.png\",\n    maskSpriteScaleX: 7,\n    maskSpriteScaleY: 7,\n    padding: 50,\n    animated:\n    {\n        maskSpriteX: { active: true, speed: 0.05, animType: \"move\" },\n        maskSpriteY: { active: true, speed: 0.07, animType: \"move\" }\n    }\n},\n{\n    filterType: \"ray\",\n    time: 0,\n    color: 0xEF9000,\n    alpha: 0.25,\n    divisor: 32,\n    anchorY: 1,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0005, \n          animType: \"move\" \n       }\n    }\n},\n{\n    filterType: \"glow\",\n    distance: 10,\n    outerStrength: 8,\n    innerStrength: 0,\n    color: 0xB03000,\n    quality: 0.5,\n    animated:\n    {\n        color: \n        {\n           active: true, \n           loopDuration: 3000, \n           animType: \"colorOscillation\", \n           val1:0xB03000, \n           val2:0xFFD010\n        }\n    }\n}\n];\n\nawait TokenMagic.addFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 8100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!eJnsq5g4Pldh8Z6Q"
+}

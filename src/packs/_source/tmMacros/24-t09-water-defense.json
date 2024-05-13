@@ -1,0 +1,24 @@
+{
+  "_id": "aoqr6qPxif62zWLo",
+  "name": "24 - T09 - Water Defense",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T09%20-%20Water%20Defense.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myWaterField\",\n    shieldType: 9,\n    gridPadding: 1.2,\n    color: 0x20BBEE,\n    time: 0,\n    blend: 4,\n    intensity: 1,\n    lightAlpha: 0.7,\n    lightSize: 0.5,\n    scale: 0.6,\n    radius: 1,\n    chromatic: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7300000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!aoqr6qPxif62zWLo"
+}

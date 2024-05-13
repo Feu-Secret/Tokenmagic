@@ -1,0 +1,24 @@
+{
+  "_id": "UEsyHtvWqlOGbUAG",
+  "name": "23 - T03 - Spectral Images",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/23%20-%20T03%20-%20Spectral%20Images.webp",
+  "scope": "global",
+  "command": "// Another extreme example...\nlet params =\n[{\n    filterType: \"images\",\n    filterId: \"mySpectralImages\",\n    time: 0, \n    blend: 4,\n    nbImage: 4, \n    padding: 0,\n    alphaImg: 0.5, \n    alphaChr: 0.0,\n    ampX: 0.10, \n    ampY: 0.10,\n    zOrder: 20,\n    animated :\n    {\n      time: \n      { \n        speed: 0.0010, \n        animType: \"move\" \n      },\n      ampX:\n      {\n        val1: 0, val2: 0.22,\n        animType: \"syncCosOscillation\",\n        loopDuration: 2500\n      },\n      ampY:\n      {\n        val1: 0, val2: 0.28,\n        animType: \"syncCosOscillation\",\n        loopDuration: 2500,\n      },\n      alphaChr:        \n      {\n        val1: 1, val2: 0,\n        animType: \"syncCosOscillation\",\n        loopDuration: 2500\n      },\n      alphaImg:        \n      {\n        val1: 0.2, val2: 0.8,\n        animType: \"syncSinOscillation\",\n        loopDuration: 2500\n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 6100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!UEsyHtvWqlOGbUAG"
+}

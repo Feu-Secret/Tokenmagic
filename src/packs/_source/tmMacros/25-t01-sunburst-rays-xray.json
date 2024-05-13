@@ -1,0 +1,24 @@
+{
+  "_id": "IEl6F5dtFcYBZDDZ",
+  "name": "25 - T01 - Sunburst Rays (xray)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/25%20-%20T01%20-%20Sunburst%20Rays%20%28xray%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xray\",\n    filterId: \"mySunburstRays\",\n    time: 0,\n    color: 0xFFBB00,\n    blend: 9,\n    dimX: 1,\n    dimY: 1,\n    anchorX: 0,\n    anchorY: 0,\n    divisor: 36,\n    intensity: 4,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0012, \n          animType: \"move\" \n       },\n       anchorX:\n       {\n          animType: \"syncCosOscillation\",\n          loopDuration : 6000,\n          val1: 0.40,\n          val2: 0.60\n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 4100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!IEl6F5dtFcYBZDDZ"
+}

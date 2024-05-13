@@ -1,0 +1,28 @@
+{
+  "_id": "ebWbFeiJP8UZG4Fd",
+  "name": "17 - Fumes",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/17%20-%20Fumes.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"fumes\",\n    filterId: \"myFumes\",\n    color: 0x808080,\n    time: 0,\n    blend: 8,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.001, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 8200000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!ebWbFeiJP8UZG4Fd"
+}

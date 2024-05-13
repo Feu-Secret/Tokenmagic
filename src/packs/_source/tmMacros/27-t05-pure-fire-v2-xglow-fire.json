@@ -1,0 +1,24 @@
+{
+  "_id": "wRWqUK0wliNZSsgl",
+  "name": "27 - T05 - Pure Fire v2 (xglow+fire)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/27%20-%20T05%20-%20Pure%20Fire%20v2%20%28xglow%2Bfire%29.webp",
+  "scope": "global",
+  "command": "// In this version, the glow is blending with the fire\n// This is to show that the order of the filters is important\nlet params =\n[{\n    filterType: \"zapshadow\",\n    filterId: \"myPureFireShadow\",\n    alphaTolerance: 0.50\n},\n{\n    filterType: \"xglow\",\n    filterId: \"myPureFireAura\",\n    auraType: 2,\n    color: 0x903010,\n    thickness: 9.8,\n    scale: 3.,\n    time: 0,\n    auraIntensity: 1,\n    subAuraIntensity: 0.3,\n    threshold: 0.25,\n    discard: true,\n    animated:\n    {\n        time : \n        {  \n           active: true,\n           speed: 0.0027, \n           animType: \"move\" \n        },\n        thickness:\n        {\n           active: true,\n           loopDuration: 3000, \n           animType: \"cosOscillation\", \n           val1:2, \n           val2:3.6\n        }\n    }\n},\n{\n    filterType: \"fire\",\n    filterId: \"myPureFire\",\n    intensity: 1,\n    color: 0xFFFFFF,\n    amplitude: 1,\n    time: 0,\n    blend: 2,\n    fireBlend : 1,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0024, \n        animType: \"move\" \n      },\n      intensity:\n      {\n        active:true,\n        loopDuration: 15000,\n        val1: 0.8,\n        val2: 3,\n        animType: \"syncCosOscillation\"\n      },\n      amplitude:\n      {\n        active:true,\n        loopDuration: 4400,\n        val1: 1,\n        val2: 1.6,\n        animType: \"syncCosOscillation\"\n      }\n      \n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 11000000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!wRWqUK0wliNZSsgl"
+}

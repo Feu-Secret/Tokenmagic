@@ -1,0 +1,17 @@
+{
+  "_id": "HsMz9DNe78RVAI9y",
+  "name": "35 - T05 - Black Fire (xfire)",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T05%20-%20Black%20Fire%20%28xfire%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xfire\",\n    filterId: \"myBlackXFire\",\n    time: 0,\n    color: 0x707070,\n    blend: 11,\n    amplitude: 1,\n    dispersion: 2.2,\n    chromatic: false,\n    scaleX: 2.5,\n    scaleY: 2,\n    inlay: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "f8mJy0XxrFT8Pzt3": 3
+  },
+  "flags": {},
+  "_key": "!macros!HsMz9DNe78RVAI9y"
+}

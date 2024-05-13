@@ -1,0 +1,24 @@
+{
+  "_id": "XzB3cj1TLsx7qABY",
+  "name": "34 - T01 - Wound - Repeatable (splash)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/34%20-%20T01%20-%20Wound%20-%20Repeatable%20%28splash%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"splash\",\n        filterId: \"mySplash\",\n        rank:5,\n        color: 0x990505,\n        padding: 80,\n        time: Math.random()*1000,\n        seed: Math.random(),\n        splashFactor: 1,\n        spread: 0.4,\n        blend: 1,\n        dimX: 1,\n        dimY: 1,\n        cut: false,\n        textureAlphaBlend: true,\n        anchorX: 0.32+(Math.random()*0.36),\n        anchorY: 0.32+(Math.random()*0.36)\n    }];\n\nawait TokenMagic.addFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 6900000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!XzB3cj1TLsx7qABY"
+}

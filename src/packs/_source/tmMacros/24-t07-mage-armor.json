@@ -1,0 +1,24 @@
+{
+  "_id": "6ZIpqLC3agLw2Vgx",
+  "name": "24 - T07 - Mage Armor",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T07%20-%20Mage%20Armor.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myMageField\",\n    shieldType: 7,\n    gridPadding: 1.,\n    color: 0xFFFFFF,\n    time: 0,\n    blend: 4,\n    intensity: 0.8,\n    lightAlpha: 1,\n    lightSize: 0.45,\n    scale: 1,\n    radius: 1,\n    chromatic: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 1200000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!6ZIpqLC3agLw2Vgx"
+}

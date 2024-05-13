@@ -1,0 +1,28 @@
+{
+  "_id": "SpHEaIwubKpbwzvV",
+  "name": "25 - T04 - Blue Rays ! (xray)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/25%20-%20T04%20-%20Blue%20Rays%20%21%20%28xray%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xray\",\n    filterId: \"myBlueRay\",\n    time: 0,\n    color: 0x1030FF,\n    blend: 9,\n    dimX: 1,\n    dimY: 1,\n    anchorX: 0,\n    anchorY: 0,\n    divisor: 24,\n    intensity: 1,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0002, \n          animType: \"move\" \n       },\n       anchorX:\n       {\n          animType: \"syncCosOscillation\",\n          loopDuration : 18000,\n          val1: 0.05,\n          val2: 0.95\n       },\n       anchorY:\n       {\n          animType: \"syncSinOscillation\",\n          loopDuration : 18000,\n          val1: 0.05,\n          val2: 0.95\n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 5500000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!SpHEaIwubKpbwzvV"
+}

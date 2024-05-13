@@ -1,0 +1,24 @@
+{
+  "_id": "wT26Z1cjH4pFmtFO",
+  "name": "10 - T02 - Pinch (transform)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/10%20-%20T02%20-%20Pinch%20%28transform%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"transform\",\n        filterId: \"myPinchTransform\",\n        bpRadiusPercent: 70,\n        padding: 100,\n        animated:\n        {\n            bpStrength:\n            {\n                animType: \"cosOscillation\",\n                val1: 0,\n                val2: -0.65,\n                loopDuration: 3500,\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 11100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!wT26Z1cjH4pFmtFO"
+}

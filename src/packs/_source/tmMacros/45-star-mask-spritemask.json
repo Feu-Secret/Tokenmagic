@@ -1,0 +1,24 @@
+{
+  "name": "45 - Star Mask (spriteMask)",
+  "type": "script",
+  "scope": "global",
+  "author": "cDfy4cFieNjb5vsL",
+  "img": "modules/tokenmagic/gui/macros/images/45%20-%20Star%20Mask%20(spriteMask).webp",
+  "command": "let params = [\n  {\n    \"filterType\": \"spriteMask\",\n    \"filterId\": \"starMask\",\n    \"imagePath\": \"modules/tokenmagic/fx/assets/star.webp\",\n    \"repeat\": false,\n    \"gridPadding\": 1,\n    \"maintainAspectRatio\": false,\n    \"maintainScale\": false,\n    \"scaleX\": 1,\n    \"scaleY\": 1,\n    \"translationX\": 0,\n    \"translationY\": 0,\n    \"rotation\": 0,\n    \"alpha\": 1,\n    \"rank\": 10000,\n    \"enabled\": true\n  }\n];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": 1694556128271,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_id": "8Lb6g8Tm1navvZbM",
+  "sort": 10600000,
+  "_key": "!macros!8Lb6g8Tm1navvZbM"
+}

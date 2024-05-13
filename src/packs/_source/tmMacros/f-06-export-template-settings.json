@@ -1,0 +1,24 @@
+{
+  "name": "F - 06 - Export Template Settings",
+  "type": "script",
+  "author": "jkj278HJluWLWiGt",
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "TokenMagic.exportTemplateSettings();",
+  "folder": null,
+  "sort": 9200000,
+  "flags": {},
+  "_id": "jMhvaRGK3hAufND8",
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!jMhvaRGK3hAufND8"
+}

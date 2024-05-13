@@ -1,17 +1,20 @@
-![Latest Release Download Count](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/latest/tokenmagic.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) 
-[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ftokenmagic&colorB=006400&style=for-the-badge)](https://forge-vtt.com/bazaar#package=tokenmagic) 
+![Latest Release Download Count](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/latest/tokenmagic.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge)
+[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ftokenmagic&colorB=006400&style=for-the-badge)](https://forge-vtt.com/bazaar#package=tokenmagic)
 ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fp4535992%2Ftokenmagic%2Fmaster%2Ftokenmagic%2Fmodule.json&label=Foundry%20Version&query=$.compatibility.verified&colorB=orange&style=for-the-badge)
 ![Latest Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FFeu-Secret%2Ftokenmagic%2Fmaster%2Ftokenmagic%2Fmodule.json&label=Latest%20Release&prefix=v&query=$.version&colorB=red&style=for-the-badge)
 [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ftokenmagic%2Fshield%2Fendorsements&style=for-the-badge)](https://www.foundryvtt-hub.com/package/tokenmagic/)
 ![GitHub all releases](https://img.shields.io/github/downloads/Feu-Secret/tokenmagic/total?style=for-the-badge)
 
-*If you want to support more modules of this kind, I invite you to go and support the original author to [ko-fi](https://ko-fi.com/K3K24XAWE) , or with [paypal](https://www.paypal.me/silentFire "Paypal")*
+## If you want to support more modules of this kind, I invite you to go and support the original author [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE) , or [my paypal](https://www.paypal.me/silentFire "Paypal")
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/K3K24XAWE)
+## or these contributors:
+
+- **[Aedif](https://github.com/Aedif/):** [![alt-text](https://img.shields.io/badge/-Patreon-%23ff424d?style=for-the-badge)](https://patreon.com/Aedif)
+
 
 # Token Magic FX
 
-Token Magic is a module for Foundry VTT that allows you to add graphic effects to tokens, tiles, drawings and templates. These FX can be animated. 
+Token Magic is a module for Foundry VTT that allows you to add graphic effects to tokens, tiles, drawings and templates. These FX can be animated.
 
 This beta version is partly used via macros, except for automatic templates and measurement templates. A graphical interface will be added later. But do not panic, Token Magic comes with a compendium of macros for each effect, easily modifiable to suit your needs. I advise you to go there and play with the values.
 
@@ -63,19 +66,19 @@ Token Magic is adding four options :
 - A Token Magic effect (you can create your own by adding presets in the template library)
 - And a tint applied to texture and special effect
 
-![Templates Ex](images/templates-ex.png)
+![Templates Ex](wiki/images/templates-ex.png)
 
 ### Automatic Templates
 
 You can configure automatic templates in the module option panel. You also have options to disable automatic templates and the display of the grid.
 
-![Template Settings](images/template-settings.png)
+![Template Settings](wiki/images/template-settings.png)
 
 In the template settings, you have a tab that display to automatic templates settings by categories, and another for spells and items overrides.
 
-![Template Settings Base](images/template-settings-base.png)
+![Template Settings Base](wiki/images/template-settings-base.png)
 
-![Template Settings Overrides](images/template-settings-overrides.png)
+![Template Settings Overrides](wiki/images/template-settings-overrides.png)
 
 Automatic template settings are linked to a world. You can import and export the settings with the following code :
 
@@ -155,7 +158,7 @@ Each filter is identified by a `filterId`, you can specify it. Otherwise, a rand
 `Padding` is a property applicable to all filters. It allows you to increase the size of the container so that the effects do not spill over an invisible part. Padding is applied on all sides. In the module option, you can decide to use the default additive padding (three filters with a padding of 40 would make a padding of 120), use a maximum padding (one filter with a padding of 10 and a filter with a padding of 20 give a padding of 20). You can also assign a minimum padding value that will be assigned each time you create an effect.
 
 You want to apply filters to all selected tokens or tiles in the UI ? Use :
-`TokenMagic.addFiltersOnSelected(<array of filters params>)` 
+`TokenMagic.addFiltersOnSelected(<array of filters params>)`
 
 You want to apply the filters to a placeable passed in parameter (token, tile, drawing, template) ? Use :
 `TokenMagic.addFilters(<placeable>, <array of filters params>)`
@@ -192,12 +195,12 @@ let params =
     padding: 10,
     animated:
     {
-        color: 
+        color:
         {
-           active: true, 
-           loopDuration: 3000, 
-           animType: "colorOscillation", 
-           val1:0x003000, 
+           active: true,
+           loopDuration: 3000,
+           animType: "colorOscillation",
+           val1:0x003000,
            val2:0x00FF00
         }
     }
@@ -212,9 +215,9 @@ let params =
     outerStrength: 6,
     animated:
     {
-        color: 
+        color:
         {
-           val1:0x300030, 
+           val1:0x300030,
            val2:0xFF3000
         }
     }
@@ -296,7 +299,7 @@ TokenMagic.hasFilterId(<placeable>,<filterId>)
 ...
 if (TokenMagic.hasFilterId(myToken,"mySuperShadow_01")) {
     console.log("myToken has my customized super shadow 1 filter.");
-} 
+}
 ...
 ```
 Here are one in two functions, to add or update filter(s) on a specific placeable, selected tokens, drawings or tiles, or targeted tokens. If a filter applied on an object has a filterType and a filterId identical to those found in the parameters, the values are updated with the new ones. Otherwise a new filter is created.
@@ -310,7 +313,7 @@ You can automatically destroy or disable filters with the following properties :
 - `autoDisable` : When this property is set to `true` the filter is automatically disabled when each animation become inactive (number of loops reached).
 - `autoDestroy` : The same as autoDisable, but the filter is destroyed.
 - Note : if you set `loops` with `Infinity` (default value if the property is not present), you will never trigger the autoDestroy or autoDisable. But you can prepare your filter with an auto keyword and then, later, update the `loops` properties with finite values to start the countdown.
-	
+
 ```javascript
 // autoDestroy example
 let params =
@@ -322,12 +325,12 @@ let params =
     padding: 10,
     animated:
     {
-        color: 
+        color:
         {
-            active: true, 
+            active: true,
             loopDuration: 3000,
             loops: 5,
-            animType: "colorOscillation", 
+            animType: "colorOscillation",
             val1:0x003000,
             val2:0x00FF00
         }
@@ -352,7 +355,7 @@ animated :
          wantInteger: <true|false(default:false)>  // used for random generation
          speed: <value> // used with « move » animType
          chaosFactor: <value between 0 and 1(default:0.25)> // used to create chaos
-         syncShift: <value between 0 and 1(default:0)> // used to alter synchronicity 
+         syncShift: <value between 0 and 1(default:0)> // used to alter synchronicity
       }
     <,<other properties to animate>…>
 }
@@ -378,8 +381,8 @@ The same as cosOscillation, but with a chaos factor. The oscillation is freaky. 
 **Keywords:** `"colorOscillation"` `"syncColorOscillation"`
 **Mandatory properties:** `active`  `loopDuration` `val1` `val2`
 **Optional properties:** `loops` `syncShift`
-Same as cosOscillation or syncCosOscillation, but specific to colors. 
-The transition is correctly applied to each component of the RGB value. 
+Same as cosOscillation or syncCosOscillation, but specific to colors.
+The transition is correctly applied to each component of the RGB value.
 Instead, you can use a cosOscillation, but the transition is not very nice (for colors).
 
 **Keywords:** `"halfCosOscillation"`
@@ -406,12 +409,12 @@ generate a random number per frame, between val1 and val2. You need Integers? Us
 
 **Keywords:** `"randomNumberPerLoop"`
 **Mandatory properties:** `active` `loopDuration` `val1` `val2`
-**Optional properties:** `wantInteger` `loops` 
+**Optional properties:** `wantInteger` `loops`
 generate a random number at the end of a complete loop, between val1 and val2. You need Integers? Use `wantInteger: true`
 
 **Keywords:** `"randomColorPerLoop"`
 **Mandatory properties:** `active` `loopDuration`
-**Optional properties:** `loops` 
+**Optional properties:** `loops`
 generate a random color per complete loop.
 
 **Keywords:** `"move"`
@@ -476,51 +479,51 @@ randomized :
 You can control the ordering of the filters with the `zOrder` property.
 If you want to work with this new property, you must activate the option in the module option panel. The `zOrder` allows the filters to be applied on a Placeable in a specific order: from the smallest `zOrder` to the highest.
 
-A concrete example: you have applied an aura to a token, then you apply a mirror image, the aura will also be processed by the mirror image, which is probably not the desired effect. 
+A concrete example: you have applied an aura to a token, then you apply a mirror image, the aura will also be processed by the mirror image, which is probably not the desired effect.
 By assigning a `zOrder` to your effects, you can determine that the mirror image should apply before the aura.
 
 You will find below a table with the filters and their default `zOrder`. The default `zOrder` can be overriden in the parameters of the filters.
 
 | Filter  | default zOrder | Image                                                                                            |
 |---|---|--------------------------------------------------------------------------------------------------|
-| Splash (splash) | 5 | <img src="tokenmagic/gui/macros/images/34 - T01 - Wound - Repeatable (splash).webp" height="24"> |
-| Remove Shadow (zapshadow) | 10 | <img src="tokenmagic/gui/macros/images/14 - Remove Shadow.webp" height="24">                     |
-| Pixelate (pixel) | 20  | <img src="tokenmagic/gui/macros/images/28 - Glory to Pixels.webp" height="24">                   |
-| Adjustment (adjustment) | 30 | <img src="tokenmagic/gui/macros/images/02 - Adjustment.webp" height="24">                        |
-| Bloom (xbloom)  | 40  | <img src="tokenmagic/gui/macros/images/06 - Bloom.webp" height="24">                             |
-| Outline (outline) | 50 | <img src="tokenmagic/gui/macros/images/04 - Outline.webp" height="24">                           |
-| Old Film (oldfilm) | 60 | <img src="tokenmagic/gui/macros/images/08 - Old film.webp" height="24">                          |
-| Glow (glow) | 70 | <img src="tokenmagic/gui/macros/images/05 - Glow.webp" height="24">                              |
-| Gleaming Glow (xglow) | 80  | <img src="tokenmagic/gui/macros/images/27 - T01 - Burning Aura (xglow).webp" height="24">        |
-| Bevel (bevel) | 90  | <img src="tokenmagic/gui/macros/images/01 - Bevel.webp" height="24">                             |
-| Mirror Images (images)  | 100  | <img src="tokenmagic/gui/macros/images/23 - T01 - Mirror Images.webp" height="24">               |
-| Drop Shadow (shadow) | 110 | <img src="tokenmagic/gui/macros/images/03 - Drop Shadow.webp" height="24">                       |
-| Rays (ray) | 120  | <img src="tokenmagic/gui/macros/images/15 - Cosmic Ray.webp" height="24">                        |
-| XRays (xray) | 130 | <img src="tokenmagic/gui/macros/images/25 - T03 - X-ray Scan (xray).webp" height="24">           |
-| BulgePinch (bulgepinch) | 140  | <img src="tokenmagic/gui/macros/images/10 - T01 - Bulge (transform).webp" height="24">           |
-| Fire (fire) | 150  | <img src="tokenmagic/gui/macros/images/19 - T01 - Fire.webp" height="24">                        |
-| Electric (electric) | 160  | <img src="tokenmagic/gui/macros/images/18 - Electric.webp" height="24">                          |
-| Flood (flood) | 170  | <img src="tokenmagic/gui/macros/images/21 - Flood.webp" height="24">                             |
-| Liquid (liquid) | 180  | <img src="tokenmagic/gui/macros/images/26 - T01 - Spectral Body (liquid).webp" height="24">      |
-| Fog (fog) | 190  | <img src="tokenmagic/gui/macros/images/16 - Inner Fog.webp" height="24">                         |
-| Smoke (smoke) | 200  | <img src="tokenmagic/gui/macros/images/22 - Smoke.webp" height="24">                             |
-| Fumes (fumes) | 210  | <img src="tokenmagic/gui/macros/images/17 - Fumes.webp" height="24">                             |
-| Shockwave (shockwave) | 220  | <img src="tokenmagic/gui/macros/images/13 - Shockwave (wave).webp" height="24">                  |
-| XFog (xfog) | 230  | <img src="tokenmagic/gui/macros/images/29 - T01 - Foul Fog (xfog).webp" height="24">             |
-| Twist (twist) | 240  | <img src="tokenmagic/gui/macros/images/09 - T01 - Twist (transform).webp" height="24">           |
-| Solar Ripples (ripples) | 250 | <img src="tokenmagic/gui/macros/images/32 - T01 - Solar Ripples (ripples).webp" height="24">     |
-| Spiderweb (web) | 260  | <img src="tokenmagic/gui/macros/images/30 - T01 - Simple Web (web).webp" height="24">            |
-| Globes (globes) | 270  | <img src="tokenmagic/gui/macros/images/31 - T01 - Glowing Globes (globes).webp" height="24">     |
-| Waves  (wave) | 280  | <img src="tokenmagic/gui/macros/images/20 - Waves.webp" height="24">                             |
-| Blur (blur) | 290  | <img src="tokenmagic/gui/macros/images/11 - Blur.webp" height="24">                              |
-| Zoom Blur (zoomblur) | 300  | <img src="tokenmagic/gui/macros/images/12 - Zoom Blur.webp" height="24">                         |
-| Ascii (ascii) | 310  | <img src="tokenmagic/gui/macros/images/40 - Ascii.webp" height="24">                         |
-| Dot Shade (dot) | 320  | <img src="tokenmagic/gui/macros/images/41 - Dot.webp" height="24">                         |
-| CRT Monitor (crt) | 330  | <img src="tokenmagic/gui/macros/images/42 - CRT.webp" height="24">                         |
-| RGB Split (rgbSplit) | 340  | <img src="tokenmagic/gui/macros/images/43 - RGB Split.webp" height="24">                         |
-| Transform (transform) | 1000 | <img src="tokenmagic/gui/macros/images/33 - T02 - Saving Roll (transform).webp" height="24">     |
-| Force Field (field) | 2000  | <img src="tokenmagic/gui/macros/images/24 - T11 - Grid Force Field.webp" height="24">            |
-| Distortion (distortion) | 4000  | <img src="tokenmagic/gui/macros/images/07 - Distortion.webp" height="24">                        |
+| Splash (splash) | 5 | <img src="src/gui/macros/images/34 - T01 - Wound - Repeatable (splash).webp" height="24"> |
+| Remove Shadow (zapshadow) | 10 | <img src="src/gui/macros/images/14 - Remove Shadow.webp" height="24">                     |
+| Pixelate (pixel) | 20  | <img src="src/gui/macros/images/28 - Glory to Pixels.webp" height="24">                   |
+| Adjustment (adjustment) | 30 | <img src="src/gui/macros/images/02 - Adjustment.webp" height="24">                        |
+| Bloom (xbloom)  | 40  | <img src="src/gui/macros/images/06 - Bloom.webp" height="24">                             |
+| Outline (outline) | 50 | <img src="src/gui/macros/images/04 - Outline.webp" height="24">                           |
+| Old Film (oldfilm) | 60 | <img src="src/gui/macros/images/08 - Old film.webp" height="24">                          |
+| Glow (glow) | 70 | <img src="src/gui/macros/images/05 - Glow.webp" height="24">                              |
+| Gleaming Glow (xglow) | 80  | <img src="src/gui/macros/images/27 - T01 - Burning Aura (xglow).webp" height="24">        |
+| Bevel (bevel) | 90  | <img src="src/gui/macros/images/01 - Bevel.webp" height="24">                             |
+| Mirror Images (images)  | 100  | <img src="src/gui/macros/images/23 - T01 - Mirror Images.webp" height="24">               |
+| Drop Shadow (shadow) | 110 | <img src="src/gui/macros/images/03 - Drop Shadow.webp" height="24">                       |
+| Rays (ray) | 120  | <img src="src/gui/macros/images/15 - Cosmic Ray.webp" height="24">                        |
+| XRays (xray) | 130 | <img src="src/gui/macros/images/25 - T03 - X-ray Scan (xray).webp" height="24">           |
+| BulgePinch (bulgepinch) | 140  | <img src="src/gui/macros/images/10 - T01 - Bulge (transform).webp" height="24">           |
+| Fire (fire) | 150  | <img src="src/gui/macros/images/19 - T01 - Fire.webp" height="24">                        |
+| Electric (electric) | 160  | <img src="src/gui/macros/images/18 - Electric.webp" height="24">                          |
+| Flood (flood) | 170  | <img src="src/gui/macros/images/21 - Flood.webp" height="24">                             |
+| Liquid (liquid) | 180  | <img src="src/gui/macros/images/26 - T01 - Spectral Body (liquid).webp" height="24">      |
+| Fog (fog) | 190  | <img src="src/gui/macros/images/16 - Inner Fog.webp" height="24">                         |
+| Smoke (smoke) | 200  | <img src="src/gui/macros/images/22 - Smoke.webp" height="24">                             |
+| Fumes (fumes) | 210  | <img src="src/gui/macros/images/17 - Fumes.webp" height="24">                             |
+| Shockwave (shockwave) | 220  | <img src="src/gui/macros/images/13 - Shockwave (wave).webp" height="24">                  |
+| XFog (xfog) | 230  | <img src="src/gui/macros/images/29 - T01 - Foul Fog (xfog).webp" height="24">             |
+| Twist (twist) | 240  | <img src="src/gui/macros/images/09 - T01 - Twist (transform).webp" height="24">           |
+| Solar Ripples (ripples) | 250 | <img src="src/gui/macros/images/32 - T01 - Solar Ripples (ripples).webp" height="24">     |
+| Spiderweb (web) | 260  | <img src="src/gui/macros/images/30 - T01 - Simple Web (web).webp" height="24">            |
+| Globes (globes) | 270  | <img src="src/gui/macros/images/31 - T01 - Glowing Globes (globes).webp" height="24">     |
+| Waves  (wave) | 280  | <img src="src/gui/macros/images/20 - Waves.webp" height="24">                             |
+| Blur (blur) | 290  | <img src="src/gui/macros/images/11 - Blur.webp" height="24">                              |
+| Zoom Blur (zoomblur) | 300  | <img src="src/gui/macros/images/12 - Zoom Blur.webp" height="24">                         |
+| Ascii (ascii) | 310  | <img src="src/gui/macros/images/40 - Ascii.webp" height="24">                         |
+| Dot Shade (dot) | 320  | <img src="src/gui/macros/images/41 - Dot.webp" height="24">                         |
+| CRT Monitor (crt) | 330  | <img src="src/gui/macros/images/42 - CRT.webp" height="24">                         |
+| RGB Split (rgbSplit) | 340  | <img src="src/gui/macros/images/43 - RGB Split.webp" height="24">                         |
+| Transform (transform) | 1000 | <img src="src/gui/macros/images/33 - T02 - Saving Roll (transform).webp" height="24">     |
+| Force Field (field) | 2000  | <img src="src/gui/macros/images/24 - T11 - Grid Force Field.webp" height="24">            |
+| Distortion (distortion) | 4000  | <img src="src/gui/macros/images/07 - Distortion.webp" height="24">                        |
 
 You can store your custom effects in a Token Magic library. TMFX comes with two libraries: A main library with all the presets common to drawings, tokens and tiles, and one specific to measured templates.
 
@@ -741,7 +744,7 @@ You have access to TMFX specific prototype functions in class PlaceableObject (T
 <PlaceableObject>.TMFXhasFilterType(<filterType>)
 <PlaceableObject>.TMFXhasFilterId(<filterId>)
 
-// Example 1 
+// Example 1
 let glowFunc = async function() {
 
    const tokens = canvas.tokens.placeables;
@@ -765,6 +768,89 @@ let glowFunc = async function() {
 glowFunc();
 ```
 
+## Api
+
+TODO
+
+# Build
+
+## Install all packages
+
+```bash
+npm install
+```
+
+### dev
+
+`dev` will let you develop you own code with hot reloading on the browser
+
+```bash
+npm run dev
+```
+
+### build
+
+`build` will build and set up a symlink between `dist` and your `dataPath`.
+
+```bash
+npm run build
+```
+
+### build:watch
+
+`build:watch` will build and watch for changes, rebuilding automatically.
+
+```bash
+npm run build:watch
+```
+
+### prettier-format
+
+`prettier-format` launch the prettier plugin based on the configuration [here](./.prettierrc)
+
+```bash
+npm run-script prettier-format
+```
+
+### lint
+
+`lint` launch the eslint process based on the configuration [here](./.eslintrc.json)
+
+```bash
+npm run-script lint
+```
+
+### lint:fix
+
+`lint:fix` launch the eslint process with the fix argument
+
+```bash
+npm run-script lint:fix
+```
+
+### build:json
+
+`build:json` unpack LevelDB pack on `src/packs` to the json db sources in `src/packs/_source`very useful for backup your items and manually fix some hard issue with some text editor
+
+```bash
+npm run-script build:json
+```
+
+### build:clean
+
+`build:clean` clean packs json sources in `src/packs/_source`. NOTE: usually this command is launched after the command `build:json` and after make some modifications on the json source files with some text editor, but before the `build:db`
+
+```bash
+npm run-script build:clean
+```
+
+### build:db
+
+`build:db` packs the json db sources in `src/packs/_source` to LevelDB pack on `src/packs` with the new jsons. NOTE: usually this command is launched after the command `build:json` and after make some modifications on the json source files with some text editor
+
+```bash
+npm run-script build:db
+```
 
 ## Issues
 
@@ -774,11 +860,11 @@ Any issues, bugs, or feature requests are always welcome to be reported directly
 If you want to use TokenMagic in your modules, know that you are welcome. I await your feedback and I will listen to your needs.
 
 ### Contributions
-Contributors are welcome: UI specialists and GLSL shader programmers would be appreciated, and anyone wishing to get involved in this project. 
+Contributors are welcome: UI specialists and GLSL shader programmers would be appreciated, and anyone wishing to get involved in this project.
 Contact me on Github or Discord, or make a Super Surprise PR!
 
 ### Important notes
-TokenMagic is in beta version, this means that bugs and other unwanted effects will occur from time to time. 
+TokenMagic is in beta version, this means that bugs and other unwanted effects will occur from time to time.
 You can help me to track them by posting issues in Github and taking care to give me all the information I need to reproduce them. Thank you !
 
 ### Acknowledgements
@@ -790,7 +876,7 @@ You can help me to track them by posting issues in Github and taking care to giv
 - **JosephSeraph** for the [art](https://opengameart.org/content/js-actor-witch) used in the macro images (edited under [CC license](https://creativecommons.org/licenses/by/3.0/))
 - **Lozalojo, zimm44, drdwing, zeteticl** for providing translations for the community.
 - **The whole community** for its kindness.
-- **The Forgotten**, sorry for forgetting about you, you don't deserve it! 
+- **The Forgotten**, sorry for forgetting about you, you don't deserve it!
 
 ### An advice
 *The wise man knows how to `await`.*
@@ -803,5 +889,4 @@ My most sincere thanks.
 **SecretFire**
 
 *Discord : SecretFire#4843*
-
 

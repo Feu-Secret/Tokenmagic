@@ -1,0 +1,28 @@
+{
+  "_id": "f74nx1SMT5m8RRn8",
+  "name": "24 - T08 - Chromatic Bubble",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T08%20-%20Chromatic%20Bubble.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myChromaField\",\n    shieldType: 8,\n    gridPadding: 2,\n    color: 0xAAAAAA,\n    time: 0,\n    blend: 2,\n    intensity: 1,\n    lightAlpha: 0,\n    lightSize: 0,\n    scale: 1,\n    radius: 1,\n    chromatic: true,\n    zOrder: 512,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0045, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 8400000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!f74nx1SMT5m8RRn8"
+}

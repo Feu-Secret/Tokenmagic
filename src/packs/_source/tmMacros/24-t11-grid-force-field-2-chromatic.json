@@ -1,0 +1,24 @@
+{
+  "_id": "fZd9j5Y4p49Vwys0",
+  "name": "24 - T11 - Grid Force Field 2 - Chromatic",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T11%20-%20Grid%20Force%20Field%202%20-%20Chromatic.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myGridField\",\n    shieldType: 11,\n    gridPadding: 2,\n    color: 0xC1C1C1,\n    time: 0,\n    blend: 2,\n    intensity: 1,\n    lightAlpha: 0,\n    lightSize: 0.3,\n    scale: 0.5,\n    radius: 1,\n    chromatic: true,\n    alphaDiscard: true,\n    discardThreshold: 0.3,\n    zOrder: 512,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0009, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 8500000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!fZd9j5Y4p49Vwys0"
+}

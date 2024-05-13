@@ -1,0 +1,24 @@
+{
+  "_id": "cCEOQFsJvjhSTbbM",
+  "name": "06 - Bloom",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/06%20-%20Bloom.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n   filterType: \"xbloom\",\n   filterId: \"letsShine\",\n   threshold: 0.35,\n   bloomScale: 0,\n   brightness: 1,\n   blur: 0.1,\n   padding: 10,\n   quality: 15,\n   blendMode: 0,\n   animated:\n   {\n       bloomScale: \n       { \n          active: true, \n          loopDuration: 2000, \n          animType: \"syncCosOscillation\", \n          val1: 0, \n          val2: 2.1\n       },\n       threshold:  \n       { \n          active: false, \n          loopDuration: 1000, \n          animType: \"syncCosOscillation\", \n          val1: 0.00, \n          val2: 1.90\n       }\n   }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7600000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!cCEOQFsJvjhSTbbM"
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "Ku4jBl972O7hHczs",
+  "name": "F - 03 - Export FX Presets",
+  "type": "script",
+  "flags": {},
+  "scope": "global",
+  "command": "TokenMagic.exportPresetLibrary();",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "icons/svg/dice-target.svg",
+  "ownership": {
+    "default": 0
+  },
+  "folder": null,
+  "sort": 4600000,
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!Ku4jBl972O7hHczs"
+}

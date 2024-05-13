@@ -1,0 +1,24 @@
+{
+  "_id": "9gvCwVdvis3NABbI",
+  "name": "30 - T01 - Simple Web (web)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/30%20-%20T01%20-%20Simple%20Web%20%28web%29.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n    filterType: \"web\",\n    filterId: \"simpleweb\",\n    time: 100,\n    div1: 20,\n    div2: 10,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0005, \n        animType: \"move\" \n      }\n    }\n}]\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 1700000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!9gvCwVdvis3NABbI"
+}

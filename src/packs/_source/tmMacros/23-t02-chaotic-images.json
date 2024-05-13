@@ -1,0 +1,24 @@
+{
+  "_id": "ycesEG9gnQecVsDM",
+  "name": "23 - T02 - Chaotic Images",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/23%20-%20T02%20-%20Chaotic%20Images.webp",
+  "scope": "global",
+  "command": "// This is an extreme example...\nlet params =\n[{\n    filterType: \"images\",\n    filterId: \"myChaoticImages\",\n    time: 0,\n    nbImage: 4,\n    alphaImg: 1.0,\n    alphaChr: 0.0,\n    blend: 4,\n    ampX: 0.10,\n    ampY: 0.10,\n    padding: 80,\n    zOrder: 20,\n    animated :\n    {\n      time: \n      { \n        active: true, \n        speed: 0.0010, \n        animType: \"move\" \n      },\n      ampX:\n      {\n        active: true,\n        val1: 0.00,\n        val2: 0.30,\n        chaosFactor: 0.03,\n        animType: \"syncChaoticOscillation\",\n        loopDuration: 2000\n      },\n      ampY:\n      {\n        active: true,\n        val1: 0.00,\n        val2: 0.30,\n        chaosFactor: 0.04,\n        animType: \"syncChaoticOscillation\",\n        loopDuration: 1650\n      },\n      alphaChr:        \n      { \n        active: true, \n        animType: \"randomNumberPerLoop\", \n        val1: 0.0, \n        val2: 1,\n        loopDuration: 250\n      },\n      alphaImg:        \n      { \n        active: true, \n        animType: \"randomNumberPerLoop\", \n        val1: 0.8, \n        val2: 1,\n        loopDuration: 250\n      },\n      nbImage:\n      {\n        active: true,\n        val1: 1,\n        val2: 9,\n        animType: \"syncSinOscillation\",\n        loopDuration: 1400\n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 11600000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!ycesEG9gnQecVsDM"
+}

@@ -1,0 +1,17 @@
+{
+  "_id": "c5S9Ew0kvgMZU0Bg",
+  "name": "19 - T02 - Devouring Fire",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/19%20-%20T02%20-%20Devouring%20Fire.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"fire\",\n    filterId: \"myFire\",\n    intensity: 3,\n    color: 0xFFFFFF,\n    amplitude: 2,\n    time: 0,\n    blend: 10,\n    fireBlend : 1,\n    alphaDiscard: true,\n    zOrder: 50,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0024, \n        animType: \"move\" \n      }\n    }\n},{\n    filterType: \"glow\",\n    filterId: \"glowripples\",\n    outerStrength: 4,\n    innerStrength: 2,\n    color: 0xAA6500,\n    quality: 0.5,\n    padding: 10,\n    zOrder: 100,\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "f8mJy0XxrFT8Pzt3": 3
+  },
+  "flags": {},
+  "_key": "!macros!c5S9Ew0kvgMZU0Bg"
+}

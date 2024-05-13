@@ -1,0 +1,28 @@
+{
+  "_id": "T953GJB235BbrCll",
+  "name": "26 - T03 - Drift in Plans (liquid+waves)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/26%20-%20T03%20-%20Drift%20in%20Plans%20%28liquid%2Bwaves%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"wave\",\n    filterId: \"myDriftWaves\",\n    time: 0,\n    anchorX: 0.5,\n    anchorY: 0.5,\n    strength: 0.035,\n    frequency: 20,\n    color: 0xFFFFFF,\n    maxIntensity: 1.5,\n    minIntensity: 0.5,\n    padding:10,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0085, \n        animType: \"move\" \n      },\n      anchorX :\n      {\n        active: true,\n        val1: 0.35,\n        val2: 0.65,\n        animType: \"syncCosOscillation\",\n        loopDuration: 10000\n      },\n      anchorY :\n      {\n        active: true,\n        val1: 0.35,\n        val2: 0.65,\n        animType: \"syncSinOscillation\",\n        loopDuration: 10000\n      }\n    }\n},\n{\n    filterType: \"liquid\",\n    filterId: \"myDriftLiquid\",\n    color: 0xFF0000,\n    time: 0,\n    blend: 6,\n    intensity: 5,\n    spectral: false,\n    scale: 2.5,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0018, \n          animType: \"move\" \n       },\n       color: \n       {\n          active: true, \n          loopDuration: 9000, \n          animType: \"colorOscillation\", \n          val1:0xFF0000, \n          val2:0xFFFFFF\n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 5800000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!T953GJB235BbrCll"
+}

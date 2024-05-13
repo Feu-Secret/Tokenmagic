@@ -1,0 +1,24 @@
+{
+  "_id": "VWTz2fKfSb6WK7Mo",
+  "name": "02 - Adjustment",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/02%20-%20Adjustment.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"adjustment\",\n    filterId: \"myAdjust\",\n    saturation: 1,\n    brightness: 1,\n    contrast: 1,\n    gamma: 1,\n    red: 0.2,\n    green: 0.2,\n    blue: 0.2,\n    alpha: 1,\n    animated:\n    {\n        alpha: \n        { \n           active: true, \n           loopDuration: 2000, \n           animType: \"syncCosOscillation\",\n           val1: 0.35,\n           val2: 0.75 }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 6500000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!VWTz2fKfSb6WK7Mo"
+}
