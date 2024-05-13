@@ -6,3 +6,4 @@
 /.idea
 .vite-cache/**
 **/*.md
+/src/packs

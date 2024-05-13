@@ -1,0 +1,29 @@
+{
+  "name": "G - Randomization Example",
+  "type": "script",
+  "author": "UTH9wXZFkTza6igr",
+  "img": "modules/tokenmagic/gui/macros/images/G%20-%20Randomization%20Example.webp",
+  "scope": "global",
+  "command": "// This sprite filter contains randomized 'imagePath', 'scaleX', 'scaleY', 'rotation' and 'alpha' parameters.\n// - 'imagePath' sources a random path from the provided array\n// - The rest of params will generate a random value using ranges:\n//   - 'val1' and 'val2' define the range for the randomized value\n//   - 'step' defines the increment, step of 0.1 for example with range 0 to 1 would produce 0.1, 0.4, 0.2, 0.9, etc. \n//   while a step of 10 with a range of 50 to 400 would produce 70, 50, 340, 200, etc.\n//   - 'link' provides a way to set another parameter to the same randomized value, which is useful when for example setting scale which consists of two components x and y\n\nlet params = [\n  {\n    filterType: \"sprite\",\n    filterId: \"randomOverlay\",\n    repeat: true,\n    alphaDiscard: true,\n    inverse: true,\n    gridPadding: 1,\n    translationX: 0,\n    translationY: 0,\n    top: true,\n    randomized: {\n      imagePath: [\n        \"modules/tokenmagic/fx/assets/distortion-1.png\",\n        \"modules/tokenmagic/fx/assets/dots-1.png\",\n        \"modules/tokenmagic/fx/assets/extrusion-1.png\",\n        \"modules/tokenmagic/fx/assets/noise-2.jpg\",\n        \"modules/tokenmagic/fx/assets/symbols-1.png\",\n        \"modules/tokenmagic/fx/assets/waves-1.png\",\n      ],\n      scaleX: { val1: 0.1, val2: 0.6, step: 0.01, link: 'scaleY' },\n      rotation: { val1: 0, val2: 360, step: 1 },\n      alpha: { val1: 0.5, val2: 1.0, step: 0.1 }\n    },\n  }\n];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "ownership": {
+    "default": 0
+  },
+  "flags": {
+    "scene-packer": {
+      "hash": "8e77b72fb122ec185881742084f1a3ebf7ee7ed7",
+      "sourceId": "Macro.oiRoT64pfS1mVnXH"
+    }
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": 1676649619562,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "folder": null,
+  "sort": 800000,
+  "_id": "4aMgnzj0WHUx054m",
+  "_key": "!macros!4aMgnzj0WHUx054m"
+}

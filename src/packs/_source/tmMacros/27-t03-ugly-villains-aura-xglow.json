@@ -1,0 +1,24 @@
+{
+  "_id": "ydY1XOCO4yIhunkj",
+  "name": "27 - T03 - Ugly Villains Aura (xglow)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/27%20-%20T03%20-%20Ugly%20Villains%20Aura%20%28xglow%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"zapshadow\",\n    filterId: \"myUglyZapShadow\",\n    alphaTolerance: 0.50\n},\n{\n    filterType: \"xglow\",\n    filterId: \"myUglyGlow\",\n    auraType: 2,\n    color: 0x050505,\n    thickness: 2.7,\n    scale: 7,\n    time: 0,\n    auraIntensity: 5,\n    subAuraIntensity: 2,\n    threshold: 0.08,\n    discard: false,\n    animated:\n    {\n        time : \n        {  \n           active: true,\n           speed: 0.0012, \n           animType: \"move\" \n        },\n        auraIntensity:\n        {\n           active: true,\n           loopDuration: 3000, \n           animType: \"syncCosOscillation\", \n           val1:5, \n           val2:0\n        },\n        subAuraIntensity:\n        {\n           active: true,\n           loopDuration: 3000, \n           animType: \"syncCosOscillation\", \n           val1:2, \n           val2:0\n        },\n        color:\n        {\n           active: true,\n           loopDuration: 6000, \n           animType: \"syncColorOscillation\", \n           val1:0x050505, \n           val2:0x200000\n        },\n        threshold:\n        {\n           active: true,\n           loopDuration: 1500, \n           animType: \"syncCosOscillation\", \n           val1:0.02, \n           val2:0.50\n        }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 11700000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!ydY1XOCO4yIhunkj"
+}

@@ -1,0 +1,28 @@
+{
+  "_id": "g7O4u4dTaWcnajW7",
+  "name": "05 - Glow",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/05%20-%20Glow.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"glow\",\n    filterId: \"superSpookyGlow\",\n    outerStrength: 4,\n    innerStrength: 0,\n    color: 0x5099DD,\n    quality: 0.5,\n    padding: 10,\n    animated:\n    {\n        color: \n        {\n           active: true, \n           loopDuration: 3000, \n           animType: \"colorOscillation\", \n           val1:0x5099DD, \n           val2:0x90EEFF\n        }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 8600000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!g7O4u4dTaWcnajW7"
+}

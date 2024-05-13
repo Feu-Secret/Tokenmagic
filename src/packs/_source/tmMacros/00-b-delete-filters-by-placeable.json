@@ -1,0 +1,24 @@
+{
+  "_id": "As1JrHLEm38Nm667",
+  "name": "00 - B - Delete filters by Placeable",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/00%20-%20B%20-%20Delete%20filters%20by%20Placeable.webp",
+  "scope": "global",
+  "command": "// Delete all filters on the placeable in parameter (token or tile)\nawait TokenMagic.deleteFilters(_token);",
+  "folder": null,
+  "sort": 1900000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!As1JrHLEm38Nm667"
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "tZZaP7yvqdNnqF2L",
+  "name": "24 - T04 - Shell - Moving Ice Disc",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T04%20-%20Shell%20-%20Moving%20Ice%20Disc.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myIceField\",\n    shieldType: 14,\n    gridPadding: 1.25,\n    color: 0x409090,\n    time: 0,\n    blend: 9,\n    intensity: 1,\n    lightAlpha: 2,\n    lightSize: 1,\n    scale: 1,\n    radius: 0.97,\n    chromatic: false,\n    discardThreshold: 0.2,\n    alphaDiscard: true,\n    animated :\n    {\n      posLightX:\n      {\n        active: true,\n        val1: 0.25,\n        val2: 0.75,\n        animType: \"syncCosOscillation\",\n        loopDuration: 5000\n      },\n      posLightY:\n      {\n        active: true,\n        val1: 0.25,\n        val2: 0.75,\n        animType: \"syncSinOscillation\",\n        loopDuration: 5000\n      },\n      lightSize:\n      {\n        active: true,\n        val1: 0.95,\n        val2: 1.05,\n        animType: \"sinOscillation\",\n        loopDuration: 900\n      }\n    }\n},{\n        filterType: \"xglow\",\n        filterId: \"myIceField\",\n        auraType: 1,\n        color: 0x5099DD,\n        thickness: 4.5,\n        scale: 1,\n        time: 0,\n        auraIntensity: 0.25,\n        subAuraIntensity: 0.25,\n        threshold: 0.1,\n        discard: false,\n        zOrder: 3000,\n        animated:\n        {\n            time:\n            {\n                active: true,\n                speed: 0.0018,\n                animType: \"move\"\n            },\n            thickness:\n            {\n                val1: 2, val2: 2.5,\n                animType: \"cosOscillation\",\n                loopDuration: 3000\n            },\n            subAuraIntensity:\n            {\n                val1: 0.45, val2: 0.65,\n                animType: \"cosOscillation\",\n                loopDuration: 6000\n            },\n            auraIntensity:\n            {\n                val1: 0.9, val2: 2.2,\n                animType: \"cosOscillation\",\n                loopDuration: 3000\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 10500000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!tZZaP7yvqdNnqF2L"
+}

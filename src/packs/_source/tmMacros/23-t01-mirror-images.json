@@ -1,0 +1,24 @@
+{
+  "_id": "Ac6lTCiwnycb2Hbw",
+  "name": "23 - T01 - Mirror Images",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/23%20-%20T01%20-%20Mirror%20Images.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"images\",\n    filterId: \"myMirrorImages\",\n    time: 0,\n    nbImage: 4,\n    alphaImg: 1.0,\n    alphaChr: 0.0,\n    blend: 4,\n    ampX: 0.10,\n    ampY: 0.10,\n    zOrder: 20,\n    animated :\n    {\n      time: \n      { \n        active: true, \n        speed: 0.0010, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 1800000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!Ac6lTCiwnycb2Hbw"
+}

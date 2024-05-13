@@ -1,0 +1,24 @@
+{
+  "_id": "CPMuEoGlADZ4OfXv",
+  "name": "24 - T09 - Water Defense 2 - Ring",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T09%20-%20Water%20Defense%202%20-%20Ring.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myWaterField\",\n    shieldType: 9,\n    gridPadding: 1.2,\n    color: 0x20BBEE,\n    time: 0,\n    blend: 4,\n    intensity: 1,\n    lightAlpha: 0.7,\n    lightSize: 0.5,\n    scale: 0.6,\n    radius: 1,\n    chromatic: false,\n    hideRadius: 0.8,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      },\n      radius: \n       {\n          active: true, \n          loopDuration: 6000, \n          animType: \"cosOscillation\", \n          val1:1, \n          val2:0.8\n       },\n      hideRadius: \n       {\n          active: true, \n          loopDuration: 3000, \n          animType: \"cosOscillation\", \n          val1:0.6, \n          val2:0\n       }\n    }\n},{\n    filterType: \"liquid\",\n    filterId: \"myDriftLiquid\",\n    color: 0x002040,\n    time: 0,\n    blend: 4,\n    intensity: 4,\n    spectral: false,\n    scale: 1.5,\n    zOrder: 3000,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0018, \n          animType: \"move\" \n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 2200000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!CPMuEoGlADZ4OfXv"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "39 - DungeonDraft Tint",
+  "type": "script",
+  "author": "SyH1ydCe6TgtPGAR",
+  "img": "icons/magic/light/hand-sparks-smoke-green.webp",
+  "scope": "global",
+  "command": "async function applyFilter() {\n\tlet params = [\n\t\t{\n\t\t\tfilterType: 'ddTint',\n\t\t\tfilterId: 'DDTint',\n\t\t\ttint: PIXI.utils.hex2rgb(color),\n\t\t},\n\t];\n\n\tawait TokenMagic.addUpdateFiltersOnSelected(params);\n}\n\nlet color = 0xff0000;\n\nconst filter = TokenMagic.getControlledPlaceables()[0].children.find((child) => child.filters?.[0]?.filterId === 'DDTint')?.filters[0];\nif (filter) color = PIXI.utils.rgb2hex(filter.uniforms.tint);\n\nconst colorString = PIXI.utils.hex2string(color);\n\nnew Dialog(\n\t{\n\t\ttitle: 'Dungeondraft Tint',\n\t\tcontent: `\n              <form autocomplete=\"off\">\n                  <div class=\"form-group\">\n                      <label>Color:</label>\n                      <input class=\"color\" type=\"text\" name=\"color\" value=\"${colorString}\" />\n                      <input type=\"color\" id=\"colorText\" value=\"${colorString}\" data-edit=\"color\"/>\n                  </div>\n              </form>\n          `,\n\t\tbuttons: {\n\t\t\tsave: {\n\t\t\t\ticon: `<i class=\"fas fa-check\"></i>`,\n\t\t\t\tlabel: 'Set',\n\t\t\t\tcallback: async (html) => applyFilter(),\n\t\t\t},\n\t\t\tcancel: {\n\t\t\t\ticon: `<i class=\"fas fa-times\"></i>`,\n\t\t\t\tlabel: 'Cancel',\n\t\t\t\tcallback: async (html) => {\n\t\t\t\t\tif (!filter) TokenMagic.deleteFiltersOnSelected();\n\t\t\t\t},\n\t\t\t},\n\t\t},\n\t\tdefault: 'save',\n\t\trender: (html) => {\n\t\t\tfunction updateFilterParams() {\n\t\t\t\tcolor = PIXI.utils.string2hex(html.querySelector('#colorText').value);\n\n\t\t\t\tapplyFilter();\n\t\t\t}\n\n\t\t\tconst oldColor = html.querySelector('input[name=color]');\n\t\t\tconst oldColorBar = html.querySelector('#colorText');\n\n\t\t\toldColor.addEventListener('change', (ev) => (oldColorBar.value = ev.target.value));\n\t\t\toldColorBar.addEventListener('change', (ev) => (oldColor.value = ev.target.value));\n\t\t\thtml.addEventListener('change', () => updateFilterParams());\n\n\t\t\tapplyFilter();\n\t\t},\n\t},\n\t{ jQuery: false }\n).render(true);",
+  "folder": null,
+  "sort": 11500000,
+  "flags": {},
+  "_id": "ySVgJ0j9REhxaF5O",
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!ySVgJ0j9REhxaF5O"
+}

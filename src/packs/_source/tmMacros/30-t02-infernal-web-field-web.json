@@ -1,0 +1,24 @@
+{
+  "_id": "D2su0oqd2SLY0uZ7",
+  "name": "30 - T02 - Infernal Web (field+web)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/30%20-%20T02%20-%20Infernal%20Web%20%28field%2Bweb%29.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n    filterType: \"field\",\n    filterId: \"infernalWeb\",\n    shieldType: 1,\n    gridPadding: 1.5,\n    color: 0xCC2050,\n    time: 0,\n    blend: 3,\n    intensity: 1,\n    lightAlpha: 1,\n    lightSize: 0.8,\n    scale: 1,\n    radius: 1,\n    chromatic: false,\n    zOrder: 512,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0012, \n        animType: \"move\" \n      },\n      lightSize:        \n      {\n        val1: 0.4, val2: 1.5,\n        animType: \"syncCosOscillation\",\n        loopDuration: 5000\n      }\n    }\n}\n,{\n    filterType: \"web\",\n    filterId: \"infernalWeb\",\n    time: 100,\n    div1: 16,\n    div2: 8,\n    tear: 0.45,\n    amplitude: 0.8,\n    thickness: 2,\n    color: 0xAA3030,\n    zOrder: 1024,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0005, \n        animType: \"move\" \n      }\n    }\n}]\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 2600000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!D2su0oqd2SLY0uZ7"
+}

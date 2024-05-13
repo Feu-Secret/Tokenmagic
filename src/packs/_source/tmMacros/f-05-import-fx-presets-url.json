@@ -1,0 +1,24 @@
+{
+  "_id": "sZmVZvLEYmlEC1bK",
+  "name": "F - 05 - Import FX Presets (URL)",
+  "type": "script",
+  "flags": {},
+  "scope": "global",
+  "command": "// Replace the dummy url with a valid url that points to a Token Magic FX presets file (json)\r\n// Open the console (F12) to check the state of the import\r\n// You can configure in the module option panel the \"overwrite mode on import\"\r\n\r\n// TokenMagic.importPresetLibraryFromURL(\"https://presets-to-import-url\");\r\n\r\nui.notifications.warn(\"Open this macro and read the instructions.\");",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "icons/svg/dice-target.svg",
+  "ownership": {
+    "default": 0
+  },
+  "folder": null,
+  "sort": 10100000,
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!sZmVZvLEYmlEC1bK"
+}

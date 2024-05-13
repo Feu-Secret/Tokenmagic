@@ -1,0 +1,24 @@
+{
+  "name": "43 - RGB Split (rgbSplit)",
+  "type": "script",
+  "scope": "global",
+  "author": "UTH9wXZFkTza6igr",
+  "img": "modules/tokenmagic/gui/macros/images/43%20-%20RGB%20Split.webp",
+  "command": "let params = [\n  {\n    filterType: \"rgbSplit\",\n    filterId: \"myRGBSplit\",\n    redX: -10,\n    redY: 0,\n    greenX: 0,\n    greenY: 10,\n    blueX: 0,\n    blueY: 0,\n    enabled: true\n  }\n];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": 1673711141092,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "folder": null,
+  "sort": 1000000,
+  "_id": "5tUn35zYzB7m8sLN",
+  "_key": "!macros!5tUn35zYzB7m8sLN"
+}

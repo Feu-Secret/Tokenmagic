@@ -1,0 +1,24 @@
+{
+  "_id": "llpMoa9rOjeCzWf3",
+  "name": "35 - T06 - Custom Color Fire (xfire)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T06%20-%20Custom%20Color%20Fire%20%28xfire%29.webp",
+  "scope": "global",
+  "command": "// example with color fine tuning\nlet params =\n[{\n    filterType: \"xfire\",\n    filterId: \"myCustomXFire\",\n    time: 0,\n    color1: 0x00DD20,\n    color2: 0x009090,\n    color3: 0x001020,\n    color4: 0x00CCFF,\n    blend: 1,\n    amplitude: 1,\n    dispersion: 0,\n    chromatic: false,\n    scaleX: 1,\n    scaleY: 1,\n    inlay: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 9700000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!llpMoa9rOjeCzWf3"
+}

@@ -1,0 +1,24 @@
+{
+  "_id": "9FRCMHBW6OsUXDwz",
+  "name": "35 - T02 - Chromatic Fire (xfire)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T02%20-%20Chromatic%20Fire%20%28xfire%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xfire\",\n    filterId: \"myChromaticXFire\",\n    time: 0,\n    blend: 2,\n    amplitude: 1.1,\n    dispersion: 0,\n    chromatic: true,\n    scaleX: 1,\n    scaleY: 1,\n    inlay: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 1600000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!9FRCMHBW6OsUXDwz"
+}

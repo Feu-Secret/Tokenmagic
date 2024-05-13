@@ -1,0 +1,17 @@
+{
+  "_id": "EdOz5OYVcgHEhraW",
+  "name": "19 - T01 - Fire",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/19%20-%20T01%20-%20Fire.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"fire\",\n    filterId: \"myFire\",\n    intensity: 1,\n    color: 0xFFFFFF,\n    amplitude: 1,\n    time: 0,\n    blend: 2,\n    fireBlend : 1,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0024, \n        animType: \"move\" \n      },\n      intensity:\n      {\n        active:true,\n        loopDuration: 15000,\n        val1: 0.8,\n        val2: 2,\n        animType: \"syncCosOscillation\"\n      },\n      amplitude:\n      {\n        active:true,\n        loopDuration: 4400,\n        val1: 1,\n        val2: 1.4,\n        animType: \"syncCosOscillation\"\n      }\n      \n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "f8mJy0XxrFT8Pzt3": 3
+  },
+  "flags": {},
+  "_key": "!macros!EdOz5OYVcgHEhraW"
+}

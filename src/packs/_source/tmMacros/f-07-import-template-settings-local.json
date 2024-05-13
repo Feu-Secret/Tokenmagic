@@ -1,0 +1,24 @@
+{
+  "name": "F - 07 - Import Template Settings (local)",
+  "type": "script",
+  "author": "jkj278HJluWLWiGt",
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "// Open the console (F12) to check the state of the import\n\nTokenMagic.importTemplateSettings();",
+  "folder": null,
+  "sort": 11300000,
+  "flags": {},
+  "_id": "xlBIisESJPU1nSxw",
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!xlBIisESJPU1nSxw"
+}

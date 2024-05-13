@@ -1,0 +1,28 @@
+{
+  "_id": "Rcfdd8fQYH3Ripm1",
+  "name": "33 - T02 - Saving Roll (transform)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/33%20-%20T02%20-%20Saving%20Roll%20%28transform%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"transform\",\n        filterId: \"savingRoll\",\n        autoDestroy: true,\n        padding: 80,\n        pivotX: 0.5,\n        pivotY: 0.55,\n        animated:\n        {\n            translationX:\n            {\n                animType: \"sinOscillation\",\n                val1: -0.220,\n                val2: +0.220,\n                loops: 1,\n                loopDuration: 1250\n            },\n            rotation:\n            {\n                animType: \"sinOscillation\",\n                val1: -360,\n                val2: +360,\n                loops: 1,\n                loopDuration: 1250,\n            },\n            scaleY:\n            {\n                animType: \"cosOscillation\",\n                val1: 1,\n                val2: 1.3,\n                loops: 2,\n                loopDuration: 625,\n            },\n            scaleX:\n            {\n                animType: \"cosOscillation\",\n                val1: 1,\n                val2: 1.4,\n                loops: 2,\n                loopDuration: 625,\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 5300000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!Rcfdd8fQYH3Ripm1"
+}

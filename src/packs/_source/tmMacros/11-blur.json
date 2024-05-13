@@ -1,0 +1,24 @@
+{
+  "_id": "CdFhWPKBMb5wj7cM",
+  "name": "11 - Blur",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/11%20-%20Blur.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"blur\",\n    filterId: \"myBlur\",\n    padding: 10,\n    quality: 4.0,\n    blur: 0,\n    blurX: 0,\n    blurY: 0,\n    animated:\n    {\n        blurX: \n        { \n           active: true, \n           animType: \"syncCosOscillation\", \n           loopDuration: 500, \n           val1: 0, \n           val2: 6\n        },\n        blurY: \n        { \n           active: true, \n           animType: \"syncCosOscillation\", \n           loopDuration: 750, \n           val1: 0, \n           val2: 6}\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 2400000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!CdFhWPKBMb5wj7cM"
+}

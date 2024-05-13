@@ -1,0 +1,24 @@
+{
+  "_id": "QkPSIfIOf72oD49L",
+  "name": "27 - T06 - Pure Ice (xglow+smoke)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/27%20-%20T06%20-%20Pure%20Ice%20%28xglow%2Bsmoke%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"zapshadow\",\n        filterId: \"myPureIceZapShadow\",\n        alphaTolerance: 0.50\n    },\n    {\n        filterType: \"xglow\",\n        filterId: \"myPureIceAura\",\n        auraType: 1,\n        color: 0x5099DD,\n        thickness: 4.5,\n        scale: 10,\n        time: 0,\n        auraIntensity: 0.25,\n        subAuraIntensity: 1,\n        threshold: 0.5,\n        discard: false,\n        animated:\n        {\n            time:\n            {\n                active: true,\n                speed: 0.0018,\n                animType: \"move\"\n            },\n            thickness:\n            {\n                val1: 2, val2: 2.5,\n                animType: \"cosOscillation\",\n                loopDuration: 3000\n            },\n            subAuraIntensity:\n            {\n                val1: 0.45, val2: 0.65,\n                animType: \"cosOscillation\",\n                loopDuration: 6000\n            },\n            auraIntensity:\n            {\n                val1: 0.9, val2: 2.2,\n                animType: \"cosOscillation\",\n                loopDuration: 3000\n            }\n        }\n    },\n    {\n        filterType: \"smoke\",\n        filterId: \"myPureIceSmoke\",\n        color: 0x80CCFF,\n        time: 0,\n        blend: 2,\n        dimX: 0.3,\n        dimY: 1,\n        animated:\n        {\n            time:\n            {\n                active: true,\n                speed: -0.006,\n                animType: \"move\"\n            },\n            dimX:\n            {\n                val1: 0.4, val2: 0.2,\n                animType: \"cosOscillation\",\n                loopDuration: 3000\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 5100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!QkPSIfIOf72oD49L"
+}

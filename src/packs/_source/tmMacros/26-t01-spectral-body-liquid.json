@@ -1,0 +1,24 @@
+{
+  "_id": "SpvVIO1eHYG96TGX",
+  "name": "26 - T01 - Spectral Body (liquid)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/26%20-%20T01%20-%20Spectral%20Body%20%28liquid%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"liquid\",\n    filterId: \"mySpectralBody\",\n    color: 0x20AAEE,\n    time: 0,\n    blend: 8,\n    intensity: 4,\n    spectral: true,\n    scale: 0.9,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0010, \n          animType: \"move\" \n       },\n       color: \n       {\n          active: true, \n          loopDuration: 6000, \n          animType: \"colorOscillation\", \n          val1:0xFFFFFF, \n          val2:0x00AAFF\n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 5600000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!SpvVIO1eHYG96TGX"
+}

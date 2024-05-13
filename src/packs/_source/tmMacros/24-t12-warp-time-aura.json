@@ -1,0 +1,28 @@
+{
+  "_id": "2IOkNL2J1jETUvSP",
+  "name": "24 - T12 - Warp Time Aura",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T12%20-%20Warp%20Time%20Aura.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myWarpField\",\n    shieldType: 12,\n    gridPadding: 2,\n    color: 0xFFFFFF,\n    time: 0,\n    blend: 2,\n    intensity: 1.5,\n    lightAlpha: 0.8,\n    lightSize: 0.5,\n    scale: 0.7,\n    radius: 1,\n    chromatic: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0009, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 200000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!2IOkNL2J1jETUvSP"
+}

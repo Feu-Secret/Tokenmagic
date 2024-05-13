@@ -1,0 +1,24 @@
+{
+  "name": "42 - CRT Monitor (crt)",
+  "type": "script",
+  "scope": "global",
+  "author": "UTH9wXZFkTza6igr",
+  "img": "modules/tokenmagic/gui/macros/images/42%20-%20CRT.webp",
+  "command": "let params = [\n  {\n    filterType: \"crt\",\n    filterId: \"myCRT\",\n    curvature: 4,\n    lineWidth: 5,\n    lineContrast: 0.25,\n    verticalLine: false,\n    noise: 0.3,\n    noiseSize: 1,\n    vignetting: 0,\n    vignettingAlpha: 1,\n    vignettingBlur: 0.3,\n    animated: {\n      seed: {\n        active: true,\n        animType: \"randomNumber\",\n        val1: 0,\n        val2: 1\n      },\n      time: {\n        active: true,\n        speed: -0.01,\n        animType: \"move\"\n      },\n      vignetting: {\n        active: false,\n        animType: \"syncCosOscillation\",\n        loopDuration: 2000,\n        val1: 0.1,\n        val2: 0.2\n      }\n    },\n    enabled: true\n  },\n  {\n    filterType: \"outline\",\n    filterId: \"crtOutline\",\n    color: 0,\n    thickness: 0,\n    zOrder: 321,\n    enabled: true\n  }\n];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": 1673706658449,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "folder": null,
+  "sort": 4500000,
+  "_id": "JZzR087czwBFJOFC",
+  "_key": "!macros!JZzR087czwBFJOFC"
+}

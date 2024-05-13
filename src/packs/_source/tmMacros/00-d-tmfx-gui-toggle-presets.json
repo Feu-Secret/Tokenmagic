@@ -1,0 +1,24 @@
+{
+  "name": "00 - D - TMFX GUI - Toggle Presets",
+  "type": "script",
+  "scope": "global",
+  "author": "cDfy4cFieNjb5vsL",
+  "img": "icons/svg/book.svg",
+  "command": "// Search for and toggle presets on all selected placeables\n\nfunction togglePresetOnSelected(presetName) {\n    const controlled = [...canvas.templates.controlled, ...canvas.tokens.controlled, ...canvas.drawings.controlled];\n    for(const placeable of controlled) {\n      if(TokenMagic.hasFilterId(placeable, presetName)) {\n        TokenMagic.deleteFilters(placeable, presetName);\n      } else {\n        const preset = TokenMagic.getPreset(presetName);\n        if(preset) {\n          TokenMagic.addUpdateFilters(placeable, preset);\n        }\n      }\n    }\n}\n\nlet content = `<input type=\"text\" class=\"search\" placeholder=\"Search for presets..\"><a class=\"delete\"><img src=\"modules/tokenmagic/gui/macros/images/00%20-%20A%20-%20Delete%20filters%20on%20Selected.webp\"></img></a>`;\n\nlet list = '<ul class=\"preset-list\">'\nTokenMagic.getPresets().forEach(p => list += `<li title=\"Click to toggle on selected.\"><a class=\"preset\">${p.name}</a></li>`)\nlist += '</ul>';\n\ncontent += list;\n   \nlet styles = `\n<style>\n.search {\n    width: 90% !important;\n    font-size: 16px !important;\n    padding: 12px 0px 12px 20px !important;\n    border: 1px solid #ddd !important;\n    margin-bottom: 12px !important;\n}\n\n.delete img {\n    height: 2em;\n    margin-left: 5px;\n    position: absolute;\n}\n\n.preset-list {\n  /* Remove default list styling */\n  list-style-type: none;\n  padding: 0;\n  margin-top: 0;\n  height: 400px;\n  overflow: auto;\n}\n\n.preset-list li a {\n    border: 1px solid #ddd;\n    margin-top: -1px;\n    background-color: black;\n    padding: 12px;\n    text-decoration: none;\n    font-size: 18px;\n    color: white;\n    display: block;\n}\n\n.preset-list li a:hover:not(.header) {\n  background-color: brown; /* Add a hover effect to all links, except for headers */\n}\n</style>\n`;\n\ncontent = styles + content;\n   \n    new Dialog({\n        title: `TMFX GUI - Toggle Presets`,\n        content,\n        render: (html) => {\n            // Filtering\n            html.find('.search').on('input', () => {\n              const filter = html.find('.search').val().trim().toLowerCase()\n              html.find('.preset-list li').each(function () {\n                  const li = $(this);\n                  if(li.find('a').text().toLowerCase().includes(filter)) {\n                      li.show();\n                  } else {\n                      li.hide();\n                  }\n              });\n            });\n            // Toggling\n            html.find('.preset-list li').on('click', (event) => {\n                const presetName = $(event.target).closest('li').find('a').text();\n                togglePresetOnSelected(presetName);\n            });\n            // Deleting\n            html.find('.delete').on('click', ()=> {\n                TokenMagic.deleteFiltersOnSelected();\n            });\n        }  ,\n        buttons: {\n            close: {\n                icon: \"\",\n                label: \"Close\",\n                callback: () => {}\n            },\n        },\n        default: \"close\",\n        close: html => {\n        }\n    }, { id: 'tokenmagic-toggle-preset' }).render(true);",
+  "folder": null,
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": 1695323062735,
+    "modifiedTime": 1695399597925,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_id": "y1VbGayfVRU7eqGi",
+  "sort": 0,
+  "_key": "!macros!y1VbGayfVRU7eqGi"
+}

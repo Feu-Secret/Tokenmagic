@@ -1,0 +1,24 @@
+{
+  "_id": "8nsxKDYhS1Wcc139",
+  "name": "26 - T02 - Mantle of Madness (liquid)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/26%20-%20T02%20-%20Mantle%20of%20Madness%20%28liquid%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"liquid\",\n    filterId: \"myMantle\",\n    color: 0x0090FF,\n    time: 0,\n    blend: 5,\n    intensity: 0.0001,\n    spectral: false,\n    scale: 7,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0015, \n          animType: \"move\" \n       },\n       intensity : \n       { \n          active: true, \n          animType: \"syncCosOscillation\",\n          loopDuration: 30000,\n          val1: 0.0001, \n          val2: 4 \n       },\n       scale: \n       { \n          active: true, \n          animType: \"syncCosOscillation\",\n          loopDuration: 30000,\n          val1: 7, \n          val2: 1 \n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 1500000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!8nsxKDYhS1Wcc139"
+}

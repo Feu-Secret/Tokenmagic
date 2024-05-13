@@ -1,0 +1,28 @@
+{
+  "_id": "snidZpTtUrrRZpiF",
+  "name": "33 - T03 - Dodge Jump (transform)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/33%20-%20T03%20-%20Dodge%20Jump%20%28transform%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"transform\",\n        filterId: \"jumpedDodge\",\n        autoDestroy: true,\n        padding: 80,\n        animated:\n        {\n            translationY:\n            {\n                animType: \"cosOscillation\",\n                val1: 0,\n                val2: -0.225,\n                loops: 1,\n                loopDuration: 900\n            },\n            scaleY:\n            {\n                animType: \"cosOscillation\",\n                val1: 1,\n                val2: 0.65,\n                loops: 2,\n                loopDuration: 450,\n            },\n            scaleX:\n            {\n                animType: \"cosOscillation\",\n                val1: 1,\n                val2: 0.65,\n                loops: 2,\n                loopDuration: 450,\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 10300000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!snidZpTtUrrRZpiF"
+}

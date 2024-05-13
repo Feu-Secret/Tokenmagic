@@ -2,7 +2,7 @@
   "id": "tokenmagic",
   "title": "Token Magic FX",
   "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
-  "version": "0.6.5.0",
+  "version": "0.6.5.1",
   "compatibility": {
     "minimum": "11",
     "verified": "11.304"
@@ -56,7 +56,7 @@
     {
       "name": "tmMacros",
       "label": "TokenMagic Portfolio",
-      "path": "packs/token-magic-portfolio",
+      "path": "packs/tmMacros",
       "type": "Macro",
       "private": false,
       "flags": {}
@@ -64,7 +64,7 @@
     {
       "name": "tmSampleCompendium",
       "label": "TokenMagic Book of Fire",
-      "path": "packs/token-magic-book-of-fire",
+      "path": "packs/tmSampleCompendium",
       "type": "Macro",
       "private": false,
       "flags": {}
@@ -122,6 +122,6 @@
   ],
   "socket": true,
   "url": "https://github.com/Feu-Secret/Tokenmagic",
-  "manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
-  "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.5.0-beta/tokenmagic.zip"
+  "manifest": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.5.1-beta/module.json",
+  "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.5.1-beta/module.zip"
 }

@@ -1,0 +1,24 @@
+{
+  "_id": "BV1FdyFefneHRoEx",
+  "name": "31 - T01 - Glowing Globes (globes)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/31%20-%20T01%20-%20Glowing%20Globes%20%28globes%29.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n    filterType: \"globes\",\n    filterId: \"glowingGlobes\",\n    time: 0,\n    color: 0x5099DD,\n    distortion: 0.4,\n    scale: 80,\n    alphaDiscard: false,\n    zOrder: 1,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0005, \n        animType: \"move\" \n      }\n    }\n}]\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 2100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!BV1FdyFefneHRoEx"
+}

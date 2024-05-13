@@ -1,0 +1,24 @@
+{
+  "_id": "GKxtep2eo55zKl1Z",
+  "name": "35 - T03 - Sparks (xfire)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T03%20-%20Sparks%20%28xfire%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xfire\",\n    filterId: \"mySparksXFire\",\n    time: 0,\n    blend: 2,\n    amplitude: 0.7,\n    dispersion: 0,\n    chromatic: false,\n    scaleX: 2,\n    scaleY: 2,\n    inlay: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 3400000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!GKxtep2eo55zKl1Z"
+}

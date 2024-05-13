@@ -1,0 +1,24 @@
+{
+  "_id": "DCRnfJDBd25fOQxc",
+  "name": "00 - A - Delete filters on Selected",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/00%20-%20A%20-%20Delete%20filters%20on%20Selected.webp",
+  "scope": "global",
+  "command": "// Delete all filters on the selected tokens/tiles\nawait TokenMagic.deleteFiltersOnSelected();",
+  "folder": null,
+  "sort": 2700000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!DCRnfJDBd25fOQxc"
+}

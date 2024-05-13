@@ -1,0 +1,24 @@
+{
+  "_id": "vd2sFikounQpg6nh",
+  "name": "37 - T01 - Ioun Stone (sprite)",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/37%20-%20T01%20-%20Ioun%20Stone%20%28sprite%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"sprite\",\n    filterId: \"mySprite\",\n    imagePath: \"modules/tokenmagic/fx/assets/gem-2.png\",\n    gridPadding: 1,\n    scaleX: 0.20,\n    scaleY: 0.20,\n    colorize: true,\n    color: 0xFFBB00,\n    inverse: false,\n    top: true,\n    animated:\n        {\n          rotation: \n          { \n            active: true,\n            clockWise: false, \n            loopDuration: 2000, \n            animType: \"syncRotation\"\n          },\n          translationX:\n            {\n                active: true,\n                animType: \"cosOscillation\",\n                val1: 2.0,\n                val2: -2.0,\n                loopDuration: 4000,\n            },\n            translationY:\n            {\n                active: true,\n                animType: \"sinOscillation\",\n                val1: 2.0,\n                val2: -2.0,\n                loopDuration: 4000,\n            },\n            color:\n            {\n                active: true,\n                animType: \"colorOscillation\",\n                val1: 0xFFFF00,\n                val2: 0x00FFFF,\n                loopDuration: 4000,\n            }\n        }\n}];\n\nawait TokenMagic.addFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 10900000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!vd2sFikounQpg6nh"
+}

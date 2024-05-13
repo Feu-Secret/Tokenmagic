@@ -1,0 +1,24 @@
+{
+  "_id": "hayiRem3LXoEP3tL",
+  "name": "03 - Drop Shadow",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/03%20-%20Drop%20Shadow.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"shadow\",\n    filterId: \"myShadow\",\n    rotation: 35,\n    blur: 2,\n    quality: 5,\n    distance: 20,\n    alpha: 0.7,\n    padding: 10,\n    shadowOnly: false,\n    color: 0x000000,\n    zOrder: 6000,\n    animated:\n    {\n        blur:     \n        { \n           active: true, \n           loopDuration: 500, \n           animType: \"syncCosOscillation\", \n           val1: 2, \n           val2: 4\n        },\n        rotation:\n        {\n           active: true,\n           loopDuration: 100,\n           animType: \"syncSinOscillation\",\n           val1: 33,\n           val2: 37\n        }\n     }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 8900000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!hayiRem3LXoEP3tL"
+}

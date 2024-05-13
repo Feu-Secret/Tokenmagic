@@ -1,0 +1,24 @@
+{
+  "_id": "6Do4AOxfbtCG8R4j",
+  "name": "24 - T06 - Air Bubble",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/24%20-%20T06%20-%20Air%20Bubble.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"field\",\n    filterId: \"myAirField\",\n    shieldType: 6,\n    gridPadding: 1.2,\n    color: 0x7090AA,\n    time: 0,\n    blend: 1,\n    intensity: 1,\n    lightAlpha: 1,\n    lightSize: 0.7,\n    scale: 1,\n    radius: 1,\n    chromatic: false,\n    zOrder: 512,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 1100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!6Do4AOxfbtCG8R4j"
+}

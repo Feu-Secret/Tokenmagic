@@ -1,0 +1,24 @@
+{
+  "_id": "wdbgHdNcBwBETc1y",
+  "name": "27 - T02 - Glacial Aura (xglow)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/27%20-%20T02%20-%20Glacial%20Aura%20%28xglow%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"zapshadow\",\n    filterId: \"myGlacialZapShadow\",\n    alphaTolerance: 0.50\n},\n{\n    filterType: \"xglow\",\n    filterId: \"myGlacialAura\",\n    auraType: 1,\n    color: 0x5099DD,\n    thickness: 4.5,\n    scale: 3,\n    time: 0,\n    auraIntensity: 0.8,\n    subAuraIntensity: 0.25,\n    threshold: 0.5,\n    discard: false,\n    animated:\n    {\n        time : \n        {  \n           active: true,\n           speed: 0.0018, \n           animType: \"move\" \n        },\n        thickness:        \n        {\n           val1: 2, val2: 4.7,\n           animType: \"cosOscillation\",\n           loopDuration: 3000\n        },\n        subAuraIntensity:        \n        {\n           val1: 0.45, val2: 0.65,\n           animType: \"cosOscillation\",\n           loopDuration: 6000\n        },\n        auraIntensity:        \n        {\n           val1: 0.9, val2: 2.2,\n           animType: \"cosOscillation\",\n           loopDuration: 3000\n        }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 11200000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!wdbgHdNcBwBETc1y"
+}

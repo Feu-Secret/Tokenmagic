@@ -1,0 +1,28 @@
+{
+  "_id": "PHe9kakKlPKpARvm",
+  "name": "33 - T04 - Some Real Nuts Here! (transform)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/33%20-%20T04%20-%20Some%20Real%20Nuts%20Here%21%20%28transform%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"transform\",\n        filterId: \"myTransform\",\n        padding: 200,\n        animated:\n        {\n            rotation:\n            {\n                clockWise: true,\n                loopDuration: 700,\n                animType: \"syncRotation\"\n            },\n            translationX:\n            {\n                animType: \"sinOscillation\",\n                val1: -0.25,\n                val2: +0.25\n            },\n            translationY:\n            {\n                animType: \"sinOscillation\",\n                val1: -0.125,\n                val2: +0.125,\n                loopDuration: 1500\n            },\n            scaleX:\n            {\n                animType: \"sinOscillation\",\n                val1: 0.5,\n                val2: 2.6,\n                loopDuration: 1200\n            },\n            scaleY:\n            {\n                animType: \"sinOscillation\",\n                val1: 0.5,\n                val2: 2.6,\n                loopDuration: 1200\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 4900000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!PHe9kakKlPKpARvm"
+}

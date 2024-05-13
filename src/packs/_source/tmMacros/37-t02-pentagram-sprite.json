@@ -1,0 +1,24 @@
+{
+  "_id": "sIy0tlSrWhG7m15h",
+  "name": "37 - T02 - Pentagram (sprite)",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/37%20-%20T02%20-%20Pentagram%20%28sprite%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"sprite\",\n    filterId: \"myPentagram\",\n    imagePath: \"modules/tokenmagic/fx/assets/pentagram.png\",\n    gridPadding: 2,\n    scaleX: 3,\n    scaleY: 3,\n    colorize: true,\n    color: 0xFF0000,\n    inverse: true,\n    top: false,\n    animated:\n        {\n          rotation: \n          { \n            active: true,\n            clockWise: false, \n            loopDuration: 4000, \n            animType: \"syncRotation\"\n          }\n        }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 10000000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!sIy0tlSrWhG7m15h"
+}

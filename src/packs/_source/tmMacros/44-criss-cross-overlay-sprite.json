@@ -1,0 +1,24 @@
+{
+  "name": "44 - Criss-Cross Overlay (sprite)",
+  "type": "script",
+  "scope": "global",
+  "author": "UTH9wXZFkTza6igr",
+  "img": "modules/tokenmagic/gui/macros/images/44%20-%20Criss%20Cross%20Overlay%20(sprite).webp",
+  "command": "let params = [\n  {\n    filterType: \"sprite\",\n    filterId: \"crissCrossBox\",\n    imagePath: \"modules/tokenmagic/fx/assets/box.webp\",\n    repeat: true,\n    alphaDiscard: true,\n    colorize: true,\n    color: 0x0000FF,\n    inverse: true,\n    gridPadding: 1,\n    maintainAspectRatio: false,\n    maintainScale: false,\n    scaleX: 0.16,\n    scaleY: 0.16,\n    translationX: 0,\n    translationY: 0,\n    rotation: 45,\n    alpha: 0.75,\n    top: true,\n    animated: {\n      rotation: {\n        active: false,\n        clockWise: false,\n        loopDuration: 30000,\n        animType: \"syncRotation\"\n      }\n    },\n  }\n];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": 1673888263584,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "folder": null,
+  "sort": 4400000,
+  "_id": "Izk5Ewj7YLcPO75x",
+  "_key": "!macros!Izk5Ewj7YLcPO75x"
+}

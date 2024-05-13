@@ -1,0 +1,24 @@
+{
+  "_id": "v9CPcenfjU6hH5mO",
+  "name": "32 - T02 - Devoured by the Bewitched Flames (ripples+glow)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/32%20-%20T02%20-%20Devoured%20by%20the%20Bewitched%20Flames%20%28ripples%2Bglow%29.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n    filterType: \"ripples\",\n    filterId: \"SolarRipples\",\n    color: 0x508000,\n    time: 0,\n    alphaDiscard: true,\n    zOrder:50,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0009, \n        animType: \"move\" \n      }\n    }\n},\n{\n    filterType: \"glow\",\n    filterId: \"glowripples\",\n    outerStrength: 2,\n    innerStrength: 1,\n    color: 0xFF3000,\n    quality: 0.5,\n    padding: 10,\n    zOrder: 100,\n    animated:\n    {\n        color: \n        {\n           active: true, \n           loopDuration: 3000, \n           animType: \"colorOscillation\", \n           val1:0xFF3000, \n           val2:0x30FF00\n        }\n    }\n}]\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 10800000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!v9CPcenfjU6hH5mO"
+}

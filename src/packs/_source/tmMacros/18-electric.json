@@ -1,0 +1,28 @@
+{
+  "_id": "YJjeB7N0L1rGfZD2",
+  "name": "18 - Electric",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/18%20-%20Electric.webp",
+  "scope": "global",
+  "command": "// Because the shader is dynamically compiled,\n// intensity is a one time init and can't be updated.\n// you must delete the filters to \"change\" it.\nlet params =\n[{\n    filterType: \"electric\",\n    filterId: \"myElectric\",\n    color: 0xFFFFFF,\n    time: 0,\n    blend: 1,\n    intensity: 5,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0020, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7000000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!YJjeB7N0L1rGfZD2"
+}

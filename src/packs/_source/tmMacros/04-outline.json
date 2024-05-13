@@ -1,0 +1,31 @@
+{
+  "_id": "b5Enw7tEwfjDNHuY",
+  "name": "04 - Outline",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/04%20-%20Outline.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n   filterType: \"outline\",\n   filterId: \"myOutline\",\n   padding: 10,\n   color: 0xEE6035,\n   thickness: 1,\n   quality: 5,\n   zOrder: 9,\n   animated :\n   {\n      thickness: \n      { \n         active: true,\n         loopDuration: 800,\n         animType: \"syncCosOscillation\",\n         val1: 1, \n         val2: 6\n      }\n   }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7400000,
+  "flags": {
+    "combat-utility-belt": {
+      "macroTrigger": ""
+    },
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!b5Enw7tEwfjDNHuY"
+}

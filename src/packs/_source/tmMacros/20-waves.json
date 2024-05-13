@@ -1,0 +1,24 @@
+{
+  "_id": "DoXvYWKPRcTpHbPG",
+  "name": "20 - Waves",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/20%20-%20Waves.webp",
+  "scope": "global",
+  "command": "// Below, you can turn on the anchor animation.\nlet params =\n[{\n    filterType: \"wave\",\n    filterId: \"myWaves\",\n    time: 0,\n    anchorX: 0.5,\n    anchorY: 0.5,\n    strength: 0.015,\n    frequency: 120,\n    color: 0xFFFFFF,\n    maxIntensity: 2.5,\n    minIntensity: 0.9,\n    padding:10,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0085, \n        animType: \"move\" \n      },\n      anchorX :\n      {\n        active: false,\n        val1: 0.15,\n        val2: 0.85,\n        animType: \"syncChaoticOscillation\",\n        loopDuration: 20000\n      },\n      anchorY :\n      {\n        active: false,\n        val1: 0.15,\n        val2: 0.85,\n        animType: \"syncSinOscillation\",\n        loopDuration: 20000\n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 2800000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!DoXvYWKPRcTpHbPG"
+}

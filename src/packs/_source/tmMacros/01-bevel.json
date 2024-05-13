@@ -1,0 +1,24 @@
+{
+  "_id": "GvYp56Thtf3n9RYy",
+  "name": "01 - Bevel",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/01%20-%20Bevel.webp",
+  "scope": "global",
+  "command": "let params = \n[{\n    filterType: \"bevel\",\n    filterId: \"myBevel\",\n    rotation: 0,\n    thickness: 5,\n    lightColor: 0xFF0000,\n    lightAlpha: 0.8,\n    shadowColor: 0x00FF00,\n    shadowAlpha: 0.5,\n    animated :\n    {\n       rotation: \n       { \n          active: true,\n          clockWise: true, \n          loopDuration: 1600, \n          animType: \"syncRotation\"\n       }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 3600000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!GvYp56Thtf3n9RYy"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "40 - Ascii (ascii)",
+  "type": "script",
+  "author": "UTH9wXZFkTza6igr",
+  "img": "modules/tokenmagic/gui/macros/images/40%20-%20Ascii.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"ascii\",\n    filterId: \"myAscii\",\n    size: 8\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "flags": {
+    "advanced-macros": {
+      "runAsGM": false,
+      "runForEveryone": false,
+      "runForSpecificUser": ""
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": 1669130213391,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "folder": null,
+  "sort": 7500000,
+  "_id": "bt4FUt1RboVkjk2W",
+  "_key": "!macros!bt4FUt1RboVkjk2W"
+}

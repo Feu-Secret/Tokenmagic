@@ -1,0 +1,24 @@
+{
+  "_id": "eBGBaCFsLO8b3lMb",
+  "name": "35 - T10 - Animated SuperHeat (xfire+liquid+wave)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T10%20-%20Animated%20SuperHeat%20%28xfire%2Bliquid%2Bwave%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xfire\",\n    filterId: \"myAnimSuperHeat\",\n    time: 0,\n    blend: 5,\n    amplitude: 0.5,\n    dispersion: -1,\n    chromatic: false,\n    scaleX: 1,\n    scaleY: 1,\n    inlay: true,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0090, \n        animType: \"move\" \n      }\n    }\n},\n{\n    filterType: \"liquid\",\n    filterId: \"myAnimSuperHeat\",\n    color: 0xBB9500,\n    time: 0,\n    blend: 8,\n    intensity: 1,\n    spectral: false,\n    scale: 0.25,\n    animated :\n    {\n       time : \n       { \n          active: true, \n          speed: 0.0010, \n          animType: \"move\" \n       }\n    }\n},\n{\n    filterType: \"wave\",\n    filterId: \"myAnimSuperHeat\",\n    time: 0,\n    anchorX: 0.5,\n    anchorY: 0.5,\n    strength: 0.005,\n    frequency: 60,\n    color: 0xFFFFFF,\n    maxIntensity: 2.0,\n    minIntensity: 1.0,\n    padding:10,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0100, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 7900000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!eBGBaCFsLO8b3lMb"
+}

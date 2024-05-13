@@ -1,0 +1,28 @@
+{
+  "_id": "0U6lS2hR1uMm7iFI",
+  "name": "33 - T01 - Evade Stance (transform)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/33%20-%20T01%20-%20Evade%20Stance%20%28transform%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"transform\",\n        filterId: \"dodgeStance\",\n        padding: 50,\n        animated:\n        {\n            translationX:\n            {\n                animType: \"sinOscillation\",\n                val1: -0.125,\n                val2: +0.125,\n                loopDuration: 1400,\n            },\n            translationY:\n            {\n                animType: \"cosOscillation\",\n                val1: -0.035,\n                val2: +0.035,\n                loopDuration: 1400,\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 100000,
+  "flags": {
+    "furnace": {
+      "runAsGM": false
+    }
+  },
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!0U6lS2hR1uMm7iFI"
+}

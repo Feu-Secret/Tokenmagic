@@ -1,0 +1,24 @@
+{
+  "_id": "WyiMXpscxVhgE1zy",
+  "name": "34 - T02 - Dead (splash)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/34%20-%20T02%20-%20Dead%20%28splash%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"splash\",\n        filterId: \"mySplash\",\n        color: 0x900505,\n        padding: 30,\n        time: Math.random()*1000,\n        seed: Math.random()/100,\n        splashFactor: 2,\n        spread: 7,\n        blend: 1,\n        dimX: 1,\n        dimY: 1,\n        cut: true,\n        textureAlphaBlend: false\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 6800000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!WyiMXpscxVhgE1zy"
+}

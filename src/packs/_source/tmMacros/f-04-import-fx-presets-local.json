@@ -1,0 +1,24 @@
+{
+  "_id": "QzFJd7hkaYesE7Ud",
+  "name": "F - 04 - Import FX Presets (local)",
+  "type": "script",
+  "flags": {},
+  "scope": "global",
+  "command": "// Open the console (F12) to check the state of the import\r\n// You can configure in the module option panel the \"overwrite mode on import\"\r\n\r\nTokenMagic.importPresetLibrary();",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "icons/svg/dice-target.svg",
+  "ownership": {
+    "default": 0
+  },
+  "folder": null,
+  "sort": 5200000,
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!QzFJd7hkaYesE7Ud"
+}

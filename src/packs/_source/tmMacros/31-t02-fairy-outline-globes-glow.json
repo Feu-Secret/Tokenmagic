@@ -1,0 +1,24 @@
+{
+  "_id": "URg5jbccjFontPwQ",
+  "name": "31 - T02 - Fairy Outline (globes+glow)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/31%20-%20T02%20-%20Fairy%20Outline%20%28globes%2Bglow%29.webp",
+  "scope": "global",
+  "command": "// works better with non-round forms\nlet params = \n[{\n    filterType: \"globes\",\n    filterId: \"glowingGlobes\",\n    time: 0,\n    color: 0x3080EE,\n    distortion: 0.9,\n    scale: 320,\n    alphaDiscard: true,\n    zOrder: 1,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: 0.0015, \n        animType: \"move\" \n      }\n    }\n},\n{\n    filterType: \"glow\",\n    filterId: \"superSpookyGlow\",\n    outerStrength: 4,\n    innerStrength: 0,\n    color: 0xFF3000,\n    quality: 0.5,\n    padding: 10,\n    animated:\n    {\n        color: \n        {\n           active: true, \n           loopDuration: 3000, \n           animType: \"colorOscillation\", \n           val1:0xFF3000, \n           val2:0x30FF00\n        }\n    }\n}]\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 6300000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!URg5jbccjFontPwQ"
+}

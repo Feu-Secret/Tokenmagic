@@ -1,0 +1,24 @@
+{
+  "_id": "jFdKzkYqcKOmeQPW",
+  "name": "09 - T02 - Moo Man Dance (transform)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/09%20-%20T02%20-%20Moo%20Man%20Dance%20%28transform%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"transform\",\n        filterId: \"theMooManDance\",\n        twRadiusPercent: 70,\n        bpRadiusPercent: 90,\n        padding: 50,\n        animated:\n        {\n            twRotation:\n            {\n                animType: \"sinOscillation\",\n                val1: -90,\n                val2: +90,\n                loopDuration: 1000,\n            },\n            bpStrength:\n            {\n                animType: \"cosOscillation\",\n                val1: 0,\n                val2: 0.55,\n                loopDuration: 1000,\n            },\n            translationX:\n            {\n                animType: \"sinOscillation\",\n                val1: -0.125,\n                val2: +0.125,\n                loopDuration: 1400,\n            },\n            translationY:\n            {\n                animType: \"cosOscillation\",\n                val1: -0.125,\n                val2: +0.125,\n                loopDuration: 1400,\n            },\n            rotation:\n            {\n                animType: \"cosOscillation\",\n                val1: 90,\n                val2: -90,\n                loopDuration: 4200,\n            },    \n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 9100000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!jFdKzkYqcKOmeQPW"
+}

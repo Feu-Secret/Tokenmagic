@@ -1,0 +1,24 @@
+{
+  "_id": "TktbnfMR7IIWewbg",
+  "name": "35 - T08 - Animated SuperFrost (xfire+xglow)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T08%20-%20Animated%20SuperFrost%20%28xfire%2Bxglow%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"zapshadow\",\n        filterId: \"myAnimSuperFrost\",\n        alphaTolerance: 0.50\n    },\n    {\n        filterType: \"xfire\",\n        filterId: \"myAnimSuperFrost\",\n        color: 0xACC5C5,\n        time: 0,\n        blend: 5,\n        amplitude: 1,\n        dispersion: 0,\n        chromatic: false,\n        scaleX: 1,\n        scaleY: 1,\n        inlay: true,\n        animated:\n        {\n            time:\n            {\n                active: true,\n                speed: -0.0020,\n                animType: \"move\"\n            },\n            dispersion:\n            {\n                animType: \"cosOscillation\",\n                val1: 0.25,\n                val2: 0.55,\n                loopDuration: 3000\n            }\n        }\n    },\n    {\n        filterType: \"xglow\",\n        filterId: \"myAnimSuperFrost\",\n        auraType: 1,\n        color: 0x6090AA,\n        thickness: 4.5,\n        scale: 10,\n        time: 0,\n        auraIntensity: 0.25,\n        subAuraIntensity: 1,\n        threshold: 0.5,\n        discard: false,\n        animated:\n        {\n            time:\n            {\n                active: true,\n                speed: 0.0018,\n                animType: \"move\"\n            },\n            thickness:\n            {\n                val1: 2, val2: 2.5,\n                animType: \"cosOscillation\",\n                loopDuration: 3000\n            },\n            subAuraIntensity:\n            {\n                val1: 0.45, val2: 0.65,\n                animType: \"cosOscillation\",\n                loopDuration: 6000\n            },\n            auraIntensity:\n            {\n                val1: 0.9, val2: 1.1,\n                animType: \"cosOscillation\",\n                loopDuration: 3000\n            }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 6000000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!TktbnfMR7IIWewbg"
+}

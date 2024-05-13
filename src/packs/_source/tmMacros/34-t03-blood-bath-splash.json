@@ -1,0 +1,24 @@
+{
+  "_id": "CRwxsDAsfCkXXTOa",
+  "name": "34 - T03 - Blood Bath (splash)",
+  "type": "script",
+  "author": "Njc5YzFjZDI5NjZl",
+  "img": "modules/tokenmagic/gui/macros/images/34%20-%20T03%20-%20Blood%20Bath%20%28splash%29.webp",
+  "scope": "global",
+  "command": "let params =\n    [{\n        filterType: \"splash\",\n        filterId: \"mySplash\",\n        color: 0xFF0505,\n        padding: 80,\n        time: 0,\n        seed: 0.10,\n        splashFactor: 2.25,\n        spread: 7,\n        blend: 7,\n        dimX: 1,\n        dimY: 1,\n        alphaBlending: false,\n        alphaDiscard: true,\n        cut: true,\n        animated :\n        {\n          time : \n          { \n            active: true, \n            speed: 0.0009, \n            animType: \"move\" \n          }\n        }\n    }];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 2300000,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_stats": {
+    "systemId": "dnd5e",
+    "systemVersion": "2.3.1",
+    "coreVersion": "11.308",
+    "createdTime": null,
+    "modifiedTime": 1695296911423,
+    "lastModifiedBy": "packsbuilder0000"
+  },
+  "_key": "!macros!CRwxsDAsfCkXXTOa"
+}

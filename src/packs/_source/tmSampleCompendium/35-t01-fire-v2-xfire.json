@@ -1,0 +1,17 @@
+{
+  "_id": "9qImMNihwv8V9Qho",
+  "name": "35 - T01 - Fire v2 (xfire)",
+  "type": "script",
+  "author": "f8mJy0XxrFT8Pzt3",
+  "img": "modules/tokenmagic/gui/macros/images/35%20-%20T01%20-%20Fire%20v2%20%28xfire%29.webp",
+  "scope": "global",
+  "command": "let params =\n[{\n    filterType: \"xfire\",\n    filterId: \"myFireV2XFire\",\n    time: 0,\n    blend: 1,\n    amplitude: 1,\n    dispersion: 0,\n    chromatic: false,\n    scaleX: 1.5,\n    scaleY: 1,\n    inlay: false,\n    animated :\n    {\n      time : \n      { \n        active: true, \n        speed: -0.0015, \n        animType: \"move\" \n      }\n    }\n}];\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "f8mJy0XxrFT8Pzt3": 3
+  },
+  "flags": {},
+  "_key": "!macros!9qImMNihwv8V9Qho"
+}
