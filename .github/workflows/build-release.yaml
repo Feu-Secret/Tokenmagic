@@ -28,7 +28,7 @@ jobs:
           download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/tokenmagic.zip
 
       # create a zip file with all files required by the module to add to the release
-      - run: cd tokenmagic && zip -r ./tokenmagic.zip module.json fx/ gui/ import/ lang/ libs/ migration/ module/ *.js  *.js.map
+      - run: cd tokenmagic && zip -r ./tokenmagic.zip module.json fx/ gui/ import/ lang/ libs/ migration/ module/ *.js  *.js.map styles/ templates/ packs/ 
 
       # Create a release for this specific version
       - name: Update Release with Files
