@@ -153,10 +153,12 @@ function fromConfig(config, template) {
 }
 
 function fromOverrides(overrides = [], item, template) {
-	let config = overrides.find((el) => el.target.toLowerCase() === item.name.toLowerCase());
-	if (!config) {
+	let configs = overrides.filter((el) => el.target.toLowerCase() === item.name.toLowerCase());
+	if (configs.length === 0) {
 		return false;
 	}
+	// if there are multiple overrides for the same item, the random one is chosen
+	let config = configs[Math.floor(Math.random() * configs.length)];
 	fromConfig(config, template);
 	return true;
 }
