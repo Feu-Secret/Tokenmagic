@@ -43,3 +43,24 @@ jobs:
           artifacts: 'tokenmagic/module.json, tokenmagic/tokenmagic.zip'
           tag: ${{ github.event.release.tag_name }}
           body: ${{ github.event.release.body }}
+
+      # Update the 'latest' release
+      - name: Create Release
+        id: create_latest_release
+        uses: ncipollo/release-action@v1
+        if: endsWith(github.ref, 'master')
+        with:
+          allowUpdates: true
+          name: Latest
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: 'tokenmagic/module.json,tokenmagic/tokenmagic.zip'
+          tag: latest
+          body: ${{ github.event.release.body }}
+      - name: Publish Module to FoundryVTT Website
+        id: publish-to-foundry-website
+        uses: cs96and/FoundryVTT-release-package@v1.0.2
+        with:
+          package-token: ${{ secrets.PACKAGE_TOKEN }}
+          manifest-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
