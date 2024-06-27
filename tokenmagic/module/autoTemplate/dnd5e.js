@@ -172,9 +172,9 @@ function fromCategories(categories = {}, item, template) {
 
 	// some items/spells have multiple damage types
 	// this loop looks over all the types until it finds one with a valid fx preset
-	for (const [_, dmgType] of item.data.data.damage.parts) {
+	for (const [_, dmgType] of item.system.damage.parts) {
 		dmgSettings = categories[dmgType] || {};
-		config = dmgSettings[template.data.t];
+		config = dmgSettings[template.document.t];
 
 		if (config && config.preset !== emptyPreset) {
 			break;
