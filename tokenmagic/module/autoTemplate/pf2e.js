@@ -201,7 +201,10 @@ function fromCategories(categories = {}, origin, template) {
 	if (!config) {
 		return false;
 	}
-	fromConfig(mergeObject(config, { opacity: dmgSettings.opacity, tint: dmgSettings.tint }, true, true), template);
+	fromConfig(
+		foundry.utils.mergeObject(config, { opacity: dmgSettings.opacity, tint: dmgSettings.tint }, true, true),
+		template
+	);
 	return true;
 }
 

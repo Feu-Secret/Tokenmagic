@@ -5,7 +5,7 @@ export class Anime {
 		const self = this;
 		this.puppet = puppet;
 		this.animated = null;
-		this.animeId = randomID();
+		this.animeId = foundry.utils.randomID();
 
 		// Time/synchronization related variables
 		this.frameTime = {};
@@ -300,7 +300,7 @@ export class Anime {
 			else flag = animeInfo;
 		}
 
-		flag = duplicate(flag);
+		flag = foundry.utils.duplicate(flag);
 		await this.puppet.targetPlaceable._TMFXsetAnimeFlag(flag);
 	}
 

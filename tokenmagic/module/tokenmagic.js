@@ -405,7 +405,7 @@ export function TokenMagic() {
 			}
 
 			if (!params.hasOwnProperty('filterId') || params.filterId == null) {
-				params.filterId = randomID();
+				params.filterId = foundry.utils.randomID();
 			}
 
 			if (!params.hasOwnProperty('enabled') || !(typeof params.enabled === 'boolean')) {
@@ -417,10 +417,10 @@ export function TokenMagic() {
 			}
 
 			params.placeableId = placeable.id;
-			params.filterInternalId = randomID();
+			params.filterInternalId = foundry.utils.randomID();
 			params.filterOwner = game.data.userId;
 			params.placeableType = placeable._TMFXgetPlaceableType();
-			params.updateId = randomID();
+			params.updateId = foundry.utils.randomID();
 
 			newFlags.push({
 				tmFilters: {
@@ -449,7 +449,7 @@ export function TokenMagic() {
 		let workingFlags = [];
 		if (flags) {
 			flags.forEach((flag) => {
-				workingFlags.push(duplicate(flag));
+				workingFlags.push(foundry.utils.duplicate(flag));
 			});
 		}
 
@@ -458,7 +458,7 @@ export function TokenMagic() {
 
 		for (const params of paramsArray) {
 			updateParams = false;
-			params.updateId = randomID();
+			params.updateId = foundry.utils.randomID();
 
 			if (params.hasOwnProperty('randomized')) {
 				randomizeParams(params);
@@ -484,7 +484,7 @@ export function TokenMagic() {
 				}
 
 				if (!params.hasOwnProperty('filterId') || params.filterId == null) {
-					params.filterId = randomID();
+					params.filterId = foundry.utils.randomID();
 				}
 
 				if (!params.hasOwnProperty('enabled') || !(typeof params.enabled === 'boolean')) {
@@ -492,7 +492,7 @@ export function TokenMagic() {
 				}
 
 				params.placeableId = placeable.id;
-				params.filterInternalId = randomID();
+				params.filterInternalId = foundry.utils.randomID();
 				params.filterOwner = game.data.userId;
 				params.placeableType = placeable._TMFXgetPlaceableType();
 
@@ -605,11 +605,11 @@ export function TokenMagic() {
 
 		let workingFlags = [];
 		flags.forEach((flag) => {
-			workingFlags.push(duplicate(flag));
+			workingFlags.push(foundry.utils.duplicate(flag));
 		});
 
 		for (const params of paramsArray) {
-			params.updateId = randomID();
+			params.updateId = foundry.utils.randomID();
 
 			if (params.hasOwnProperty('randomized')) {
 				randomizeParams(params);
@@ -664,7 +664,7 @@ export function TokenMagic() {
 			let workingFlags = [];
 			flags.forEach((flag) => {
 				if (flag.tmFilters.tmFilterId !== filterId) {
-					workingFlags.push(duplicate(flag));
+					workingFlags.push(foundry.utils.duplicate(flag));
 				}
 			});
 
@@ -679,7 +679,7 @@ export function TokenMagic() {
 			workingFlags = [];
 			flags.forEach((flag) => {
 				if (flag.tmFilterId !== filterId) {
-					workingFlags.push(duplicate(flag));
+					workingFlags.push(foundry.utils.duplicate(flag));
 				}
 			});
 
@@ -804,7 +804,7 @@ export function TokenMagic() {
 			return;
 		}
 
-		let workingFilterInfo = duplicate(filterInfo);
+		let workingFilterInfo = foundry.utils.duplicate(filterInfo);
 		workingFilterInfo.tmFilters.tmParams.placeableId = placeable.id;
 		workingFilterInfo.tmFilters.tmParams.placeableType = placeable._TMFXgetPlaceableType();
 		let filter = new FilterType[workingFilterInfo.tmFilters.tmFilterType](workingFilterInfo.tmFilters.tmParams);
@@ -964,7 +964,7 @@ export function TokenMagic() {
 								!puppet.hasOwnProperty('updateId') ||
 								(puppet.hasOwnProperty('updateId') && puppet.updateId !== filterFlag.tmFilters.tmParams.updateId)
 							) {
-								puppet.setTMParams(duplicate(filterFlag.tmFilters.tmParams));
+								puppet.setTMParams(foundry.utils.duplicate(filterFlag.tmFilters.tmParams));
 								puppet.normalizeTMParams();
 							}
 						}
@@ -1258,7 +1258,7 @@ export function TokenMagic() {
 					}
 				}
 			}
-			return deepClone(preset.params);
+			return foundry.utils.deepClone(preset.params);
 		}
 		return undefined;
 	}
@@ -1566,7 +1566,7 @@ function getAnchor(direction, angle, shapeType) {
 
 function onMeasuredTemplateConfig(data, html) {
 	if (!isVideoDisabled()) {
-		html[0].querySelector('.file-picker').dataset.type = 'imagevideo';
+		html.find('[name="texture"]').attr('type', 'imagevideo');
 	}
 
 	function compare(a, b) {
@@ -1575,11 +1575,7 @@ function onMeasuredTemplateConfig(data, html) {
 		return 0;
 	}
 
-	let tmTemplate = data.object;
-
-	if (isNewerVersion(game.version, '0.8')) {
-		tmTemplate = tmTemplate.object;
-	}
+	let tmTemplate = data.object.object;
 
 	let opacity = tmTemplate.template.alpha;
 	let tint = '';
@@ -1633,10 +1629,8 @@ function onMeasuredTemplateConfig(data, html) {
     `;
 
 	// injecting
-	const htmlForm = html.find('.form-group');
-	htmlForm.last().after(divPreset);
-
-	$(html).css({ 'min-height': '525px' });
+	html.find('[name="hidden"]').closest('.form-group').after(divPreset);
+	data.setPosition({ height: 'auto' });
 }
 
 /* -------------------------------------------- */
@@ -1988,7 +1982,7 @@ Hooks.on('preCreateMeasuredTemplate', (document) => {
 		if (document.flags.tokenmagic) {
 			return;
 		}
-		document.flags = mergeObject(document.flags, tmfxBaseFlags, true, true);
+		document.flags = foundry.utils.mergeObject(document.flags, tmfxBaseFlags, true, true);
 	}
 
 	// normalizing color to value if needed
@@ -2044,7 +2038,7 @@ Hooks.on('preCreateMeasuredTemplate', (document) => {
 				}
 
 				params.placeableId = null;
-				params.filterInternalId = randomID();
+				params.filterInternalId = foundry.utils.randomID();
 				params.filterOwner = game.data.userId;
 				params.placeableType = PlaceableType.TEMPLATE;
 

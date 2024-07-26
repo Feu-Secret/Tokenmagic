@@ -114,7 +114,7 @@ function fromConfig(config, templateData) {
 		o.tokenmagic.options.tmfxTint = config.tint;
 	}
 	o.tokenmagic.options.tmfxTextureAlpha = config.opacity;
-	mergeObject(templateData, { 'flags.tokenmagic': o.tokenmagic });
+	foundry.utils.mergeObject(templateData, { 'flags.tokenmagic': o.tokenmagic });
 }
 
 function fromOverrides(overrides = [], templateData) {
@@ -144,7 +144,10 @@ function fromCategories(categories = {}, templateData) {
 		return false;
 	}
 
-	fromConfig(mergeObject(config, { opacity: dmgSettings.opacity, tint: dmgSettings.tint }, true, true), templateData);
+	fromConfig(
+		foundry.utils.mergeObject(config, { opacity: dmgSettings.opacity, tint: dmgSettings.tint }, true, true),
+		templateData
+	);
 	return true;
 }
 

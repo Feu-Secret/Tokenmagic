@@ -64,7 +64,7 @@ export class TokenMagicSettings extends FormApplication {
 			game.settings.register(
 				'tokenmagic',
 				settingAutoTemplateSettings.key,
-				mergeObject(
+				foundry.utils.mergeObject(
 					settingAutoTemplateSettings.config,
 					{
 						default: templates.constructor.defaultConfiguration,
@@ -242,7 +242,7 @@ export class TokenMagicSettings extends FormApplication {
 		data.emptyPreset = emptyPreset;
 		const templates = TokenMagicSettings.getSystemTemplates();
 		if (templates) {
-			mergeObject(data, templates.getData());
+			foundry.utils.mergeObject(data, templates.getData());
 		}
 
 		data.presets = Magic.getPresets(PresetsLibrary.TEMPLATE).sort(function (a, b) {
@@ -398,7 +398,7 @@ Hooks.once('init', () => {
 			if (!this.isVisible) return;
 
 			// Draw the Template outline
-			t.lineStyle(this._borderThickness, this.borderColor, 0.75).beginFill(0x000000, 0.0);
+			t.lineStyle(this._borderThickness, Number(this.document.borderColor), 0.75).beginFill(0x000000, 0.0);
 
 			// Fill Color or Texture
 			if (this.texture) {
@@ -521,8 +521,8 @@ Hooks.once('init', () => {
 				}
 
 				if (template.ruler) template.ruler.renderable = show;
-				if (template.controlIcon) template.controlIcon.renderable = template.owner;
-				if (template.handle) template.handle.renderable = template.owner;
+				if (template.controlIcon) template.controlIcon.renderable = template.isOwner;
+				if (template.handle) template.handle.renderable = template.isOwner;
 			}
 			return retVal;
 		};
