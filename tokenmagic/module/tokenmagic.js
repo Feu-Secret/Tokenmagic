@@ -1622,8 +1622,10 @@ function onMeasuredTemplateConfig(data, html) {
     <div class="form-group">
         <label>${i18n('TMFX.template.tint')}</label>
         <div class="form-fields">
-            <input class="color" type="text" name="flags.tokenmagic.templateData.tint" value="${tint}"/>
-            <input type="color" value="${tint}" data-edit="flags.tokenmagic.templateData.tint"/>
+			<color-picker name="flags.tokenmagic.templateData.tint" value="${tint}" placeholder="">
+				<input type="text" placeholder="">
+				<input type="color">
+			</color-picker>
         </div>
     </div>
     `;

@@ -120,6 +120,14 @@
 			"flags": {}
 		}
 	],
+	"relationships": {
+		"requires": [
+		  {
+			"id": "lib-wrapper",
+			"type": "module"
+		  }
+		]
+	},
 	"socket": true,
 	"url": "https://github.com/Feu-Secret/Tokenmagic",
 	"manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",

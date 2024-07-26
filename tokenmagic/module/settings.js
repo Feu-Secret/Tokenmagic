@@ -363,16 +363,13 @@ Hooks.once('init', () => {
 		if (this.document.texture) {
 			this.document.texture = fixPath(this.document.texture);
 		}
-		const retVal = await wrapped(...args);
-		this.template.alpha = this.document.getFlag('tokenmagic', 'templateData')?.opacity ?? 1;
-		return retVal;
+		return await wrapped(...args);
 	};
 
 	let wmtApplyRenderFlags;
 	let wmtApplyRenderFlagsType;
 
 	let wmtRefreshTemplate;
-	let wmtRefreshTemplateType;
 
 	if (!isVideoDisabled()) {
 		const toRadians = Math.toRadians;
@@ -387,8 +384,6 @@ Hooks.once('init', () => {
 
 		/* ------------------------------------------------------------------------------------ */
 
-		wmtRefreshTemplateType = 'OVERRIDE';
-
 		/**
 		 *
 		 * @return {wmtRefreshTemplate}
@@ -398,7 +393,7 @@ Hooks.once('init', () => {
 			if (!this.isVisible) return;
 
 			// Draw the Template outline
-			t.lineStyle(this._borderThickness, Number(this.document.borderColor), 0.75).beginFill(0x000000, 0.0);
+			t.lineStyle(this._borderThickness, this.document.borderColor, 0.75).beginFill(0x000000, 0.0);
 
 			// Fill Color or Texture
 			if (this.texture) {
@@ -462,13 +457,8 @@ Hooks.once('init', () => {
 			t.lineStyle(this._borderThickness, 0x000000)
 				.beginFill(0x000000, 0.5)
 				.drawCircle(0, 0, 6)
-				.drawCircle(this.ray.dx, this.ray.dy, 6);
-
-			// Update visibility
-			this.controlIcon.visible = !!this.layer.active;
-			this.controlIcon.border.visible = !!this.hover;
-			const alpha = this.document.getFlag('tokenmagic', 'templateData')?.opacity ?? 1;
-			t.alpha = this.hover ? alpha / 1.25 : alpha;
+				.drawCircle(this.ray.dx, this.ray.dy, 6)
+				.endFill();
 
 			return this;
 		};
@@ -561,53 +551,32 @@ Hooks.once('init', () => {
 		});
 	}
 
-	if (game.modules.get('lib-wrapper')?.active) {
-		libWrapper.register('tokenmagic', 'MeasuredTemplateDocument.prototype.update', wmtdUpdate, 'WRAPPER');
-		libWrapper.register('tokenmagic', 'MeasuredTemplate.prototype._draw', wmtDraw, 'WRAPPER');
-		if (wmtApplyRenderFlags)
-			libWrapper.register(
-				'tokenmagic',
-				'MeasuredTemplate.prototype._applyRenderFlags',
-				wmtApplyRenderFlags,
-				wmtApplyRenderFlagsType
-			);
-		if (wmtRefreshTemplate)
-			libWrapper.register(
-				'tokenmagic',
-				'MeasuredTemplate.prototype._refreshTemplate',
-				wmtRefreshTemplate,
-				wmtRefreshTemplateType
-			);
-	} else {
-		const cmtdUpdate = MeasuredTemplateDocument.prototype.update;
-		MeasuredTemplateDocument.prototype.update = function () {
-			return wmtdUpdate.call(this, cmtdUpdate.bind(this), ...arguments);
-		};
-		const cmtDraw = MeasuredTemplate.prototype._draw;
-		MeasuredTemplate.prototype._draw = function () {
-			return wmtDraw.call(this, cmtDraw.bind(this), ...arguments);
-		};
+	libWrapper.register('tokenmagic', 'MeasuredTemplateDocument.prototype.update', wmtdUpdate, 'WRAPPER');
+	libWrapper.register('tokenmagic', 'MeasuredTemplate.prototype._draw', wmtDraw, 'WRAPPER');
 
-		if (wmtApplyRenderFlags) {
-			if (wmtApplyRenderFlagsType && wmtApplyRenderFlagsType !== 'OVERRIDE') {
-				const cmtApplyRenderFlags = MeasuredTemplate.prototype._applyRenderFlags;
-				MeasuredTemplate.prototype._applyRenderFlags = function () {
-					return wmtApplyRenderFlags.call(this, cmtApplyRenderFlags.bind(this), ...arguments);
-				};
-			} else {
-				MeasuredTemplate.prototype._applyRenderFlags = wmtApplyRenderFlags;
-			}
-		}
+	libWrapper.register(
+		'tokenmagic',
+		'MeasuredTemplate.prototype._refreshState',
+		function (wrapped, ...args) {
+			const result = wrapped(...args);
 
-		if (wmtRefreshTemplate) {
-			if (wmtRefreshTemplateType && wmtRefreshTemplateType !== 'OVERRIDE') {
-				const cmtRefreshTemplate = MeasuredTemplate.prototype._refreshTemplate;
-				MeasuredTemplate.prototype._refreshTemplate = function () {
-					return wmtRefreshTemplate.call(this, cmtRefreshTemplate.bind(this), ...arguments);
-				};
-			} else {
-				MeasuredTemplate.prototype._refreshTemplate = wmtRefreshTemplate;
-			}
-		}
-	}
+			// Update visibility
+			this.template.alpha = this.document.getFlag('tokenmagic', 'templateData')?.opacity ?? 1;
+			this.controlIcon.visible = !!this.layer.active;
+			this.controlIcon.border.visible = !!this.hover;
+
+			return result;
+		},
+		'WRAPPER'
+	);
+
+	if (wmtApplyRenderFlags)
+		libWrapper.register(
+			'tokenmagic',
+			'MeasuredTemplate.prototype._applyRenderFlags',
+			wmtApplyRenderFlags,
+			wmtApplyRenderFlagsType
+		);
+	if (wmtRefreshTemplate)
+		libWrapper.register('tokenmagic', 'MeasuredTemplate.prototype._refreshTemplate', wmtRefreshTemplate, 'OVERRIDE');
 });
