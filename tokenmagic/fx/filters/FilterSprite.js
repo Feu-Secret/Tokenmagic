@@ -350,27 +350,30 @@ export class FilterSprite extends CustomFilter {
 
 	// override
 	apply(filterManager, input, output, clear) {
+		// assignTexture may not be called if there is no imagePath in params, so we
+		// need to check here or canvas drawing will break
 		const targetSprite = this.targetSprite;
-		const tex = targetSprite._texture;
+		if (targetSprite) {
+			const tex = targetSprite._texture;
+			if (tex?.valid) {
+				if (!tex.uvMatrix) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
+				tex.uvMatrix.update();
 
-		if (tex.valid) {
-			if (!tex.uvMatrix) tex.uvMatrix = new PIXI.TextureMatrix(tex, 0.0);
-			tex.uvMatrix.update();
+				this.uniforms.uSamplerTarget = tex;
+				if (this.maintainScale) {
+					let pScale = targetSprite.parent.scale;
+					targetSprite.scale.set(1 / pScale.x, 1 / pScale.y);
+				}
 
-			this.uniforms.uSamplerTarget = tex;
-			if (this.maintainScale) {
-				let pScale = targetSprite.parent.scale;
-				targetSprite.scale.set(1 / pScale.x, 1 / pScale.y);
+				let w = targetSprite.worldTransform;
+				if (this.maintainAspectRatio) {
+					let scale = Math.min(w.a, w.d);
+					w.set(scale, w.b, w.c, scale, w.tx, w.ty);
+				}
+
+				this.uniforms.targetUVMatrix = filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite);
+				this.uniforms.inputClampTarget = tex.uvMatrix.uClampFrame;
 			}
-
-			let w = targetSprite.worldTransform;
-			if (this.maintainAspectRatio) {
-				let scale = Math.min(w.a, w.d);
-				w.set(scale, w.b, w.c, scale, w.tx, w.ty);
-			}
-
-			this.uniforms.targetUVMatrix = filterManager.calculateSpriteMatrix(this.targetSpriteMatrix, targetSprite);
-			this.uniforms.inputClampTarget = tex.uvMatrix.uClampFrame;
 		}
 
 		super.apply(filterManager, input, output, clear);
