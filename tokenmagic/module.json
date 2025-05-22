@@ -4,8 +4,8 @@
 	"description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
 	"version": "0.6.5.0",
 	"compatibility": {
-		"minimum": "12",
-		"verified": "12.328"
+		"minimum": "13",
+		"verified": "13.342"
 	},
 	"authors": [
 		{

@@ -108,10 +108,10 @@ export const FilterType = {
 };
 
 export const PlaceableType = {
-	TOKEN: Token.embeddedName,
-	TILE: Tile.embeddedName,
-	TEMPLATE: MeasuredTemplate.embeddedName,
-	DRAWING: Drawing.embeddedName,
+	TOKEN: foundry.canvas.placeables.Token.embeddedName,
+	TILE: foundry.canvas.placeables.Tile.embeddedName,
+	TEMPLATE: foundry.canvas.placeables.MeasuredTemplate.embeddedName,
+	DRAWING: foundry.canvas.placeables.Drawing.embeddedName,
 	NOT_SUPPORTED: null,
 };
 
@@ -549,7 +549,7 @@ export function TokenMagic() {
 			if (placeable == null) {
 				placeable = getPlaceableById(placeableId, PlaceableType.DRAWING);
 			}
-			if (!(placeable == null) && placeable instanceof PlaceableObject) {
+			if (!(placeable == null) && placeable instanceof foundry.canvas.placeables.PlaceableObject) {
 				await updateFiltersByPlaceable(placeable, paramsArray);
 			}
 		}
@@ -689,7 +689,7 @@ export function TokenMagic() {
 	}
 
 	function hasFilterType(placeable, filterType) {
-		if (placeable == null || filterType == null || !(placeable instanceof PlaceableObject)) {
+		if (placeable == null || filterType == null || !(placeable instanceof foundry.canvas.placeables.PlaceableObject)) {
 			return null;
 		}
 
@@ -721,7 +721,7 @@ export function TokenMagic() {
 	}
 
 	function hasFilterId(placeable, filterId) {
-		if (placeable == null || !(placeable instanceof PlaceableObject)) {
+		if (placeable == null || !(placeable instanceof foundry.canvas.placeables.PlaceableObject)) {
 			return null;
 		}
 		let flags = placeable.document.getFlag('tokenmagic', 'filters');
@@ -729,7 +729,7 @@ export function TokenMagic() {
 	}
 
 	function _checkFilterId(placeable, filterId, flags) {
-		if (placeable == null || filterId == null || !(placeable instanceof PlaceableObject)) {
+		if (placeable == null || filterId == null || !(placeable instanceof foundry.canvas.placeables.PlaceableObject)) {
 			return null;
 		}
 
@@ -1564,7 +1564,8 @@ function getAnchor(direction, angle, shapeType) {
 	return { x: x, y: y };
 }
 
-function onMeasuredTemplateConfig(data, html) {
+function onMeasuredTemplateConfig(templateConfig, html) {
+	html = $(html);
 	if (!isVideoDisabled()) {
 		html.find('[name="texture"]').attr('type', 'imagevideo');
 	}
@@ -1575,7 +1576,7 @@ function onMeasuredTemplateConfig(data, html) {
 		return 0;
 	}
 
-	let tmTemplate = data.object.object;
+	let tmTemplate = templateConfig.document.object;
 
 	let opacity = tmTemplate.template.alpha;
 	let tint = '';
@@ -1632,7 +1633,7 @@ function onMeasuredTemplateConfig(data, html) {
 
 	// injecting
 	html.find('[name="hidden"]').closest('.form-group').after(divPreset);
-	data.setPosition({ height: 'auto' });
+	templateConfig.setPosition({ height: 'auto' });
 }
 
 /* -------------------------------------------- */

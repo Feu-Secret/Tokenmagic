@@ -50,7 +50,7 @@ export class AutoTemplateDND5E {
 				}
 				defaultConfig.categories[dmgType] = config;
 			}
-			Object.keys(CONFIG.MeasuredTemplate.types).forEach((tplType) => {
+			Object.values(CONST.MEASURED_TEMPLATE_TYPES).forEach((tplType) => {
 				const config = { preset: emptyPreset, texture: null };
 				switch (dmgType.toLowerCase()) {
 					case 'acid':
@@ -106,22 +106,11 @@ export class AutoTemplateDND5E {
 
 		if (!enabled) {
 			if (this._enabled) {
-				if (game.modules.get('lib-wrapper')?.active) {
-					libWrapper.unregister('tokenmagic', 'game.dnd5e.canvas.AbilityTemplate.fromItem');
-				} else {
-					window.location.reload();
-				}
+				libWrapper.unregister('tokenmagic', 'game.dnd5e.canvas.AbilityTemplate.fromActivity');
 			}
 		} else {
 			if (!this._enabled) {
-				if (game.modules.get('lib-wrapper')?.active) {
-					libWrapper.register('tokenmagic', 'game.dnd5e.canvas.AbilityTemplate.fromItem', fromItem, 'WRAPPER');
-				} else {
-					const origFromItem = game.dnd5e.canvas.AbilityTemplate.fromItem;
-					game.dnd5e.canvas.AbilityTemplate.fromItem = function () {
-						return fromItem.call(this, origFromItem.bind(this), ...arguments);
-					};
-				}
+				libWrapper.register('tokenmagic', 'game.dnd5e.canvas.AbilityTemplate.fromActivity', fromActivity, 'WRAPPER');
 			}
 		}
 
@@ -132,7 +121,7 @@ export class AutoTemplateDND5E {
 		return {
 			hasAutoTemplates: true,
 			dmgTypes: CONFIG.DND5E.damageTypes,
-			templateTypes: CONFIG.MeasuredTemplate.types,
+			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
 		};
 	}
 }
@@ -149,11 +138,12 @@ function fromConfig(config, template) {
 		o.tokenmagic.options.tmfxTint = config.tint;
 	}
 	o.tokenmagic.options.tmfxTextureAlpha = config.opacity;
-	template.document.updateSource({ flags: { tokenmagic: o.tokenmagic } });
+	template.updateSource({ flags: { tokenmagic: o.tokenmagic } });
 }
 
-function fromOverrides(overrides = [], item, template) {
-	let configs = overrides.filter((el) => el.target.toLowerCase() === item.name.toLowerCase());
+function fromOverrides(overrides = [], activity, template) {
+	if (!activity.item) return false;
+	let configs = overrides.filter((el) => el.target.toLowerCase() === activity.item.name.toLowerCase());
 	if (configs.length === 0) {
 		return false;
 	}
@@ -163,8 +153,11 @@ function fromOverrides(overrides = [], item, template) {
 	return true;
 }
 
-function fromCategories(categories = {}, item, template) {
-	if (!item.hasDamage) {
+function fromCategories(categories = {}, activity, template) {
+	if (!activity.item) return false;
+
+	let item = activity.item;
+	if (!(item.hasAttack || item.hasSave) && !item.system.damage?.base?.types.size) {
 		return false;
 	}
 
@@ -172,9 +165,9 @@ function fromCategories(categories = {}, item, template) {
 
 	// some items/spells have multiple damage types
 	// this loop looks over all the types until it finds one with a valid fx preset
-	for (const [_, dmgType] of item.system.damage.parts) {
+	for (const dmgType of item.system.damage.base.types) {
 		dmgSettings = categories[dmgType] || {};
-		config = dmgSettings[template.document.t];
+		config = dmgSettings[template.t];
 
 		if (config && config.preset !== emptyPreset) {
 			break;
@@ -190,22 +183,27 @@ function fromCategories(categories = {}, item, template) {
 	return true;
 }
 
-function fromItem(wrapped, ...args) {
-	const [item] = args;
-	const template = wrapped(...args);
-	if (!template) {
-		return template;
+function fromActivity(wrapped, ...args) {
+	const [activity] = args;
+	const activityTemplates = wrapped(...args);
+	if (!activityTemplates) {
+		return activityTemplates;
 	}
-	let hasPreset = template.hasOwnProperty('tmfxPreset');
-	if (hasPreset) {
-		return template;
+
+	for (const activityTemplate of activityTemplates) {
+		const template = activityTemplate.document;
+
+		let hasPreset = template.hasOwnProperty('tmfxPreset');
+		if (hasPreset) continue;
+
+		const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
+		let updated = settings.overrides ? fromOverrides(Object.values(settings.overrides), activity, template) : false;
+		if (!updated) {
+			fromCategories(settings.categories, activity, template);
+		}
 	}
-	const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
-	let updated = settings.overrides ? fromOverrides(Object.values(settings.overrides), item, template) : false;
-	if (!updated) {
-		fromCategories(settings.categories, item, template);
-	}
-	return template;
+
+	return activityTemplates;
 }
 
 export const dnd5eTemplates = new AutoTemplateDND5E();
