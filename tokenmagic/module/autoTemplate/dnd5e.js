@@ -163,9 +163,20 @@ function fromCategories(categories = {}, activity, template) {
 
 	let config, dmgSettings;
 
+	let dmgTypes = [];
+	if(item.system?.damage?.base?.types) {
+		dmgTypes = item.system.damage.base.types;
+	} 
+	if(!dmgTypes.length && item.system.activities) {
+		const saves = item.system.activities.getByType("save")
+		if(saves.length) {
+			dmgTypes = saves.flatMap(save => save.damage.parts.flatMap(part => Array.from(part.types)))
+		}
+	}
+
 	// some items/spells have multiple damage types
 	// this loop looks over all the types until it finds one with a valid fx preset
-	for (const dmgType of item.system.damage.base.types) {
+	for (const dmgType of dmgTypes) {
 		dmgSettings = categories[dmgType] || {};
 		config = dmgSettings[template.t];
 
