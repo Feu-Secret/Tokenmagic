@@ -308,7 +308,7 @@ export class FilterSprite extends CustomFilter {
 	async _playVideo(value) {
 		// Play if baseTexture resource is a video
 		if (this.tex) {
-			const source = getProperty(this.tex, 'baseTexture.resource.source');
+			const source = foundry.utils.getProperty(this.tex, 'baseTexture.resource.source');
 			if (source && source.tagName === 'VIDEO') {
 				if (isNaN(source.duration)) {
 					await new Promise((resolve) => {

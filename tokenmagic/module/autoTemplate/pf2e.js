@@ -71,7 +71,7 @@ export class AutoTemplatePF2E {
 				}
 				defaultConfig.categories[dmgType] = config;
 			}
-			Object.keys(CONFIG.MeasuredTemplate.types).forEach((tplType) => {
+			Object.values(CONST.MEASURED_TEMPLATE_TYPES).forEach((tplType) => {
 				const config = { preset: emptyPreset, texture: null };
 				switch (dmgType.toLowerCase()) {
 					case 'acid':
@@ -133,7 +133,7 @@ export class AutoTemplatePF2E {
 		return {
 			hasAutoTemplates: true,
 			dmgTypes: CONFIG.PF2E.damageTraits,
-			templateTypes: CONFIG.MeasuredTemplate.types,
+			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
 		};
 	}
 

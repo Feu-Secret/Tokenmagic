@@ -43,7 +43,7 @@ export class AutoTemplateTheWitcherTRPG {
 				}
 				defaultConfig.categories[meleeSkillType] = config;
 			}
-			Object.keys(CONFIG.MeasuredTemplate.types).forEach((tplType) => {
+			Object.values(CONST.MEASURED_TEMPLATE_TYPES).forEach((tplType) => {
 				const config = { preset: emptyPreset, texture: null };
 				switch (meleeSkillType.toLowerCase()) {
 					case 'acid':

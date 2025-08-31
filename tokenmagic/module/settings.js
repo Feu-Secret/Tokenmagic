@@ -442,7 +442,7 @@ Hooks.once('init', () => {
 					matrix: mat,
 					alpha: 1.0,
 				});
-				const source = getProperty(this.texture, 'baseTexture.resource.source');
+				const source = foundry.utils.getProperty(this.texture, 'baseTexture.resource.source');
 				if (source && source.tagName === 'VIDEO') {
 					source.loop = true;
 					source.muted = true;
