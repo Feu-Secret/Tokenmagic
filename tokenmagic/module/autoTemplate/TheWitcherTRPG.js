@@ -15,7 +15,7 @@ export class AutoTemplateTheWitcherTRPG {
 			},
 		};
 
-		Object.keys(CONFIG.witcher.meleeSkills).forEach((meleeSkillType) => {
+		Object.keys(CONFIG.WITCHER.meleeSkills).forEach((meleeSkillType) => {
 			if (defaultConfig.categories[meleeSkillType] == undefined) {
 				const config = { opacity: defaultOpacity, tint: null };
 				switch (meleeSkillType.toLowerCase()) {
@@ -84,7 +84,7 @@ export class AutoTemplateTheWitcherTRPG {
 	getData() {
 		return {
 			hasAutoTemplates: true,
-			meleeSkills: CONFIG.witcher.meleeSkills,
+			meleeSkills: CONFIG.WITCHER.meleeSkills,
 			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
 		};
 	}
