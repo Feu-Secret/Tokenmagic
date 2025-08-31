@@ -85,7 +85,7 @@ export class AutoTemplateTheWitcherTRPG {
 		return {
 			hasAutoTemplates: true,
 			meleeSkills: CONFIG.WITCHER.meleeSkills,
-			templateTypes: CONFIG.MeasuredTemplate.types,
+			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
 		};
 	}
 
