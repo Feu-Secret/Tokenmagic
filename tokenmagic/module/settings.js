@@ -92,7 +92,7 @@ export class TokenMagicSettings extends FormApplication {
 			config: true,
 			default: hasAutoTemplates,
 			type: Boolean,
-			onChange: () => window.location.reload(),
+			requiresReload: true,
 		});
 
 		game.settings.register('tokenmagic', 'autohideTemplateElements', {
@@ -102,7 +102,7 @@ export class TokenMagicSettings extends FormApplication {
 			config: true,
 			default: true,
 			type: Boolean,
-			onChange: () => window.location.reload(),
+			requiresReload: true,
 		});
 
 		game.settings.register('tokenmagic', 'useAdditivePadding', {
@@ -157,7 +157,7 @@ export class TokenMagicSettings extends FormApplication {
 			config: true,
 			default: false,
 			type: Boolean,
-			onChange: () => window.location.reload(),
+			requiresReload: true,
 		});
 
 		game.settings.register('tokenmagic', 'disableCaching', {
@@ -176,7 +176,7 @@ export class TokenMagicSettings extends FormApplication {
 			config: true,
 			default: false,
 			type: Boolean,
-			onChange: () => window.location.reload(),
+			requiresReload: true,
 		});
 
 		game.settings.register('tokenmagic', 'presets', {
