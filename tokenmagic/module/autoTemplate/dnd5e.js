@@ -164,13 +164,13 @@ function fromCategories(categories = {}, activity, template) {
 	let config, dmgSettings;
 
 	let dmgTypes = [];
-	if(item.system?.damage?.base?.types) {
+	if (item.system?.damage?.base?.types) {
 		dmgTypes = item.system.damage.base.types;
-	} 
-	if(!dmgTypes.length && item.system.activities) {
-		const saves = item.system.activities.getByType("save")
-		if(saves.length) {
-			dmgTypes = saves.flatMap(save => save.damage.parts.flatMap(part => Array.from(part.types)))
+	}
+	if (!dmgTypes.length && item.system.activities) {
+		const saves = item.system.activities.getByType('save');
+		if (saves.length) {
+			dmgTypes = saves.flatMap((save) => save.damage.parts.flatMap((part) => Array.from(part.types)));
 		}
 	}
 

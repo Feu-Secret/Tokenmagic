@@ -197,7 +197,7 @@ export class TokenMagicSettings extends FormApplication {
 			type: String,
 		});
 
-		loadTemplates([
+		foundry.applications.handlebars.loadTemplates([
 			'modules/tokenmagic/templates/settings/settings.html',
 			'modules/tokenmagic/templates/settings/dnd5e/categories.html',
 			'modules/tokenmagic/templates/settings/dnd5e/overrides.html',
@@ -535,7 +535,7 @@ Hooks.once('init', () => {
 			canvas.stage.on('mousemove', (event) => {
 				const { x: mx, y: my } = event.data.getLocalPosition(canvas.templates);
 				for (const template of canvas.templates.placeables) {
-					const hl = canvas.grid.getHighlightLayer(`MeasuredTemplate.${template.id}`);
+					const hl = canvas.interface.grid.getHighlightLayer(`MeasuredTemplate.${template.id}`);
 					const opacity = template.document.getFlag('tokenmagic', 'templateData')?.opacity ?? 1;
 					if (template.texture && template.texture !== '') {
 						const { x: cx, y: cy } = template.center;
@@ -552,11 +552,11 @@ Hooks.once('init', () => {
 	}
 
 	libWrapper.register('tokenmagic', 'MeasuredTemplateDocument.prototype.update', wmtdUpdate, 'WRAPPER');
-	libWrapper.register('tokenmagic', 'MeasuredTemplate.prototype._draw', wmtDraw, 'WRAPPER');
+	libWrapper.register('tokenmagic', 'foundry.canvas.placeables.MeasuredTemplate.prototype._draw', wmtDraw, 'WRAPPER');
 
 	libWrapper.register(
 		'tokenmagic',
-		'MeasuredTemplate.prototype._refreshState',
+		'foundry.canvas.placeables.MeasuredTemplate.prototype._refreshState',
 		function (wrapped, ...args) {
 			const result = wrapped(...args);
 
@@ -573,10 +573,15 @@ Hooks.once('init', () => {
 	if (wmtApplyRenderFlags)
 		libWrapper.register(
 			'tokenmagic',
-			'MeasuredTemplate.prototype._applyRenderFlags',
+			'foundry.canvas.placeables.MeasuredTemplate.prototype._applyRenderFlags',
 			wmtApplyRenderFlags,
 			wmtApplyRenderFlagsType
 		);
 	if (wmtRefreshTemplate)
-		libWrapper.register('tokenmagic', 'MeasuredTemplate.prototype._refreshTemplate', wmtRefreshTemplate, 'OVERRIDE');
+		libWrapper.register(
+			'tokenmagic',
+			'foundry.canvas.placeables.MeasuredTemplate.prototype._refreshTemplate',
+			wmtRefreshTemplate,
+			'OVERRIDE'
+		);
 });
