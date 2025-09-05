@@ -1,7 +1,7 @@
 {
 	"id": "tokenmagic",
 	"title": "Token Magic FX",
-	"description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
+	"description": "<p>Add special effects and animations on your tokens, tiles, drawings, templates, and regions.</p>",
 	"version": "0.6.5.0",
 	"compatibility": {
 		"minimum": "13",

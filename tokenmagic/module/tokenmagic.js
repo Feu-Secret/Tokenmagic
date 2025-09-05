@@ -112,6 +112,7 @@ export const PlaceableType = {
 	TILE: foundry.canvas.placeables.Tile.embeddedName,
 	TEMPLATE: foundry.canvas.placeables.MeasuredTemplate.embeddedName,
 	DRAWING: foundry.canvas.placeables.Drawing.embeddedName,
+	REGION: foundry.canvas.placeables.Region.embeddedName,
 	NOT_SUPPORTED: null,
 };
 
@@ -240,7 +241,7 @@ export function fixPath(path) {
 }
 
 export function getControlledPlaceables() {
-	const authorizedLayers = [canvas.tokens, canvas.tiles, canvas.drawings];
+	const authorizedLayers = [canvas.tokens, canvas.tiles, canvas.drawings, canvas.regions];
 	if (authorizedLayers.some((layer) => layer === canvas.activeLayer)) {
 		return canvas.activeLayer.placeables.filter((p) => p.controlled === true) || [];
 	} else return [];
@@ -273,6 +274,9 @@ export function getPlaceableById(id, type) {
 			break;
 		case PlaceableType.DRAWING:
 			placeable = findPlaceable(canvas.drawings.placeables, id);
+			break;
+		case PlaceableType.REGION:
+			placeable = findPlaceable(canvas.regions.placeables, id);
 			break;
 	}
 
@@ -540,18 +544,13 @@ export function TokenMagic() {
 			// we must browse the collection of placeables whatever their types
 			// we have just a filterId.
 			let placeable = getPlaceableById(placeableId, PlaceableType.TOKEN);
-			if (placeable == null) {
-				placeable = getPlaceableById(placeableId, PlaceableType.TEMPLATE);
-			}
-			if (placeable == null) {
-				placeable = getPlaceableById(placeableId, PlaceableType.TILE);
-			}
-			if (placeable == null) {
-				placeable = getPlaceableById(placeableId, PlaceableType.DRAWING);
-			}
-			if (!(placeable == null) && placeable instanceof foundry.canvas.placeables.PlaceableObject) {
+			if (placeable == null) placeable = getPlaceableById(placeableId, PlaceableType.TEMPLATE);
+			if (placeable == null) placeable = getPlaceableById(placeableId, PlaceableType.TILE);
+			if (placeable == null) placeable = getPlaceableById(placeableId, PlaceableType.DRAWING);
+			if (placeable == null) placeable = getPlaceableById(placeableId, PlaceableType.REGION);
+
+			if (!(placeable == null) && placeable instanceof foundry.canvas.placeables.PlaceableObject)
 				await updateFiltersByPlaceable(placeable, paramsArray);
-			}
 		}
 	}
 
@@ -830,6 +829,9 @@ export function TokenMagic() {
 				placeable.document.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
 				placeable.document.tmfxTint = updateData.tint;
 			}
+		} else if (placeableType === PlaceableType.REGION) {
+			const sprite = placeable._TMFXgetSprite();
+			if (sprite) sprite.alpha = placeable.document.getFlag('tokenmagic', 'regionData')?.alpha ?? 0.5;
 		}
 
 		let filters = placeable.document.getFlag('tokenmagic', 'filters');
@@ -837,6 +839,9 @@ export function TokenMagic() {
 			if (placeableType === PlaceableType.TEMPLATE) {
 				// get the first filterId to assign tmfxPreset
 				placeable.document.tmfxPreset = filters[0].tmFilters.tmFilterId;
+			} else if (placeableType === PlaceableType.REGION) {
+				const sprite = placeable._TMFXgetSprite();
+				if (sprite) sprite.setShaderClass(foundry.canvas.rendering.shaders.RegionShader);
 			}
 			_assignFilters(placeable, filters, bulkLoading);
 		}
@@ -1636,6 +1641,22 @@ function onMeasuredTemplateConfig(templateConfig, html) {
 	templateConfig.setPosition({ height: 'auto' });
 }
 
+async function onRegionConfig(regionConfig, html) {
+	if (html.querySelector('[name="flags.tokenmagic.regionData.alpha"]')) return;
+
+	const region = regionConfig.document;
+
+	let tmfxRegionData = region.getFlag('tokenmagic', 'regionData');
+	let alpha = tmfxRegionData?.alpha ?? region.object?._TMFXgetSprite()?.alpha ?? 0.5;
+
+	const alphaRangePicker = await foundry.applications.handlebars.renderTemplate(
+		'modules/tokenmagic/templates/settings/regionAlpha.hbs',
+		{ alpha }
+	);
+
+	$(html).find('[name="color"]').closest('.form-group').after(alphaRangePicker);
+}
+
 /* -------------------------------------------- */
 /*  Setup Management                            */
 /* -------------------------------------------- */
@@ -1650,6 +1671,7 @@ Hooks.on('ready', () => {
 		ui.notifications.warn("The 'Token Magic FX' module recommends to install and activate the 'libWrapper' module.");
 
 	Hooks.on('renderMeasuredTemplateConfig', onMeasuredTemplateConfig);
+	Hooks.on('renderRegionConfig', onRegionConfig);
 });
 
 /* -------------------------------------------- */
@@ -1691,6 +1713,8 @@ Hooks.on('canvasReady', (canvas) => {
 	Magic._loadFilters(drawings);
 	const templates = canvas.templates.placeables;
 	Magic._loadFilters(templates);
+	const regions = canvas.regions.placeables;
+	Magic._loadFilters(regions);
 
 	Anime.activateAnimation();
 });
@@ -1818,6 +1842,52 @@ Hooks.on('updateDrawing', (document, options) => {
 		requestLoadFilters(placeable, 250);
 	} else {
 		Magic._updateFilters(document, options, PlaceableType.DRAWING);
+	}
+});
+
+/* -------------------------------------------- */
+/*  Regions Management                         */
+/* -------------------------------------------- */
+
+Hooks.on('createRegion', (document) => {
+	if (document.parent.id !== game.user.viewedScene) return;
+
+	if (document.flags?.tokenmagic?.filters) {
+		let placeable = getPlaceableById(document._id, PlaceableType.REGION);
+		requestLoadFilters(placeable, 250);
+	}
+});
+
+/* -------------------------------------------- */
+
+Hooks.on('deleteRegion', (_, document) => {
+	if (!(document == null || !document._id)) {
+		Anime.removeAnimation(document._id);
+	}
+});
+
+/* -------------------------------------------- */
+
+Hooks.on('updateRegion', (document, options) => {
+	if (document.parent.id !== game.user.viewedScene) return;
+	let placeable = getPlaceableById(document._id, PlaceableType.REGION);
+
+	if (!options.flags?.tokenmagic || options.x || options.y) {
+		Anime.removeAnimation(document._id); // removing animations on this placeable
+		Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
+		requestLoadFilters(placeable, 250);
+	} else {
+		if (!placeable.loadingRequest) {
+			Magic._updateFilters(document, options, PlaceableType.REGION);
+
+			const sprite = getPlaceableById(document._id, PlaceableType.REGION)?._TMFXgetSprite();
+			if (sprite) {
+				const filters = document.getFlag('tokenmagic', 'filters');
+				if (filters) sprite.setShaderClass(foundry.canvas.rendering.shaders.RegionShader);
+				else sprite.setShaderClass(foundry.canvas.rendering.shaders.HighlightRegionShader);
+				sprite.alpha = document.getFlag('tokenmagic', 'regionData')?.alpha ?? 0.5;
+			}
+		}
 	}
 });
 

@@ -58,6 +58,8 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetSprite = function ()
 			return this.template;
 		case PlaceableType.DRAWING:
 			return this.hasText ? this.text : this.shape;
+		case PlaceableType.REGION:
+			return this.children.find((ch) => ch instanceof foundry.canvas.placeables.regions.RegionMesh);
 		default:
 			return null;
 	}
@@ -90,6 +92,8 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXcheckSprite = function 
 			return !(this.template == null);
 		case PlaceableType.DRAWING:
 			return !(this.shape == null);
+		case PlaceableType.REGION:
+			return !(this.children.find((ch) => ch instanceof foundry.canvas.placeables.regions.RegionMesh) == null);
 		default:
 			return null;
 	}
@@ -162,9 +166,13 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXunsetRawFilters = funct
 
 foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetPlaceableType = function () {
 	if (
-		[PlaceableType.TOKEN, PlaceableType.TEMPLATE, PlaceableType.TILE, PlaceableType.DRAWING].includes(
-			this.constructor.embeddedName
-		)
+		[
+			PlaceableType.TOKEN,
+			PlaceableType.TEMPLATE,
+			PlaceableType.TILE,
+			PlaceableType.DRAWING,
+			PlaceableType.REGION,
+		].includes(this.constructor.embeddedName)
 	)
 		return this.constructor.embeddedName;
 	return PlaceableType.NOT_SUPPORTED;
