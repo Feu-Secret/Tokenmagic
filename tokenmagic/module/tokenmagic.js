@@ -48,7 +48,7 @@ import './proto/PlaceableObjectProto.js';
 import { FilterCRT } from '../fx/filters/FilterCRT.js';
 import { FilterRGBSplit } from '../fx/filters/FilterRGBSplit.js';
 import { TokenMagicSettings } from './settings.js';
-import { openPresetToggler } from '../gui/apps/PresetToggler.js';
+import { activatePresetToggler } from '../gui/apps/PresetToggler.js';
 
 /*
 
@@ -1432,7 +1432,7 @@ export function TokenMagic() {
 		getControlledPlaceables: getControlledPlaceables,
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
-		openPresetToggler: openPresetToggler,
+		activatePresetToggler: activatePresetToggler,
 		get filterTypes() {
 			return FilterType;
 		},

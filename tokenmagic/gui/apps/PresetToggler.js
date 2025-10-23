@@ -1,6 +1,6 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
-export function openPresetToggler(presets) {
+export function activatePresetToggler(presets) {
 	const activeInstance = foundry.applications.instances.get(PresetToggler.DEFAULT_OPTIONS.id);
 	if (activeInstance) {
 		activeInstance.close();
@@ -26,6 +26,7 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 			toggle: PresetToggler._onTogglePreset,
 			clear: PresetToggler._onClearAllPresets,
 			toggleActiveOnly: PresetToggler._onToggleActiveOnly,
+			clickControl: PresetToggler._onExecuteControlMacro,
 		},
 	};
 
@@ -57,6 +58,12 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 	async _prepareHeaderContext(context, options) {
 		context.activeOnly = this._activeOnly;
 		context.searchQuery = this._searchQuery ?? '';
+
+		// Provide opportunity for 3rd party modules to insert additional controls
+		// Expected format: { icon: 'fa-icon', tooltip: 'Tooltip Text', uuid: 'Macro UUID' }
+		const controls = [];
+		Hooks.call('TokenMagic.getPresetTogglerControls', controls);
+		context.controls = controls;
 	}
 
 	async _preparePresetContext(context, options) {
@@ -148,6 +155,10 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 	static _onToggleActiveOnly(event, element) {
 		this._activeOnly = !this._activeOnly;
 		this.render(true);
+	}
+
+	static _onExecuteControlMacro(event, element) {
+		fromUuid(element.dataset.uuid).then((macro) => macro?.execute?.());
 	}
 
 	/** @override */
