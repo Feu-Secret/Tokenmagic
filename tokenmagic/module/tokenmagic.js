@@ -48,6 +48,7 @@ import './proto/PlaceableObjectProto.js';
 import { FilterCRT } from '../fx/filters/FilterCRT.js';
 import { FilterRGBSplit } from '../fx/filters/FilterRGBSplit.js';
 import { TokenMagicSettings } from './settings.js';
+import { openPresetToggler } from '../gui/apps/PresetToggler.js';
 
 /*
 
@@ -416,7 +417,7 @@ export function TokenMagic() {
 				params.enabled = true;
 			}
 
-			if (params.hasOwnProperty('randomized')) {
+			if (params.hasOwnProperty('randomized') && params.randomized) {
 				randomizeParams(params);
 			}
 
@@ -464,7 +465,7 @@ export function TokenMagic() {
 			updateParams = false;
 			params.updateId = foundry.utils.randomID();
 
-			if (params.hasOwnProperty('randomized')) {
+			if (params.hasOwnProperty('randomized') && params.randomized) {
 				randomizeParams(params);
 			}
 
@@ -610,7 +611,7 @@ export function TokenMagic() {
 		for (const params of paramsArray) {
 			params.updateId = foundry.utils.randomID();
 
-			if (params.hasOwnProperty('randomized')) {
+			if (params.hasOwnProperty('randomized') && params.randomized) {
 				randomizeParams(params);
 			}
 
@@ -1431,6 +1432,7 @@ export function TokenMagic() {
 		getControlledPlaceables: getControlledPlaceables,
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
+		openPresetToggler: openPresetToggler,
 		get filterTypes() {
 			return FilterType;
 		},

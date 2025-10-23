@@ -1,0 +1,7 @@
+<section>
+    <input type="search" name="search" autocomplete="off" placeholder="Search" aria-label="Search" value="{{searchQuery}}">
+    <div class="controls">
+        <a data-tooltip="Clear all presets." data-action="clear"><i class="fa-solid fa-broom-wide"></i></a>
+        <a class="{{#if activeOnly}}active{{/if}}" data-tooltip="Display only active presets." data-action="toggleActiveOnly"><i class="fa-solid fa-power-off"></i></a>
+    </div>
+</section>

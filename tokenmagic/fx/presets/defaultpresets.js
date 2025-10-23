@@ -74,22 +74,6 @@ params = [
 		padding: 10,
 		shadowOnly: false,
 		color: 0x000000,
-		animated: {
-			blur: {
-				active: true,
-				loopDuration: 1500,
-				animType: 'syncCosOscillation',
-				val1: 2,
-				val2: 3,
-			},
-			rotation: {
-				active: true,
-				loopDuration: 150,
-				animType: 'syncSinOscillation',
-				val1: 33,
-				val2: 35,
-			},
-		},
 	},
 ];
 

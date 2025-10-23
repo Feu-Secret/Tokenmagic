@@ -1,135 +1,141 @@
 {
-	"id": "tokenmagic",
-	"title": "Token Magic FX",
-	"description": "<p>Add special effects and animations on your tokens, tiles, drawings, templates, and regions.</p>",
-	"version": "0.6.5.0",
-	"compatibility": {
-		"minimum": "13",
-		"verified": "13.342"
-	},
-	"authors": [
-		{
-			"name": "SecretFire",
-			"flags": {}
-		},
-		{
-			"name": "sPOiDar",
-			"flags": {}
-		},
-		{
-			"name": "Zimm",
-			"flags": {}
-		},
-		{
-			"name": "Lozalojo",
-			"flags": {}
-		},
-		{
-			"name": "Moerill",
-			"flags": {}
-		},
-		{
-			"name": "KLO",
-			"flags": {}
-		},
-		{
-			"name": "dev7355608",
-			"flags": {}
-		},
-		{
-			"name": "Mestre Digital",
-			"flags": {}
-		},
-		{
-			"name": "BrotherSharper-Touge",
-			"flags": {}
-		},
-		{
-			"name": "OsiJr",
-			"flags": {}
-		}
-	],
-	"scripts": ["libs/filters/pixi-filters.js"],
-	"esmodules": ["module/tokenmagicBundle.js"],
-	"styles": ["styles/tokenmagic.css"],
-	"packs": [
-		{
-			"name": "tmMacros",
-			"label": "TokenMagic Portfolio",
-			"path": "packs/token-magic-portfolio",
-			"type": "Macro",
-			"private": false,
-			"flags": {}
-		},
-		{
-			"name": "tmSampleCompendium",
-			"label": "TokenMagic Book of Fire",
-			"path": "packs/token-magic-book-of-fire",
-			"type": "Macro",
-			"private": false,
-			"flags": {}
-		}
-	],
-	"languages": [
-		{
-			"lang": "en",
-			"name": "English",
-			"path": "lang/en.json",
-			"flags": {}
-		},
-		{
-			"lang": "ru",
-			"name": "Russian",
-			"path": "lang/ru.json",
-			"flags": {}
-		},
-		{
-			"lang": "fr",
-			"name": "French (FRANCE)",
-			"path": "lang/fr.json",
-			"flags": {}
-		},
-		{
-			"lang": "pt-BR",
-			"name": "Português (Brasil)",
-			"path": "lang/pt-BR.json",
-			"flags": {}
-		},
-		{
-			"lang": "es",
-			"name": "Spanish",
-			"path": "lang/es.json",
-			"flags": {}
-		},
-		{
-			"lang": "ko",
-			"name": "Korean",
-			"path": "lang/ko.json",
-			"flags": {}
-		},
-		{
-			"lang": "zh-tw",
-			"name": "正體中文",
-			"path": "lang/zh-tw.json",
-			"flags": {}
-		},
-		{
-			"lang": "ja",
-			"name": "日本語",
-			"path": "lang/ja.json",
-			"flags": {}
-		}
-	],
-	"relationships": {
-		"requires": [
-		  {
-			"id": "lib-wrapper",
-			"type": "module"
-		  }
-		]
-	},
-	"socket": true,
-	"url": "https://github.com/Feu-Secret/Tokenmagic",
-	"manifest": "https://raw.githubusercontent.com/Feu-Secret/Tokenmagic/master/tokenmagic/module.json",
-	"download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/v0.6.5.0-beta/tokenmagic.zip"
+    "id": "tokenmagic",
+    "title": "Token Magic FX",
+    "description": "<p>Add special effects and animations on your tokens, tiles, drawings and templates.</p>",
+    "version": "0.7.2",
+    "compatibility": {
+        "minimum": "13",
+        "verified": "13.342"
+    },
+    "authors": [
+        {
+            "name": "SecretFire",
+            "flags": {}
+        },
+        {
+            "name": "sPOiDar",
+            "flags": {}
+        },
+        {
+            "name": "Zimm",
+            "flags": {}
+        },
+        {
+            "name": "Lozalojo",
+            "flags": {}
+        },
+        {
+            "name": "Moerill",
+            "flags": {}
+        },
+        {
+            "name": "KLO",
+            "flags": {}
+        },
+        {
+            "name": "dev7355608",
+            "flags": {}
+        },
+        {
+            "name": "Mestre Digital",
+            "flags": {}
+        },
+        {
+            "name": "BrotherSharper-Touge",
+            "flags": {}
+        },
+        {
+            "name": "OsiJr",
+            "flags": {}
+        }
+    ],
+    "scripts": [
+        "libs/filters/pixi-filters.js"
+    ],
+    "esmodules": [
+        "module/tokenmagicBundle.js"
+    ],
+    "styles": [
+        "styles/tokenmagic.css"
+    ],
+    "packs": [
+        {
+            "name": "tmMacros",
+            "label": "TokenMagic Portfolio",
+            "path": "packs/token-magic-portfolio",
+            "type": "Macro",
+            "private": false,
+            "flags": {}
+        },
+        {
+            "name": "tmSampleCompendium",
+            "label": "TokenMagic Book of Fire",
+            "path": "packs/token-magic-book-of-fire",
+            "type": "Macro",
+            "private": false,
+            "flags": {}
+        }
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json",
+            "flags": {}
+        },
+        {
+            "lang": "ru",
+            "name": "Russian",
+            "path": "lang/ru.json",
+            "flags": {}
+        },
+        {
+            "lang": "fr",
+            "name": "French (FRANCE)",
+            "path": "lang/fr.json",
+            "flags": {}
+        },
+        {
+            "lang": "pt-BR",
+            "name": "Português (Brasil)",
+            "path": "lang/pt-BR.json",
+            "flags": {}
+        },
+        {
+            "lang": "es",
+            "name": "Spanish",
+            "path": "lang/es.json",
+            "flags": {}
+        },
+        {
+            "lang": "ko",
+            "name": "Korean",
+            "path": "lang/ko.json",
+            "flags": {}
+        },
+        {
+            "lang": "zh-tw",
+            "name": "正體中文",
+            "path": "lang/zh-tw.json",
+            "flags": {}
+        },
+        {
+            "lang": "ja",
+            "name": "日本語",
+            "path": "lang/ja.json",
+            "flags": {}
+        }
+    ],
+    "relationships": {
+        "requires": [
+            {
+                "id": "lib-wrapper",
+                "type": "module"
+            }
+        ]
+    },
+    "socket": true,
+    "url": "https://github.com/Feu-Secret/Tokenmagic",
+    "manifest": "https://github.com/Feu-Secret/Tokenmagic/releases/latest/download/module.json",
+    "download": "https://github.com/Feu-Secret/Tokenmagic/releases/download/0.7.2/tokenmagic.zip"
 }

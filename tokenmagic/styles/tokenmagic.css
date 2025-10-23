@@ -28,3 +28,72 @@
 .tokenmagic.settings footer.add-override-wrapper {
 	margin-bottom: 0.5em;
 }
+
+/* ====================
+ * == Preset Toggler ==
+ * ==================== */ 
+
+ 
+.tokenmagic.toggler .controls {
+	display: flex;
+    justify-content: center;
+    gap: 5px;
+	font-size: 1.5em;
+    margin-top: 9px;
+}
+
+.tokenmagic.toggler .controls {
+	display: flex;
+    justify-content: center;
+    gap: 5px;
+	font-size: 1.5em;
+    margin-top: 9px;
+}
+
+.tokenmagic.toggler .controls > * {
+	width: 1.5em;
+	height: 1.5em;
+	border: 1px solid;
+	border-radius: 5px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tokenmagic.toggler .controls .active {
+	color: darkorange;
+}
+
+.tokenmagic.toggler .presets {
+	max-height: 500px;
+	overflow: auto;
+	margin-top: 1em;
+	display: flex;
+    flex-direction: column;
+	gap: 5px;
+}
+
+.tokenmagic.toggler .preset {
+	flex: 0 0 32px;
+	display: flex;
+	line-height: 1.5em;
+    align-items: center;
+	border: 1px solid;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.tokenmagic.toggler .preset.active {
+	color: darkorange;
+}
+
+.tokenmagic.toggler .preset:hover {
+	background-color: #474747;
+}
+
+.tokenmagic.toggler .preset .name {
+	font-size: larger;
+	display: block;
+	text-align: center;
+	flex: 1;
+}
