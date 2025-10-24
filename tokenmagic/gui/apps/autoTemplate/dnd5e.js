@@ -8,13 +8,10 @@ export class AutoTemplateDND5E extends TemplateSettings {
 	}
 
 	/** @override */
-	static DEFAULT_OPTIONS = {};
-
-	/** @override */
 	static PARTS = {
 		tabs: { template: 'templates/generic/tab-navigation.hbs' },
-		categories: { template: 'modules/tokenmagic/templates/settings/dnd5e/categories.hbs' },
-		overrides: { template: 'modules/tokenmagic/templates/settings/dnd5e/overrides.hbs' },
+		categories: { template: 'modules/tokenmagic/templates/settings/generic/categories.hbs' },
+		overrides: { template: 'modules/tokenmagic/templates/settings/generic/overrides.hbs' },
 	};
 
 	static get defaultConfiguration() {

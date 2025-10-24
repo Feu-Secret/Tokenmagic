@@ -80,7 +80,6 @@ export class TemplateSettings extends HandlebarsApplicationMixin(ApplicationV2) 
 				Object.values(value.overrides).forEach((val, idx) => (compacted[idx] = val));
 				value.overrides = compacted;
 			}
-			console.log(key, value);
 			await game.settings.set('tokenmagic', key, value);
 		}
 	}
@@ -94,8 +93,6 @@ export class TemplateSettings extends HandlebarsApplicationMixin(ApplicationV2) 
 	}
 
 	static async _onAddOverride(event) {
-		console.log(event);
-
 		const autoTemplateSettings = await game.settings.get('tokenmagic', 'autoTemplateSettings');
 
 		let idx;

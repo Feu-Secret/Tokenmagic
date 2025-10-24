@@ -407,7 +407,7 @@ Hooks.once('init', () => {
 			canvas.stage.on('mousemove', (event) => {
 				const { x: mx, y: my } = event.data.getLocalPosition(canvas.templates);
 				for (const template of canvas.templates.placeables) {
-					const hl = canvas.interface.grid.getHighlightLayer(`MeasuredTemplate.${template.id}`);
+					const hl = canvas.interface.grid.getHighlightLayer(template.highlightId);
 					const opacity = template.document.getFlag('tokenmagic', 'templateData')?.opacity ?? 1;
 					if (template.texture && template.texture !== '') {
 						const { x: cx, y: cy } = template.center;

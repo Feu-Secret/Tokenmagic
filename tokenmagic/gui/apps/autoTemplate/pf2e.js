@@ -1,6 +1,19 @@
 import { defaultOpacity, emptyPreset } from '../../../module/constants.js';
+import { TemplateSettings } from './TemplateSettings.js';
 
-export class AutoTemplatePF2E {
+export class AutoTemplatePF2E extends TemplateSettings {
+	constructor() {
+		super();
+		this._enabled = false;
+	}
+
+	/** @override */
+	static PARTS = {
+		tabs: { template: 'templates/generic/tab-navigation.hbs' },
+		categories: { template: 'modules/tokenmagic/templates/settings/generic/categories.hbs' },
+		overrides: { template: 'modules/tokenmagic/templates/settings/generic/overrides.hbs' },
+	};
+
 	static get defaultConfiguration() {
 		const defaultConfig = {
 			categories: {},
@@ -114,10 +127,6 @@ export class AutoTemplatePF2E {
 		return defaultConfig;
 	}
 
-	constructor() {
-		this._enabled = false;
-	}
-
 	configure(enabled = false) {
 		if (game.system.id !== 'pf2e') return;
 		this._enabled = enabled;
@@ -129,11 +138,24 @@ export class AutoTemplatePF2E {
 
 	set enabled(value) {}
 
-	getData() {
-		return {
-			dmgTypes: CONFIG.PF2E.damageTraits,
-			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
-		};
+	/** @override */
+	async _preparePartContext(partId, context, options) {
+		await super._preparePartContext(partId, context, options);
+		switch (partId) {
+			case 'categories':
+				this._prepareCategoriesContext(context, options);
+				break;
+		}
+		return context;
+	}
+
+	_prepareCategoriesContext(context, options) {
+		const dmgTypes = {};
+		for (const type of Object.keys(CONFIG.PF2E.damageTraits).sort((k1, k2) => k1.localeCompare(k2))) {
+			dmgTypes[type] = { label: type.charAt(0).toUpperCase() + type.slice(1) };
+		}
+		context.dmgTypes = dmgTypes;
+		context.templateTypes = CONST.MEASURED_TEMPLATE_TYPES;
 	}
 
 	preCreateMeasuredTemplate(template) {
