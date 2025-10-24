@@ -1,0 +1,63 @@
+<div class="tab{{#if tab.active}} active{{/if}} scrollable category-list" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+	{{#each dmgTypes as |dmgType dmgKey|}}
+	<fieldset>
+		<legend class="category">{{dmgType.label}}</legend>
+
+		{{!-- Texture Opacity --}}
+		<div class='form-group'>
+			<label for="autoTemplateSettings.categories.{{dmgKey}}.opacity">{{localize 'TMFX.template.opacity'}}</label>
+			<div class='form-fields'>
+				<range-picker 
+					name="autoTemplateSettings.categories.{{dmgKey}}.opacity" 
+					value="{{lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) 'opacity'}}" 
+					min="0.0" 
+					max="1.0" 
+					step="0.05"></range-picker>
+			</div>
+		</div>
+
+		{{!-- Effect Tint --}}
+		<div class='form-group'>
+			<label for="autoTemplateSettings.categories.{{dmgKey}}.tint">
+				{{localize 'TMFX.template.tint'}}
+			</label>
+			<div class='form-fields'>
+				<color-picker 
+					name="autoTemplateSettings.categories.{{dmgKey}}.tint" 
+					value="{{lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) 'tint'}}"></color-picker>
+			</div>
+		</div>
+
+		{{!-- Template Types --}}
+		<details>
+			<summary>{{localize "DOCUMENT.MeasuredTemplates"}}</summary>
+			{{#each @root.templateTypes as |tplKey tplType|}}
+			<fieldset>
+				<legend>{{tplType}}</legend>
+
+				{{!-- Special Effects --}}
+				<div class='form-group'>
+					<label for="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.preset">{{localize 'TMFX.template.fx'}}</label>
+					<select name="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.preset">
+						{{selectOptions @root.presets selected=(lookup (lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) tplKey) 'preset') valueAttr="name" labelAttr="name" localize=false}}
+					</select>
+				</div>
+
+				{{!-- Texture --}}
+				<div class='form-group'>
+						<label for="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.texture">
+							{{localize 'TMFX.settings.autoTemplateSettings.texture.label'}}
+						</label>
+					<div class='form-fields'>
+						<file-picker 
+							name="autoTemplateSettings.categories.{{dmgKey}}.{{tplKey}}.texture" 
+							type="imagevideo" 
+							value="{{lookup (lookup (lookup @root.settings.autoTemplateSettings.categories dmgKey) tplKey) 'texture'}}"></file-picker>
+					</div>
+				</div>
+			</fieldset>
+			{{/each}}
+		</details>
+	</fieldset>
+	{{/each}}
+</div>

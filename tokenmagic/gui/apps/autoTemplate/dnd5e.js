@@ -1,6 +1,22 @@
-import { defaultOpacity, emptyPreset } from '../constants.js';
+import { defaultOpacity, emptyPreset } from '../../../module/constants.js';
+import { TemplateSettings } from './TemplateSettings.js';
 
-export class AutoTemplateDND5E {
+export class AutoTemplateDND5E extends TemplateSettings {
+	constructor() {
+		super();
+		this._enabled = false;
+	}
+
+	/** @override */
+	static DEFAULT_OPTIONS = {};
+
+	/** @override */
+	static PARTS = {
+		tabs: { template: 'templates/generic/tab-navigation.hbs' },
+		categories: { template: 'modules/tokenmagic/templates/settings/dnd5e/categories.hbs' },
+		overrides: { template: 'modules/tokenmagic/templates/settings/dnd5e/overrides.hbs' },
+	};
+
 	static get defaultConfiguration() {
 		const defaultConfig = {
 			categories: {},
@@ -93,10 +109,6 @@ export class AutoTemplateDND5E {
 		return defaultConfig;
 	}
 
-	constructor() {
-		this._enabled = false;
-	}
-
 	get enabled() {
 		return this._enabled;
 	}
@@ -117,12 +129,20 @@ export class AutoTemplateDND5E {
 		this._enabled = enabled;
 	}
 
-	getData() {
-		return {
-			hasAutoTemplates: true,
-			dmgTypes: CONFIG.DND5E.damageTypes,
-			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
-		};
+	/** @override */
+	async _preparePartContext(partId, context, options) {
+		await super._preparePartContext(partId, context, options);
+		switch (partId) {
+			case 'categories':
+				this._prepareCategoriesContext(context, options);
+				break;
+		}
+		return context;
+	}
+
+	_prepareCategoriesContext(context, options) {
+		context.dmgTypes = CONFIG.DND5E.damageTypes;
+		context.templateTypes = CONST.MEASURED_TEMPLATE_TYPES;
 	}
 }
 
@@ -216,5 +236,3 @@ function fromActivity(wrapped, ...args) {
 
 	return activityTemplates;
 }
-
-export const dnd5eTemplates = new AutoTemplateDND5E();

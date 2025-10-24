@@ -1,78 +1,33 @@
-import { presets as defaultPresets, PresetsLibrary } from '../fx/presets/defaultpresets.js';
+import { presets as defaultPresets } from '../fx/presets/defaultpresets.js';
 import { DataVersion } from '../migration/migration.js';
 import { TokenMagic, isVideoDisabled, fixPath } from './tokenmagic.js';
-import { dnd5eTemplates } from './autoTemplate/dnd5e.js';
-import { pf2eTemplates } from './autoTemplate/pf2e.js';
-import { witcherTemplates } from './autoTemplate/TheWitcherTRPG.js';
-import { defaultOpacity, emptyPreset } from './constants.js';
+import { AutoTemplateDND5E } from '../gui/apps/autoTemplate/dnd5e.js';
+import { AutoTemplatePF2E } from '../gui/apps/autoTemplate/pf2e.js';
+import { AutoTemplateTheWitcherTRPG } from '../gui/apps/autoTemplate/TheWitcherTRPG.js';
+import { emptyPreset } from './constants.js';
 
 const Magic = TokenMagic();
 
-export class TokenMagicSettings extends FormApplication {
-	constructor(object = {}, options) {
-		super(object, options);
-	}
-
-	/** @override */
-	static get defaultOptions() {
-		return {
-			...super.defaultOptions,
-			template: 'modules/tokenmagic/templates/settings/settings.html',
-			height: 'auto',
-			title: game.i18n.localize('TMFX.settings.autoTemplateSettings.dialog.title'),
-			width: 600,
-			classes: ['tokenmagic', 'settings'],
-			tabs: [
-				{
-					navSelector: '.tabs',
-					contentSelector: 'form',
-					initial: 'name',
-				},
-			],
-			submitOnClose: false,
-		};
-	}
-
+export class TokenMagicSettings {
 	static init() {
-		const menuAutoTemplateSettings = {
-			key: 'autoTemplateSettings',
-			config: {
+		const autoTemplateClass = this.getSystemTemplateClass();
+		const hasAutoTemplates = !!autoTemplateClass;
+		if (autoTemplateClass) {
+			game.settings.registerMenu('tokenmagic', 'autoTemplateSettings', {
 				name: game.i18n.localize('TMFX.settings.autoTemplateSettings.button.name'),
 				label: game.i18n.localize('TMFX.settings.autoTemplateSettings.button.label'),
 				hint: game.i18n.localize('TMFX.settings.autoTemplateSettings.button.hint'),
-				type: TokenMagicSettings,
+				type: autoTemplateClass,
 				restricted: true,
-			},
-		};
-
-		const settingAutoTemplateSettings = {
-			key: 'autoTemplateSettings',
-			config: {
+			});
+			game.settings.register('tokenmagic', 'autoTemplateSettings', {
 				name: game.i18n.localize('TMFX.settings.autoTemplateSettings.name'),
 				hint: game.i18n.localize('TMFX.settings.autoTemplateSettings.hint'),
 				scope: 'world',
 				config: false,
-				default: {},
+				default: autoTemplateClass.defaultConfiguration,
 				type: Object,
-			},
-		};
-
-		const templates = this.getSystemTemplates();
-		let hasAutoTemplates = !!templates;
-		if (templates) {
-			game.settings.registerMenu('tokenmagic', menuAutoTemplateSettings.key, menuAutoTemplateSettings.config);
-			game.settings.register(
-				'tokenmagic',
-				settingAutoTemplateSettings.key,
-				foundry.utils.mergeObject(
-					settingAutoTemplateSettings.config,
-					{
-						default: templates.constructor.defaultConfiguration,
-					},
-					true,
-					true
-				)
-			);
+			});
 		}
 
 		game.settings.register('tokenmagic', 'autoTemplateEnabled', {
@@ -196,16 +151,6 @@ export class TokenMagicSettings extends FormApplication {
 			default: DataVersion.ARCHAIC,
 			type: String,
 		});
-
-		foundry.applications.handlebars.loadTemplates([
-			'modules/tokenmagic/templates/settings/settings.html',
-			'modules/tokenmagic/templates/settings/dnd5e/categories.html',
-			'modules/tokenmagic/templates/settings/dnd5e/overrides.html',
-			'modules/tokenmagic/templates/settings/pf2e/categories.html',
-			'modules/tokenmagic/templates/settings/pf2e/overrides.html',
-			'modules/tokenmagic/templates/settings/TheWitcherTRPG/categories.html',
-			'modules/tokenmagic/templates/settings/TheWitcherTRPG/overrides.html',
-		]);
 	}
 
 	static configureAutoTemplate(enabled = false) {
@@ -213,98 +158,25 @@ export class TokenMagicSettings extends FormApplication {
 	}
 
 	static getSystemTemplates() {
+		if (this._autoTemplate) return this._autoTemplate;
+
+		const cls = this.getSystemTemplateClass();
+		this._autoTemplate = cls ? new cls() : null;
+
+		return this._autoTemplate;
+	}
+
+	static getSystemTemplateClass() {
 		switch (game.system.id) {
 			case 'dnd5e':
-				return dnd5eTemplates;
+				return AutoTemplateDND5E;
 			case 'pf2e':
-				return pf2eTemplates;
+				return AutoTemplatePF2E;
 			case 'TheWitcherTRPG':
-				return witcherTemplates;
+				return AutoTemplateTheWitcherTRPG;
 			default:
 				return null;
 		}
-	}
-
-	getSettingsData() {
-		let settingsData = {
-			autoTemplateEnable: game.settings.get('tokenmagic', 'autoTemplateEnabled'),
-		};
-		if (TokenMagicSettings.getSystemTemplates()) {
-			settingsData['autoTemplateSettings'] = game.settings.get('tokenmagic', 'autoTemplateSettings');
-		}
-		return settingsData;
-	}
-
-	/** @override */
-	getData() {
-		let data = super.getData();
-		data.hasAutoTemplates = false;
-		data.emptyPreset = emptyPreset;
-		const templates = TokenMagicSettings.getSystemTemplates();
-		if (templates) {
-			foundry.utils.mergeObject(data, templates.getData());
-		}
-
-		data.presets = Magic.getPresets(PresetsLibrary.TEMPLATE).sort(function (a, b) {
-			if (a.name < b.name) return -1;
-			if (a.name > b.name) return 1;
-			return 0;
-		});
-		data.system = { id: game.system.id, title: game.system.title };
-		data.settings = this.getSettingsData();
-		data.submitText = game.i18n.localize('TMFX.save');
-		return data;
-	}
-
-	/** @override */
-	async _updateObject(_, formData) {
-		const data = expandObject(formData);
-		for (let [key, value] of Object.entries(data)) {
-			if (key === 'autoTemplateSettings' && value.overrides) {
-				const compacted = {};
-				Object.values(value.overrides).forEach((val, idx) => (compacted[idx] = val));
-				value.overrides = compacted;
-			}
-			await game.settings.set('tokenmagic', key, value);
-		}
-	}
-
-	/** @override */
-	activateListeners(html) {
-		super.activateListeners(html);
-
-		html.find('button.add-override').click(this._onAddOverride.bind(this));
-		html.find('button.remove-override').click(this._onRemoveOverride.bind(this));
-	}
-
-	async _onAddOverride(event) {
-		event.preventDefault();
-		let idx = 0;
-		const entries = event.target.closest('div.tab').querySelectorAll('div.override-entry');
-		const last = entries[entries.length - 1];
-		if (last) {
-			idx = last.dataset.idx + 1;
-		}
-		let updateData = {};
-		updateData[`autoTemplateSettings.overrides.${idx}.target`] = '';
-		updateData[`autoTemplateSettings.overrides.${idx}.opacity`] = defaultOpacity;
-		updateData[`autoTemplateSettings.overrides.${idx}.tint`] = null;
-		updateData[`autoTemplateSettings.overrides.${idx}.preset`] = emptyPreset;
-		updateData[`autoTemplateSettings.overrides.${idx}.texture`] = null;
-		await this._onSubmit(event, { updateData: updateData, preventClose: true });
-		this.render();
-	}
-
-	async _onRemoveOverride(event) {
-		event.preventDefault();
-		let idx = event.target.dataset.idx;
-		const el = event.target.closest(`div[data-idx="${idx}"]`);
-		if (!el) {
-			return true;
-		}
-		el.remove();
-		await this._onSubmit(event, { preventClose: true });
-		this.render();
 	}
 }
 

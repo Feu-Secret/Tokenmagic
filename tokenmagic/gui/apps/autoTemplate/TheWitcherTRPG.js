@@ -1,4 +1,4 @@
-import { defaultOpacity, emptyPreset } from '../constants.js';
+import { defaultOpacity, emptyPreset } from '../../../module/constants.js';
 
 export class AutoTemplateTheWitcherTRPG {
 	static get defaultConfiguration() {
@@ -83,7 +83,6 @@ export class AutoTemplateTheWitcherTRPG {
 
 	getData() {
 		return {
-			hasAutoTemplates: true,
 			meleeSkills: CONFIG.WITCHER.meleeSkills,
 			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
 		};
@@ -150,5 +149,3 @@ function fromCategories(categories = {}, templateData) {
 	);
 	return true;
 }
-
-export const witcherTemplates = new AutoTemplateTheWitcherTRPG();

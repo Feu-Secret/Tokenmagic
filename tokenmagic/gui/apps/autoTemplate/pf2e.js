@@ -1,4 +1,4 @@
-import { defaultOpacity, emptyPreset } from '../constants.js';
+import { defaultOpacity, emptyPreset } from '../../../module/constants.js';
 
 export class AutoTemplatePF2E {
 	static get defaultConfiguration() {
@@ -131,7 +131,6 @@ export class AutoTemplatePF2E {
 
 	getData() {
 		return {
-			hasAutoTemplates: true,
 			dmgTypes: CONFIG.PF2E.damageTraits,
 			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
 		};
@@ -207,5 +206,3 @@ function fromCategories(categories = {}, origin, template) {
 	);
 	return true;
 }
-
-export const pf2eTemplates = new AutoTemplatePF2E();
