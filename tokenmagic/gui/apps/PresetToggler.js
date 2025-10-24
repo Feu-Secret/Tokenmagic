@@ -1,20 +1,17 @@
+import { PresetsLibrary } from '../../fx/presets/defaultpresets';
+
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
-export function activatePresetToggler(presets) {
+export function activatePresetToggler() {
 	const activeInstance = foundry.applications.instances.get(PresetToggler.DEFAULT_OPTIONS.id);
 	if (activeInstance) {
 		activeInstance.close();
 		return;
 	}
-	new PresetToggler(presets).render(true);
+	new PresetToggler().render(true);
 }
 
 class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
-	constructor(presets) {
-		super({});
-		this._presets = presets;
-	}
-
 	/** @override */
 	static DEFAULT_OPTIONS = {
 		id: 'tmfx-toggler',
@@ -27,6 +24,7 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 			clear: PresetToggler._onClearAllPresets,
 			toggleActiveOnly: PresetToggler._onToggleActiveOnly,
 			clickControl: PresetToggler._onExecuteControlMacro,
+			toggleTemplates: PresetToggler._onToggleTemplateDisplay,
 		},
 	};
 
@@ -57,6 +55,7 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	async _prepareHeaderContext(context, options) {
 		context.activeOnly = this._activeOnly;
+		context.templates = this._templates;
 		context.searchQuery = this._searchQuery ?? '';
 
 		// Provide opportunity for 3rd party modules to insert additional controls
@@ -69,7 +68,7 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 	async _preparePresetContext(context, options) {
 		const controlled = TokenMagic.getControlledPlaceables();
 
-		let presets = this._presets ?? TokenMagic.getPresets();
+		let presets = TokenMagic.getPresets(this._templates ? PresetsLibrary.TEMPLATE : PresetsLibrary.MAIN);
 		if (this._searchQuery?.trim()) {
 			const terms = this._searchQuery
 				.split(' ')
@@ -88,6 +87,7 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 				name: p.name,
 				id: p.params[0].filterId,
 				active: controlled.some((c) => TokenMagic.hasFilterId(c, p.params[0].filterId)),
+				texture: p.defaultTexture,
 			};
 		});
 		if (this._activeOnly) presets = presets.filter((p) => p.active);
@@ -124,21 +124,35 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 		if (!controlled.length) return;
 
 		const isActive = controlled.some((c) => TokenMagic.hasFilterId(c, filterId));
+		const presetQuery = {
+			name: element.dataset.name,
+			library: this._templates ? PresetsLibrary.TEMPLATE : PresetsLibrary.MAIN,
+		};
+		const texture = element.dataset.texture;
 
 		if (isActive) {
-			const filterIds = new Set(TokenMagic.getPreset(element.dataset.name).map((p) => p.filterId));
+			const filterIds = new Set(TokenMagic.getPreset(presetQuery).map((p) => p.filterId));
 
 			for (const placeable of controlled) {
 				for (const filterId of filterIds) {
 					if (TokenMagic.hasFilterId(placeable, filterId)) {
 						await TokenMagic.deleteFilters(placeable, filterId);
+						if (
+							placeable.document.documentName === 'MeasuredTemplate' &&
+							!placeable.document.flags['tokenmagic']?.filters
+						) {
+							await placeable.document.update({ ['-=texture']: null });
+						}
 					}
 				}
 			}
 		} else {
-			const preset = TokenMagic.getPreset(element.dataset.name);
+			const preset = TokenMagic.getPreset(presetQuery);
 			for (const placeable of controlled) {
 				if (!TokenMagic.hasFilterId(placeable, filterId)) {
+					if (texture && placeable.document.documentName === 'MeasuredTemplate') {
+						await placeable.document.update({ texture });
+					}
 					await TokenMagic.addUpdateFilters(placeable, preset);
 				}
 			}
@@ -154,6 +168,11 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static _onToggleActiveOnly(event, element) {
 		this._activeOnly = !this._activeOnly;
+		this.render(true);
+	}
+
+	static _onToggleTemplateDisplay(event, element) {
+		this._templates = !this._templates;
 		this.render(true);
 	}
 

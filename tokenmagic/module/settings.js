@@ -194,29 +194,26 @@ Hooks.once('init', () => {
 	TokenMagicSettings.configureAutoTemplate(game.settings.get('tokenmagic', 'autoTemplateEnabled'));
 
 	const wmtdUpdate = async function (wrapped, ...args) {
-		const [document] = args;
+		const [update] = args;
 		let preset, hasPresetData;
 
-		const tex = document.texture ?? '';
-		const hasTexture = !!document.texture;
-		const opt = document.flags?.tokenmagic?.options ?? null;
+		const tex = update.texture ?? '';
+		const hasTexture = !!update.texture;
+		const opt = update.flags?.tokenmagic?.options ?? null;
 		if (!opt) {
-			preset = document['flags.tokenmagic.templateData.preset'];
+			preset = update['flags.tokenmagic.templateData.preset'];
 		}
 		hasPresetData = !!preset;
 
-		//const hasOpt = data["flags.tokenmagic"]?.options ?? null;
-
 		if (hasTexture) {
-			document.texture = fixPath(document.texture);
+			update.texture = fixPath(update.texture);
 		}
 
 		if (opt == null) {
 			if (hasPresetData && preset !== emptyPreset) {
 				let defaultTexture = Magic._getPresetTemplateDefaultTexture(preset);
 				if (!(defaultTexture == null)) {
-					if (tex === '' || tex.startsWith('modules/tokenmagic/fx/assets/templates/'))
-						document.texture = defaultTexture;
+					if (tex === '' || tex.startsWith('modules/tokenmagic/fx/assets/templates/')) update.texture = defaultTexture;
 				}
 			} else if (
 				hasTexture &&

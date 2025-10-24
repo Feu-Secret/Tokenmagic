@@ -242,7 +242,7 @@ export function fixPath(path) {
 }
 
 export function getControlledPlaceables() {
-	const authorizedLayers = [canvas.tokens, canvas.tiles, canvas.drawings, canvas.regions];
+	const authorizedLayers = [canvas.tokens, canvas.tiles, canvas.drawings, canvas.regions, canvas.templates];
 	if (authorizedLayers.some((layer) => layer === canvas.activeLayer)) {
 		return canvas.activeLayer.placeables.filter((p) => p.controlled === true) || [];
 	} else return [];
@@ -1928,6 +1928,9 @@ Hooks.on('updateMeasuredTemplate', (document, options) => {
 		if (!placeable.loadingRequest) {
 			Magic._updateFilters(document, options, PlaceableType.TEMPLATE);
 			Magic._updateTemplateData(document, options, PlaceableType.TEMPLATE);
+		}
+		if ('-=texture' in options) {
+			document.object?.draw();
 		}
 	}
 });

@@ -3,6 +3,7 @@
     <div class="controls">
         <a data-tooltip="Clear all presets." data-action="clear"><i class="fa-solid fa-broom-wide"></i></a>
         <a class="{{#if activeOnly}}active{{/if}}" data-tooltip="Display only active presets." data-action="toggleActiveOnly"><i class="fa-solid fa-power-off"></i></a>
+        <a class="{{#if templates}}active{{/if}}" data-tooltip="Display template presets." data-action="toggleTemplates"><i class="fa-fw fa-solid fa-ruler-combined"></i></a>
         {{#each controls as |control|}}
         <a data-tooltip="{{control.tooltip}}" data-action="controlClick" data-uuid="{{control.uuid}}"><i class="{{control.icon}}"></i></a>
         {{/each}}

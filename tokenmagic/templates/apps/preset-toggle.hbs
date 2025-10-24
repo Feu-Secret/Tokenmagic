@@ -1,7 +1,7 @@
 <section>
     <div class="presets">
         {{#each presets as |preset|}}
-            <div class="preset{{#if preset.active}} active{{/if}}" data-action="toggle" data-name="{{preset.name}}" data-id="{{preset.id}}">
+            <div class="preset{{#if preset.active}} active{{/if}}" data-action="toggle" data-name="{{preset.name}}" data-id="{{preset.id}}" data-texture="{{preset.texture}}">
                 <span class="name">{{preset.name}}</span>
             </div>
         {{/each}}
