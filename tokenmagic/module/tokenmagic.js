@@ -2011,6 +2011,10 @@ Hooks.on('preUpdateMeasuredTemplate', async (document, options) => {
 			}
 		} else await measuredTemplateInstance.TMFXdeleteFilters();
 	}
+
+	if (options.flags?.tokenmagic?.hasOwnProperty('-=filters')) {
+		options['-=texture'] = null;
+	}
 });
 
 /* -------------------------------------------- */
