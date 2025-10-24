@@ -1,6 +1,19 @@
 import { defaultOpacity, emptyPreset } from '../../../module/constants.js';
+import { TemplateSettings } from './TemplateSettings.js';
 
-export class AutoTemplateTheWitcherTRPG {
+export class AutoTemplateTheWitcherTRPG extends TemplateSettings {
+	constructor() {
+		super();
+		this._enabled = false;
+	}
+
+	/** @override */
+	static PARTS = {
+		tabs: { template: 'templates/generic/tab-navigation.hbs' },
+		categories: { template: 'modules/tokenmagic/templates/settings/generic/categories.hbs' },
+		overrides: { template: 'modules/tokenmagic/templates/settings/generic/overrides.hbs' },
+	};
+
 	static get defaultConfiguration() {
 		const defaultConfig = {
 			categories: {},
@@ -68,10 +81,6 @@ export class AutoTemplateTheWitcherTRPG {
 		return defaultConfig;
 	}
 
-	constructor() {
-		this._enabled = false;
-	}
-
 	get enabled() {
 		return this._enabled;
 	}
@@ -81,11 +90,24 @@ export class AutoTemplateTheWitcherTRPG {
 		this._enabled = enabled;
 	}
 
-	getData() {
-		return {
-			meleeSkills: CONFIG.WITCHER.meleeSkills,
-			templateTypes: CONST.MEASURED_TEMPLATE_TYPES,
-		};
+	/** @override */
+	async _preparePartContext(partId, context, options) {
+		await super._preparePartContext(partId, context, options);
+		switch (partId) {
+			case 'categories':
+				this._prepareCategoriesContext(context, options);
+				break;
+		}
+		return context;
+	}
+
+	_prepareCategoriesContext(context, options) {
+		const dmgTypes = {};
+		for (const type of CONFIG.WITCHER.meleeSkills.sort((k1, k2) => k1.localeCompare(k2))) {
+			dmgTypes[type] = { label: type.charAt(0).toUpperCase() + type.slice(1) };
+		}
+		context.dmgTypes = dmgTypes;
+		context.templateTypes = CONST.MEASURED_TEMPLATE_TYPES;
 	}
 
 	preCreateMeasuredTemplate(template) {
