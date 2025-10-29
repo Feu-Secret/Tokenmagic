@@ -1,53 +1,57 @@
 import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast, isZOrderConfig } from '../tokenmagic.js';
-import { emptyPreset, autoMinRank } from '../constants.js';
+import { autoMinRank } from '../constants.js';
+import { callAsyncHook } from '../utilities.js';
 
 export var gMaxRank = autoMinRank;
 
-foundry.canvas.placeables.PlaceableObject.prototype.TMFXaddFilters = async function (paramsArray, replace = false) {
+const { PlaceableObject } = foundry.canvas.placeables;
+
+PlaceableObject.prototype.TMFXaddFilters = async function (paramsArray, replace = false) {
 	await Magic.addFilters(this, paramsArray, replace);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype.TMFXupdateFilters = async function (paramsArray) {
+PlaceableObject.prototype.TMFXupdateFilters = async function (paramsArray) {
 	await Magic.updateFiltersByPlaceable(this, paramsArray);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype.TMFXaddUpdateFilters = async function (paramsArray) {
+PlaceableObject.prototype.TMFXaddUpdateFilters = async function (paramsArray) {
 	await Magic.addUpdateFilters(this, paramsArray);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype.TMFXdeleteFilters = async function (filterId = null) {
+PlaceableObject.prototype.TMFXdeleteFilters = async function (filterId = null) {
 	await Magic.deleteFilters(this, filterId);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype.TMFXhasFilterType = function (filterType) {
+PlaceableObject.prototype.TMFXhasFilterType = function (filterType) {
 	return Magic.hasFilterType(this, filterType);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype.TMFXhasFilterId = function (filterId) {
+PlaceableObject.prototype.TMFXhasFilterId = function (filterId) {
 	return Magic.hasFilterId(this, filterId);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXsetFlag = async function (flag) {
+PlaceableObject.prototype._TMFXsetFlag = async function (flag) {
+	await callAsyncHook('tokenmagic._TMFXsetFlag', flag);
 	if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_FLAG);
 	else await this.document.setFlag('tokenmagic', 'filters', flag);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXsetAnimeFlag = async function (flag) {
+PlaceableObject.prototype._TMFXsetAnimeFlag = async function (flag) {
 	if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_ANIME_FLAG);
 	else await this.document.setFlag('tokenmagic', 'animeInfo', flag);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXunsetFlag = async function () {
+PlaceableObject.prototype._TMFXunsetFlag = async function () {
 	if (mustBroadCast()) broadcast(this, null, SocketAction.SET_FLAG);
 	else await this.document.unsetFlag('tokenmagic', 'filters');
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXunsetAnimeFlag = async function () {
+PlaceableObject.prototype._TMFXunsetAnimeFlag = async function () {
 	if (mustBroadCast()) broadcast(this, null, SocketAction.SET_ANIME_FLAG);
 	else await this.document.unsetFlag('tokenmagic', 'animeInfo');
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetSprite = function () {
+PlaceableObject.prototype._TMFXgetSprite = function () {
 	const type = this._TMFXgetPlaceableType();
 	switch (type) {
 		case PlaceableType.TOKEN:
@@ -65,7 +69,7 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetSprite = function ()
 	}
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetPlaceablePadding = function () {
+PlaceableObject.prototype._TMFXgetPlaceablePadding = function () {
 	// get the placeable padding, by taking into account all filters and options
 	let accPadding = 0;
 	const filters = this._TMFXgetSprite().filters;
@@ -82,7 +86,7 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetPlaceablePadding = f
 	return accPadding;
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXcheckSprite = function () {
+PlaceableObject.prototype._TMFXcheckSprite = function () {
 	const type = this._TMFXgetPlaceableType();
 	switch (type) {
 		case PlaceableType.TOKEN:
@@ -99,7 +103,7 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXcheckSprite = function 
 	}
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetMaxFilterRank = function () {
+PlaceableObject.prototype._TMFXgetMaxFilterRank = function () {
 	const sprite = this._TMFXgetSprite();
 	if (sprite == null) {
 		return gMaxRank++;
@@ -113,7 +117,7 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetMaxFilterRank = func
 	}
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
+PlaceableObject.prototype._TMFXsetRawFilters = function (filters) {
 	function insertFilter(filters) {
 		function filterZOrderCompare(a, b) {
 			if (a.zOrder < b.zOrder) return -1;
@@ -160,11 +164,11 @@ foundry.canvas.placeables.PlaceableObject.prototype._TMFXsetRawFilters = functio
 	return true;
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXunsetRawFilters = function () {
+PlaceableObject.prototype._TMFXunsetRawFilters = function () {
 	return this._TMFXsetRawFilters(null);
 };
 
-foundry.canvas.placeables.PlaceableObject.prototype._TMFXgetPlaceableType = function () {
+PlaceableObject.prototype._TMFXgetPlaceableType = function () {
 	if (
 		[
 			PlaceableType.TOKEN,

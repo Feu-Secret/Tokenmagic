@@ -312,8 +312,8 @@ function randomizeParams(params) {
 			const stepsInRange = (max - min + (Number.isInteger(step) ? 1 : 0)) / step;
 			rVal = Math.floor(Math.random() * stepsInRange) * step + min;
 		}
-		setProperty(params, param, rVal);
-		if (opts.hasOwnProperty('link')) setProperty(params, opts.link, rVal);
+		foundry.utils.setProperty(params, param, rVal);
+		if (opts.hasOwnProperty('link')) foundry.utils.setProperty(params, opts.link, rVal);
 	}
 }
 

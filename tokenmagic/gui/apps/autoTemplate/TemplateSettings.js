@@ -84,14 +84,6 @@ export class TemplateSettings extends HandlebarsApplicationMixin(ApplicationV2) 
 		}
 	}
 
-	/** @override */
-	activateListeners(html) {
-		super.activateListeners(html);
-
-		html.find('button.add-override').click(this._onAddOverride.bind(this));
-		html.find('button.remove-override').click(this._onRemoveOverride.bind(this));
-	}
-
 	static async _onAddOverride(event) {
 		const autoTemplateSettings = await game.settings.get('tokenmagic', 'autoTemplateSettings');
 
