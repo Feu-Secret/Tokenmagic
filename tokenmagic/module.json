@@ -90,6 +90,12 @@
             "flags": {}
         },
         {
+            "lang": "cs",
+            "name": "Čeština",
+            "path": "lang/cs.json",
+            "flags": {}
+        },
+        {
             "lang": "ru",
             "name": "Russian",
             "path": "lang/ru.json",
