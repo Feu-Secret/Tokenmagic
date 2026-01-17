@@ -2,7 +2,7 @@ import { PresetsLibrary } from '../../fx/presets/defaultpresets';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
-export function activatePresetToggler() {
+export function presetToggler() {
 	const activeInstance = foundry.applications.instances.get(PresetToggler.DEFAULT_OPTIONS.id);
 	if (activeInstance) {
 		activeInstance.close();

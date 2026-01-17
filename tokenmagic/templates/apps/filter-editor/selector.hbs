@@ -1,0 +1,11 @@
+<div>
+    <ol class="filter-list plain flexcol">
+    {{#each filters}}
+    <li class="filter flexrow" data-id="{{id}}" data-type="{{type}}" draggable="true">
+        <img class="thumbnail" src="{{thumbnail}}" loading="lazy">
+        <a class="name ellipsis" data-action="edit" >{{label}} <span class="type">[ {{type}} ]</span></a>
+        <a class="delete" data-action="delete"><i class="fa-solid fa-x"></i></a>
+    </li>
+    {{/each}}
+    </ol>
+</div>

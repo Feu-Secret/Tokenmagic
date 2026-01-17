@@ -1,0 +1,22 @@
+<div class="form-group">    
+    <label>{{label}} {{#if animatable}}<a class="animate{{#if animated}} active{{/if}}" data-action="animate" data-param="{{name}}"><i class="fa-solid fa-camera-movie"></i></a>{{/if}}</label>
+    <div class="form-fields">
+        {{#if text}}
+        <input type="text" value="{{value}}" name="{{name}}" {{#if animated}}disabled{{/if}}>
+        {{else if color}}
+        <color-picker name="{{name}}" value="{{value}}" {{#if animated}}disabled{{/if}}></color-picker>
+        {{else if file}}
+        <file-picker name="{{name}}" type="{{fileType}}" value="{{value}}" {{#if animated}}disabled{{/if}}></file-picker>
+        {{else if number}}
+        <input type="number" name="{{name}}" step="any" value="{{value}}" {{#if animated}}disabled{{/if}}/>
+        {{else if boolean}}
+        <input type="checkbox" name="{{name}}" {{checked value}} {{#if animated}}disabled{{/if}}/>
+        {{else if range}}
+        <range-picker name="{{name}}" value="{{value}}" min="{{min}}" max="{{max}}" step="{{step}}" {{#if animated}}disabled{{/if}}></range-picker>
+        {{else if select}}
+        <select name="{{name}}" {{#if animated}}disabled{{/if}}>
+            {{selectOptions options selected=value}}
+        </select>
+        {{/if}}
+    </div>
+</div>
