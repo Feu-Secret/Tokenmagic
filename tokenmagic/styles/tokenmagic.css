@@ -102,7 +102,9 @@
 	border-radius: 6px;
     padding: 3px;
     box-shadow: 0 0 3px dimgray;
-    border: 1px solid saddlebrown;
+ 	border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: darkgray;
 }
 
 .tokenmagic.selector .filter img {
@@ -112,6 +114,7 @@
     object-fit: cover;
     object-position: 50% 0;
     border: none;
+	border-radius: 5px;
  }
 
 .tokenmagic.selector .filter .name {
@@ -124,18 +127,30 @@
 	margin-left: 5px;
  }
 
- .tokenmagic.selector .filter .delete {
+.tokenmagic.selector .filter .toggle {
+	flex: 0 0 5px;
+ }
+
+ .tokenmagic.selector .filter .toggle.active {
+	color: chartreuse;
+ }
+
+.tokenmagic.selector .filter .delete {
 	flex: 0 0 5px;
     margin-right: 5px;
 	color: orangered;
- }
+}
 
- .tokenmagic.editor .header, .tokenmagic.animate .header {
+.tokenmagic.editor {
+	border-color: crimson;
+}
+
+.tokenmagic.editor .header, .tokenmagic.animate .header {
 	text-align: center;
     margin-top: -15px;
     border: 1px solid var(--color-border);
     font-size: x-large;
- }
+}
 
 @-webkit-keyframes hue {
   from {
@@ -144,6 +159,10 @@
   to {
     -webkit-filter: hue-rotate(-360deg);
   }
+}
+
+.tokenmagic.animate {
+	border-color: greenyellow;
 }
 
 .tokenmagic.editor .animate {

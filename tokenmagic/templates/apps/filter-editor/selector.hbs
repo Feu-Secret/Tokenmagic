@@ -4,7 +4,8 @@
     <li class="filter flexrow" data-id="{{id}}" data-type="{{type}}" draggable="true">
         <img class="thumbnail" src="{{thumbnail}}" loading="lazy">
         <a class="name ellipsis" data-action="edit" >{{label}} <span class="type">[ {{type}} ]</span></a>
-        <a class="delete" data-action="delete"><i class="fa-solid fa-x"></i></a>
+        <a class="toggle{{#if enabled}} active{{/if}}" data-action="toggle"><i class="fa-sharp fa-solid fa-power-off"></i></a>
+        <a class="delete" data-action="delete"><i class="fa-solid fa-trash"></i></a>
     </li>
     {{/each}}
     </ol>
