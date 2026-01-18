@@ -74,7 +74,7 @@ export class FilterXFire extends CustomFilter {
 	}
 
 	set color(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color);
+		new Color(value).applyRGB(this.uniforms.color);
 	}
 
 	get color1() {
@@ -82,7 +82,7 @@ export class FilterXFire extends CustomFilter {
 	}
 
 	set color1(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color1);
+		new Color(value).applyRGB(this.uniforms.color1);
 	}
 
 	get color2() {
@@ -90,7 +90,7 @@ export class FilterXFire extends CustomFilter {
 	}
 
 	set color2(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color2);
+		new Color(value).applyRGB(this.uniforms.color2);
 	}
 
 	get color3() {
@@ -98,7 +98,7 @@ export class FilterXFire extends CustomFilter {
 	}
 
 	set color3(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color3);
+		new Color(value).applyRGB(this.uniforms.color3);
 	}
 
 	get color4() {
@@ -106,7 +106,7 @@ export class FilterXFire extends CustomFilter {
 	}
 
 	set color4(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color4);
+		new Color(value).applyRGB(this.uniforms.color4);
 	}
 
 	get amplitude() {

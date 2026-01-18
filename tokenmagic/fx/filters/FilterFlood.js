@@ -9,7 +9,7 @@ export class FilterFlood extends CustomFilter {
 		let { time, scale, glint, billowy, color, shiftX, shiftY, tintIntensity } = Object.assign(
 			{},
 			FilterFlood.defaults,
-			params
+			params,
 		);
 
 		// using specific vertex shader and fragment shader
@@ -51,7 +51,7 @@ export class FilterFlood extends CustomFilter {
 	}
 
 	set color(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.waterColor);
+		new Color(value).applyRGB(this.uniforms.waterColor);
 	}
 
 	get scale() {

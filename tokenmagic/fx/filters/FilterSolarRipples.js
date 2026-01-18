@@ -9,7 +9,7 @@ export class FilterSolarRipples extends CustomFilter {
 		let { time, color, amplitude, intensity, alphaDiscard, _octaves } = Object.assign(
 			{},
 			FilterSolarRipples.defaults,
-			params
+			params,
 		);
 
 		if (typeof _octaves !== 'number') _octaves = FilterSolarRipples.defaults._octave;
@@ -50,7 +50,7 @@ export class FilterSolarRipples extends CustomFilter {
 	}
 
 	set color(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color);
+		new Color(value).applyRGB(this.uniforms.color);
 	}
 
 	get amplitude() {

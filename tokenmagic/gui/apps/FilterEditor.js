@@ -1,12 +1,13 @@
-import { UI_CONTROLS } from './data/fxControls';
+import { ANIM_PARAM_CONTROLS, FILTER_PARAM_CONTROLS } from './data/fxControls.js';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 const { deepClone, getType, isEmpty, mergeObject } = foundry.utils;
 
 // TODO
 // - prettify
-// - val1, val2 change controls between range, number, color depending on the param
 // - add activate/de-activate to selector (turn effect entry grayish if not active)
+// - filterId editing of some kind?
+// - certain params such as active/enabled/filterId are common between all filters/animates, bake them into hbs files
 
 export function filterEditor() {
 	try {
@@ -31,6 +32,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		actions: {
 			edit: FilterSelector._onEdit,
 			delete: FilterSelector._onDelete,
+			toggle: FilterSelector._onToggle,
 		},
 		position: {
 			width: 450,
@@ -50,13 +52,14 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		let filters = this._placeable.document.getFlag('tokenmagic', 'filters') ?? [];
 		filters = filters
 			.map((filter) => {
-				const { filterId, filterInternalId, filterType, rank } = filter.tmFilters.tmParams;
+				const { filterId, filterInternalId, filterType, rank, enabled } = filter.tmFilters.tmParams;
 				return {
 					id: filterId,
 					type: filterType,
 					label: filterType.charAt(0).toUpperCase() + filterType.slice(1),
 					rank,
 					thumbnail: 'modules/tokenmagic/gui/macros/images/19 - T01 - Fire.webp',
+					enabled,
 				};
 			})
 			.sort((f1, f2) => f1.rank - f2.rank);
@@ -65,11 +68,19 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	static async _onEdit(event) {
-		console.log(event.target.closest('.filter').dataset);
-		const { id, type } = event.target.closest('.filter').dataset;
-
 		try {
-			new FilterEditor(this._placeable, id, type).render(true);
+			const filterEl = event.target.closest('.filter');
+			const { id, type } = filterEl.dataset;
+			const appId = `tmfx-filter-editor-${this._placeable.id}-${id}-${type}`;
+			const activeInstance = foundry.applications.instances.get(appId);
+			if (activeInstance) activeInstance.close();
+			else {
+				const { left, bottom, width } = filterEl.getBoundingClientRect();
+				new FilterEditor(
+					{ placeable: this._placeable, filterId: id, filterType: type },
+					{ id: appId, position: { left, top: bottom, width } },
+				).render(true);
+			}
 		} catch (e) {
 			console.log(e);
 		}
@@ -82,11 +93,19 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			this.render(true);
 		}
 	}
+
+	static async _onToggle(event) {
+		const { id, type } = event.target.closest('.filter').dataset;
+		await TokenMagic.updateFiltersByPlaceable(this._placeable, [
+			{ filterId: id, filterType: type, enabled: !event.target.closest('.toggle').classList.contains('active') },
+		]);
+		this.render(true);
+	}
 }
 
 class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
-	constructor(placeable, filterId, filterType) {
-		super({ id: `tmfx-filter-editor-${placeable.id}-${filterId}-${filterType}` });
+	constructor({ placeable, filterId, filterType } = {}, options) {
+		super(options);
 		this._placeable = placeable;
 		this._filterId = filterId;
 		this._filterType = filterType;
@@ -117,12 +136,11 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 	/** @override */
 	static PARTS = {
 		header: {
-			template: `modules/tokenmagic/templates/apps/filter-editor/editor-header.hbs`,
+			template: `modules/tokenmagic/templates/apps/filter-editor/header.hbs`,
 		},
-		content: {
-			template: `modules/tokenmagic/templates/apps/filter-editor/editor-content.hbs`,
+		filter: {
+			template: `modules/tokenmagic/templates/apps/filter-editor/filter.hbs`,
 		},
-		footer: { template: 'templates/generic/form-footer.hbs' },
 	};
 
 	/** @override */
@@ -132,20 +150,14 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			case 'header':
 				context.title = this._filterType.charAt(0).toUpperCase() + this._filterType.slice(1);
 				break;
-			case 'content':
-				await this._prepareContentContext(context, options);
-				break;
-			case 'footer':
-				// context.buttons = [
-				// 	{ type: 'button', icon: 'fa-solid fa-floppy-disk', label: 'SETTINGS.Save', action: 'save' },
-				// 	{ type: 'button', icon: 'fa-solid fa-floppy-disk', label: 'CONTROLS.CommonDelete', action: 'delete' },
-				// ];
+			case 'filter':
+				await this._prepareFilterContext(context, options);
 				break;
 		}
 		return context;
 	}
 
-	async _prepareContentContext(context, options) {
+	async _prepareFilterContext(context, options) {
 		this._readParams();
 		// Cache partials
 		await foundry.applications.handlebars.getTemplate(
@@ -153,12 +165,12 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			'tmfx-control',
 		);
 
-		this._paramToControl = {};
+		this._paramControls = {};
 		const controls = [];
 		for (const [param, value] of Object.entries(this._params)) {
 			const control = this.#genControl(param, value);
 			controls.push(control);
-			this._paramToControl[param] = control;
+			this._paramControls[param] = control;
 		}
 
 		context.controls = controls;
@@ -186,20 +198,22 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			'filterType',
 			'filterId',
 			'animated',
+			'enabled',
 		].forEach((param) => delete this._params[param]);
 	}
 
 	#genControl(param, value) {
-		let control = UI_CONTROLS[this._filterType]?.[param] ?? UI_CONTROLS.common[param];
+		let control = FILTER_PARAM_CONTROLS[this._filterType]?.[param] ?? FILTER_PARAM_CONTROLS.common[param];
 		// If a predefined control does not exist lets deduce a generic one from the value
 		if (!control) {
 			const type = getType(value);
 			if (type === 'string') control = { type: 'text' };
 			else if (type === 'number') control = { type: 'number' };
+			else if (type === 'boolean') control = { type: 'boolean' };
 			else throw Error(`Unable to determine param (${param}) control type.`);
 		} else control = deepClone(control);
 
-		if (control.type === 'range' || control.type === 'number') {
+		if (control.type === 'range' || control.type === 'number' || control.type === 'color') {
 			control.animatable = true;
 			if (!isEmpty(this._animated[param]) && this._animated[param].active) control.animated = true;
 		}
@@ -214,23 +228,13 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		return control;
 	}
 
-	/** @override */
-	_attachPartListeners(partId, element, options) {
-		super._attachPartListeners(partId, element, options);
-		// switch (partId) {
-		// 	case 'header':
-		// 		element.querySelector('input[type="search"]').addEventListener('input', this._onSearch.bind(this));
-		// 		break;
-		// }
-	}
-
 	/**
 	 * Process form data
 	 */
 	static async _onSubmit(event, form, formData) {
 		const params = foundry.utils.expandObject(formData.object);
 		for (const [param, value] of Object.entries(params)) {
-			const control = this._paramToControl[param];
+			const control = this._paramControls[param];
 			if (control.type === 'color' && control.subtype === 'numeric') params[param] = Number(Color.fromString(value));
 		}
 
@@ -241,24 +245,31 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static async _onAnimate(event) {
 		const param = event.target.closest('a').dataset.param;
-		this._readParams();
-
-		new AnimationEditor({
-			placeable: this._placeable,
-			filterId: this._filterId,
-			filterType: this._filterType,
-			param,
-			control: this._paramToControl[param],
-			animParams: this._animated[param],
-			parentApp: this,
-		}).render(true);
+		const appId = `tmfx-animation-editor-${this._placeable.id}-${this._filterId}-${this._filterType}-${param}`;
+		const activeInstance = foundry.applications.instances.get(appId);
+		if (activeInstance) activeInstance.close();
+		else {
+			const formGroupEl = event.target.closest('.form-group');
+			const { left, bottom } = formGroupEl.getBoundingClientRect();
+			new AnimationEditor(
+				{
+					placeable: this._placeable,
+					filterId: this._filterId,
+					filterType: this._filterType,
+					param,
+					control: this._paramControls[param],
+					parentApp: this,
+				},
+				{ id: appId, position: { top: bottom, left } },
+			).render(true);
+		}
 	}
 }
 
 class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 	standardControls = ['active', 'loopDuration', 'val1', 'val2', 'loops', 'syncShift'];
 
-	keywordToControls = {
+	keywordControls = {
 		move: ['active', 'speed'],
 		cosOscillation: this.standardControls,
 		sinOscillation: this.standardControls,
@@ -277,28 +288,38 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		randomColorPerLoop: ['active', 'loopDuration', 'loops'],
 	};
 
-	CONTROLS = {
-		active: { type: 'boolean', value: true },
-		speed: { type: 'number', value: 0.0000025 },
-		loopDuration: { type: 'range', min: 0, max: 60000, step: 10, value: 3000 },
-		loops: { type: 'number', step: 1, min: 0, value: 0 },
-		wantInteger: { type: 'boolean', value: false },
-		chaosFactor: { type: 'range', min: 0, max: 1, step: 0.01, value: 0.25 },
-		syncShift: { type: 'range', min: 0, max: 1, step: 0.01, value: 0 },
-		val1: { type: 'number', value: 0 },
-		val2: { type: 'number', value: 0 },
-		clockwise: { type: 'boolean', value: true },
-	};
-
-	constructor({ placeable, filterId, filterType, param, control, animParams, parentApp } = {}) {
-		super({ id: `tmfx-animation-editor-${placeable.id}-${filterId}-${filterType}-${param}` });
+	constructor({ placeable, filterId, filterType, param, control, parentApp } = {}, options) {
+		super(options);
 		this._placeable = placeable;
 		this._filterId = filterId;
 		this._filterType = filterType;
 		this._param = param;
 		this._control = control;
-		this._animParams = deepClone(animParams) ?? this._getDefaultParams('move');
 		this._parentApp = parentApp;
+		this._initAnimParams();
+	}
+
+	_initAnimParams() {
+		const tmParams = this._placeable.document
+			.getFlag('tokenmagic', 'filters')
+			.find((f) => f.tmFilters.tmFilterId === this._filterId && f.tmFilters.tmFilterType === this._filterType)
+			.tmFilters.tmParams;
+		this._animParams = mergeObject(
+			{
+				animType: this._control.type === 'color' ? 'colorOscillation' : 'move',
+				val1: tmParams[this._param],
+				val2: tmParams[this._param],
+				active: true,
+				speed: 0.0000025,
+				loopDuration: 3000,
+				loops: 0,
+				wantInteger: false,
+				chaosFactor: 0.25,
+				syncShift: 0,
+				clockwise: true,
+			},
+			tmParams.animated?.[this._param] ?? {},
+		);
 	}
 
 	/** @override */
@@ -323,12 +344,11 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 	/** @override */
 	static PARTS = {
 		header: {
-			template: `modules/tokenmagic/templates/apps/filter-editor/editor-header.hbs`,
+			template: `modules/tokenmagic/templates/apps/filter-editor/header.hbs`,
 		},
-		content: {
+		animate: {
 			template: `modules/tokenmagic/templates/apps/filter-editor/animate.hbs`,
 		},
-		footer: { template: 'templates/generic/form-footer.hbs' },
 	};
 
 	/** @override */
@@ -338,27 +358,14 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			case 'header':
 				context.title = this._param.charAt(0).toUpperCase() + this._param.slice(1);
 				break;
-			case 'content':
-				await this._prepareContentContext(context, options);
-				break;
-			case 'footer':
-				// context.buttons = [
-				// 	{ type: 'button', icon: 'fa-solid fa-floppy-disk', label: 'CONTROLS.CommonDelete', action: 'delete' },
-				// ];
+			case 'animate':
+				await this._prepareAnimateContext(context, options);
 				break;
 		}
 		return context;
 	}
 
-	_getDefaultParams(animType) {
-		const params = { animType };
-		this.keywordToControls[animType].forEach((c) => {
-			params[c] = this.CONTROLS[c].value;
-		});
-		return params;
-	}
-
-	async _prepareContentContext(context, options) {
+	async _prepareAnimateContext(context, options) {
 		// Cache partials
 		await foundry.applications.handlebars.getTemplate(
 			`modules/tokenmagic/templates/apps/filter-editor/control.hbs`,
@@ -366,7 +373,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		);
 
 		const animOptions = {};
-		Object.keys(this.keywordToControls).forEach((k) => {
+		Object.keys(this.keywordControls).forEach((k) => {
 			animOptions[k] = k.charAt(0).toUpperCase() + k.slice(1);
 		});
 
@@ -380,10 +387,19 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 				value: this._animParams.animType,
 			},
 		];
-		this.keywordToControls[this._animParams.animType].forEach((param) => {
-			const control = deepClone(this.CONTROLS[param]);
-			if (param in this._animParams) control.value = this._animParams[param];
-			else control.value = this.CONTROLS[param].value;
+		this.keywordControls[this._animParams.animType].forEach((param) => {
+			let control;
+			if (param === 'val1' || param === 'val2') {
+				control = { ...this._control };
+				delete control.animatable;
+				delete control.animated;
+			} else {
+				control = deepClone(ANIM_PARAM_CONTROLS[param]);
+			}
+
+			if (control.type === 'color') control.value = new Color(this._animParams[param]).toString();
+			else control.value = this._animParams[param];
+
 			control.label = param.charAt(0).toUpperCase() + param.slice(1);
 			control.name = param;
 			control[control.type] = true;
@@ -394,16 +410,6 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		return context;
 	}
 
-	/** @override */
-	_attachPartListeners(partId, element, options) {
-		super._attachPartListeners(partId, element, options);
-		// switch (partId) {
-		// 	case 'header':
-		// 		element.querySelector('input[type="search"]').addEventListener('input', this._onSearch.bind(this));
-		// 		break;
-		// }
-	}
-
 	/**
 	 * Process form data
 	 */
@@ -411,13 +417,18 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		const params = foundry.utils.expandObject(formData.object);
 		if ('loops' in params && !params.loops) params.loops = null;
 
+		if (this._control.type === 'color') {
+			if (getType(params.val1) === 'string') params.val1 = Number(Color.fromString(params.val1));
+			if (getType(params.val2) === 'string') params.val2 = Number(Color.fromString(params.val2));
+		}
+
 		let renderParent = false;
 		if (params.active !== this._animParams.active) renderParent = true;
 
 		const render = params.animType !== this._animParams.animType;
 		mergeObject(this._animParams, params);
 		if (render) {
-			await this.render({ parts: ['content'] });
+			await this.render({ parts: ['animate'] });
 			this._onSubmitForm(this.options.form, event);
 			return;
 		}
@@ -427,7 +438,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		]);
 
 		if (renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
-			this._parentApp.render({ parts: ['content'] });
+			this._parentApp.render({ parts: ['filter'] });
 		}
 	}
 }

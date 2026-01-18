@@ -9,7 +9,7 @@ export class FilterWaves extends CustomFilter {
 		let { time, color, inward, frequency, strength, minIntensity, maxIntensity, anchorX, anchorY } = Object.assign(
 			{},
 			FilterWaves.defaults,
-			params
+			params,
 		);
 
 		// using specific vertex shader and fragment shader
@@ -52,7 +52,7 @@ export class FilterWaves extends CustomFilter {
 	}
 
 	set color(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color);
+		new Color(value).applyRGB(this.uniforms.color);
 	}
 
 	get inward() {

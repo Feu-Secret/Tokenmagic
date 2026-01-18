@@ -9,7 +9,7 @@ export class FilterFire extends CustomFilter {
 		let { time, color, amplitude, intensity, fireBlend, blend, anchorX, anchorY, alphaDiscard } = Object.assign(
 			{},
 			FilterFire.defaults,
-			params
+			params,
 		);
 
 		// using specific vertex shader and fragment shader
@@ -52,7 +52,7 @@ export class FilterFire extends CustomFilter {
 	}
 
 	set color(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color);
+		new Color(value).applyRGB(this.uniforms.color);
 	}
 
 	get amplitude() {

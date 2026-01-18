@@ -9,7 +9,7 @@ export class FilterLiquid extends CustomFilter {
 		let { time, color, scale, intensity, blend, spectral, alphaDiscard } = Object.assign(
 			{},
 			FilterLiquid.defaults,
-			params
+			params,
 		);
 
 		// using specific vertex shader and fragment shader
@@ -57,7 +57,7 @@ export class FilterLiquid extends CustomFilter {
 	}
 
 	set color(value) {
-		new PIXI.Color(value).toRgbArray(this.uniforms.color);
+		new Color(value).applyRGB(this.uniforms.color);
 	}
 
 	get intensity() {

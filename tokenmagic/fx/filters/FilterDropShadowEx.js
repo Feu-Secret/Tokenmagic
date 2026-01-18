@@ -57,7 +57,7 @@ export class FilterDropShadowEx extends CustomFilter {
 		const scale = this.targetPlaceable?.worldTransform.a ?? 1.0;
 		this._tintFilter.uniforms.shift.set(
 			this.distance * Math.cos(this.angle) * scale,
-			this.distance * Math.sin(this.angle) * scale
+			this.distance * Math.sin(this.angle) * scale,
 		);
 		this._pixelSize = Math.max(1.0, 1.0 * scale);
 	}
@@ -101,7 +101,7 @@ export class FilterDropShadowEx extends CustomFilter {
 		return PIXI.utils.rgb2hex(this._tintFilter.uniforms.color);
 	}
 	set color(value) {
-		new PIXI.Color(value).toRgbArray(this._tintFilter.uniforms.color);
+		new Color(value).applyRGB(this._tintFilter.uniforms.color);
 	}
 
 	get kernels() {
