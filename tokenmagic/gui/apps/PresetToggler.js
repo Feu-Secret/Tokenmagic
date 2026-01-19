@@ -1,4 +1,5 @@
 import { PresetsLibrary } from '../../fx/presets/defaultpresets';
+import { PlaceableType } from '../../module/constants';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
@@ -184,7 +185,8 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 	async _onFirstRender(context, options) {
 		await super._onFirstRender(context, options);
 		this._hooks = [];
-		for (const layer of ['Token', 'Tile', 'MeasuredTemplate', 'Drawing', 'Region']) {
+		for (const layer of Object.values(PlaceableType)) {
+			if (!layer) continue;
 			const hook = `control${layer}`;
 			const id = Hooks.on(hook, () => {
 				clearTimeout(this._controlHookTimeout);

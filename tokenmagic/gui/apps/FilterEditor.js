@@ -1,3 +1,4 @@
+import { PlaceableType } from '../../module/constants.js';
 import { ANIM_PARAM_CONTROLS, FILTER_PARAM_CONTROLS } from './data/fxControls.js';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
@@ -68,6 +69,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				};
 			})
 			.sort((f1, f2) => f1.rank - f2.rank);
+		this._filterCount = filters.length;
 
 		return { filters };
 	}
@@ -152,6 +154,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		this.render(true);
 	}
 
+	async _closeChildApps() {}
+
 	static async _onEdit(event) {
 		try {
 			const filterEl = event.target.closest('.filter');
@@ -172,10 +176,13 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	static async _onDelete(event) {
-		const filterId = event.target.closest('.filter').dataset.filterId;
-		if (filterId) {
-			await TokenMagic.deleteFilters(this._document, filterId);
-			this.render(true);
+		const { filterId, filterType } = event.target.closest('.filter').dataset;
+		if (filterId && filterType) {
+			await TokenMagic.deleteFilters(this._document, filterId, filterType);
+
+			const appId = `tmfx-filter-editor-${this._document.id}-${filterId}-${filterType}`;
+			const activeInstance = foundry.applications.instances.get(appId);
+			if (activeInstance) activeInstance.close();
 		}
 	}
 
@@ -185,6 +192,34 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			{ filterId, filterType, enabled: !event.target.closest('.toggle').classList.contains('active') },
 		]);
 		this.render(true);
+	}
+
+	/** @override */
+	async _onFirstRender(context, options) {
+		await super._onFirstRender(context, options);
+		this._hooks = [];
+		for (const layer of Object.values(PlaceableType)) {
+			if (!layer) continue;
+			const hook = `update${layer}`;
+			const id = Hooks.on(hook, (document, change, options, userId) => {
+				if (document.id !== this._document.id) return;
+				const tm = change.flags?.tokenmagic;
+				if (!tm) return;
+
+				if ('-=filters' in tm || tm.filters?.length !== this._filterCount) {
+					this.render(true);
+				}
+			});
+			this._hooks.push({ hook, id });
+		}
+	}
+
+	/** @override */
+	async close(options = {}) {
+		await super.close(options);
+		this._hooks?.forEach((h) => {
+			Hooks.off(h.hook, h.id);
+		});
 	}
 }
 
@@ -205,7 +240,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			contentClasses: ['standard-form'],
 		},
 		position: {
-			width: 400,
+			width: 444,
 		},
 		classes: ['tokenmagic', 'editor', 'standard-form'],
 		form: {
@@ -296,7 +331,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		} else control = deepClone(control);
 
 		if (control.type === 'range' || control.type === 'number' || control.type === 'color') {
-			control.animatable = true;
+			if (!('animatable' in control)) control.animatable = true;
 			if (!isEmpty(this._animated[param]) && this._animated[param].active) control.animated = true;
 		}
 
@@ -389,6 +424,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			filterId: this._filterId,
 			filterType: this._filterType,
 		});
+		this._renderParent = !Boolean(tmParams.animated?.[this._param]);
 		this._animParams = mergeObject(
 			{
 				animType: this._control.type === 'color' ? 'colorOscillation' : 'move',
@@ -472,12 +508,13 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 				label: 'AnimType',
 				options: animOptions,
 				value: this._animParams.animType,
+				order: 0,
 			},
 		];
 		keyControls[this._animParams.animType].forEach((param) => {
 			let control;
 			if (param === 'val1' || param === 'val2') {
-				control = { ...this._control };
+				control = { ...this._control, order: 1 };
 				delete control.animatable;
 				delete control.animated;
 			} else {
@@ -493,7 +530,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			controls.push(control);
 		});
 
-		context.controls = controls;
+		context.controls = controls.sort((c1, c2) => c1.order - c2.order);
 		return context;
 	}
 
@@ -509,8 +546,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (getType(params.val2) === 'string') params.val2 = Number(Color.fromString(params.val2));
 		}
 
-		let renderParent = false;
-		if (params.active !== this._animParams.active) renderParent = true;
+		if (params.active !== this._animParams.active) this._renderParent = true;
 
 		const render = params.animType !== this._animParams.animType;
 		mergeObject(this._animParams, params);
@@ -524,8 +560,9 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			{ filterId: this._filterId, filterType: this._filterType, animated: { [this._param]: params } },
 		]);
 
-		if (renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
-			this._parentApp.render({ parts: ['filter'] });
+		if (this._renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
+			if (FilterSelector.getFilter(this._document, { filterId: this._filterId, filterType: this._filterType }))
+				this._parentApp.render({ parts: ['filter'] });
 		}
 	}
 }
