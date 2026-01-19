@@ -1,17 +1,21 @@
+const ALPHA_CONTROL = {
+	type: 'range',
+	min: 0,
+	max: 1,
+	step: 0.01,
+};
+const COLOR_CONTROL = {
+	type: 'color',
+};
+
 export const FILTER_PARAM_CONTROLS = {
 	common: {
-		filterId: {
-			type: 'text',
-		},
-		color: {
-			type: 'color',
-			subtype: 'numeric',
-		},
+		color: COLOR_CONTROL,
 		time: {
 			type: 'range',
 			min: 0,
 			max: 30000,
-			step: 1,
+			step: 0.1,
 		},
 		anchorX: {
 			type: 'range',
@@ -28,22 +32,32 @@ export const FILTER_PARAM_CONTROLS = {
 		alphaDiscard: {
 			type: 'boolean',
 		},
-		enabled: {
-			type: 'boolean',
+		alpha: ALPHA_CONTROL,
+		rotation: {
+			type: 'range',
+			min: 0,
+			max: 360,
+			step: 0.5,
+		},
+		padding: {
+			type: 'range',
+			min: 0,
+			max: 500,
+			step: 1,
 		},
 	},
 	fire: {
 		intensity: {
 			type: 'range',
 			min: 0,
-			max: 100,
-			step: 1,
+			max: 2,
+			step: 0.01,
 		},
 		amplitude: {
 			type: 'range',
 			min: 0,
 			max: 100,
-			step: 1,
+			step: 0.1,
 		},
 		blend: {
 			type: 'range',
@@ -55,6 +69,52 @@ export const FILTER_PARAM_CONTROLS = {
 			type: 'range',
 			min: 0,
 			max: 13,
+			step: 1,
+		},
+	},
+	shadow: {
+		distance: {
+			type: 'range',
+			min: 0,
+			max: 500,
+			step: 1,
+		},
+		blur: {
+			type: 'range',
+			min: 0,
+			max: 5,
+			step: 0.1,
+		},
+		quality: {
+			type: 'range',
+			min: 0,
+			max: 8,
+			step: 1,
+		},
+	},
+	bevel: {
+		lightColor: COLOR_CONTROL,
+		shadowColor: COLOR_CONTROL,
+		shadowAlpha: ALPHA_CONTROL,
+		lightAlpha: ALPHA_CONTROL,
+		thickness: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+	},
+	outline: {
+		thickness: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		quality: {
+			type: 'range',
+			min: 0,
+			max: 8,
 			step: 1,
 		},
 	},

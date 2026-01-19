@@ -43,8 +43,9 @@ import { FilterDDTint } from '../fx/filters/FilterDDTint.js';
 import { Anime } from '../fx/Anime.js';
 import { allPresets, PresetsLibrary } from '../fx/presets/defaultpresets.js';
 import { tmfxDataMigration } from '../migration/migration.js';
-import { emptyPreset } from './constants.js';
+import { emptyPreset, PlaceableType } from './constants.js';
 import './proto/PlaceableObjectProto.js';
+import './proto/CanvasDocumentProto.js';
 import { FilterCRT } from '../fx/filters/FilterCRT.js';
 import { FilterRGBSplit } from '../fx/filters/FilterRGBSplit.js';
 import { TokenMagicSettings } from './settings.js';
@@ -109,15 +110,6 @@ export const FilterType = {
 	rgbSplit: FilterRGBSplit,
 };
 
-export const PlaceableType = {
-	TOKEN: foundry.canvas.placeables.Token.embeddedName,
-	TILE: foundry.canvas.placeables.Tile.embeddedName,
-	TEMPLATE: foundry.canvas.placeables.MeasuredTemplate.embeddedName,
-	DRAWING: foundry.canvas.placeables.Drawing.embeddedName,
-	REGION: foundry.canvas.placeables.Region.embeddedName,
-	NOT_SUPPORTED: null,
-};
-
 function i18n(key) {
 	return game.i18n.localize(key);
 }
@@ -141,12 +133,13 @@ export const SocketAction = {
 };
 
 export function broadcast(placeable, flag, socketAction) {
+	const document = placeable.document ?? placeable;
 	const data = {
 		tmAction: socketAction,
-		tmPlaceableId: placeable.id,
-		tmPlaceableType: placeable._TMFXgetPlaceableType(),
+		tmPlaceableId: document.id,
+		tmPlaceableType: document._TMFXgetPlaceableType(),
 		tmFlag: flag,
-		tmViewedScene: game.user.viewedScene,
+		tmScene: document.parent.id,
 	};
 	game.socket.emit(moduleTM, data, (resp) => {});
 }
@@ -395,9 +388,12 @@ export function TokenMagic() {
 		if (!Array.isArray(paramsArray)) {
 			paramsArray = getPreset(paramsArray);
 		}
-		if (!(paramsArray instanceof Array && paramsArray.length > 0) || placeable == null) return;
 
-		let actualFlags = replace ? null : placeable.document.getFlag('tokenmagic', 'filters');
+		const document = placeable.document ?? placeable;
+
+		if (!(paramsArray instanceof Array && paramsArray.length > 0) || document == null) return;
+
+		let actualFlags = replace ? null : document.getFlag('tokenmagic', 'filters');
 		let newFlags = [];
 
 		for (const params of paramsArray) {
@@ -407,7 +403,7 @@ export function TokenMagic() {
 			}
 
 			if (!params.hasOwnProperty('rank')) {
-				params.rank = placeable._TMFXgetMaxFilterRank();
+				params.rank = document._TMFXgetMaxFilterRank();
 			}
 
 			if (!params.hasOwnProperty('filterId') || params.filterId == null) {
@@ -422,10 +418,10 @@ export function TokenMagic() {
 				randomizeParams(params);
 			}
 
-			params.placeableId = placeable.id;
+			params.placeableId = document.id;
 			params.filterInternalId = foundry.utils.randomID();
 			params.filterOwner = game.data.userId;
-			params.placeableType = placeable._TMFXgetPlaceableType();
+			params.placeableType = document._TMFXgetPlaceableType();
 			params.updateId = foundry.utils.randomID();
 
 			newFlags.push({
@@ -443,15 +439,17 @@ export function TokenMagic() {
 			newFlags = actualFlags.concat(newFlags);
 		}
 
-		await placeable._TMFXsetFlag(newFlags);
+		await document._TMFXsetFlag(newFlags);
 	}
 
 	async function addUpdateFilters(placeable, paramsArray) {
-		if (!paramsArray instanceof Array || paramsArray.length < 1) {
+		if ((!paramsArray) instanceof Array || paramsArray.length < 1) {
 			return;
 		}
 
-		let flags = placeable.document.getFlag('tokenmagic', 'filters');
+		const document = placeable.document ?? placeable;
+
+		let flags = document.getFlag('tokenmagic', 'filters');
 		let workingFlags = [];
 		if (flags) {
 			flags.forEach((flag) => {
@@ -486,7 +484,7 @@ export function TokenMagic() {
 				}
 
 				if (!params.hasOwnProperty('rank')) {
-					params.rank = placeable._TMFXgetMaxFilterRank();
+					params.rank = document._TMFXgetMaxFilterRank();
 				}
 
 				if (!params.hasOwnProperty('filterId') || params.filterId == null) {
@@ -497,10 +495,10 @@ export function TokenMagic() {
 					params.enabled = true;
 				}
 
-				params.placeableId = placeable.id;
+				params.placeableId = document.id;
 				params.filterInternalId = foundry.utils.randomID();
 				params.filterOwner = game.data.userId;
-				params.placeableType = placeable._TMFXgetPlaceableType();
+				params.placeableType = document._TMFXgetPlaceableType();
 
 				newFlags.push({
 					tmFilters: {
@@ -518,7 +516,7 @@ export function TokenMagic() {
 			workingFlags = newFlags.concat(workingFlags);
 		}
 
-		await placeable._TMFXsetFlag(workingFlags);
+		await document._TMFXsetFlag(workingFlags);
 	}
 
 	async function updateFilters(paramsArray) {
@@ -599,7 +597,9 @@ export function TokenMagic() {
 			return;
 		}
 
-		let flags = placeable.document.getFlag('tokenmagic', 'filters');
+		const document = placeable.document ?? placeable;
+
+		let flags = document.getFlag('tokenmagic', 'filters');
 		if (flags == null || !(flags instanceof Array) || flags.length < 1) {
 			return;
 		} // nothing to update...
@@ -624,7 +624,8 @@ export function TokenMagic() {
 				}
 			});
 		}
-		await placeable._TMFXsetFlag(workingFlags);
+
+		await document._TMFXsetFlag(workingFlags);
 	}
 
 	// Deleting filters on targeted tokens
@@ -653,11 +654,13 @@ export function TokenMagic() {
 			return;
 		}
 
+		const document = placeable.document ?? placeable;
+
 		if (filterId == null) {
-			await placeable._TMFXunsetFlag();
-			await placeable._TMFXunsetAnimeFlag();
+			await document._TMFXunsetFlag();
+			await document._TMFXunsetAnimeFlag();
 		} else if (typeof filterId === 'string') {
-			let flags = placeable.document.getFlag('tokenmagic', 'filters');
+			let flags = document.getFlag('tokenmagic', 'filters');
 			if (flags == null || !(flags instanceof Array) || flags.length < 1) {
 				return;
 			} // nothing to delete...
@@ -669,10 +672,10 @@ export function TokenMagic() {
 				}
 			});
 
-			if (workingFlags.length > 0) await placeable._TMFXsetFlag(workingFlags);
-			else await placeable._TMFXunsetFlag();
+			if (workingFlags.length > 0) await document._TMFXsetFlag(workingFlags);
+			else await document._TMFXunsetFlag();
 
-			flags = placeable.document.getFlag('tokenmagic', 'animeInfo');
+			flags = document.getFlag('tokenmagic', 'animeInfo');
 			if (flags == null || !(flags instanceof Array) || flags.length < 1) {
 				return;
 			} // nothing to delete...
@@ -684,17 +687,17 @@ export function TokenMagic() {
 				}
 			});
 
-			if (workingFlags.length > 0) await placeable._TMFXsetAnimeFlag(workingFlags);
-			else await placeable._TMFXunsetAnimeFlag();
+			if (workingFlags.length > 0) await document._TMFXsetAnimeFlag(workingFlags);
+			else await document._TMFXunsetAnimeFlag();
 		}
 	}
 
 	function hasFilterType(placeable, filterType) {
-		if (placeable == null || filterType == null || !(placeable instanceof foundry.canvas.placeables.PlaceableObject)) {
+		if (placeable == null || filterType == null) {
 			return null;
 		}
 
-		let flags = placeable.document.getFlag('tokenmagic', 'filters');
+		const flags = (placeable.document ?? placeable).getFlag('tokenmagic', 'filters');
 		if (flags == null || !(flags instanceof Array) || flags.length < 1) {
 			return false;
 		}
@@ -722,15 +725,15 @@ export function TokenMagic() {
 	}
 
 	function hasFilterId(placeable, filterId) {
-		if (placeable == null || !(placeable instanceof foundry.canvas.placeables.PlaceableObject)) {
+		if (placeable == null) {
 			return null;
 		}
-		let flags = placeable.document.getFlag('tokenmagic', 'filters');
+		let flags = (placeable.document ?? placeable).getFlag('tokenmagic', 'filters');
 		return _checkFilterId(placeable, filterId, flags);
 	}
 
 	function _checkFilterId(placeable, filterId, flags) {
-		if (placeable == null || filterId == null || !(placeable instanceof foundry.canvas.placeables.PlaceableObject)) {
+		if (placeable == null || filterId == null) {
 			return null;
 		}
 
@@ -996,7 +999,7 @@ export function TokenMagic() {
 				let tmFilters = theFilters.filter((filter) =>
 					filterById
 						? filter.hasOwnProperty('filterId') && filter.filterId === filterId
-						: filter.hasOwnProperty('filterId')
+						: filter.hasOwnProperty('filterId'),
 				);
 
 				for (const filter of tmFilters) {
@@ -1011,7 +1014,7 @@ export function TokenMagic() {
 				let tmFilters = theFilters.filter((filter) =>
 					filterById
 						? !(filter.hasOwnProperty('filterId') && filter.filterId === filterId)
-						: !filter.hasOwnProperty('filterId')
+						: !filter.hasOwnProperty('filterId'),
 				);
 				return tmFilters.length === 0 ? null : tmFilters;
 			}
@@ -1489,7 +1492,7 @@ function initSocketListener() {
 
 		async function updateFlags(targetFlag) {
 			// getting the scene coming from the socket
-			let scene = game.scenes.get(data.tmViewedScene);
+			let scene = game.scenes.get(data.tmScene);
 			if (scene == null) return;
 
 			// preparing flag data (with -= if the data is null)
@@ -1655,7 +1658,7 @@ async function onRegionConfig(regionConfig, html) {
 
 	const alphaRangePicker = await foundry.applications.handlebars.renderTemplate(
 		'modules/tokenmagic/templates/settings/regionAlpha.hbs',
-		{ alpha }
+		{ alpha },
 	);
 
 	$(html).find('[name="color"]').closest('.form-group').after(alphaRangePicker);

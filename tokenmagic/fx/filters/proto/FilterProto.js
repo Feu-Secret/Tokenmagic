@@ -1,5 +1,6 @@
-import { getPlaceableById, getMinPadding, PlaceableType } from '../../../module/tokenmagic.js';
+import { getPlaceableById, getMinPadding } from '../../../module/tokenmagic.js';
 import '../../../module/proto/PlaceableObjectProto.js';
+import { PlaceableType } from '../../../module/constants.js';
 
 PIXI.Filter.prototype.setTMParams = function (params) {
 	this.autoDisable = false;
@@ -69,7 +70,7 @@ PIXI.Filter.prototype.calculatePadding = function () {
 		this.currentPadding =
 			Math.max(
 				Math.abs(this.boundsPadding.x * cos) + Math.abs(this.boundsPadding.y * sin),
-				Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos)
+				Math.abs(this.boundsPadding.x * sin) + Math.abs(this.boundsPadding.y * cos),
 			) +
 			(this.originalPadding - this.rawPadding);
 	}

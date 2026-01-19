@@ -1,6 +1,6 @@
-import { PlaceableType, Magic, broadcast, SocketAction, mustBroadCast, isZOrderConfig } from '../tokenmagic.js';
-import { autoMinRank } from '../constants.js';
-import { callAsyncHook } from '../utilities.js';
+import { Magic, isZOrderConfig } from '../tokenmagic.js';
+import { autoMinRank, PlaceableType } from '../constants.js';
+const { logCompatibilityWarning } = foundry.utils;
 
 export var gMaxRank = autoMinRank;
 
@@ -31,24 +31,35 @@ PlaceableObject.prototype.TMFXhasFilterId = function (filterId) {
 };
 
 PlaceableObject.prototype._TMFXsetFlag = async function (flag) {
-	await callAsyncHook('tokenmagic._TMFXsetFlag', flag);
-	if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_FLAG);
-	else await this.document.setFlag('tokenmagic', 'filters', flag);
+	logCompatibilityWarning(
+		'You are accessing PlaceableObject._TMFXsetFlag which must now be accessed through CanvasDocument._TMFXsetFlag',
+		{ since: '0.7.4', once: true },
+	);
+	return this.document._TMFXsetFlag(flag);
 };
 
 PlaceableObject.prototype._TMFXsetAnimeFlag = async function (flag) {
-	if (mustBroadCast()) broadcast(this, flag, SocketAction.SET_ANIME_FLAG);
-	else await this.document.setFlag('tokenmagic', 'animeInfo', flag);
+	logCompatibilityWarning(
+		'You are accessing PlaceableObject._TMFXsetAnimeFlag which must now be accessed through CanvasDocument._TMFXsetAnimeFlag',
+		{ since: '0.7.4', once: true },
+	);
+	return this.document._TMFXsetAnimeFlag(flag);
 };
 
 PlaceableObject.prototype._TMFXunsetFlag = async function () {
-	if (mustBroadCast()) broadcast(this, null, SocketAction.SET_FLAG);
-	else await this.document.unsetFlag('tokenmagic', 'filters');
+	logCompatibilityWarning(
+		'You are accessing PlaceableObject._TMFXunsetFlag which must now be accessed through CanvasDocument._TMFXunsetFlag',
+		{ since: '0.7.4', once: true },
+	);
+	return this.document._TMFXunsetFlag();
 };
 
 PlaceableObject.prototype._TMFXunsetAnimeFlag = async function () {
-	if (mustBroadCast()) broadcast(this, null, SocketAction.SET_ANIME_FLAG);
-	else await this.document.unsetFlag('tokenmagic', 'animeInfo');
+	logCompatibilityWarning(
+		'You are accessing PlaceableObject._TMFXunsetFlag which must now be accessed through CanvasDocument._TMFXunsetFlag',
+		{ since: '0.7.4', once: true },
+	);
+	return this.document._TMFXunsetAnimeFlag();
 };
 
 PlaceableObject.prototype._TMFXgetSprite = function () {
@@ -105,10 +116,7 @@ PlaceableObject.prototype._TMFXcheckSprite = function () {
 
 PlaceableObject.prototype._TMFXgetMaxFilterRank = function () {
 	const sprite = this._TMFXgetSprite();
-	if (sprite == null) {
-		return gMaxRank++;
-	}
-	if (sprite.filters == null) {
+	if (sprite?.filters == null) {
 		return gMaxRank++;
 	} else {
 		let maxRank = Math.max(...sprite.filters.map((f) => f.rank), autoMinRank);
