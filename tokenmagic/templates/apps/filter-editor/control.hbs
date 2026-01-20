@@ -1,5 +1,5 @@
 <div class="form-group">    
-    <label>{{label}} {{#if animatable}}<a class="animate{{#if animated}} active{{/if}}" data-action="animate" data-param="{{name}}"><i class="fa-solid fa-camera-movie"></i></a>{{/if}}</label>
+    <label>{{label}}</label>
     <div class="form-fields">
         {{#if text}}
         <input type="text" value="{{value}}" name="{{name}}" {{#if animated}}disabled{{/if}}>
@@ -19,4 +19,13 @@
         </select>
         {{/if}}
     </div>
+    {{#if displayAnimationControl}}
+    <a class="animate{{#if animated}} active{{/if}}" data-action="animate" data-param="{{name}}" data-tooltip="Animate" {{#unless animatable}}disabled{{/unless}}>
+        {{#if animatable}}
+        <i class="fa-regular fa-clapperboard-play"></i>
+        {{else}}
+        <i class="fa-sharp fa-thin fa-ban"></i>
+        {{/if}}
+    </a>
+    {{/if}}
 </div>

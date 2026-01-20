@@ -16,6 +16,23 @@ export const FILTER_PARAM_CONTROLS = {
 			min: 0,
 			max: 30000,
 			step: 0.1,
+			order: 99999,
+		},
+		blend: {
+			type: 'range',
+			min: 0,
+			max: 13,
+			step: 1,
+			animatable: false,
+			order: 99997,
+		},
+		gridPadding: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.1,
+			order: 99995,
+			animatable: false,
 		},
 		anchorX: {
 			type: 'range',
@@ -44,6 +61,7 @@ export const FILTER_PARAM_CONTROLS = {
 			min: 0,
 			max: 500,
 			step: 1,
+			order: 99998,
 			animatable: false,
 		},
 		blendMode: {
@@ -54,6 +72,8 @@ export const FILTER_PARAM_CONTROLS = {
 					return opts;
 				}, {});
 			},
+			animatable: false,
+			order: 99997,
 		},
 		seed: {
 			type: 'range',
@@ -74,6 +94,86 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 1,
 		},
 	},
+	field: {
+		shieldType: {
+			type: 'range',
+			min: 1,
+			max: 13,
+			step: 1,
+		},
+		lightAlpha: ALPHA_CONTROL,
+		lightSize: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.1,
+		},
+		radius: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.01,
+		},
+		scale: {
+			type: 'range',
+			min: 0.1,
+			max: 2,
+			step: 0.01,
+		},
+		intensity: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.01,
+		},
+	},
+	images: {
+		nbImage: {
+			type: 'range',
+			min: 1,
+			max: 10,
+			step: 1,
+		},
+		alphaImg: ALPHA_CONTROL,
+		alphaChr: ALPHA_CONTROL,
+		ampX: ALPHA_CONTROL,
+		ampY: ALPHA_CONTROL,
+	},
+	smoke: {
+		dimX: {
+			type: 'range',
+			min: -3,
+			max: 3,
+			step: 0.01,
+		},
+		dimY: {
+			type: 'range',
+			min: -3,
+			max: 3,
+			step: 0.01,
+		},
+	},
+	flood: {
+		scale: {
+			type: 'range',
+			min: 0,
+			max: 1000,
+			step: 1,
+		},
+		glint: ALPHA_CONTROL,
+		tintIntensity: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.01,
+		},
+		billowy: {
+			type: 'range',
+			min: 0,
+			max: 4,
+			step: 0.1,
+		},
+	},
 	fire: {
 		intensity: {
 			type: 'range',
@@ -87,17 +187,13 @@ export const FILTER_PARAM_CONTROLS = {
 			max: 100,
 			step: 0.1,
 		},
-		blend: {
-			type: 'range',
-			min: 0,
-			max: 13,
-			step: 1,
-		},
 		fireBlend: {
 			type: 'range',
 			min: 0,
 			max: 13,
 			step: 1,
+			animatable: false,
+			order: 99997,
 		},
 	},
 	shadow: {
@@ -176,13 +272,6 @@ export const FILTER_PARAM_CONTROLS = {
 			min: -1,
 			max: 1,
 			step: 0.01,
-		},
-		gridPadding: {
-			type: 'range',
-			min: 0,
-			max: 10,
-			step: 0.1,
-			animatable: false,
 		},
 	},
 	adjustment: {
@@ -377,6 +466,99 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 1,
 		},
 		strength: ALPHA_CONTROL,
+	},
+	shockwave: {
+		amplitude: {
+			type: 'range',
+			min: 0,
+			max: 50,
+			step: 1,
+		},
+		wavelength: {
+			type: 'range',
+			min: 0,
+			max: 500,
+			step: 1,
+		},
+		radius: {
+			type: 'range',
+			min: 0,
+			max: 500,
+			step: 1,
+		},
+		brightness: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.1,
+		},
+		speed: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+	},
+	zapshadow: {
+		alphaTolerance: ALPHA_CONTROL,
+	},
+	ray: {
+		divisor: {
+			type: 'range',
+			min: 0,
+			max: 600,
+			step: 1,
+		},
+	},
+	fog: {
+		density: ALPHA_CONTROL,
+		dimX: {
+			type: 'range',
+			min: -15,
+			max: 15,
+			step: 1,
+		},
+		dimY: {
+			type: 'range',
+			min: -15,
+			max: 15,
+			step: 1,
+		},
+	},
+	electric: {
+		intensity: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 1,
+			animatable: false,
+		},
+	},
+	wave: {
+		strength: {
+			type: 'range',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		},
+		frequency: {
+			type: 'range',
+			min: 0,
+			max: 300,
+			step: 1,
+		},
+		maxIntensity: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.01,
+		},
+		minIntensity: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.01,
+		},
 	},
 };
 

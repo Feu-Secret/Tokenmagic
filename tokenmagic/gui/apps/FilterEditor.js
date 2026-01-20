@@ -292,6 +292,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			controls.push(control);
 			this._paramControls[param] = control;
 		}
+		controls.sort((c1, c2) => (c1.order ?? 0) - (c2.order ?? 0));
 
 		return Object.assign(context, { controls, filterId: this._filterId });
 	}

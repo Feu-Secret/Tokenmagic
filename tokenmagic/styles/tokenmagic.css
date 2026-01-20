@@ -166,15 +166,20 @@
 }
 
 .tokenmagic.editor .animate {
-	font-size: small;
+	font-size: medium;
 	color: darkgray;
-	margin-left: 5px;
+	flex: 0;
+    margin-left: 3px;
+}
+
+.tokenmagic.editor .animate[disabled] {
+	opacity: 0.4;
 }
 
 .tokenmagic.editor .animate.active {
-	color: darkorange;
-	background-image: -webkit-linear-gradient(92deg, #f35626, #feab3a);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	-webkit-animation: hue 10s infinite linear;
+    color: darkorange;
+    background-image: -webkit-linear-gradient(37deg, #04ff00, #00ff66);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-animation: hue 10s infinite linear;
 }
