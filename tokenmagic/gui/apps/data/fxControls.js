@@ -7,9 +7,16 @@ const ALPHA_CONTROL = {
 const COLOR_CONTROL = {
 	type: 'color',
 };
+const RGB_SPLIT_CONTROL = {
+	type: 'range',
+	min: -200,
+	max: 200,
+	step: 1,
+};
 
 export const FILTER_PARAM_CONTROLS = {
 	common: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/original_token.webp',
 		color: COLOR_CONTROL,
 		time: {
 			type: 'range',
@@ -107,12 +114,114 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 1,
 		},
 	},
+	spriteMask: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/45 - Star Mask (spriteMask).webp',
+		imagePath: {
+			type: 'file',
+			fileType: 'imagevideo',
+		},
+		translationX: {
+			type: 'range',
+			min: -1,
+			max: 1,
+			step: 0.01,
+		},
+		translationY: {
+			type: 'range',
+			min: -1,
+			max: 1,
+			step: 0.01,
+		},
+		scaleX: {
+			type: 'range',
+			min: 0.1,
+			max: 30,
+			step: 0.01,
+		},
+		scaleY: {
+			type: 'range',
+			min: 0.1,
+			max: 30,
+			step: 0.01,
+		},
+		bpRadiusPercent: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		bpStrength: {
+			type: 'range',
+			min: 0,
+			max: 1.4,
+			step: 0.01,
+		},
+		twRadiusPercent: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		twAngle: {
+			type: 'range',
+			min: 0,
+			max: 90,
+			step: 0.1,
+		},
+	},
+	rgbSplit: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/43 - RGB Split.webp',
+		redX: RGB_SPLIT_CONTROL,
+		redY: RGB_SPLIT_CONTROL,
+		greenX: RGB_SPLIT_CONTROL,
+		greenY: RGB_SPLIT_CONTROL,
+		blueX: RGB_SPLIT_CONTROL,
+		blueY: RGB_SPLIT_CONTROL,
+	},
+	crt: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/42 - CRT.webp',
+		curvature: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		lineWidth: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		lineContrast: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.1,
+		},
+		noise: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.01,
+		},
+		noiseSize: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		vignetting: ALPHA_CONTROL,
+		vignettingAlpha: ALPHA_CONTROL,
+		vignettingBlur: ALPHA_CONTROL,
+	},
 	ddTint: {
+		_thumb: 'icons/magic/light/hand-sparks-smoke-green.webp',
 		tint: {
 			type: 'ignore',
 		},
 	},
 	dot: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/41 - Dot.webp',
 		scale: {
 			type: 'range',
 			min: 0,
@@ -127,6 +236,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	ascii: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/40 - Ascii.webp',
 		size: {
 			type: 'range',
 			min: 0,
@@ -135,6 +245,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	replaceColor: {
+		_thumb: 'icons/magic/time/arrows-circling-pink.webp',
 		epsilon: {
 			type: 'range',
 			min: 0,
@@ -157,6 +268,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	web: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/30 - T01 - Simple Web (web).webp',
 		thickness: {
 			type: 'range',
 			min: 0,
@@ -191,6 +303,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	polymorph: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/36 - T01 - Turn into Mystery Man (polymorph).webp',
 		type: {
 			type: 'select',
 			options: {
@@ -217,6 +330,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	splash: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/34 - T02 - Dead (splash).webp',
 		spread: {
 			type: 'range',
 			min: 0.01,
@@ -255,6 +369,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	ripples: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/32 - T01 - Solar Ripples (ripples).webp',
 		amplitude: {
 			type: 'range',
 			min: 0,
@@ -272,6 +387,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	globes: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/31 - T01 - Glowing Globes (globes).webp',
 		distortion: {
 			type: 'range',
 			min: 0,
@@ -286,6 +402,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	xfire: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/35 - T01 - Fire v2 (xfire).webp',
 		blend: {
 			type: 'range',
 			min: 0,
@@ -319,7 +436,11 @@ export const FILTER_PARAM_CONTROLS = {
 		color4: COLOR_CONTROL,
 		discardThreshold: ALPHA_CONTROL,
 	},
+	xfog: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/29 - T01 - Foul Fog (xfog).webp',
+	},
 	liquid: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/26 - T01 - Spectral Body (liquid).webp',
 		intensity: {
 			type: 'range',
 			min: 0,
@@ -334,6 +455,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	pixel: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/28 - Glory to Pixels.webp',
 		sizeX: {
 			type: 'range',
 			min: 0,
@@ -348,6 +470,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	xglow: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/27 - T01 - Burning Aura (xglow).webp',
 		auraType: {
 			type: 'select',
 			options: {
@@ -387,6 +510,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	xray: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/25 - T01 - Sunburst Rays (xray).webp',
 		dimX: {
 			type: 'range',
 			min: -3,
@@ -413,6 +537,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	field: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/24 - T01 - Hexa Force Field.webp',
 		shieldType: {
 			type: 'range',
 			min: 1,
@@ -460,6 +585,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	images: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/23 - T01 - Mirror Images.webp',
 		nbImage: {
 			type: 'range',
 			min: 1,
@@ -472,6 +598,7 @@ export const FILTER_PARAM_CONTROLS = {
 		ampY: ALPHA_CONTROL,
 	},
 	smoke: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/22 - Smoke.webp',
 		dimX: {
 			type: 'range',
 			min: -3,
@@ -486,6 +613,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	flood: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/21 - Flood.webp',
 		scale: {
 			type: 'range',
 			min: 0,
@@ -519,6 +647,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	fire: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/19 - T01 - Fire.webp',
 		intensity: {
 			type: 'range',
 			min: 0,
@@ -541,6 +670,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	shadow: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/03 - Drop Shadow.webp',
 		distance: {
 			type: 'range',
 			min: 0,
@@ -562,6 +692,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	bevel: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/01 - Bevel.webp',
 		lightColor: COLOR_CONTROL,
 		shadowColor: COLOR_CONTROL,
 		shadowAlpha: ALPHA_CONTROL,
@@ -574,6 +705,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	outline: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/04 - Outline.webp',
 		thickness: {
 			type: 'range',
 			min: 0,
@@ -589,6 +721,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	sprite: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/37 - T02 - Pentagram (sprite).webp',
 		imagePath: {
 			type: 'file',
 			fileType: 'imagevideo',
@@ -632,6 +765,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	transform: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/09 - T01 - Twist (transform).webp',
 		translationX: {
 			type: 'range',
 			min: -1,
@@ -642,18 +776,6 @@ export const FILTER_PARAM_CONTROLS = {
 			type: 'range',
 			min: -1,
 			max: 1,
-			step: 0.01,
-		},
-		pivotX: {
-			type: 'range',
-			min: -6,
-			max: 6,
-			step: 0.01,
-		},
-		pivotY: {
-			type: 'range',
-			min: -6,
-			max: 6,
 			step: 0.01,
 		},
 		scaleX: {
@@ -692,8 +814,21 @@ export const FILTER_PARAM_CONTROLS = {
 			max: 90,
 			step: 0.1,
 		},
+		pivotX: {
+			type: 'range',
+			min: -6,
+			max: 6,
+			step: 0.01,
+		},
+		pivotY: {
+			type: 'range',
+			min: -6,
+			max: 6,
+			step: 0.01,
+		},
 	},
 	adjustment: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/02 - Adjustment.webp',
 		brightness: {
 			type: 'range',
 			min: 0,
@@ -745,6 +880,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	glow: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/05 - Glow.webp',
 		outerStrength: {
 			type: 'range',
 			min: 0,
@@ -768,6 +904,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	xbloom: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/06 - Bloom.webp',
 		threshold: {
 			type: 'range',
 			min: 0,
@@ -803,6 +940,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	distortion: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/07 - Distortion.webp',
 		maskPath: {
 			type: 'file',
 			fileType: 'imagevideo',
@@ -821,6 +959,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	oldfilm: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/08 - Old film.webp',
 		sepia: ALPHA_CONTROL,
 		noise: ALPHA_CONTROL,
 		noiseSize: {
@@ -876,6 +1015,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	blur: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/11 - Blur.webp',
 		quality: {
 			type: 'range',
 			min: 0,
@@ -902,6 +1042,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	zoomblur: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/12 - Zoom Blur.webp',
 		innerRadiusPercent: {
 			type: 'range',
 			min: 0,
@@ -911,6 +1052,7 @@ export const FILTER_PARAM_CONTROLS = {
 		strength: ALPHA_CONTROL,
 	},
 	shockwave: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/13 - Shockwave (wave).webp',
 		amplitude: {
 			type: 'range',
 			min: 0,
@@ -943,9 +1085,11 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	zapshadow: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/14 - Remove Shadow.webp',
 		alphaTolerance: ALPHA_CONTROL,
 	},
 	ray: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/15 - Cosmic Ray.webp',
 		divisor: {
 			type: 'range',
 			min: 0,
@@ -966,6 +1110,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	fog: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/16 - Inner Fog.webp',
 		density: ALPHA_CONTROL,
 		dimX: {
 			type: 'range',
@@ -981,6 +1126,7 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	electric: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/18 - Electric.webp',
 		intensity: {
 			type: 'range',
 			min: 0,
@@ -990,10 +1136,12 @@ export const FILTER_PARAM_CONTROLS = {
 		},
 	},
 	fumes: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/17 - Fumes.webp',
 		dimX: ALPHA_CONTROL,
 		dimY: ALPHA_CONTROL,
 	},
 	wave: {
+		_thumb: 'modules/tokenmagic/gui/macros/images/20 - Waves.webp',
 		strength: {
 			type: 'range',
 			min: 0,

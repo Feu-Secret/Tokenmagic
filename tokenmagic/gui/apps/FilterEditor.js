@@ -5,10 +5,14 @@ import { ANIM_PARAM_CONTROLS, FILTER_PARAM_CONTROLS } from './data/fxControls.js
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 const { deepClone, getType, isEmpty, mergeObject } = foundry.utils;
 
-// TODO
-// - prettify
-// - filterId editing of some kind?
-// - certain params such as active/enabled/filterId are common between all filters/animates, bake them into hbs files
+/**
+ * TODO:
+ * add a group field to controls, to group them into fieldsets
+ * Twist filter 'offset' {x: 0, y: 0} // ignore for now
+ * zoomblur filter 'center' [672.5, 552.5] (not normalized/static like the bulge filter)
+ * Pixelate/Ascii filters respond to camera movement
+ * Perhaps during preset creation detect if finite loop animation exists and prompt for auto destroy flag?
+ */
 
 export function filterEditor(placeable) {
 	try {
@@ -78,7 +82,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 					filterInternalId,
 					label: filterId,
 					rank,
-					thumbnail: 'modules/tokenmagic/gui/macros/images/19 - T01 - Fire.webp',
+					thumbnail: FILTER_PARAM_CONTROLS[filterType]?._thumb ?? FILTER_PARAM_CONTROLS.common._thumb,
 					enabled,
 				};
 			})
@@ -350,15 +354,6 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			'rank',
 		].forEach((param) => delete this._params[param]);
 	}
-
-	/**
-	 * TODO:
-	 * add a group field to controls, to group them into fieldsets
-	 * Twist filter 'offset' {x: 0, y: 0} // ignore for now
-	 * zoomblur filter 'center' [672.5, 552.5] (not normalized/static like the bulge filter)
-	 * Pixelate/Ascii filters respond to camera movement
-	 * Perhaps during preset creation detect if finite loop animation exists and prompt for auto destroy flag?
-	 */
 
 	#genControl(param, value) {
 		let control =
