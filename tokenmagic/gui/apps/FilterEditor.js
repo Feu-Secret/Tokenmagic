@@ -23,7 +23,7 @@ export function filterEditor(placeable) {
  * @returns
  */
 function genLabel(text) {
-	return (text.charAt(0).toUpperCase() + text.slice(1)).match(/[A-Z][a-z]+/g).join(' ');
+	return (text.charAt(0).toUpperCase() + text.slice(1)).match(/[A-Z0-9][a-z]*/g).join(' ');
 }
 
 class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -353,11 +353,10 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	/**
 	 * TODO:
-	 * Need to use internalId in addition to filterId and filterType to uniquely identify filters
-	 * Twist filter 'offset' {x: 0, y: 0}
-	 * Bulge filter 'center' [0.5, 0.5]
+	 * add a group field to controls, to group them into fieldsets
+	 * Twist filter 'offset' {x: 0, y: 0} // ignore for now
 	 * zoomblur filter 'center' [672.5, 552.5] (not normalized/static like the bulge filter)
-	 * Pixelate responds to camera movement
+	 * Pixelate/Ascii filters respond to camera movement
 	 * Perhaps during preset creation detect if finite loop animation exists and prompt for auto destroy flag?
 	 */
 
@@ -385,6 +384,9 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 
 		control.name = param;
+
+		if (control.validate) value = control.validate(value);
+
 		if (control.type === 'color') control.value = new Color(value).toString();
 		else control.value = value;
 
@@ -474,13 +476,14 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	_initAnimParams() {
 		const tmParams = FilterSelector.getFilter(this._document, this._filterIdentifier);
-		this._renderParent = !Boolean(tmParams.animated?.[this._param]);
+		const animated = tmParams.animated?.[this._param];
+
 		this._animParams = mergeObject(
 			{
 				animType: this._control.type === 'color' ? 'colorOscillation' : 'move',
 				val1: tmParams[this._param],
 				val2: tmParams[this._param],
-				active: true,
+				active: false,
 				speed: 0.0000025,
 				loopDuration: 3000,
 				loops: 0,
@@ -489,8 +492,10 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 				syncShift: 0,
 				clockwise: true,
 			},
-			tmParams.animated?.[this._param] ?? {},
+			animated ?? {},
 		);
+
+		if (animated && !animated.hasOwnProperty('active')) delete this._animParams.active;
 	}
 
 	/** @override */
@@ -555,7 +560,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 				type: 'select',
 				select: true,
 				name: 'animType',
-				label: 'AnimType',
+				label: 'Animation Type',
 				options: animOptions,
 				value: this._animParams.animType,
 				order: 0,
@@ -564,9 +569,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		keyControls[this._animParams.animType].forEach((param) => {
 			let control;
 			if (param === 'val1' || param === 'val2') {
-				control = { ...this._control, order: 1 };
-				delete control.animatable;
-				delete control.animated;
+				control = { ...this._control, order: 1, animatable: false, animated: false, label: null };
 			} else {
 				control = deepClone(ANIM_PARAM_CONTROLS[param]);
 			}
@@ -574,7 +577,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (control.type === 'color') control.value = new Color(this._animParams[param]).toString();
 			else control.value = this._animParams[param];
 
-			control.label = genLabel(param);
+			if (!control.label) control.label = genLabel(param);
 			control.name = param;
 			control[control.type] = true;
 			controls.push(control);
@@ -596,8 +599,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (getType(params.val2) === 'string') params.val2 = Number(Color.fromString(params.val2));
 		}
 
-		if (params.active !== this._animParams.active) this._renderParent = true;
-
+		const renderParent = params.active !== this._animParams.active;
 		const render = params.animType !== this._animParams.animType;
 		mergeObject(this._animParams, params);
 		if (render) {
@@ -610,7 +612,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			{ ...this._filterIdentifier, animated: { [this._param]: params } },
 		]);
 
-		if (this._renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
+		if (renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
 			if (FilterSelector.getFilter(this._document, this._filterIdentifier))
 				this._parentApp.render({ parts: ['filter'] });
 		}

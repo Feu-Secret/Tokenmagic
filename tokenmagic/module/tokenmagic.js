@@ -469,11 +469,14 @@ export function TokenMagic() {
 			}
 
 			workingFlags.forEach((flag) => {
-				if (flag.tmFilters.tmFilterId === params.filterId && flag.tmFilters.tmFilterType === params.filterType) {
-					if (flag.tmFilters.hasOwnProperty('tmParams')) {
-						objectAssign(flag.tmFilters.tmParams, params);
-						updateParams = true;
-					}
+				let match = flag.tmFilters.tmFilterId === params.filterId && flag.tmFilters.tmFilterType === params.filterType;
+				if (match && params.hasOwnProperty('filterInternalId')) {
+					match = flag.tmFilters.tmFilterInternalId === params.filterInternalId;
+				}
+
+				if (match && flag.tmFilters.hasOwnProperty('tmParams')) {
+					objectAssign(flag.tmFilters.tmParams, params);
+					updateParams = true;
 				}
 			});
 
@@ -617,10 +620,12 @@ export function TokenMagic() {
 			}
 
 			workingFlags.forEach((flag) => {
-				if (flag.tmFilters.tmFilterId === params.filterId && flag.tmFilters.tmFilterType === params.filterType) {
-					if (flag.tmFilters.hasOwnProperty('tmParams')) {
-						objectAssign(flag.tmFilters.tmParams, params);
-					}
+				let match = flag.tmFilters.tmFilterId === params.filterId && flag.tmFilters.tmFilterType === params.filterType;
+				if (match && params.hasOwnProperty('filterInternalId')) {
+					match = flag.tmFilters.tmFilterInternalId === params.filterInternalId;
+				}
+				if (match && flag.tmFilters.hasOwnProperty('tmParams')) {
+					objectAssign(flag.tmFilters.tmParams, params);
 				}
 			});
 		}
@@ -629,37 +634,37 @@ export function TokenMagic() {
 	}
 
 	// Deleting filters on targeted tokens
-	async function deleteFiltersOnTargeted(filterId = null) {
+	async function deleteFiltersOnTargeted(filterId = null, filterType = null, filterInternalId = null) {
 		let targeted = getTargetedTokens();
 		if (!(targeted == null) && targeted.length > 0) {
 			for (const token of targeted) {
-				await deleteFilters(token, filterId);
+				await deleteFilters(token, filterId, filterType, filterInternalId);
 			}
 		}
 	}
 
 	// Deleting filters on selected placeable(s)
-	async function deleteFiltersOnSelected(filterId = null) {
+	async function deleteFiltersOnSelected(filterId = null, filterType = null, filterInternalId = null) {
 		let placeables = getControlledPlaceables();
 		if (!(placeables == null) && placeables.length > 0) {
 			for (const placeable of placeables) {
-				await deleteFilters(placeable, filterId);
+				await deleteFilters(placeable, filterId, filterType, filterInternalId);
 			}
 		}
 	}
 
 	// Deleting all filters on a placeable in parameter
-	async function deleteFilters(placeable, filterId = null, filterType = null) {
+	async function deleteFilters(placeable, filterId = null, filterType = null, filterInternalId = null) {
 		if (placeable == null) {
 			return;
 		}
 
 		const document = placeable.document ?? placeable;
 
-		if (filterId == null && filterType == null) {
+		if (filterId == null && filterType == null && filterInternalId == null) {
 			await document._TMFXunsetFlag();
 			await document._TMFXunsetAnimeFlag();
-		} else if (typeof filterId === 'string' || typeof filterType === 'string') {
+		} else if (typeof filterId === 'string' || typeof filterType === 'string' || typeof filterInternalId === 'string') {
 			let flags = document.getFlag('tokenmagic', 'filters');
 			if (flags == null || !(flags instanceof Array) || flags.length < 1) {
 				return;
@@ -670,10 +675,12 @@ export function TokenMagic() {
 			flags.forEach((flag) => {
 				const idMatch = !filterId || flag.tmFilters.tmFilterId === filterId;
 				const typeMatch = !filterType || flag.tmFilters.tmFilterType === filterType;
-				if (!(idMatch && typeMatch)) {
-					workingFlags.push(foundry.utils.duplicate(flag));
-				} else {
+				const internalIdMatch = !filterInternalId || flag.tmFilters.tmFilterInternalId === filterInternalId;
+
+				if (idMatch && typeMatch && internalIdMatch) {
 					removedInternalIds.add(flag.tmFilters.tmFilterInternalId);
+				} else {
+					workingFlags.push(foundry.utils.duplicate(flag));
 				}
 			});
 

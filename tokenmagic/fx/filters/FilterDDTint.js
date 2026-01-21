@@ -24,4 +24,16 @@ export class FilterDDTint extends CustomFilter {
 	set tint(value) {
 		this.uniforms.tint = value;
 	}
+
+	set color(value) {
+		new Color(value).applyRGB(this.uniforms.tint);
+	}
+
+	get color() {
+		return PIXI.utils.rgb2hex(this.uniforms.tint);
+	}
 }
+
+FilterDDTint.defaults = {
+	color: 0xff0000,
+};

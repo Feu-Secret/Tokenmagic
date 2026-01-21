@@ -4,9 +4,9 @@ import './proto/FilterProto.js';
 export class FilterReplaceColor extends PIXI.filters.ColorReplaceFilter {
 	constructor(params) {
 		super();
-		this.originalColor = [1, 0, 0];
-		this.newColor = [0, 1, 0];
-		this.epsilon = 0.7;
+		this.originalColor = FilterReplaceColor.defaults.originalColor;
+		this.newColor = FilterReplaceColor.defaults.newColor;
+		this.epsilon = FilterReplaceColor.defaults.epsilon;
 		this.zOrder = 100;
 		this.animating = {};
 		this.setTMParams(params);
@@ -16,3 +16,9 @@ export class FilterReplaceColor extends PIXI.filters.ColorReplaceFilter {
 		}
 	}
 }
+
+FilterReplaceColor.defaults = {
+	epsilon: 0.7,
+	originalColor: 0xff0000,
+	newColor: 0x00ff00,
+};

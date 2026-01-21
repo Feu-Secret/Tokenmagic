@@ -61,7 +61,7 @@ export class FilterSpiderWeb extends CustomFilter {
 	}
 
 	set anchorX(value) {
-		this.uniforms.anchor[0] = 0.5;
+		this.uniforms.anchor[0] = value;
 	}
 
 	get anchorY() {
@@ -69,7 +69,7 @@ export class FilterSpiderWeb extends CustomFilter {
 	}
 
 	set anchorY(value) {
-		this.uniforms.anchor[1] = 0.5;
+		this.uniforms.anchor[1] = value;
 	}
 
 	get thickness() {

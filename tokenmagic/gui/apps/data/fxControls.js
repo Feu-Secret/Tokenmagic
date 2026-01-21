@@ -107,6 +107,153 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 1,
 		},
 	},
+	ddTint: {
+		tint: {
+			type: 'ignore',
+		},
+	},
+	dot: {
+		scale: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.01,
+		},
+		angle: {
+			type: 'range',
+			min: 0,
+			max: 360,
+			step: 1,
+		},
+	},
+	ascii: {
+		size: {
+			type: 'range',
+			min: 0,
+			max: 50,
+			step: 1,
+		},
+	},
+	replaceColor: {
+		epsilon: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.01,
+		},
+		originalColor: {
+			type: 'color',
+			validate: (value) => {
+				if (Array.isArray(value)) return PIXI.utils.rgb2hex(value);
+				return value;
+			},
+		},
+		newColor: {
+			type: 'color',
+			validate: (value) => {
+				if (Array.isArray(value)) return PIXI.utils.rgb2hex(value);
+				return value;
+			},
+		},
+	},
+	web: {
+		thickness: {
+			type: 'range',
+			min: 0,
+			max: 6,
+			step: 0.1,
+		},
+		div1: {
+			type: 'range',
+			min: 1,
+			max: 50,
+			step: 1,
+			label: 'Horizontal Divisions',
+		},
+		div2: {
+			type: 'range',
+			min: 1,
+			max: 50,
+			step: 1,
+			label: 'Vertical Divisions',
+		},
+		tear: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.01,
+		},
+		amplitude: {
+			type: 'range',
+			min: 0,
+			max: 3,
+			step: 0.01,
+		},
+	},
+	polymorph: {
+		type: {
+			type: 'select',
+			options: {
+				1: 'Fade',
+				2: 'Deamy',
+				3: 'Swirl',
+				4: 'Waterdrop',
+				5: 'TV Noise',
+				6: 'Morph',
+				7: 'Cross-Warp',
+				8: 'Wind',
+				9: 'Hologram',
+			},
+		},
+		magnify: {
+			type: 'range',
+			min: 0,
+			max: 3,
+			step: 0.01,
+		},
+		imagePath: {
+			type: 'file',
+			fileType: 'imagevideo',
+		},
+	},
+	splash: {
+		spread: {
+			type: 'range',
+			min: 0.01,
+			max: 15,
+			step: 0.01,
+		},
+		splashFactor: {
+			type: 'range',
+			min: 0.01,
+			max: 10,
+			step: 0.1,
+		},
+		dimX: {
+			type: 'range',
+			min: -3,
+			max: 3,
+			step: 0.01,
+		},
+		dimY: {
+			type: 'range',
+			min: -3,
+			max: 3,
+			step: 0.01,
+		},
+		anchorX: {
+			type: 'range',
+			min: -1,
+			max: 2,
+			step: 0.01,
+		},
+		anchorY: {
+			type: 'range',
+			min: -1,
+			max: 2,
+			step: 0.01,
+		},
+	},
 	ripples: {
 		amplitude: {
 			type: 'range',
@@ -445,6 +592,7 @@ export const FILTER_PARAM_CONTROLS = {
 		imagePath: {
 			type: 'file',
 			fileType: 'imagevideo',
+			order: 0,
 		},
 		scaleX: {
 			type: 'range',
@@ -469,6 +617,18 @@ export const FILTER_PARAM_CONTROLS = {
 			min: -1,
 			max: 1,
 			step: 0.01,
+		},
+		twRadiusPercent: {
+			type: 'ignore',
+		},
+		twAngle: {
+			type: 'ignore',
+		},
+		bpRadiusPercent: {
+			type: 'ignore',
+		},
+		bpStrength: {
+			type: 'ignore',
 		},
 	},
 	transform: {
@@ -688,11 +848,29 @@ export const FILTER_PARAM_CONTROLS = {
 			max: 10,
 			step: 0.01,
 		},
+		offset: {
+			type: 'ignore',
+		},
 	},
 	bulgepinch: {
 		strength: {
 			type: 'range',
 			min: -1,
+			max: 1,
+			step: 0.01,
+		},
+		radius: {
+			type: 'ignore',
+		},
+		anchorX: {
+			type: 'range',
+			min: 0,
+			max: 1,
+			step: 0.01,
+		},
+		anchorY: {
+			type: 'range',
+			min: 0,
 			max: 1,
 			step: 0.01,
 		},
