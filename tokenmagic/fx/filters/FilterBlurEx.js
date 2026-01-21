@@ -6,7 +6,7 @@ export class FilterBlurEx extends CustomFilter {
 
 	_repeatEdgePixels;
 
-	constructor(strength = 8, quality = 4, resolution = PIXI.settings.FILTER_RESOLUTION, kernelSize = 5) {
+	constructor(strength = 8, quality = 4, resolution = PIXI.settings.RESOLUTION, kernelSize = 5) {
 		super();
 
 		this.blurXFilter = new BlurFilterPassEx(true, strength, quality, resolution, kernelSize);
@@ -104,7 +104,7 @@ export class BlurFilterPassEx extends CustomFilter {
 	passes;
 	_quality;
 
-	constructor(horizontal, strength = 8, quality = 4, resolution = PIXI.settings.FILTER_RESOLUTION, kernelSize = 5) {
+	constructor(horizontal, strength = 8, quality = 4, resolution = PIXI.settings.RESOLUTION, kernelSize = 5) {
 		const vertSrc = generateBlurVertSource(kernelSize, horizontal);
 		const fragSrc = generateBlurFragSource(kernelSize);
 
@@ -112,7 +112,7 @@ export class BlurFilterPassEx extends CustomFilter {
 			// vertex shader
 			vertSrc,
 			// fragment shader
-			fragSrc
+			fragSrc,
 		);
 
 		this.horizontal = horizontal;

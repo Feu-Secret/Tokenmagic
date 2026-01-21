@@ -299,7 +299,7 @@ Hooks.once('init', () => {
 					const rays = angles.map((a) => Ray.fromAngle(0, 0, direction + Math.toRadians(a), distance + 1));
 					const height = Math.sqrt(
 						(rays[0].B.x - rays[1].B.x) * (rays[0].B.x - rays[1].B.x) +
-							(rays[0].B.y - rays[1].B.y) * (rays[0].B.y - rays[1].B.y)
+							(rays[0].B.y - rays[1].B.y) * (rays[0].B.y - rays[1].B.y),
 					);
 					mat.scale(width / this.texture.width, height / this.texture.height);
 					mat.translate(0, -height / 2);
@@ -436,7 +436,7 @@ Hooks.once('init', () => {
 
 			return result;
 		},
-		'WRAPPER'
+		'WRAPPER',
 	);
 
 	if (wmtApplyRenderFlags)
@@ -444,13 +444,13 @@ Hooks.once('init', () => {
 			'tokenmagic',
 			'foundry.canvas.placeables.MeasuredTemplate.prototype._applyRenderFlags',
 			wmtApplyRenderFlags,
-			wmtApplyRenderFlagsType
+			wmtApplyRenderFlagsType,
 		);
 	if (wmtRefreshTemplate)
 		libWrapper.register(
 			'tokenmagic',
 			'foundry.canvas.placeables.MeasuredTemplate.prototype._refreshTemplate',
 			wmtRefreshTemplate,
-			'OVERRIDE'
+			'OVERRIDE',
 		);
 });

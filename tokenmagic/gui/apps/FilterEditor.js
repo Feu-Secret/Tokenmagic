@@ -1,4 +1,5 @@
 import { PlaceableType } from '../../module/constants.js';
+import { FilterType } from '../../module/tokenmagic.js';
 import { ANIM_PARAM_CONTROLS, FILTER_PARAM_CONTROLS } from './data/fxControls.js';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
@@ -289,6 +290,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		const controls = [];
 		for (const [param, value] of Object.entries(this._params)) {
 			const control = this.#genControl(param, value);
+			if (!control) continue;
 			controls.push(control);
 			this._paramControls[param] = control;
 		}
@@ -301,6 +303,13 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		this._params = deepClone(
 			FilterSelector.getFilter(this._document, { filterId: this._filterId, filterType: this._filterType }),
 		);
+
+		// Some filters have explicitly defined default values
+		const defaults = FilterType[this._filterType].defaults;
+		if (defaults) {
+			this._params = Object.assign(deepClone(defaults), this._params);
+		}
+
 		if (!isEmpty(this._params.animated)) {
 			this._animated = this._params.animated;
 		} else this._animated = {};
@@ -320,6 +329,16 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		].forEach((param) => delete this._params[param]);
 	}
 
+	/**
+	 * TODO:
+	 * Need to use internalId in addition to filterId and filterType to uniquely identify filters
+	 * Twist filter 'offset' {x: 0, y: 0}
+	 * Bulge filter 'center' [0.5, 0.5]
+	 * zoomblur filter 'center' [672.5, 552.5] (not normalized/static like the bulge filter)
+	 * Pixelate responds to camera movement
+	 * Perhaps during preset creation detect if finite loop animation exists and prompt for auto destroy flag?
+	 */
+
 	#genControl(param, value) {
 		let control = FILTER_PARAM_CONTROLS[this._filterType]?.[param] ?? FILTER_PARAM_CONTROLS.common[param];
 		// If a predefined control does not exist lets deduce a generic one from the value
@@ -328,12 +347,18 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (type === 'string') control = { type: 'text' };
 			else if (type === 'number') control = { type: 'number' };
 			else if (type === 'boolean') control = { type: 'boolean' };
-			else throw Error(`Unable to determine param (${param}) control type.`);
+			else {
+				console.warn(`Unable to determine param (${param}) control type.`, value);
+				return null;
+			}
 		} else control = deepClone(control);
+
+		if (control.type === 'ignore') return null;
 
 		if (control.type === 'range' || control.type === 'number' || control.type === 'color') {
 			if (!('animatable' in control)) control.animatable = true;
-			if (!isEmpty(this._animated[param]) && this._animated[param].active) control.animated = true;
+			const animated = this._animated[param];
+			if (animated && (animated.active || !('active' in animated))) control.animated = true;
 		}
 
 		control.name = param;

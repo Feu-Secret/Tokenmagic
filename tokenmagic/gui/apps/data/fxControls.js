@@ -18,6 +18,13 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 0.1,
 			order: 99999,
 		},
+		zOrder: {
+			type: 'range',
+			min: 0,
+			max: 99999,
+			step: 1,
+			order: 99999,
+		},
 		blend: {
 			type: 'range',
 			min: 0,
@@ -45,6 +52,12 @@ export const FILTER_PARAM_CONTROLS = {
 			min: -1,
 			max: 1,
 			step: 0.01,
+		},
+		resolution: {
+			type: 'ignore',
+		},
+		kernels: {
+			type: 'ignore',
 		},
 		alphaDiscard: {
 			type: 'boolean',
@@ -94,6 +107,164 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 1,
 		},
 	},
+	ripples: {
+		amplitude: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.01,
+		},
+		intensity: {
+			type: 'range',
+			min: 0.0001,
+			max: 0.2,
+			step: 0.0001,
+		},
+		_octave: {
+			type: 'ignore',
+		},
+	},
+	globes: {
+		distortion: {
+			type: 'range',
+			min: 0,
+			max: 25,
+			step: 0.01,
+		},
+		scale: {
+			type: 'range',
+			min: 1,
+			max: 400,
+			step: 1,
+		},
+	},
+	xfire: {
+		blend: {
+			type: 'range',
+			min: 0,
+			max: 14,
+			step: 1,
+			animatable: false,
+			order: 99997,
+		},
+		amplitude: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.1,
+		},
+		dispersion: ALPHA_CONTROL,
+		scaleX: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.01,
+		},
+		scaleY: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.01,
+		},
+		color1: COLOR_CONTROL,
+		color2: COLOR_CONTROL,
+		color3: COLOR_CONTROL,
+		color4: COLOR_CONTROL,
+		discardThreshold: ALPHA_CONTROL,
+	},
+	liquid: {
+		intensity: {
+			type: 'range',
+			min: 0,
+			max: 10,
+			step: 0.1,
+		},
+		scale: {
+			type: 'range',
+			min: 0.1,
+			max: 8,
+			step: 0.01,
+		},
+	},
+	pixel: {
+		sizeX: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		sizeY: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+	},
+	xglow: {
+		auraType: {
+			type: 'select',
+			options: {
+				1: 'Ripples',
+				2: 'Noisy',
+			},
+		},
+		thickness: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		scale: {
+			type: 'range',
+			min: 0,
+			max: 15,
+			step: 1,
+		},
+		auraIntensity: {
+			type: 'range',
+			min: 0,
+			max: 1000,
+			step: 1,
+		},
+		subAuraIntensity: {
+			type: 'range',
+			min: 0,
+			max: 50,
+			step: 0.5,
+		},
+		threshold: {
+			type: 'range',
+			min: 0,
+			max: 5,
+			step: 0.1,
+		},
+	},
+	xray: {
+		dimX: {
+			type: 'range',
+			min: -3,
+			max: 3,
+			step: 0.01,
+		},
+		dimY: {
+			type: 'range',
+			min: -3,
+			max: 3,
+			step: 0.01,
+		},
+		divisor: {
+			type: 'range',
+			min: 0,
+			max: 200,
+			step: 1,
+		},
+		intensity: {
+			type: 'range',
+			min: 0,
+			max: 200,
+			step: 1,
+		},
+	},
 	field: {
 		shieldType: {
 			type: 'range',
@@ -114,6 +285,12 @@ export const FILTER_PARAM_CONTROLS = {
 			max: 2,
 			step: 0.01,
 		},
+		hideRadius: {
+			type: 'range',
+			min: 0,
+			max: 2,
+			step: 0.01,
+		},
 		scale: {
 			type: 'range',
 			min: 0.1,
@@ -125,6 +302,14 @@ export const FILTER_PARAM_CONTROLS = {
 			min: 0,
 			max: 2,
 			step: 0.01,
+		},
+		discardThreshold: ALPHA_CONTROL,
+		// changing value does not meaningfully influence appearance
+		posLightX: {
+			type: 'ignore',
+		},
+		posLightY: {
+			type: 'ignore',
 		},
 	},
 	images: {
@@ -172,6 +357,18 @@ export const FILTER_PARAM_CONTROLS = {
 			min: 0,
 			max: 4,
 			step: 0.1,
+		},
+		shiftX: {
+			type: 'range',
+			min: -1,
+			max: 1,
+			step: 0.01,
+		},
+		shiftY: {
+			type: 'range',
+			min: -1,
+			max: 1,
+			step: 0.01,
 		},
 	},
 	fire: {
@@ -274,6 +471,68 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 0.01,
 		},
 	},
+	transform: {
+		translationX: {
+			type: 'range',
+			min: -1,
+			max: 1,
+			step: 0.01,
+		},
+		translationY: {
+			type: 'range',
+			min: -1,
+			max: 1,
+			step: 0.01,
+		},
+		pivotX: {
+			type: 'range',
+			min: -6,
+			max: 6,
+			step: 0.01,
+		},
+		pivotY: {
+			type: 'range',
+			min: -6,
+			max: 6,
+			step: 0.01,
+		},
+		scaleX: {
+			type: 'range',
+			min: 0.1,
+			max: 30,
+			step: 0.01,
+		},
+		scaleY: {
+			type: 'range',
+			min: 0.1,
+			max: 30,
+			step: 0.01,
+		},
+		bpRadiusPercent: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		bpStrength: {
+			type: 'range',
+			min: 0,
+			max: 1.4,
+			step: 0.01,
+		},
+		twRadiusPercent: {
+			type: 'range',
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		twAngle: {
+			type: 'range',
+			min: 0,
+			max: 90,
+			step: 0.1,
+		},
+	},
 	adjustment: {
 		brightness: {
 			type: 'range',
@@ -344,6 +603,9 @@ export const FILTER_PARAM_CONTROLS = {
 			max: 1,
 			step: 0.01,
 		},
+		distance: {
+			type: 'ignore',
+		},
 	},
 	xbloom: {
 		threshold: {
@@ -375,6 +637,9 @@ export const FILTER_PARAM_CONTROLS = {
 			min: 0,
 			max: 8,
 			step: 1,
+		},
+		pixelSize: {
+			type: 'ignore',
 		},
 	},
 	distortion: {
@@ -509,6 +774,18 @@ export const FILTER_PARAM_CONTROLS = {
 			max: 600,
 			step: 1,
 		},
+		dimX: {
+			type: 'range',
+			min: 1,
+			max: 200,
+			step: 1,
+		},
+		dimY: {
+			type: 'range',
+			min: 1,
+			max: 200,
+			step: 1,
+		},
 	},
 	fog: {
 		density: ALPHA_CONTROL,
@@ -533,6 +810,10 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 1,
 			animatable: false,
 		},
+	},
+	fumes: {
+		dimX: ALPHA_CONTROL,
+		dimY: ALPHA_CONTROL,
 	},
 	wave: {
 		strength: {

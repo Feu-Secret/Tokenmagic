@@ -8,7 +8,7 @@ export class FilterDropShadowEx extends CustomFilter {
 	angle = 45;
 
 	_distance = 5;
-	_resolution = PIXI.settings.FILTER_RESOLUTION;
+	_resolution = PIXI.settings.RESOLUTION;
 	_tintFilter;
 	_blurFilter;
 
@@ -142,5 +142,5 @@ FilterDropShadowEx.defaults = {
 	kernels: null,
 	blur: 2,
 	quality: 3,
-	resolution: PIXI.settings.FILTER_RESOLUTION,
+	resolution: PIXI.settings.RESOLUTION,
 };
