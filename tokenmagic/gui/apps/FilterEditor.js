@@ -17,6 +17,15 @@ export function filterEditor(placeable) {
 	} catch (e) {}
 }
 
+/**
+ * First char to uppercase and insert spaces at upper case characters
+ * @param {string} text
+ * @returns
+ */
+function genLabel(text) {
+	return (text.charAt(0).toUpperCase() + text.slice(1)).match(/[A-Z][a-z]+/g).join(' ');
+}
+
 class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	constructor(document) {
 		super({
@@ -48,21 +57,25 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		},
 	};
 
-	static getFilter(document, { filterId, filterType } = {}) {
+	static getFilter(document, { filterId, filterType, filterInternalId }) {
 		const filters = document.getFlag('tokenmagic', 'filters');
-		return filters?.find((f) => f.tmFilters.tmFilterId === filterId && f.tmFilters.tmFilterType === filterType)
-			?.tmFilters.tmParams;
+		return filters?.find(
+			(f) =>
+				f.tmFilters.tmFilterId === filterId &&
+				f.tmFilters.tmFilterType === filterType &&
+				f.tmFilters.tmFilterInternalId === filterInternalId,
+		)?.tmFilters.tmParams;
 	}
 
 	/** @override */
 	async _prepareContext(options) {
-		let filters = this._document.getFlag('tokenmagic', 'filters') ?? [];
-		filters = filters
+		this._filters = (this._document.getFlag('tokenmagic', 'filters') ?? [])
 			.map((filter) => {
-				const { filterId, filterType, rank, enabled } = filter.tmFilters.tmParams;
+				const { filterId, filterType, rank, enabled, filterInternalId } = filter.tmFilters.tmParams;
 				return {
 					filterId,
 					filterType,
+					filterInternalId,
 					label: filterId,
 					rank,
 					thumbnail: 'modules/tokenmagic/gui/macros/images/19 - T01 - Fire.webp',
@@ -70,9 +83,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				};
 			})
 			.sort((f1, f2) => f1.rank - f2.rank);
-		this._filterCount = filters.length;
 
-		return { filters };
+		return { filters: this._filters };
 	}
 
 	/** @override */
@@ -91,10 +103,11 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	_onDragStart(event) {
-		const { filterId, filterType } = event.target.closest('.filter').dataset;
+		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
 		const dragData = {
 			filterId,
 			filterType,
+			filterInternalId,
 			placeableId: this._document.id,
 			documentName: this._document.documentName,
 			sceneId: this._document.parent.id,
@@ -111,21 +124,22 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	async _onFilterDrop(event) {
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-		if (!data.filterId || !data.filterType) return;
+		if (!data.filterId || !data.filterType || !data.filterInternalId) return;
 		if (this._document.id !== data.placeableId && this._document.parent.id !== data.sceneId) return;
 
-		const { filterId, filterType } = event.target.closest('.filter').dataset;
-		if (data.filterId === filterId && data.filterType === filterType) return;
+		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
+		if (data.filterId === filterId && data.filterType === filterType && data.filterInternalId === filterInternalId)
+			return;
 
-		return this._onUpdateFilterRank(data, { filterId, filterType });
+		return this._onUpdateFilterRank(data, { filterId, filterType, filterInternalId });
 	}
 
-	async _onAddFilter({ filterId, filterType, placeableId, documentName, sceneId } = {}) {
+	async _onAddFilter({ filterId, filterType, filterInternalId, placeableId, documentName, sceneId } = {}) {
 		const scene = game.scenes.get(sceneId);
 		const document = scene?.getEmbeddedDocument(documentName, placeableId);
 		if (!document) return;
 
-		const filter = deepClone(FilterSelector.getFilter(document, { filterId, filterType }));
+		const filter = deepClone(FilterSelector.getFilter(document, { filterId, filterType, filterInternalId }));
 		if (!filter) return;
 
 		await TokenMagic.addUpdateFilters(this._document, [filter]);
@@ -144,30 +158,32 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			{
 				filterId: fromParams.filterId,
 				filterType: fromParams.filterType,
+				filterInternalId: fromParams.filterInternalId,
 				rank: toParams.rank,
 			},
 			{
 				filterId: toParams.filterId,
 				filterType: toParams.filterType,
+				filterInternalId: toParams.filterInternalId,
 				rank: fromParams.rank,
 			},
 		]);
 		this.render(true);
 	}
 
-	async _closeChildApps() {}
-
 	static async _onEdit(event) {
 		try {
 			const filterEl = event.target.closest('.filter');
-			const { filterId, filterType } = filterEl.dataset;
-			const appId = `tmfx-filter-editor-${this._document.id}-${filterId}-${filterType}`;
+			const { filterId, filterType, filterInternalId } = filterEl.dataset;
+			const filterIdentifier = { filterId, filterType, filterInternalId };
+
+			const appId = FilterEditor.genId(this._document, filterIdentifier);
 			const activeInstance = foundry.applications.instances.get(appId);
 			if (activeInstance) activeInstance.close();
 			else {
 				const { left, bottom } = filterEl.getBoundingClientRect();
 				new FilterEditor(
-					{ document: this._document, filterId, filterType },
+					{ document: this._document, filterIdentifier },
 					{ id: appId, position: { left, top: bottom } },
 				).render(true);
 			}
@@ -177,20 +193,24 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	static async _onDelete(event) {
-		const { filterId, filterType } = event.target.closest('.filter').dataset;
-		if (filterId && filterType) {
-			await TokenMagic.deleteFilters(this._document, filterId, filterType);
+		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
 
-			const appId = `tmfx-filter-editor-${this._document.id}-${filterId}-${filterType}`;
-			const activeInstance = foundry.applications.instances.get(appId);
-			if (activeInstance) activeInstance.close();
-		}
+		await TokenMagic.deleteFilters(this._document, filterId, filterType, filterInternalId);
+
+		const appId = FilterEditor.genId(this._document, { filterId, filterType, filterInternalId });
+		const activeInstance = foundry.applications.instances.get(appId);
+		if (activeInstance) activeInstance.close();
 	}
 
 	static async _onToggle(event) {
-		const { filterId, filterType } = event.target.closest('.filter').dataset;
+		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
 		await TokenMagic.updateFiltersByPlaceable(this._document, [
-			{ filterId, filterType, enabled: !event.target.closest('.toggle').classList.contains('active') },
+			{
+				filterId,
+				filterType,
+				filterInternalId,
+				enabled: !event.target.closest('.toggle').classList.contains('active'),
+			},
 		]);
 		this.render(true);
 	}
@@ -207,7 +227,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				const tm = change.flags?.tokenmagic;
 				if (!tm) return;
 
-				if ('-=filters' in tm || tm.filters?.length !== this._filterCount) {
+				// TODO: a smarter comparison?
+				if ('-=filters' in tm || tm.filters?.length !== this._filters.length) {
 					this.render(true);
 				}
 			});
@@ -225,11 +246,14 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 }
 
 class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
-	constructor({ document, filterId, filterType } = {}, options) {
+	constructor({ document, filterIdentifier } = {}, options) {
 		super(options);
 		this._document = document;
-		this._filterId = filterId;
-		this._filterType = filterType;
+		this._filterIdentifier = filterIdentifier;
+	}
+
+	static genId(document, { filterId, filterType, filterInternalId }) {
+		return `tmfx-filter-editor-${document.id}-${filterId}-${filterType}-${filterInternalId}`;
 	}
 
 	/** @override */
@@ -269,7 +293,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		context.partId = partId;
 		switch (partId) {
 			case 'header':
-				context.title = this._filterType.charAt(0).toUpperCase() + this._filterType.slice(1);
+				context.title = genLabel(this._filterIdentifier.filterType);
 				break;
 			case 'filter':
 				await this._prepareFilterContext(context, options);
@@ -296,16 +320,14 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 		controls.sort((c1, c2) => (c1.order ?? 0) - (c2.order ?? 0));
 
-		return Object.assign(context, { controls, filterId: this._filterId });
+		return Object.assign(context, { controls, filterId: this._filterIdentifier.filterId });
 	}
 
 	_readParams() {
-		this._params = deepClone(
-			FilterSelector.getFilter(this._document, { filterId: this._filterId, filterType: this._filterType }),
-		);
+		this._params = deepClone(FilterSelector.getFilter(this._document, this._filterIdentifier));
 
 		// Some filters have explicitly defined default values
-		const defaults = FilterType[this._filterType].defaults;
+		const defaults = FilterType[this._filterIdentifier.filterType].defaults;
 		if (defaults) {
 			this._params = Object.assign(deepClone(defaults), this._params);
 		}
@@ -340,7 +362,8 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 	 */
 
 	#genControl(param, value) {
-		let control = FILTER_PARAM_CONTROLS[this._filterType]?.[param] ?? FILTER_PARAM_CONTROLS.common[param];
+		let control =
+			FILTER_PARAM_CONTROLS[this._filterIdentifier.filterType]?.[param] ?? FILTER_PARAM_CONTROLS.common[param];
 		// If a predefined control does not exist lets deduce a generic one from the value
 		if (!control) {
 			const type = getType(value);
@@ -366,7 +389,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		else control.value = value;
 
 		control[control.type] = true;
-		control.label = param.charAt(0).toUpperCase() + param.slice(1);
+		control.label = genLabel(param);
 
 		return control;
 	}
@@ -381,14 +404,16 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (control.type === 'color') params[param] = Number(Color.fromString(value));
 		}
 
-		params.filterId = this._filterId;
-		params.filterType = this._filterType;
+		Object.assign(params, this._filterIdentifier);
 		await TokenMagic.updateFiltersByPlaceable(this._document, [params]);
 	}
 
 	static async _onAnimate(event) {
 		const param = event.target.closest('a').dataset.param;
-		const appId = `tmfx-animation-editor-${this._document.id}-${this._filterId}-${this._filterType}-${param}`;
+		const appId = AnimationEditor.genId(this._document, {
+			...this._filterIdentifier,
+			param,
+		});
 		const activeInstance = foundry.applications.instances.get(appId);
 		if (activeInstance) activeInstance.close();
 		else {
@@ -397,8 +422,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			new AnimationEditor(
 				{
 					document: this._document,
-					filterId: this._filterId,
-					filterType: this._filterType,
+					filterIdentifier: this._filterIdentifier,
 					param,
 					control: this._paramControls[param],
 					parentApp: this,
@@ -410,6 +434,20 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 }
 
 class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
+	static genId(document, { filterId, filterType, filterInternalId, param }) {
+		return `tmfx-animation-editor-${document.id}-${filterId}-${filterType}-${filterInternalId}-${param}`;
+	}
+
+	constructor({ document, filterIdentifier, param, control, parentApp } = {}, options) {
+		super(options);
+		this._document = document;
+		this._filterIdentifier = filterIdentifier;
+		this._param = param;
+		this._control = control;
+		this._parentApp = parentApp;
+		this._initAnimParams();
+	}
+
 	standardControls = ['active', 'loopDuration', 'val1', 'val2', 'loops', 'syncShift'];
 
 	keywordControls = {
@@ -434,22 +472,8 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		randomColorPerLoop: ['active', 'loopDuration', 'loops'],
 	};
 
-	constructor({ document, filterId, filterType, param, control, parentApp } = {}, options) {
-		super(options);
-		this._document = document;
-		this._filterId = filterId;
-		this._filterType = filterType;
-		this._param = param;
-		this._control = control;
-		this._parentApp = parentApp;
-		this._initAnimParams();
-	}
-
 	_initAnimParams() {
-		const tmParams = FilterSelector.getFilter(this._document, {
-			filterId: this._filterId,
-			filterType: this._filterType,
-		});
+		const tmParams = FilterSelector.getFilter(this._document, this._filterIdentifier);
 		this._renderParent = !Boolean(tmParams.animated?.[this._param]);
 		this._animParams = mergeObject(
 			{
@@ -503,7 +527,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		context.partId = partId;
 		switch (partId) {
 			case 'header':
-				context.title = this._param.charAt(0).toUpperCase() + this._param.slice(1);
+				context.title = genLabel(this._param);
 				break;
 			case 'animate':
 				await this._prepareAnimateContext(context, options);
@@ -523,7 +547,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
 		const animOptions = {};
 		Object.keys(keyControls).forEach((k) => {
-			animOptions[k] = (k.charAt(0).toUpperCase() + k.slice(1)).match(/[A-Z][a-z]+/g).join(' ');
+			animOptions[k] = genLabel(k);
 		});
 
 		const controls = [
@@ -550,7 +574,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (control.type === 'color') control.value = new Color(this._animParams[param]).toString();
 			else control.value = this._animParams[param];
 
-			control.label = param.charAt(0).toUpperCase() + param.slice(1);
+			control.label = genLabel(param);
 			control.name = param;
 			control[control.type] = true;
 			controls.push(control);
@@ -583,11 +607,11 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 
 		await TokenMagic.updateFiltersByPlaceable(this._document, [
-			{ filterId: this._filterId, filterType: this._filterType, animated: { [this._param]: params } },
+			{ ...this._filterIdentifier, animated: { [this._param]: params } },
 		]);
 
 		if (this._renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
-			if (FilterSelector.getFilter(this._document, { filterId: this._filterId, filterType: this._filterType }))
+			if (FilterSelector.getFilter(this._document, this._filterIdentifier))
 				this._parentApp.render({ parts: ['filter'] });
 		}
 	}
