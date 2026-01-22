@@ -9,6 +9,4 @@ foundry.js
 dist/*
 tokenmagic/packs/*
 node_modules/
-.parcel-cache/
-tokenmagic/module/tokenmagicBundle.js
-tokenmagic/module/tokenmagicBundle.js.map
+tokenmagic/module/bundle/*

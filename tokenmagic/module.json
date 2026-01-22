@@ -59,7 +59,7 @@
         "libs/filters/pixi-filters.js"
     ],
     "esmodules": [
-        "module/tokenmagicBundle.js"
+        "module/bundle/tokenmagic.js"
     ],
     "styles": [
         "styles/tokenmagic.css"

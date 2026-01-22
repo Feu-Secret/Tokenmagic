@@ -49,8 +49,6 @@ import './proto/CanvasDocumentProto.js';
 import { FilterCRT } from '../fx/filters/FilterCRT.js';
 import { FilterRGBSplit } from '../fx/filters/FilterRGBSplit.js';
 import { TokenMagicSettings } from './settings.js';
-import { presetToggler } from '../gui/apps/PresetToggler.js';
-import { filterEditor } from '../gui/apps/FilterEditor.js';
 
 /*
 
@@ -1448,8 +1446,16 @@ export function TokenMagic() {
 		getControlledPlaceables: getControlledPlaceables,
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
-		presetToggler,
-		filterEditor,
+		presetToggler: () => {
+			import('../gui/apps/PresetToggler.js').then((module) => {
+				module.presetToggler();
+			});
+		},
+		filterEditor: (placeable) => {
+			import('../gui/apps/FilterEditor.js').then((module) => {
+				module.filterEditor(placeable);
+			});
+		},
 		get filterTypes() {
 			return FilterType;
 		},
@@ -2166,4 +2172,25 @@ Hooks.on('preCreateMeasuredTemplate', (document) => {
 		options: null,
 	};
 	document.updateSource({ flags: { tokenmagic: tmfxFlags } });
+});
+
+/* -------------------------------------------- */
+
+Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
+	const button = document.createElement('button');
+	button.classList.add('control-icon');
+	//if (foundry.utils.getProperty(data, 'flags.tokenmagic.filters')?.length) button.classList.add('active');
+
+	button.dataset.action = 'tmfx-editor';
+	button.dataset.tooltip = 'TMFX Editor';
+
+	const icon = document.createElement('i');
+	icon.classList.add('fa-solid', 'fa-fire');
+
+	button.appendChild(icon);
+	button.addEventListener('click', () => {
+		window.TokenMagic.filterEditor(hud.object);
+	});
+
+	form.querySelector('.placeable-hud .col.left').appendChild(button);
 });
