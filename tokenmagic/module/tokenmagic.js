@@ -1451,9 +1451,9 @@ export function TokenMagic() {
 				module.presetToggler();
 			});
 		},
-		filterEditor: (placeable) => {
+		filterEditor: (placeable, sourceBounds) => {
 			import('../gui/apps/FilterEditor.js').then((module) => {
-				module.filterEditor(placeable);
+				module.filterEditor(placeable, sourceBounds);
 			});
 		},
 		get filterTypes() {
@@ -2188,8 +2188,8 @@ Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
 	icon.classList.add('fa-solid', 'fa-fire');
 
 	button.appendChild(icon);
-	button.addEventListener('click', () => {
-		window.TokenMagic.filterEditor(hud.object);
+	button.addEventListener('click', (event) => {
+		window.TokenMagic.filterEditor(hud.object, event.target.closest('.col.left').getBoundingClientRect());
 	});
 
 	form.querySelector('.placeable-hud .col.left').appendChild(button);

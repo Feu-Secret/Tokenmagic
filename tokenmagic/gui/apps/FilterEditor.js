@@ -14,11 +14,19 @@ const { deepClone, getType, isEmpty, mergeObject } = foundry.utils;
  * Perhaps during preset creation detect if finite loop animation exists and prompt for auto destroy flag?
  */
 
-export function filterEditor(placeable) {
-	try {
-		const placeables = placeable ? [placeable] : TokenMagic.getControlledPlaceables();
-		if (placeables.length) new FilterSelector(placeables[0].document ?? placeables[0]).render(true);
-	} catch (e) {}
+export function filterEditor(placeable, sourceBounds) {
+	placeable = placeable ?? TokenMagic.getControlledPlaceables()[0];
+	if (!placeable) return;
+
+	const document = placeable.document ?? placeable;
+	const appId = FilterSelector.genId(document);
+
+	const activeInstance = foundry.applications.instances.get(appId);
+	if (activeInstance) {
+		activeInstance.close();
+		return;
+	}
+	new FilterSelector(document, sourceBounds).render(true);
 }
 
 /**
@@ -31,11 +39,28 @@ function genLabel(text) {
 }
 
 class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
-	constructor(document) {
-		super({
-			id: `tmfx-filter-selector-${document.id}`,
+	static genId(document) {
+		return `tmfx-filter-selector-${document.id}`;
+	}
+
+	constructor(document, sourceBounds) {
+		const options = {
+			id: FilterSelector.genId(document),
 			window: { title: `TokenMagicFX Filters [${document.documentName}]` },
-		});
+		};
+
+		// If bounds of the triggering element are provided lets position this
+		// window relative to center right
+		if (sourceBounds) {
+			const b = sourceBounds;
+			const { width, height } = FilterSelector.DEFAULT_OPTIONS.position;
+			options.position = {
+				left: b.left - width - 50,
+				top: b.top + (b.bottom - b.top) / 2 - height / 2,
+			};
+		}
+
+		super(options);
 		this._document = document;
 	}
 
@@ -442,6 +467,36 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 				},
 				{ id: appId, position: { top: bottom, left } },
 			).render(true);
+		}
+	}
+
+	/** @override */
+	_attachPartListeners(partId, element, options) {
+		super._attachPartListeners(partId, element, options);
+
+		console.log(partId);
+
+		// For smoother experience when using color-picker, lets respond to 'input' events
+		// and trigger 'change' events in turn triggering form submit and filter update
+		if (partId === 'filter') {
+			const INTERVAL_MS = 200;
+			let lastChangeTime = 0;
+			let trailingTimer = null;
+			element.querySelectorAll('color-picker').forEach((element) => {
+				element.addEventListener('input', (event) => {
+					const now = performance.now();
+					if (now - lastChangeTime >= INTERVAL_MS) {
+						event.target.dispatchEvent(new Event('change'));
+						lastChangeTime = performance.now();
+					}
+
+					clearTimeout(trailingTimer);
+					trailingTimer = setTimeout(() => {
+						event.target.dispatchEvent(new Event('change'));
+						lastChangeTime = performance.now();
+					}, INTERVAL_MS);
+				});
+			});
 		}
 	}
 }
