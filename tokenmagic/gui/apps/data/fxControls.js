@@ -13,6 +13,16 @@ const RGB_SPLIT_CONTROL = {
 	max: 200,
 	step: 1,
 };
+const FILE_CONTROL = {
+	type: 'file',
+	fileType: 'imagevideo',
+};
+const ROTATION_CONTROL = {
+	type: 'range',
+	min: 0,
+	max: 360,
+	step: 0.5,
+};
 
 export const FILTER_PARAM_CONTROLS = {
 	common: {
@@ -70,12 +80,7 @@ export const FILTER_PARAM_CONTROLS = {
 			type: 'boolean',
 		},
 		alpha: ALPHA_CONTROL,
-		rotation: {
-			type: 'range',
-			min: 0,
-			max: 360,
-			step: 0.5,
-		},
+		rotation: ROTATION_CONTROL,
 		padding: {
 			type: 'range',
 			min: 0,
@@ -722,35 +727,51 @@ export const FILTER_PARAM_CONTROLS = {
 	},
 	sprite: {
 		_thumb: 'modules/tokenmagic/gui/macros/images/37 - T02 - Pentagram (sprite).webp',
-		imagePath: {
-			type: 'file',
-			fileType: 'imagevideo',
-			order: 0,
-		},
+		imagePath: { ...FILE_CONTROL, order: 100 },
+		color: { ...COLOR_CONTROL, order: 200, group: 'appearance' },
+		colorize: { type: 'boolean', order: 300, group: 'appearance' },
+		inverse: { type: 'boolean', order: 400, group: 'appearance' },
+		alpha: { ...ALPHA_CONTROL, order: 500, group: 'appearance' },
+		alphaDiscard: { type: 'boolean', order: 501, group: 'appearance' },
+		rotation: { ...ROTATION_CONTROL, order: 600, group: 'transform' },
 		scaleX: {
 			type: 'range',
 			min: 0.01,
 			max: 10,
 			step: 0.01,
+			order: 700,
+			group: 'transform',
 		},
 		scaleY: {
 			type: 'range',
 			min: 0.01,
 			max: 10,
 			step: 0.01,
+			order: 800,
+			group: 'transform',
 		},
 		translationX: {
 			type: 'range',
 			min: -1,
 			max: 1,
 			step: 0.01,
+			order: 900,
+			group: 'transform',
 		},
 		translationY: {
 			type: 'range',
 			min: -1,
 			max: 1,
 			step: 0.01,
+			order: 1000,
+			group: 'transform',
 		},
+		repeat: { type: 'boolean', order: 1100, group: 'layout' },
+		top: { type: 'boolean', order: 1200, group: 'layout' },
+		maintainAspectRatio: { type: 'boolean', order: 1300, group: 'constraints' },
+		maintainScale: { type: 'boolean', order: 1400, group: 'constraints' },
+		play: { type: 'boolean', order: 1500, group: 'playback' },
+		loop: { type: 'boolean', order: 1600, group: 'playback' },
 		twRadiusPercent: {
 			type: 'ignore',
 		},

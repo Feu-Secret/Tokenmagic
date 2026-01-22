@@ -267,6 +267,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		window: {
 			title: 'Filter',
 			contentClasses: ['standard-form'],
+			resizable: true,
 		},
 		position: {
 			width: 444,
@@ -289,6 +290,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		},
 		filter: {
 			template: `modules/tokenmagic/templates/apps/filter-editor/filter.hbs`,
+			scrollable: [''],
 		},
 	};
 
@@ -324,7 +326,21 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 		controls.sort((c1, c2) => (c1.order ?? 0) - (c2.order ?? 0));
 
-		return Object.assign(context, { controls, filterId: this._filterIdentifier.filterId });
+		const groups = [];
+		const temp = {};
+		for (const control of controls) {
+			const group = control.group;
+			if (!group) groups.push(control);
+			else {
+				if (!temp[group]) {
+					temp[group] = { label: genLabel(group), controls: [] };
+					groups.push(temp[group]);
+				}
+				temp[group].controls.push(control);
+			}
+		}
+
+		return Object.assign(context, { groups, filterId: this._filterIdentifier.filterId });
 	}
 
 	_readParams() {

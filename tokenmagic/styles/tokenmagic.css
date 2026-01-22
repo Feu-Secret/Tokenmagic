@@ -183,3 +183,7 @@
     -webkit-text-fill-color: transparent;
     -webkit-animation: hue 10s infinite linear;
 }
+
+.tokenmagic.editor fieldset {
+	gap: 0.1rem;
+}
