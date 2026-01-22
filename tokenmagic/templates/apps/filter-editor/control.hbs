@@ -2,30 +2,44 @@
     <label>{{label}}</label>
     <div class="form-fields">
         {{#if text}}
-        <input type="text" value="{{value}}" name="{{name}}" {{#if animated}}disabled{{/if}}>
+        <input type="text" value="{{value}}" name="{{name}}" {{#if disabled}}disabled{{/if}}>
         {{else if color}}
-        <color-picker name="{{name}}" value="{{value}}" {{#if animated}}disabled{{/if}}></color-picker>
+        <color-picker name="{{name}}" value="{{value}}" {{#if disabled}}disabled{{/if}}></color-picker>
         {{else if file}}
-        <file-picker name="{{name}}" type="{{fileType}}" value="{{value}}" {{#if animated}}disabled{{/if}}></file-picker>
+        <file-picker name="{{name}}" type="{{fileType}}" value="{{value}}" {{#if disabled}}disabled{{/if}}></file-picker>
         {{else if number}}
-        <input type="number" name="{{name}}" step="any" value="{{value}}" {{#if animated}}disabled{{/if}}/>
+        <input type="number" name="{{name}}" step="any" value="{{value}}" {{#if disabled}}disabled{{/if}}/>
         {{else if boolean}}
-        <input type="checkbox" name="{{name}}" {{checked value}} {{#if animated}}disabled{{/if}}/>
+        <input type="checkbox" name="{{name}}" {{checked value}} {{#if disabled}}disabled{{/if}}/>
         {{else if range}}
-        <range-picker name="{{name}}" value="{{value}}" min="{{min}}" max="{{max}}" step="{{step}}" {{#if animated}}disabled{{/if}}></range-picker>
+        <range-picker name="{{name}}" value="{{value}}" min="{{min}}" max="{{max}}" step="{{step}}" {{#if disabled}}disabled{{/if}}></range-picker>
         {{else if select}}
-        <select name="{{name}}" {{#if animated}}disabled{{/if}}>
+        <select name="{{name}}" {{#if disabled}}disabled{{/if}}>
             {{selectOptions options selected=value}}
         </select>
         {{/if}}
     </div>
+    {{#if displayRandomizationControl}}
+    <a class="mod-control{{#if randomized}} active{{/if}}" data-action="randomize" data-param="{{name}}" data-tooltip="Randomize" {{#unless randomizable}}disabled{{/unless}}>
+        {{#if randomizable}}
+        <i class="fa-solid fa-dice"></i>
+        {{else}}
+        <i class="fa-sharp fa-thin fa-ban"></i>
+        {{/if}}
+    </a>
+    {{/if}}
     {{#if displayAnimationControl}}
-    <a class="animate{{#if animated}} active{{/if}}" data-action="animate" data-param="{{name}}" data-tooltip="Animate" {{#unless animatable}}disabled{{/unless}}>
+    <a class="mod-control{{#if animated}} active{{/if}}" data-action="animate" data-param="{{name}}" data-tooltip="Animate" {{#unless animatable}}disabled{{/unless}}>
         {{#if animatable}}
         <i class="fa-regular fa-clapperboard-play"></i>
         {{else}}
         <i class="fa-sharp fa-thin fa-ban"></i>
         {{/if}}
+    </a>
+    {{/if}}
+    {{#if removable}}
+    <a class="mod-control" data-action="remove" data-param="{{name}}" data-tooltip="Remove">
+        <i class="fa-solid fa-trash"></i>
     </a>
     {{/if}}
 </div>

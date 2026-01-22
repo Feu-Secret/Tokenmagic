@@ -293,16 +293,31 @@ function randomizeParams(params) {
 	if (params.randomized.hasOwnProperty('active') && !params.randomized.active) return;
 
 	for (const [param, opts] of Object.entries(params.randomized)) {
+		if (opts.hasOwnProperty('active') && !opts.active) continue;
+
 		let rVal;
-		if (Array.isArray(opts) || opts.hasOwnProperty('list')) {
+		if (Array.isArray(opts) || opts.list?.length) {
 			const list = opts.list ?? opts;
 			rVal = list[Math.floor(Math.random() * list.length)];
+		} else if (opts.color) {
+			rVal = Color.mix(opts.val1, opts.val2, Math.random());
 		} else {
-			const min = Math.min(opts.val1, opts.val2);
-			const max = Math.max(opts.val1, opts.val2);
-			const step = opts.step ?? 1;
-			const stepsInRange = (max - min + (Number.isInteger(step) ? 1 : 0)) / step;
-			rVal = Math.floor(Math.random() * stepsInRange) * step + min;
+			if (typeof opts.val1 === 'boolean') {
+				rVal = Math.random() > 0.5;
+			} else {
+				const min = Math.min(opts.val1, opts.val2);
+				const max = Math.max(opts.val1, opts.val2);
+				const step = opts.step ?? 1;
+				const steps = Math.floor((max - min) / step) + 1;
+				const randomStep = Math.floor(Math.random() * steps);
+
+				const precision = Math.max(
+					(step.toString().split('.')[1] || '').length,
+					(min.toString().split('.')[1] || '').length,
+				);
+
+				rVal = Number((min + randomStep * step).toFixed(precision));
+			}
 		}
 		foundry.utils.setProperty(params, param, rVal);
 		if (opts.hasOwnProperty('link')) foundry.utils.setProperty(params, opts.link, rVal);

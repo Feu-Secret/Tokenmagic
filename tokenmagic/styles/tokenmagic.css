@@ -145,7 +145,7 @@
 	border-color: crimson;
 }
 
-.tokenmagic.editor .header, .tokenmagic.animate .header {
+.tokenmagic.application .header {
 	text-align: center;
     margin-top: -15px;
     border: 1px solid var(--color-border);
@@ -165,18 +165,21 @@
 	border-color: greenyellow;
 }
 
-.tokenmagic.editor .animate {
+.tokenmagic.randomize {
+	border-color: rgb(255, 47, 210);
+}
+
+.tokenmagic.application .mod-control {
 	font-size: medium;
 	color: darkgray;
 	flex: 0;
-    margin-left: 3px;
 }
 
-.tokenmagic.editor .animate[disabled] {
+.tokenmagic.application .mod-control[disabled] {
 	opacity: 0.4;
 }
 
-.tokenmagic.editor .animate.active {
+.tokenmagic.application .mod-control.active {
     color: darkorange;
     background-image: -webkit-linear-gradient(37deg, #04ff00, #00ff66);
     -webkit-background-clip: text;

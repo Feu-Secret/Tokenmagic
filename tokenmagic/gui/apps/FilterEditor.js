@@ -305,6 +305,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		},
 		actions: {
 			animate: FilterEditor._onAnimate,
+			randomize: FilterEditor._onRandomize,
 		},
 	};
 
@@ -381,6 +382,10 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			this._animated = this._params.animated;
 		} else this._animated = {};
 
+		if (!isEmpty(this._params.randomized)) {
+			this._randomized = this._params.randomized;
+		} else this._randomized = {};
+
 		// Remove un-editable parameters
 		[
 			'placeableId',
@@ -391,6 +396,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			'filterType',
 			'filterId',
 			'animated',
+			'randomized',
 			'enabled',
 			'rank',
 		].forEach((param) => delete this._params[param]);
@@ -413,11 +419,19 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
 		if (control.type === 'ignore') return null;
 
+		// Is control animatable
 		if (control.type === 'range' || control.type === 'number' || control.type === 'color') {
 			if (!('animatable' in control)) control.animatable = true;
 			const animated = this._animated[param];
 			if (animated && (animated.active || !('active' in animated))) control.animated = true;
 		}
+
+		// Is control randomizable
+		if (!('randomizable' in control)) control.randomizable = true;
+		const randomized = this._randomized[param];
+		if (randomized && (randomized.active || !('active' in randomized))) control.randomized = true;
+
+		if (control.animated || control.randomized) control.disabled = true;
 
 		control.name = param;
 
@@ -470,11 +484,33 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 	}
 
+	static async _onRandomize(event) {
+		const param = event.target.closest('a').dataset.param;
+		const appId = RandomizationEditor.genId(this._document, {
+			...this._filterIdentifier,
+			param,
+		});
+		const activeInstance = foundry.applications.instances.get(appId);
+		if (activeInstance) activeInstance.close();
+		else {
+			const formGroupEl = event.target.closest('.form-group');
+			const { left, bottom } = formGroupEl.getBoundingClientRect();
+			new RandomizationEditor(
+				{
+					document: this._document,
+					filterIdentifier: this._filterIdentifier,
+					param,
+					control: this._paramControls[param],
+					parentApp: this,
+				},
+				{ id: appId, position: { top: bottom, left } },
+			).render(true);
+		}
+	}
+
 	/** @override */
 	_attachPartListeners(partId, element, options) {
 		super._attachPartListeners(partId, element, options);
-
-		console.log(partId);
 
 		// For smoother experience when using color-picker, lets respond to 'input' events
 		// and trigger 'change' events in turn triggering form submit and filter update
@@ -635,7 +671,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		keyControls[this._animParams.animType].forEach((param) => {
 			let control;
 			if (param === 'val1' || param === 'val2') {
-				control = { ...this._control, order: 1, animatable: false, animated: false, label: null };
+				control = { ...this._control, order: 1, disabled: false, label: null };
 			} else {
 				control = deepClone(ANIM_PARAM_CONTROLS[param]);
 			}
@@ -676,6 +712,234 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 
 		await TokenMagic.updateFiltersByPlaceable(this._document, [
 			{ ...this._filterIdentifier, animated: { [this._param]: params } },
+		]);
+
+		if (renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
+			if (FilterSelector.getFilter(this._document, this._filterIdentifier))
+				this._parentApp.render({ parts: ['filter'] });
+		}
+	}
+}
+
+class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
+	static genId(document, { filterId, filterType, filterInternalId, param }) {
+		return `tmfx-randomization-editor-${document.id}-${filterId}-${filterType}-${filterInternalId}-${param}`;
+	}
+
+	constructor({ document, filterIdentifier, param, control, parentApp } = {}, options) {
+		super(options);
+		this._document = document;
+		this._filterIdentifier = filterIdentifier;
+		this._param = param;
+		this._control = control;
+		this._parentApp = parentApp;
+		this._initRandomizeParams();
+	}
+
+	_initRandomizeParams() {
+		const tmParams = FilterSelector.getFilter(this._document, this._filterIdentifier);
+		let randomized = tmParams.randomized?.[this._param];
+
+		if (randomized && Array.isArray(randomized)) randomized = { list: randomized };
+
+		this._randomizeParams = mergeObject(
+			{
+				active: false,
+				type: null,
+				val1: this._control.min ?? tmParams[this._param],
+				val2: this._control.max ?? tmParams[this._param],
+				step: this._control.step ?? 1,
+				list: [],
+				link: null,
+			},
+			randomized ?? {},
+		);
+
+		if (randomized && !randomized.hasOwnProperty('active')) delete this._randomizeParams.active;
+	}
+
+	/** @override */
+	static DEFAULT_OPTIONS = {
+		tag: 'form',
+		window: {
+			title: 'Randomize',
+			contentClasses: ['standard-form'],
+		},
+		position: {
+			width: 400,
+		},
+		classes: ['tokenmagic', 'randomize', 'standard-form'],
+		form: {
+			handler: RandomizationEditor._onSubmit,
+			submitOnChange: true,
+			closeOnSubmit: false,
+		},
+		actions: {
+			addListElement: RandomizationEditor._onAddListElement,
+			remove: RandomizationEditor._onRemove,
+		},
+	};
+
+	/** @override */
+	static PARTS = {
+		header: {
+			template: `modules/tokenmagic/templates/apps/filter-editor/header.hbs`,
+		},
+		randomize: {
+			template: `modules/tokenmagic/templates/apps/filter-editor/randomize.hbs`,
+		},
+	};
+
+	/** @override */
+	async _preparePartContext(partId, context, options) {
+		context.partId = partId;
+		switch (partId) {
+			case 'header':
+				context.title = genLabel(this._param);
+				break;
+			case 'randomize':
+				await this._prepareRandomizeContext(context, options);
+				break;
+		}
+		return context;
+	}
+
+	async _prepareRandomizeContext(context, options) {
+		// Cache partials
+		await foundry.applications.handlebars.getTemplate(
+			`modules/tokenmagic/templates/apps/filter-editor/control.hbs`,
+			'tmfx-control',
+		);
+
+		// == Randomization types ==
+
+		const TYPE_OPTIONS = {
+			any: 'Within Control Range',
+			range: 'Range',
+			list: 'List',
+		};
+
+		const controlType = this._control.type;
+		const allowedTypes = [];
+
+		if (controlType === 'range') {
+			allowedTypes.push('any', 'range', 'list');
+		} else if (controlType === 'file' || controlType == 'text') {
+			allowedTypes.push('list');
+		} else if (controlType === 'color') {
+			allowedTypes.push('any', 'list', 'range');
+		} else if (controlType == 'boolean') {
+			allowedTypes.push('any');
+		} else if (controlType === 'select') {
+			allowedTypes.push('any', 'list');
+		} else if (controlType === 'number') {
+			allowedTypes.push('range', 'list');
+		}
+
+		const typeOptions = {};
+		Object.keys(TYPE_OPTIONS).forEach((k) => {
+			if (allowedTypes.includes(k)) typeOptions[k] = TYPE_OPTIONS[k];
+		});
+
+		// ==
+		const type = this._randomizeParams.type ?? (this._randomizeParams.list.length ? 'list' : allowedTypes[0]);
+
+		let controls = [];
+		if (type === 'range') {
+			controls.push({
+				...this._control,
+				value: this._randomizeParams.val1,
+				disabled: false,
+				name: 'val1',
+				label: 'Min',
+			});
+			controls.push({
+				...this._control,
+				value: this._randomizeParams.val2,
+				disabled: false,
+				name: 'val2',
+				label: 'Max',
+			});
+		} else if (type === 'list') {
+			for (let i = 0; i < this._randomizeParams.list.length; i++) {
+				controls.push({
+					...this._control,
+					value: this._randomizeParams.list[i],
+					disabled: false,
+					name: `list.${i}`,
+					label: `[${i}]`,
+					removable: true,
+				});
+			}
+		}
+
+		if (this._control.type === 'color') {
+			controls.forEach((c) => (c.value = new Color(c.value).toString()));
+		}
+
+		return Object.assign(context, {
+			typeOptions,
+			type,
+			controls,
+			active: this._randomizeParams.active,
+		});
+	}
+
+	static _onAddListElement(event) {
+		this._randomizeParams.list.push(this._randomizeParams.val1);
+		this.render({ parts: ['randomize'] }).then(() => {
+			this._onSubmitForm(this.options.form, event);
+		});
+	}
+
+	static _onRemove(event) {
+		const param = event.target.closest('.mod-control').dataset.param;
+		const index = Number(param.split('.').pop());
+		this._randomizeParams.list.splice(index, 1);
+		this.render({ parts: ['randomize'] }).then(() => {
+			this._onSubmitForm(this.options.form, event);
+		});
+	}
+
+	/**
+	 * Process form data
+	 */
+	static async _onSubmit(event, form, formData) {
+		const params = foundry.utils.expandObject(formData.object);
+		if (params.list) params.list = Object.values(params.list);
+
+		if (this._control.type === 'color') {
+			if (params.list) params.list = params.list.map((v) => Number(Color.fromString(v)));
+			if (params.val1) params.val1 = Number(Color.fromString(params.val1));
+			if (params.val2) params.val2 = Number(Color.fromString(params.val2));
+			params.color = true;
+		}
+
+		const renderParent = params.active !== this._randomizeParams.active;
+		const render = params.type !== this._randomizeParams.type;
+		mergeObject(this._randomizeParams, params);
+		if (render) {
+			await this.render({ parts: ['randomize'] });
+			this._onSubmitForm(this.options.form, event);
+			return;
+		}
+
+		const update = deepClone(this._randomizeParams);
+		if (update.type !== 'list') {
+			update.list = [];
+		}
+		if (update.type === 'any') {
+			if (this._control.type === 'color') {
+				update.val1 = 0;
+				update.val2 = 0xffffff;
+			} else if (this._control.hasOwnProperty('min')) {
+				update.val1 = this._control.min;
+				update.val2 = this._control.max;
+			}
+		}
+
+		await TokenMagic.updateFiltersByPlaceable(this._document, [
+			{ ...this._filterIdentifier, randomized: { [this._param]: update } },
 		]);
 
 		if (renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {

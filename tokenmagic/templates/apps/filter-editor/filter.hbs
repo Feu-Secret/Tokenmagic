@@ -4,11 +4,11 @@
         <fieldset>
             <legend>{{group.label}}</legend>
             {{#each group.controls}}
-                {{~>tmfx-control displayAnimationControl=true}}
+                {{~>tmfx-control displayAnimationControl=true displayRandomizationControl=true}}
             {{/each}}
         </fieldset>
         {{else}}
-        {{~>tmfx-control group displayAnimationControl=true}}
+        {{~>tmfx-control group displayAnimationControl=true displayRandomizationControl=true}}
         {{/if}}
     {{/each}}
 </div>
