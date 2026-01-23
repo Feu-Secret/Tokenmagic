@@ -17,85 +17,16 @@
 }
 
 /* ====================
- * == Preset Toggler ==
+ * ==== APP Common ====
  * ==================== */ 
 
- 
-.tokenmagic.toggler .controls {
-	display: flex;
-    justify-content: center;
-    gap: 5px;
-	font-size: 1.5em;
-    margin-top: 9px;
-}
-
-.tokenmagic.toggler .controls {
-	display: flex;
-    justify-content: center;
-    gap: 5px;
-	font-size: 1.5em;
-    margin-top: 9px;
-}
-
-.tokenmagic.toggler .controls > * {
-	width: 1.5em;
-	height: 1.5em;
-	border: 1px solid;
-	border-radius: 5px;
-	display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.tokenmagic.toggler .controls .active {
-	color: darkorange;
-}
-
-.tokenmagic.toggler .presets {
-	max-height: 500px;
-	overflow: auto;
-	margin-top: 1em;
-	display: flex;
-    flex-direction: column;
-	gap: 5px;
-}
-
-.tokenmagic.toggler .preset {
-	flex: 0 0 32px;
-	display: flex;
-	line-height: 1.5em;
-    align-items: center;
-	border: 1px solid;
-	border-radius: 10px;
-	cursor: pointer;
-}
-
-.tokenmagic.toggler .preset.active {
-	color: darkorange;
-}
-
-.tokenmagic.toggler .preset:hover {
-	background-color: #474747;
-}
-
-.tokenmagic.toggler .preset .name {
-	font-size: larger;
-	display: block;
-	text-align: center;
-	flex: 1;
-}
-
-/* ====================
- * == Filter Editor ===
- * ==================== */ 
-
- .tokenmagic.selector .filter-list {
+ .tokenmagic.application .filter-list {
 	flex: 1;
     overflow: hidden auto;
 	gap: 5px;
  }
 
-.tokenmagic.selector .filter {
+.tokenmagic.application .filter {
 	position: relative;
     margin-bottom: 0;
 	gap: 8px;
@@ -105,9 +36,14 @@
  	border-top: 1px solid;
     border-bottom: 1px solid;
     border-color: darkgray;
+	padding-right: 8px;
 }
 
-.tokenmagic.selector .filter img {
+.tokenmagic.application .filter:hover {
+	background-color: #2c2c2c;
+}
+
+.tokenmagic.application .filter img {
 	flex: 0 0 48px;
 	height: 48px;
     width: 48px;
@@ -117,32 +53,34 @@
 	border-radius: 5px;
  }
 
-.tokenmagic.selector .filter .name {
+.tokenmagic.application .filter .name {
 	line-height: 48px;
 	text-shadow: none;
+	display: flex;
+	flex-direction: column;
+    gap: 3px;
  }
 
- .tokenmagic.selector .filter .type {
+ .tokenmagic.application .filter .name > * {
+	line-height: 1rem;
+ }
+
+ .tokenmagic.application .filter .subtext {
 	color: darkorange;
-	margin-left: 5px;
+	line-height: 0.6rem;
+    font-size: smaller;
  }
 
-.tokenmagic.selector .filter .toggle {
+.tokenmagic.application .filter .control {
 	flex: 0 0 5px;
- }
-
- .tokenmagic.selector .filter .toggle.active {
-	color: chartreuse;
- }
-
-.tokenmagic.selector .filter .delete {
-	flex: 0 0 5px;
-    margin-right: 5px;
-	color: red;
 }
 
-.tokenmagic.editor {
-	border-color: crimson;
+.tokenmagic.application .filter .control.active {
+	color: chartreuse;
+}
+
+.tokenmagic.application .filter .control.delete {
+	color: red;
 }
 
 .tokenmagic.application .header {
@@ -150,23 +88,6 @@
     margin-top: -15px;
     border: 1px solid var(--color-border);
     font-size: x-large;
-}
-
-@-webkit-keyframes hue {
-  from {
-    -webkit-filter: hue-rotate(0deg);
-  }
-  to {
-    -webkit-filter: hue-rotate(-360deg);
-  }
-}
-
-.tokenmagic.animate {
-	border-color: greenyellow;
-}
-
-.tokenmagic.randomize {
-	border-color: rgb(255, 47, 210);
 }
 
 .tokenmagic.application .mod-control {
@@ -179,12 +100,70 @@
 	opacity: 0.4;
 }
 
+@-webkit-keyframes hue {
+  from {
+    -webkit-filter: hue-rotate(0deg);
+  }
+  to {
+    -webkit-filter: hue-rotate(-360deg);
+  }
+}
+
 .tokenmagic.application .mod-control.active {
     color: darkorange;
     background-image: -webkit-linear-gradient(37deg, #04ff00, #00ff66);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     -webkit-animation: hue 10s infinite linear;
+}
+
+/* Header Controls */
+
+.tokenmagic.application .header-controls {
+	display: flex;
+    justify-content: center;
+    gap: 5px;
+	font-size: 1.5em;
+    margin: 0 0px 10px 0;
+}
+
+.tokenmagic.application .header-controls > * {
+	width: 1.5em;
+	height: 1.5em;
+	border: 1px solid;
+	border-radius: 5px;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tokenmagic.application .header-controls .active {
+	color: darkorange;
+}
+
+/* ====================
+ * == Preset Toggler ==
+ * ==================== */ 
+
+.tokenmagic.toggler .filter.active {
+    border-color: greenyellow;
+    border-width: 2px;
+}
+
+/* ====================
+ * == Filter Editor ===
+ * ==================== */ 
+
+.tokenmagic.editor {
+	border-color: crimson;
+}
+
+.tokenmagic.animate {
+	border-color: greenyellow;
+}
+
+.tokenmagic.randomize {
+	border-color: rgb(255, 47, 210);
 }
 
 .tokenmagic.editor fieldset {

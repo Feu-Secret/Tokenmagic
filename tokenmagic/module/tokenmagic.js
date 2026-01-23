@@ -299,7 +299,7 @@ function randomizeParams(params) {
 		if (Array.isArray(opts) || opts.list?.length) {
 			const list = opts.list ?? opts;
 			rVal = list[Math.floor(Math.random() * list.length)];
-		} else if (opts.color) {
+		} else if (opts.color && opts.type !== 'any') {
 			rVal = Color.mix(opts.val1, opts.val2, Math.random());
 		} else {
 			if (typeof opts.val1 === 'boolean') {

@@ -1,3 +1,4 @@
+import { PresetsLibrary } from '../../fx/presets/defaultpresets.js';
 import { PlaceableType } from '../../module/constants.js';
 import { FilterType } from '../../module/tokenmagic.js';
 import { ANIM_PARAM_CONTROLS, FILTER_PARAM_CONTROLS } from './data/fxControls.js';
@@ -46,7 +47,6 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	constructor(document, sourceBounds) {
 		const options = {
 			id: FilterSelector.genId(document),
-			window: { title: `TokenMagicFX Filters [${document.documentName}]` },
 		};
 
 		// If bounds of the triggering element are provided lets position this
@@ -64,14 +64,24 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		this._document = document;
 	}
 
+	get title() {
+		let title = 'TokenMagicFX Filters';
+		if (this._document.documentName === 'Token' && this._document.name.trim()) title += ` [${this._document.name}]`;
+		else title += ` [${this._document.documentName}]`;
+		return title;
+	}
+
 	/** @override */
 	static DEFAULT_OPTIONS = {
 		window: { resizable: true },
 		classes: ['tokenmagic', 'selector', 'flexcol'],
 		actions: {
-			edit: FilterSelector._onEdit,
+			select: FilterSelector._onEdit,
 			delete: FilterSelector._onDelete,
 			toggle: FilterSelector._onToggle,
+			presetSearch: FilterSelector._onPresetSearch,
+			macro: FilterSelector._onSave,
+			preset: FilterSelector._onSave,
 		},
 		position: {
 			width: 300,
@@ -81,8 +91,11 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	/** @override */
 	static PARTS = {
-		main: {
-			template: `modules/tokenmagic/templates/apps/filter-editor/selector.hbs`,
+		header: {
+			template: `modules/tokenmagic/templates/apps/preset-search/header-controls.hbs`,
+		},
+		filters: {
+			template: `modules/tokenmagic/templates/apps/filter-editor/filter-list.hbs`,
 		},
 	};
 
@@ -97,7 +110,40 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	/** @override */
-	async _prepareContext(options) {
+	async _preparePartContext(partId, context, options) {
+		context.partId = partId;
+		switch (partId) {
+			case 'header':
+				this._prepareHeaderContext(context, options);
+				break;
+			case 'filters':
+				await this._prepareFiltersContext(context, options);
+				break;
+		}
+		return context;
+	}
+
+	_prepareHeaderContext(context, options) {
+		context.controls = [
+			{
+				action: 'presetSearch',
+				tooltip: 'Presets',
+				icon: 'fa-solid fa-box',
+			},
+			{
+				action: 'preset',
+				tooltip: 'Save as Preset',
+				icon: 'fa-solid fa-floppy-disk',
+			},
+			{
+				action: 'macro',
+				tooltip: 'Display as Macro',
+				icon: 'fa-solid fa-code',
+			},
+		];
+	}
+
+	async _prepareFiltersContext(context, options) {
 		this._filters = (this._document.getFlag('tokenmagic', 'filters') ?? [])
 			.map((filter) => {
 				const { filterId, filterType, rank, enabled, filterInternalId } = filter.tmFilters.tmParams;
@@ -106,14 +152,29 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 					filterType,
 					filterInternalId,
 					label: filterId,
+					subtext: filterType,
 					rank,
 					thumbnail: FILTER_PARAM_CONTROLS[filterType]?._thumb ?? FILTER_PARAM_CONTROLS.common._thumb,
-					enabled,
+					controls: [
+						{
+							class: 'toggle',
+							action: 'toggle',
+							icon: 'fa-sharp fa-solid fa-power-off',
+							tooltip: 'Toggle ON/OFF',
+							active: enabled || enabled == undefined,
+						},
+						{
+							class: 'delete',
+							action: 'delete',
+							tooltip: 'Delete',
+							icon: 'fa-solid fa-trash',
+						},
+					],
 				};
 			})
 			.sort((f1, f2) => f1.rank - f2.rank);
 
-		return { filters: this._filters };
+		return Object.assign(context, { filters: this._filters });
 	}
 
 	/** @override */
@@ -146,9 +207,22 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	async _onWindowDrop(event) {
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-		if (this._document.id !== data.placeableId || this._document.parent.id !== data.sceneId) {
+		if (data.presetName && data.library) {
+			return this._onAddPreset(data);
+		} else if (this._document.id !== data.placeableId || this._document.parent.id !== data.sceneId) {
 			return this._onAddFilter(data);
 		}
+	}
+
+	async _onAddPreset({ presetName, library }) {
+		const preset = TokenMagic.getPresets(library).find((p) => p.name === presetName);
+		if (!preset?.params?.length) return;
+
+		if (preset.defaultTexture && this._document.documentName === 'MeasuredTemplate') {
+			await this._document.update({ texture: preset.defaultTexture });
+		}
+
+		await TokenMagic.addFilters(this._document, preset.params);
 	}
 
 	async _onFilterDrop(event) {
@@ -242,6 +316,22 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			},
 		]);
 		this.render(true);
+	}
+
+	static _onPresetSearch(event) {
+		import('./PresetSearch.js').then((module) => {
+			module.presetSearch({
+				position: {
+					top: this.position.top,
+					left: this.position.left + this.position.width,
+				},
+			});
+		});
+	}
+
+	static _onSave(event) {
+		const action = event.target.closest('a').dataset.action;
+		new SavePreset(this._document, action === 'macro').render(true);
 	}
 
 	/** @override */
@@ -946,5 +1036,139 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (FilterSelector.getFilter(this._document, this._filterIdentifier))
 				this._parentApp.render({ parts: ['filter'] });
 		}
+	}
+}
+class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
+	constructor(document, displayMacro = false) {
+		super();
+		this._document = document;
+		this._displayMacro = displayMacro;
+
+		const filters = deepClone(document.getFlag('tokenmagic', 'filters'));
+		if (!filters?.length) throw Error('Document does not contain filters.');
+		this._originalParams = filters.map((f) => f.tmFilters.tmParams);
+
+		this._originalParams.forEach((param) => {
+			['updateId', 'placeableId', 'filterInternalId', 'filterOwner', 'placeableType'].forEach((k) => {
+				delete param[k];
+			});
+		});
+
+		this._name = this._originalParams[0].filterId;
+		if (FilterType[this._name]) this._name = 'NewFilter';
+
+		this._filterRandomized = true;
+		this._filterAnimated = true;
+	}
+
+	_prepareParams() {
+		const params = deepClone(this._originalParams);
+		params.forEach((param) => {
+			param.filterId = this._name;
+			if (this._filterAnimated && param.animated) {
+				Object.keys(param.animated).forEach((k) => {
+					if ('active' in param.animated[k] && !param.animated[k].active) {
+						delete param.animated[k];
+					}
+				});
+			}
+			if (this._filterRandomized && param.randomized) {
+				Object.keys(param.randomized).forEach((k) => {
+					if ('active' in param.randomized[k] && !param.randomized[k].active) {
+						delete param.randomized[k];
+					}
+				});
+			}
+		});
+
+		return params;
+	}
+
+	/** @override */
+	static DEFAULT_OPTIONS = {
+		id: 'tmfx-save-preset',
+		tag: 'form',
+		window: {
+			title: 'Save Preset',
+			contentClasses: ['standard-form'],
+		},
+		position: {
+			width: 500,
+		},
+		classes: ['tokenmagic', 'standard-form'],
+		form: {
+			handler: SavePreset._onSubmit,
+			submitOnChange: true,
+			closeOnSubmit: false,
+		},
+		actions: {
+			save: SavePreset._onSave,
+		},
+	};
+
+	get title() {
+		if (this._displayMacro) return `TokenMagicFX Macro`;
+		return `Save Preset`;
+	}
+
+	/** @override */
+	static PARTS = {
+		main: { template: `modules/tokenmagic/templates/apps/filter-editor/save.hbs` },
+		footer: { template: 'templates/generic/form-footer.hbs' },
+	};
+
+	/** @override */
+	async _preparePartContext(partId, context, options) {
+		context.partId = partId;
+		switch (partId) {
+			case 'main':
+				context.name = this._name;
+				context.filterRandomized = this._filterRandomized;
+				context.filterAnimated = this._filterAnimated;
+				if (this._displayMacro) context.macro = this._genMacro();
+				break;
+			case 'footer':
+				if (!this._displayMacro) {
+					context.buttons = [{ type: 'button', icon: 'fa-solid fa-floppy-disk', label: 'Save Preset', action: 'save' }];
+				} else context.buttons = [];
+				break;
+		}
+		return context;
+	}
+
+	_genMacro() {
+		return `const params = ${JSON.stringify(this._prepareParams(), null, 2)};\n\nawait TokenMagic.addUpdateFiltersOnSelected(params);`;
+	}
+
+	/**
+	 * Process form data
+	 */
+	static async _onSubmit(event, form, formData) {
+		const { name, filterRandomized, filterAnimated } = foundry.utils.expandObject(formData.object);
+
+		this._name = name;
+		this._filterRandomized = filterRandomized;
+		this._filterAnimated = filterAnimated;
+
+		if (this._displayMacro) this.element.querySelector('textarea').value = this._genMacro();
+	}
+
+	static async _onSave(event) {
+		const name = this._name;
+		const library = this._document.documentName === 'MeasuredTemplate' ? PresetsLibrary.TEMPLATE : PresetsLibrary.MAIN;
+		const params = this._prepareParams();
+
+		const preset = TokenMagic.getPreset({ name, library });
+		if (preset) {
+			const overwrite = await foundry.applications.api.DialogV2.confirm({
+				window: { title: 'Overwrite Preset' },
+				content: `<p style="color: red;"><strong>A preset with the same name already exists. Would you like to overwrite it?</strong></p>`,
+			});
+			if (!overwrite) return;
+			await TokenMagic.deletePreset({ name, library }, true);
+		}
+
+		await TokenMagic.addPreset({ name, library }, params);
+		this.close(true);
 	}
 }

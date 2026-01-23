@@ -1,0 +1,16 @@
+<section style="overflow: auto">
+    <ol class="filter-list plain flexcol">
+    {{#each filters}}
+    <li class="filter flexrow{{#if active}} active{{/if}}" data-filter-id="{{filterId}}" data-filter-type="{{filterType}}" data-filter-internal-id="{{filterInternalId}}" draggable="true">
+        <img class="thumbnail" src="{{thumbnail}}" loading="lazy">
+        <a class="name ellipsis" data-action="select" >
+            <span>{{label}}</span>
+            <span class="subtext">{{subtext}}</span>
+        </a>
+        {{#each controls}}
+        <a class="control{{#if class}} {{class}}{{/if}}{{#if active}} active{{/if}}" data-action="{{action}}" data-tooltip="{{tooltip}}"><i class="{{icon}}"></i></a>
+        {{/each}}
+    </li>
+    {{/each}}
+    </ol>
+</section>

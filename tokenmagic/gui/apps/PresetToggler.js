@@ -1,7 +1,6 @@
 import { PresetsLibrary } from '../../fx/presets/defaultpresets';
 import { PlaceableType } from '../../module/constants';
-
-const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
+import { PresetSearch } from './PresetSearch';
 
 export function presetToggler() {
 	const activeInstance = foundry.applications.instances.get(PresetToggler.DEFAULT_OPTIONS.id);
@@ -12,106 +11,46 @@ export function presetToggler() {
 	new PresetToggler().render(true);
 }
 
-class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
+class PresetToggler extends PresetSearch {
 	/** @override */
 	static DEFAULT_OPTIONS = {
-		id: 'tmfx-toggler',
+		id: 'tmfx-preset-toggler',
 		window: {
-			title: 'TMFX Presets',
+			title: 'TokenMagicFX Preset Toggler',
 		},
 		classes: ['tokenmagic', 'toggler', 'flexcol'],
 		actions: {
-			toggle: PresetToggler._onTogglePreset,
+			select: PresetToggler._onTogglePreset,
 			clear: PresetToggler._onClearAllPresets,
-			toggleActiveOnly: PresetToggler._onToggleActiveOnly,
-			clickControl: PresetToggler._onExecuteControlMacro,
-			toggleTemplates: PresetToggler._onToggleTemplateDisplay,
-		},
-	};
-
-	/** @override */
-	static PARTS = {
-		header: {
-			template: `modules/tokenmagic/templates/apps/preset-toggle-header.hbs`,
-		},
-		presets: {
-			template: `modules/tokenmagic/templates/apps/preset-toggle.hbs`,
-			scrollable: ['.presets'],
+			activeOnly: PresetToggler._onToggleActiveOnly,
 		},
 	};
 
 	/** @override */
 	async _preparePartContext(partId, context, options) {
-		context.partId = partId;
+		await super._preparePartContext(partId, context, options);
 		switch (partId) {
-			case 'presets':
-				await this._preparePresetContext(context, options);
-				break;
 			case 'header':
-				await this._prepareHeaderContext(context, options);
+				context.activeOnly = this._activeOnly;
+				break;
+			case 'controls':
+				context.controls.push({
+					action: 'activeOnly',
+					tooltip: 'Toggle active only display',
+					icon: 'fa-solid fa-power-off',
+					active: Boolean(this._activeOnly),
+				});
+				context.controls.push({
+					action: 'clear',
+					tooltip: 'Clear All Filters',
+					icon: 'fa-solid fa-eraser',
+				});
+				break;
+			case 'presets':
+				if (this._activeOnly) context.filters = context.filters.filter((p) => p.active);
 				break;
 		}
 		return context;
-	}
-
-	async _prepareHeaderContext(context, options) {
-		context.activeOnly = this._activeOnly;
-		context.templates = this._templates;
-		context.searchQuery = this._searchQuery ?? '';
-
-		// Provide opportunity for 3rd party modules to insert additional controls
-		// Expected format: { icon: 'fa-icon', tooltip: 'Tooltip Text', uuid: 'Macro UUID' }
-		const controls = [];
-		Hooks.call('TokenMagic.getPresetTogglerControls', controls);
-		context.controls = controls;
-	}
-
-	async _preparePresetContext(context, options) {
-		const controlled = TokenMagic.getControlledPlaceables();
-
-		let presets = TokenMagic.getPresets(this._templates ? PresetsLibrary.TEMPLATE : PresetsLibrary.MAIN);
-		if (this._searchQuery?.trim()) {
-			const terms = this._searchQuery
-				.split(' ')
-				.map((term) => term.trim())
-				.filter(Boolean);
-			if (terms.length) {
-				presets = presets.filter((p) => {
-					const name = p.name.toLocaleLowerCase();
-					return terms.every((t) => name.includes(t));
-				});
-			}
-		}
-
-		presets = presets.map((p) => {
-			return {
-				name: p.name,
-				id: p.params[0].filterId,
-				active: controlled.some((c) => TokenMagic.hasFilterId(c, p.params[0].filterId)),
-				texture: p.defaultTexture,
-			};
-		});
-		if (this._activeOnly) presets = presets.filter((p) => p.active);
-
-		context.presets = presets;
-	}
-
-	/** @override */
-	_attachPartListeners(partId, element, options) {
-		super._attachPartListeners(partId, element, options);
-		switch (partId) {
-			case 'header':
-				element.querySelector('input[type="search"]').addEventListener('input', this._onSearch.bind(this));
-				break;
-		}
-	}
-
-	_onSearch(event) {
-		clearTimeout(this._searchTimeout);
-		this._searchTimeout = setTimeout(() => {
-			this._searchQuery = event.target.value;
-			this.render({ parts: ['presets'] });
-		}, 200);
 	}
 
 	/**
@@ -120,16 +59,18 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 	 * @param {HTMLElement} element
 	 */
 	static async _onTogglePreset(event, element) {
-		const filterId = element.dataset.id;
 		const controlled = TokenMagic.getControlledPlaceables();
 		if (!controlled.length) return;
 
+		const { filterId: name, filterType: library } = event.target.closest('.filter').dataset;
+
+		const preset = TokenMagic.getPresets(library).find((p) => p.name === name);
+		if (!preset?.params?.length) return;
+
+		const { filterId } = preset.params[0];
 		const isActive = controlled.some((c) => TokenMagic.hasFilterId(c, filterId));
-		const presetQuery = {
-			name: element.dataset.name,
-			library: this._templates ? PresetsLibrary.TEMPLATE : PresetsLibrary.MAIN,
-		};
-		const texture = element.dataset.texture;
+		const presetQuery = { name, library };
+		const texture = preset.defaultTexture;
 
 		if (isActive) {
 			const filterIds = new Set(TokenMagic.getPreset(presetQuery).map((p) => p.filterId));
@@ -170,15 +111,6 @@ class PresetToggler extends HandlebarsApplicationMixin(ApplicationV2) {
 	static _onToggleActiveOnly(event, element) {
 		this._activeOnly = !this._activeOnly;
 		this.render(true);
-	}
-
-	static _onToggleTemplateDisplay(event, element) {
-		this._templates = !this._templates;
-		this.render(true);
-	}
-
-	static _onExecuteControlMacro(event, element) {
-		fromUuid(element.dataset.uuid).then((macro) => macro?.execute?.());
 	}
 
 	/** @override */
