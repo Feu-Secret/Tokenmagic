@@ -123,8 +123,8 @@
 	display: flex;
     justify-content: center;
     gap: 5px;
-	font-size: 1.5em;
-    margin: 0 0px 10px 0;
+	font-size: 1.2em;
+	margin: -10px 0px 8px 0;
 }
 
 .tokenmagic.application .header-controls > * {

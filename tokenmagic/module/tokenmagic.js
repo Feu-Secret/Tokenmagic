@@ -1610,9 +1610,8 @@ function getAnchor(direction, angle, shapeType) {
 }
 
 function onMeasuredTemplateConfig(templateConfig, html) {
-	html = $(html);
 	if (!isVideoDisabled()) {
-		html.find('[name="texture"]').attr('type', 'imagevideo');
+		html.querySelector('[name="texture"]').setAttribute('type', 'imagevideo');
 	}
 
 	function compare(a, b) {
@@ -1653,8 +1652,10 @@ function onMeasuredTemplateConfig(templateConfig, html) {
     <div class="form-group">
         <label>${i18n('TMFX.template.opacity')}</label>
         <div class="form-fields">
-            <input type="range" name="flags.tokenmagic.templateData.opacity" value="${opacity}" min="0.0" max="1.0" step="0.05" data-dtype="Number"/>
-            <span class="range-value">${opacity}</span>
+			<range-picker name="flags.tokenmagic.templateData.opacity" value="${opacity}" min="0.0" max="1.0" step="0.01">
+				<input type="range" min="0.0" max="1" step="0.01">
+				<input type="number" min="0.0" max="1" step="0.01">
+			</range-picker>
         </div>
     </div>
 
@@ -1677,7 +1678,8 @@ function onMeasuredTemplateConfig(templateConfig, html) {
     `;
 
 	// injecting
-	html.find('[name="hidden"]').closest('.form-group').after(divPreset);
+	const formGroup = html.querySelector('[name="texture"]').closest('.form-group');
+	$(formGroup).after(divPreset);
 	templateConfig.setPosition({ height: 'auto' });
 }
 
@@ -2192,12 +2194,19 @@ Hooks.on('preCreateMeasuredTemplate', (document) => {
 /* -------------------------------------------- */
 
 Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
+	if (!game.user.isGM) return;
+
+	const alwaysDisplay = game.settings.get('tokenmagic', 'alwaysDisplayEditorControl');
+	if (!alwaysDisplay && !hud.object.document.getFlag('tokenmagic', 'filters')?.length) {
+		return;
+	}
+
 	const button = document.createElement('button');
 	button.classList.add('control-icon');
 	//if (foundry.utils.getProperty(data, 'flags.tokenmagic.filters')?.length) button.classList.add('active');
 
 	button.dataset.action = 'tmfx-editor';
-	button.dataset.tooltip = 'TMFX Editor';
+	button.dataset.tooltip = game.i18n.localize('TMFX.hud.title');
 
 	const icon = document.createElement('i');
 	icon.classList.add('fa-solid', 'fa-fire');
@@ -2208,4 +2217,17 @@ Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
 	});
 
 	form.querySelector('.placeable-hud .col.left').appendChild(button);
+});
+
+Hooks.on('getHeaderControlsDocumentSheetV2', (config, controls) => {
+	if (config.document._TMFXgetPlaceableType?.()) {
+		controls.push({
+			onClick: () => {
+				window.TokenMagic.filterEditor(config.document);
+			},
+			icon: 'fa-solid fa-fire',
+			label: 'TMFX.hud.title',
+			visible: game.user.isGM,
+		});
+	}
 });

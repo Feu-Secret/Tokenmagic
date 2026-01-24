@@ -65,7 +65,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	get title() {
-		let title = 'TokenMagicFX Filters';
+		let title = game.i18n.localize('TMFX.TokenMagic') + ' ' + game.i18n.localize('TMFX.app.filterSelector.title');
 		if (this._document.documentName === 'Token' && this._document.name.trim()) title += ` [${this._document.name}]`;
 		else title += ` [${this._document.documentName}]`;
 		return title;
@@ -160,13 +160,13 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 							class: 'toggle',
 							action: 'toggle',
 							icon: 'fa-sharp fa-solid fa-power-off',
-							tooltip: 'Toggle ON/OFF',
+							tooltip: game.i18n.localize('CONTROLS.CommonOnOff'),
 							active: enabled || enabled == undefined,
 						},
 						{
 							class: 'delete',
 							action: 'delete',
-							tooltip: 'Delete',
+							tooltip: game.i18n.localize('SIDEBAR.Delete'),
 							icon: 'fa-solid fa-trash',
 						},
 					],
@@ -380,7 +380,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		id: '',
 		tag: 'form',
 		window: {
-			title: 'Filter',
+			title: 'TMFX.app.filterEditor.title',
 			contentClasses: ['standard-form'],
 			resizable: true,
 		},
@@ -694,7 +694,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 	static DEFAULT_OPTIONS = {
 		tag: 'form',
 		window: {
-			title: 'Animate',
+			title: 'TMFX.app.animationEditor.title',
 			contentClasses: ['standard-form'],
 		},
 		position: {
@@ -852,7 +852,7 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 	static DEFAULT_OPTIONS = {
 		tag: 'form',
 		window: {
-			title: 'Randomize',
+			title: 'TMFX.app.randomizationEditor.title',
 			contentClasses: ['standard-form'],
 		},
 		position: {
@@ -904,9 +904,9 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		// == Randomization types ==
 
 		const TYPE_OPTIONS = {
-			any: 'Within Control Range',
-			range: 'Range',
-			list: 'List',
+			any: game.i18n.localize('TMFX.app.randomizationEditor.option.default'),
+			range: game.i18n.localize('TMFX.app.randomizationEditor.option.range'),
+			list: game.i18n.localize('TMFX.app.randomizationEditor.option.list'),
 		};
 
 		const controlType = this._control.type;
@@ -941,14 +941,14 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 				value: this._randomizeParams.val1,
 				disabled: false,
 				name: 'val1',
-				label: 'Min',
+				label: game.i18n.localize('TMFX.app.randomizationEditor.option.min'),
 			});
 			controls.push({
 				...this._control,
 				value: this._randomizeParams.val2,
 				disabled: false,
 				name: 'val2',
-				label: 'Max',
+				label: game.i18n.localize('TMFX.app.randomizationEditor.option.max'),
 			});
 		} else if (type === 'list') {
 			for (let i = 0; i < this._randomizeParams.list.length; i++) {
@@ -1089,7 +1089,6 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 		id: 'tmfx-save-preset',
 		tag: 'form',
 		window: {
-			title: 'Save Preset',
 			contentClasses: ['standard-form'],
 		},
 		position: {
@@ -1107,8 +1106,8 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 	};
 
 	get title() {
-		if (this._displayMacro) return `TokenMagicFX Macro`;
-		return `Save Preset`;
+		if (this._displayMacro) return game.i18n.localize('DOCUMENT.Macro');
+		return game.i18n.localize('TMFX.app.savePreset.title');
 	}
 
 	/** @override */
@@ -1129,7 +1128,9 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 				break;
 			case 'footer':
 				if (!this._displayMacro) {
-					context.buttons = [{ type: 'button', icon: 'fa-solid fa-floppy-disk', label: 'Save Preset', action: 'save' }];
+					context.buttons = [
+						{ type: 'button', icon: 'fa-solid fa-floppy-disk', label: game.i18n.localize('TMFX.save'), action: 'save' },
+					];
 				} else context.buttons = [];
 				break;
 		}
@@ -1161,8 +1162,8 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 		const preset = TokenMagic.getPreset({ name, library });
 		if (preset) {
 			const overwrite = await foundry.applications.api.DialogV2.confirm({
-				window: { title: 'Overwrite Preset' },
-				content: `<p style="color: red;"><strong>A preset with the same name already exists. Would you like to overwrite it?</strong></p>`,
+				window: { title: 'TMFX.app.savePreset.confirm.title' },
+				content: `<p style="color: red;"><strong>${game.i18n.localize('TMFX.app.savePreset.confirm.message')}</strong></p>`,
 			});
 			if (!overwrite) return;
 			await TokenMagic.deletePreset({ name, library }, true);

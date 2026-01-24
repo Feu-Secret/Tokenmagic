@@ -151,6 +151,15 @@ export class TokenMagicSettings {
 			default: DataVersion.ARCHAIC,
 			type: String,
 		});
+
+		game.settings.register('tokenmagic', 'alwaysDisplayEditorControl', {
+			name: game.i18n.localize('TMFX.settings.alwaysDisplayEditorControl.name'),
+			hint: game.i18n.localize('TMFX.settings.alwaysDisplayEditorControl.hint'),
+			scope: 'world',
+			config: true,
+			default: true,
+			type: Boolean,
+		});
 	}
 
 	static configureAutoTemplate(enabled = false) {
