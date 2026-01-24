@@ -124,6 +124,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	_prepareHeaderContext(context, options) {
+		const hasFilters = Boolean(this._document.getFlag('tokenmagic', 'filters')?.length);
 		context.controls = [
 			{
 				action: 'presetSearch',
@@ -134,11 +135,13 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				action: 'preset',
 				tooltip: 'Save as Preset',
 				icon: 'fa-solid fa-floppy-disk',
+				disabled: !hasFilters,
 			},
 			{
 				action: 'macro',
 				tooltip: 'Display as Macro',
 				icon: 'fa-solid fa-code',
+				disabled: !hasFilters,
 			},
 		];
 	}
@@ -348,7 +351,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 				// TODO: a smarter comparison?
 				if ('-=filters' in tm || tm.filters?.length !== this._filters.length) {
-					this.render(true);
+					this.render({ parts: ['header', 'filters'] });
 				}
 			});
 			this._hooks.push({ hook, id });

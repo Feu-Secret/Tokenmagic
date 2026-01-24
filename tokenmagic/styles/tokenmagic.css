@@ -127,7 +127,7 @@
 	margin: -10px 0px 8px 0;
 }
 
-.tokenmagic.application .header-controls > * {
+.tokenmagic.application .header-controls > a {
 	width: 1.5em;
 	height: 1.5em;
 	border: 1px solid;
@@ -135,6 +135,10 @@
 	display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.tokenmagic.application .header-controls > a[disabled] {
+	opacity: 0.5;
 }
 
 .tokenmagic.application .header-controls .active {

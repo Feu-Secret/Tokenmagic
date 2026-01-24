@@ -1,5 +1,5 @@
 <section  class="header-controls">
     {{#each controls}}
-    <a class="{{#if active}}active{{/if}}" data-action="{{action}}" data-tooltip="{{tooltip}}"><i class="{{icon}}"></i></a>
+    <a class="{{#if active}}active{{/if}}" data-action="{{action}}" data-tooltip="{{tooltip}}" {{disabled disabled}}><i class="{{icon}}"></i></a>
     {{/each}}
 </section>
