@@ -20,7 +20,7 @@
         {{/if}}
     </div>
     {{#if displayRandomizationControl}}
-    <a class="mod-control{{#if randomized}} active{{/if}}" data-action="randomize" data-param="{{name}}" data-tooltip="Randomize" {{#unless randomizable}}disabled{{/unless}}>
+    <a class="mod-control{{#if randomized}} active{{/if}}" data-action="randomize" data-param="{{name}}" data-tooltip="{{localize "TMFX.app.randomizationEditor.title"}}" {{#unless randomizable}}disabled{{/unless}}>
         {{#if randomizable}}
         <i class="fa-solid fa-dice"></i>
         {{else}}
@@ -29,7 +29,7 @@
     </a>
     {{/if}}
     {{#if displayAnimationControl}}
-    <a class="mod-control{{#if animated}} active{{/if}}" data-action="animate" data-param="{{name}}" data-tooltip="Animate" {{#unless animatable}}disabled{{/unless}}>
+    <a class="mod-control{{#if animated}} active{{/if}}" data-action="animate" data-param="{{name}}" data-tooltip="{{localize "TMFX.app.animationEditor.title"}}" {{#unless animatable}}disabled{{/unless}}>
         {{#if animatable}}
         <i class="fa-regular fa-clapperboard-play"></i>
         {{else}}
@@ -38,7 +38,7 @@
     </a>
     {{/if}}
     {{#if removable}}
-    <a class="mod-control" data-action="remove" data-param="{{name}}" data-tooltip="Remove">
+    <a class="mod-control" data-action="remove" data-param="{{name}}" data-tooltip="{{localize "Delete"}}">
         <i class="fa-solid fa-trash"></i>
     </a>
     {{/if}}

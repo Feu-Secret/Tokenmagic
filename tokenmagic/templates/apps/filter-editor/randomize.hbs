@@ -17,7 +17,7 @@
     </div>
 
     {{#if (eq type "any")}}
-    <p>Random values will be picked from the full range defined by the control.</p>
+    <p>{{localize "TMFX.app.randomizationEditor.option.any.hint"}}</p>
     {{else if (eq type "range")}}
         {{#each controls}}
             {{~>tmfx-control}}
@@ -26,7 +26,7 @@
         {{#each controls}}
             {{~>tmfx-control}}
         {{/each}}
-        <button type="button" data-action="addListElement">Add</button>
+        <button type="button" data-action="addListElement">{{localize "TMFX.app.randomizationEditor.option.list.add"}}</button>
     {{/if}}
 
     {{!-- {{#if linkables}}

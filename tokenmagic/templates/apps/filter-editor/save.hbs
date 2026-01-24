@@ -1,39 +1,39 @@
 <section class="flexcol" style="gap: 10px;">
 
     <div class="form-group">    
-        <label>Name</label>
+        <label>{{localize "TMFX.app.savePreset.name.label"}}</label>
         <div class="form-fields">
             <input type="text" name="name" value="{{name}}"/>
         </div>
-        <p class="hint">The name will be used as a unique identifier for this effect.</p>
+        <p class="hint">{{localize "TMFX.app.savePreset.name.hint"}}</p>
     </div>
 
     {{#if macro}}
-    <label>Macro:</label>
+    <label>{{localize "TMFX.app.savePreset.texture.label"}}:</label>
     <textarea style="width: 100%; height: 280px;" readonly>{{macro}}</textarea>
     {{else if (eq documentName "MeasuredTemplate")}}
     <div class="form-group">    
-        <label>Texture</label>
+        <label>{{localize "TMFX.app.savePreset.texture.label"}}</label>
         <div class="form-fields">
             <file-picker name="texture" type="imagevideo" value="{{texture}}"></file-picker>
         </div>
-        <p class="hint">Texture to be applied to the MeasuredTemplate along with the filter.</p>
+        <p class="hint">{{localize "TMFX.app.savePreset.texture.hint"}}</p>
     </div>
     {{/if}}
 
     <div class="form-group">    
-        <label>Clean Randomized</label>
+        <label>{{localize "TMFX.app.savePreset.filterRandomized.label"}}</label>
         <div class="form-fields">
             <input type="checkbox" name="filterRandomized" {{checked filterRandomized}}/>
         </div>
-        <p class="hint">Remove inactive randomized fields.</p>
+        <p class="hint">{{localize "TMFX.app.savePreset.filterRandomized.hint"}}</p>
     </div>
 
     <div class="form-group">    
-        <label>Clean Animated</label>
+        <label>{{localize "TMFX.app.savePreset.filterAnimated.label"}}</label>
         <div class="form-fields">
             <input type="checkbox" name="filterAnimated" {{checked filterAnimated}}/>
         </div>
-        <p class="hint">Remove inactive animated fields.</p>
+        <p class="hint">{{localize "TMFX.app.savePreset.filterAnimated.hint"}}</p>
     </div>
 </section>

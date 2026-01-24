@@ -86,7 +86,7 @@
 .tokenmagic.application .header {
 	text-align: center;
     margin-top: -15px;
-    border: 1px solid var(--color-border);
+	border-bottom: 1px solid var(--color-border);
     font-size: x-large;
 }
 
@@ -158,16 +158,20 @@
  * == Filter Editor ===
  * ==================== */ 
 
+.tokenmagic.selector {
+	background: var(--color-cool-5-75);
+}
+
 .tokenmagic.editor {
-	border-color: crimson;
+	--color-border: crimson;
 }
 
 .tokenmagic.animate {
-	border-color: greenyellow;
+	--color-border: greenyellow;
 }
 
 .tokenmagic.randomize {
-	border-color: rgb(255, 47, 210);
+	--color-border: rgb(171 255 243);
 }
 
 .tokenmagic.editor fieldset {

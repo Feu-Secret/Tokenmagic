@@ -66,8 +66,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	get title() {
 		let title = game.i18n.localize('TMFX.TokenMagic') + ' ' + game.i18n.localize('TMFX.app.filterSelector.title');
-		if (this._document.documentName === 'Token' && this._document.name.trim()) title += ` [${this._document.name}]`;
-		else title += ` [${this._document.documentName}]`;
+		if (this._document.documentName === 'Token' && this._document.name.trim()) title += ` [ ${this._document.name} ]`;
+		else title += ` [ ${this._document.documentName} ]`;
 		return title;
 	}
 
@@ -384,6 +384,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		tag: 'form',
 		window: {
 			title: 'TMFX.app.filterEditor.title',
+			icon: 'fa-solid fa-fire',
 			contentClasses: ['standard-form'],
 			resizable: true,
 		},
@@ -698,6 +699,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		tag: 'form',
 		window: {
 			title: 'TMFX.app.animationEditor.title',
+			icon: 'fa-regular fa-clapperboard-play',
 			contentClasses: ['standard-form'],
 		},
 		position: {
@@ -856,6 +858,7 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		tag: 'form',
 		window: {
 			title: 'TMFX.app.randomizationEditor.title',
+			icon: 'fa-solid fa-dice',
 			contentClasses: ['standard-form'],
 		},
 		position: {
@@ -907,9 +910,9 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		// == Randomization types ==
 
 		const TYPE_OPTIONS = {
-			any: game.i18n.localize('TMFX.app.randomizationEditor.option.default'),
+			any: game.i18n.localize('TMFX.app.randomizationEditor.option.any.label'),
 			range: game.i18n.localize('TMFX.app.randomizationEditor.option.range'),
-			list: game.i18n.localize('TMFX.app.randomizationEditor.option.list'),
+			list: game.i18n.localize('TMFX.app.randomizationEditor.option.list.label'),
 		};
 
 		const controlType = this._control.type;
