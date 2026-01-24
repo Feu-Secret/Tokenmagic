@@ -4,11 +4,10 @@ import { FilterType } from '../../module/tokenmagic.js';
 import { ANIM_PARAM_CONTROLS, FILTER_PARAM_CONTROLS } from './data/fxControls.js';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
-const { deepClone, getType, isEmpty, mergeObject } = foundry.utils;
+const { deepClone, getType, isEmpty, mergeObject, diffObject } = foundry.utils;
 
 /**
  * TODO:
- * add a group field to controls, to group them into fieldsets
  * Twist filter 'offset' {x: 0, y: 0} // ignore for now
  * zoomblur filter 'center' [672.5, 552.5] (not normalized/static like the bulge filter)
  * Pixelate/Ascii filters respond to camera movement
@@ -65,7 +64,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	get title() {
-		let title = game.i18n.localize('TMFX.TokenMagic') + ' ' + game.i18n.localize('TMFX.app.filterSelector.title');
+		let title =
+			game.i18n.localize('TMFX.TokenMagic') + ' ' + game.i18n.localize('TMFX.app.filterSelector.window.title');
 		if (this._document.documentName === 'Token' && this._document.name.trim()) title += ` [ ${this._document.name} ]`;
 		else title += ` [ ${this._document.documentName} ]`;
 		return title;
@@ -128,32 +128,34 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		const filters = this._document.getFlag('tokenmagic', 'filters');
 		const hasFilters = filters?.length;
 		const hasActiveRandomizedFields = filters?.some((f) => {
-			const randomized = f.tmFilters.tmParams.randomized;
-			if (isEmpty(randomized)) return false;
-			return Object.values(randomized).some((r) => !r.hasOwnProperty('active') || r.active);
+			const params = f.tmFilters.tmParams;
+			if (params.hasOwnProperty('enabled') && !params.enabled) return false;
+
+			if (isEmpty(params.randomized)) return false;
+			return Object.values(params.randomized).some((r) => !r.hasOwnProperty('active') || r.active);
 		});
 
 		context.controls = [
 			{
 				action: 'presetSearch',
-				tooltip: 'Presets',
+				tooltip: game.i18n.localize('TMFX.app.filterSelector.controls.presets'),
 				icon: 'fa-solid fa-box',
 			},
 			{
 				action: 'preset',
-				tooltip: 'Save as Preset',
+				tooltip: game.i18n.localize('TMFX.app.filterSelector.controls.save'),
 				icon: 'fa-solid fa-floppy-disk',
 				disabled: !hasFilters,
 			},
 			{
 				action: 'macro',
-				tooltip: 'Display as Macro',
+				tooltip: game.i18n.localize('TMFX.app.filterSelector.controls.macro'),
 				icon: 'fa-solid fa-code',
 				disabled: !hasFilters,
 			},
 			{
 				action: 'randomize',
-				tooltip: 'Re-roll Randomized Fields',
+				tooltip: game.i18n.localize('TMFX.app.filterSelector.controls.randomize'),
 				icon: 'fa-solid fa-dice',
 				disabled: !hasActiveRandomizedFields,
 			},
@@ -161,9 +163,12 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	async _prepareFiltersContext(context, options) {
-		this._filters = (this._document.getFlag('tokenmagic', 'filters') ?? [])
-			.map((filter) => {
-				const { filterId, filterType, rank, enabled, filterInternalId } = filter.tmFilters.tmParams;
+		this._paramArray = (this._document.getFlag('tokenmagic', 'filters') ?? []).map(
+			(filter) => filter.tmFilters.tmParams,
+		);
+		this._filters = this._paramArray
+			.map((param) => {
+				const { filterId, filterType, rank, enabled, filterInternalId } = param;
 				return {
 					filterId,
 					filterType,
@@ -332,7 +337,6 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				enabled: !event.target.closest('.toggle').classList.contains('active'),
 			},
 		]);
-		this.render(true);
 	}
 
 	static _onPresetSearch(event) {
@@ -368,13 +372,40 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				const tm = change.flags?.tokenmagic;
 				if (!tm) return;
 
-				// TODO: a smarter comparison?
-				if ('-=filters' in tm || tm.filters?.length !== this._filters.length) {
+				if ('-=filters' in tm) {
 					this.render({ parts: ['header', 'filters'] });
+				} else if (tm.filters) {
+					const renderFieldsChanged = this._paramArrayCompare(
+						this._paramArray,
+						tm.filters.map((f) => f.tmFilters.tmParams),
+					);
+					if (renderFieldsChanged) this.render({ parts: ['header', 'filters'] });
 				}
 			});
 			this._hooks.push({ hook, id });
 		}
+	}
+
+	/**
+	 * Compare two filter pram arrays to check if a re-render is required to display these changes
+	 * @param {Array[object]} arr1
+	 * @param {Array[object]} arr2
+	 * @returns
+	 */
+	_paramArrayCompare(arr1, arr2) {
+		if ((!arr1 && arr2) || (!arr2 && arr1)) return true;
+		if (arr1.length !== arr2.length) return true;
+
+		for (const p1 of arr1) {
+			const p2 = arr2.find(
+				(p) =>
+					p.filterId === p1.filterId && p.filterType === p1.filterType && p.filterInternalId === p1.filterInternalId,
+			);
+			if (!p2 || p1.enabled !== p2.enabled) return true;
+			if (diffObject(p1, p2).hasOwnProperty('randomized')) return true;
+		}
+
+		return false;
 	}
 
 	/** @override */
