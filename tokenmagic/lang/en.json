@@ -68,6 +68,8 @@
 	"TMFX.app.randomizationEditor.option.list.add": "Add Value",
 	"TMFX.app.randomizationEditor.option.min": "Min",
 	"TMFX.app.randomizationEditor.option.max": "Max",
+	"TMFX.app.randomizationEditor.option.link.label": "Linked Field",
+	"TMFX.app.randomizationEditor.option.link.hint": "The same randomized value will be applied to the linked field.",
 	"TMFX.app.savePreset.title": "Save Preset",
 	"TMFX.app.savePreset.name.label": "Filter/Preset Name",
 	"TMFX.app.savePreset.name.hint": "The name will be used as a unique identifier for this effect.",

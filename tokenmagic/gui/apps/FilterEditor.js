@@ -82,6 +82,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			presetSearch: FilterSelector._onPresetSearch,
 			macro: FilterSelector._onSave,
 			preset: FilterSelector._onSave,
+			randomize: FilterSelector._onRandomize,
 		},
 		position: {
 			width: 300,
@@ -124,7 +125,14 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	_prepareHeaderContext(context, options) {
-		const hasFilters = Boolean(this._document.getFlag('tokenmagic', 'filters')?.length);
+		const filters = this._document.getFlag('tokenmagic', 'filters');
+		const hasFilters = filters?.length;
+		const hasActiveRandomizedFields = filters?.some((f) => {
+			const randomized = f.tmFilters.tmParams.randomized;
+			if (isEmpty(randomized)) return false;
+			return Object.values(randomized).some((r) => !r.hasOwnProperty('active') || r.active);
+		});
+
 		context.controls = [
 			{
 				action: 'presetSearch',
@@ -142,6 +150,12 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				tooltip: 'Display as Macro',
 				icon: 'fa-solid fa-code',
 				disabled: !hasFilters,
+			},
+			{
+				action: 'randomize',
+				tooltip: 'Re-roll Randomized Fields',
+				icon: 'fa-solid fa-dice',
+				disabled: !hasActiveRandomizedFields,
 			},
 		];
 	}
@@ -335,6 +349,11 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	static _onSave(event) {
 		const action = event.target.closest('a').dataset.action;
 		new SavePreset(this._document, action === 'macro').render(true);
+	}
+
+	static _onRandomize() {
+		const paramArray = getCloneFilterParams(this._document);
+		if (paramArray?.length) window.TokenMagic.updateFiltersByPlaceable(this._document, paramArray);
 	}
 
 	/** @override */
@@ -594,7 +613,7 @@ class FilterEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 					document: this._document,
 					filterIdentifier: this._filterIdentifier,
 					param,
-					control: this._paramControls[param],
+					controls: this._paramControls,
 					parentApp: this,
 				},
 				{ id: appId, position: { top: bottom, left } },
@@ -821,12 +840,13 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		return `tmfx-randomization-editor-${document.id}-${filterId}-${filterType}-${filterInternalId}-${param}`;
 	}
 
-	constructor({ document, filterIdentifier, param, control, parentApp } = {}, options) {
+	constructor({ document, filterIdentifier, param, controls, parentApp } = {}, options) {
 		super(options);
 		this._document = document;
 		this._filterIdentifier = filterIdentifier;
 		this._param = param;
-		this._control = control;
+		this._control = controls[param];
+		this._controls = controls;
 		this._parentApp = parentApp;
 		this._initRandomizeParams();
 	}
@@ -973,10 +993,24 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			controls.forEach((c) => (c.value = new Color(c.value).toString()));
 		}
 
+		// Identify parameters eligible for linking
+		let linkables = {};
+		for (const [param, control] of Object.entries(this._controls)) {
+			if (this._param !== param && ['type', 'min', 'max', 'step'].every((k) => this._control[k] === control[k])) {
+				linkables[param] = control.label;
+			}
+		}
+		if (isEmpty(linkables)) {
+			linkables = null;
+			this._randomizeParams.link = null;
+		}
+
 		return Object.assign(context, {
 			typeOptions,
 			type,
 			controls,
+			linkables,
+			link: this._randomizeParams.link,
 			active: this._randomizeParams.active,
 		});
 	}
@@ -1044,21 +1078,15 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 	}
 }
+
 class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 	constructor(document, displayMacro = false) {
 		super();
 		this._document = document;
 		this._displayMacro = displayMacro;
 
-		const filters = deepClone(document.getFlag('tokenmagic', 'filters'));
-		if (!filters?.length) throw Error('Document does not contain filters.');
-		this._originalParams = filters.map((f) => f.tmFilters.tmParams);
-
-		this._originalParams.forEach((param) => {
-			['updateId', 'placeableId', 'filterInternalId', 'filterOwner', 'placeableType'].forEach((k) => {
-				delete param[k];
-			});
-		});
+		this._originalParams = getCloneFilterParams(document);
+		if (!this._originalParams?.length) throw Error('Document does not contain filters.');
 
 		this._name = this._originalParams[0].filterId;
 		if (FilterType[this._name]) this._name = 'NewFilter';
@@ -1178,4 +1206,18 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 		await TokenMagic.addPreset({ name, library }, params);
 		this.close(true);
 	}
+}
+
+function getCloneFilterParams(document) {
+	const filters = deepClone(document.getFlag('tokenmagic', 'filters'));
+	if (!filters?.length) return null;
+
+	const params = filters.map((f) => f.tmFilters.tmParams);
+	params.forEach((param) => {
+		['updateId', 'placeableId', 'filterInternalId', 'filterOwner', 'placeableType'].forEach((k) => {
+			delete param[k];
+		});
+	});
+
+	return params;
 }

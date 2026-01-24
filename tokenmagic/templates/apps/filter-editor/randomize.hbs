@@ -29,14 +29,16 @@
         <button type="button" data-action="addListElement">{{localize "TMFX.app.randomizationEditor.option.list.add"}}</button>
     {{/if}}
 
-    {{!-- {{#if linkables}}
+    {{#if linkables}}
+    <br>
     <div class="form-group">
-        <label>Link</label>
+        <label>{{localize "TMFX.app.randomizationEditor.option.link.label"}}</label>
         <div class="form-fields">
-            <select name="type">
-                {{selectOptions linkables selected=link}}
+            <select name="link">
+                {{selectOptions linkables selected=link blank=""}}
             </select>
         </div>
+        <p class="hint">{{"TMFX.app.randomizationEditor.option.link.hint"}}</p>
     </div>
-    {{/if}} --}}
+    {{/if}}
 </div>
