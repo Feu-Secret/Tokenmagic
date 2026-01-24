@@ -1062,9 +1062,6 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		});
 	}
 
-	/**
-	 * Process form data
-	 */
 	static async _onSubmit(event, form, formData) {
 		const params = foundry.utils.expandObject(formData.object);
 		if (params.list) params.list = Object.values(params.list);
@@ -1079,11 +1076,6 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		const renderParent = params.active !== this._randomizeParams.active;
 		const render = params.type !== this._randomizeParams.type;
 		mergeObject(this._randomizeParams, params);
-		if (render) {
-			await this.render({ parts: ['randomize'] });
-			this._onSubmitForm(this.options.form, event);
-			return;
-		}
 
 		const update = deepClone(this._randomizeParams);
 		if (update.type !== 'list') {
@@ -1103,9 +1095,13 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			{ ...this._filterIdentifier, randomized: { [this._param]: update } },
 		]);
 
-		if (renderParent && this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
-			if (FilterSelector.getFilter(this._document, this._filterIdentifier))
-				this._parentApp.render({ parts: ['filter'] });
+		if (render) await this.render({ parts: ['randomize'] });
+		if (
+			renderParent &&
+			this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED &&
+			FilterSelector.getFilter(this._document, this._filterIdentifier)
+		) {
+			this._parentApp.render({ parts: ['filter'] });
 		}
 	}
 }
@@ -1189,6 +1185,8 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 				context.name = this._name;
 				context.filterRandomized = this._filterRandomized;
 				context.filterAnimated = this._filterAnimated;
+				context.texture = this._texture;
+				context.documentName = this._document.documentName;
 				if (this._displayMacro) context.macro = this._genMacro();
 				break;
 			case 'footer':
@@ -1210,11 +1208,12 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 	 * Process form data
 	 */
 	static async _onSubmit(event, form, formData) {
-		const { name, filterRandomized, filterAnimated } = foundry.utils.expandObject(formData.object);
+		const { name, filterRandomized, filterAnimated, texture } = foundry.utils.expandObject(formData.object);
 
 		this._name = name;
 		this._filterRandomized = filterRandomized;
 		this._filterAnimated = filterAnimated;
+		this._texture = texture;
 
 		if (this._displayMacro) this.element.querySelector('textarea').value = this._genMacro();
 	}
@@ -1222,6 +1221,7 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 	static async _onSave(event) {
 		const name = this._name;
 		const library = this._document.documentName === 'MeasuredTemplate' ? PresetsLibrary.TEMPLATE : PresetsLibrary.MAIN;
+		const defaultTexture = this._texture;
 		const params = this._prepareParams();
 
 		const preset = TokenMagic.getPreset({ name, library });
@@ -1234,7 +1234,7 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 			await TokenMagic.deletePreset({ name, library }, true);
 		}
 
-		await TokenMagic.addPreset({ name, library }, params);
+		await TokenMagic.addPreset({ name, library, defaultTexture }, params);
 		this.close(true);
 	}
 }

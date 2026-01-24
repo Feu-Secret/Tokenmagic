@@ -59,6 +59,7 @@
 	display: flex;
 	flex-direction: column;
     gap: 3px;
+	color: white;
  }
 
  .tokenmagic.application .filter .name > * {
@@ -92,7 +93,6 @@
 
 .tokenmagic.application .mod-control {
 	font-size: medium;
-	color: darkgray;
 	flex: 0;
 }
 
@@ -135,6 +135,7 @@
 	display: flex;
     align-items: center;
     justify-content: center;
+	color: var(--color-light-1);
 }
 
 .tokenmagic.application .header-controls > a[disabled] {
@@ -148,6 +149,14 @@
 /* ====================
  * == Preset Toggler ==
  * ==================== */ 
+
+.tokenmagic.toggler .filter .name {
+	color: var(--color-text-primary);
+}
+
+.tokenmagic.toggler .header-controls a {
+	color: var(--color-text-primary);
+}
 
 .tokenmagic.toggler .filter.active {
     border-color: greenyellow;

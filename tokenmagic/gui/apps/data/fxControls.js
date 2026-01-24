@@ -1044,10 +1044,7 @@ export const FILTER_PARAM_CONTROLS = {
 			step: 1,
 		},
 		blur: {
-			type: 'range',
-			min: 0,
-			max: 10,
-			step: 1,
+			type: 'ignore',
 		},
 		blurX: {
 			type: 'range',
