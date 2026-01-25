@@ -30,6 +30,40 @@ export function filterEditor(placeable, sourceBounds) {
 }
 
 /**
+ * Handle TMFX-Filter and TMFX-Preset drop event over a document or FilterSelector app
+ * @param {*} document
+ * @param {*} data
+ * @returns
+ */
+export async function handleTMFXDropEvent(document, data) {
+	if (data.type === 'TMFX-Preset') {
+		const { name, library } = data;
+		const preset = TokenMagic.getPresets(library).find((p) => p.name === name);
+		if (!preset?.params?.length) return;
+
+		if (preset.defaultTexture && document.documentName === 'MeasuredTemplate') {
+			await document.update({ texture: preset.defaultTexture });
+		}
+
+		await TokenMagic.addFilters(document, preset.params);
+	} else if (data.type === 'TMFX-Filter') {
+		const { filterId, filterType, filterInternalId, placeableId, documentName, sceneId } = data;
+		if (document.id === placeableId && document.parent.id === sceneId) {
+			return;
+		}
+
+		const scene = game.scenes.get(sceneId);
+		const originDocument = scene?.getEmbeddedDocument(documentName, placeableId);
+		if (!originDocument) return;
+
+		const filter = deepClone(FilterSelector.getFilter(originDocument, { filterId, filterType, filterInternalId }));
+		if (!filter) return;
+
+		await TokenMagic.addUpdateFilters(document, [filter]);
+	}
+}
+
+/**
  * First char to uppercase and insert spaces at upper case characters
  * @param {string} text
  * @returns
@@ -235,8 +269,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	 */
 	async _onWindowDrop(event) {
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-		if (data.type === 'TMFX-Preset') return this._onAddPreset(data);
-		else if (data.type === 'TMFX-Filter') return this._onAddFilter(data);
+		if (data.type === 'TMFX-Preset' || data.type === 'TMFX-Filter') return handleTMFXDropEvent(this._document, data);
 		else if (data.type === 'Macro') return this._onAddMacro(data);
 	}
 
@@ -255,31 +288,6 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			return;
 
 		return this._onUpdateFilterRank(data, { filterId, filterType, filterInternalId });
-	}
-
-	async _onAddPreset({ name, library }) {
-		const preset = TokenMagic.getPresets(library).find((p) => p.name === name);
-		if (!preset?.params?.length) return;
-
-		if (preset.defaultTexture && this._document.documentName === 'MeasuredTemplate') {
-			await this._document.update({ texture: preset.defaultTexture });
-		}
-
-		await TokenMagic.addFilters(this._document, preset.params);
-	}
-
-	async _onAddFilter({ filterId, filterType, filterInternalId, placeableId, documentName, sceneId } = {}) {
-		if (this._document.id === placeableId && this._document.parent.id === sceneId) return;
-
-		const scene = game.scenes.get(sceneId);
-		const document = scene?.getEmbeddedDocument(documentName, placeableId);
-		if (!document) return;
-
-		const filter = deepClone(FilterSelector.getFilter(document, { filterId, filterType, filterInternalId }));
-		if (!filter) return;
-
-		await TokenMagic.addUpdateFilters(this._document, [filter]);
-		return this.render(true);
 	}
 
 	async _onUpdateFilterRank(fromFilter, toFilter) {

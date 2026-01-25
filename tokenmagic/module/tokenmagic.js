@@ -2231,3 +2231,15 @@ Hooks.on('getHeaderControlsDocumentSheetV2', (config, controls) => {
 		});
 	}
 });
+
+Hooks.on('dropCanvasData', async (canvas, data, event) => {
+	const { type, x, y } = data;
+	if (type === 'TMFX-Filter' || type === 'TMFX-Preset') {
+		const placeable = canvas.activeLayer.placeables.find((p) => p.bounds.contains(x, y));
+		if (placeable && Object.values(PlaceableType).includes(placeable.document.documentName)) {
+			import('../gui/apps/FilterEditor.js').then((module) => {
+				module.handleTMFXDropEvent(placeable.document, data);
+			});
+		}
+	}
+});
