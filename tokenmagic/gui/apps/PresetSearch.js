@@ -142,11 +142,8 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	_onDragStart(event) {
-		const { filterId: presetName, filterType: library } = event.target.closest('.filter').dataset;
-		const dragData = {
-			presetName,
-			library,
-		};
+		const { filterId: name, filterType: library } = event.target.closest('.filter').dataset;
+		const dragData = { type: 'TMFX-Preset', name, library };
 		event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
 	}
 

@@ -1,4 +1,4 @@
-<section class="flexcol" style="gap: 10px;">
+<section class="flexcol" style="gap: 5px;">
 
     <div class="form-group">    
         <label>{{localize "TMFX.app.savePreset.name.label"}}</label>
@@ -36,4 +36,14 @@
         </div>
         <p class="hint">{{localize "TMFX.app.savePreset.filterAnimated.hint"}}</p>
     </div>
+
+    {{#if displayAutoDestroy}}
+    <div class="form-group">    
+        <label>{{localize "TMFX.app.savePreset.autoDestroy.label"}}</label>
+        <div class="form-fields">
+            <input type="checkbox" name="autoDestroy" {{checked autoDestroy}}/>
+        </div>
+        <p class="hint">{{localize "TMFX.app.savePreset.autoDestroy.hint"}}</p>
+    </div>
+    {{/if}}
 </section>

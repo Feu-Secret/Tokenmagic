@@ -28,6 +28,9 @@ export const FILTER_PARAM_CONTROLS = {
 	common: {
 		_thumb: 'modules/tokenmagic/gui/macros/images/original_token.webp',
 		color: COLOR_CONTROL,
+		autoDestroy: {
+			type: 'ignore',
+		},
 		time: {
 			type: 'range',
 			min: 0,

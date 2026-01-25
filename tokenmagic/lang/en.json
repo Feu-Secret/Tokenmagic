@@ -83,6 +83,8 @@
 	"TMFX.app.savePreset.filterRandomized.hint": "Check to remove inactive randomized fields.",
 	"TMFX.app.savePreset.filterAnimated.label": "Clean Animated Fields",
 	"TMFX.app.savePreset.filterAnimated.hint": "Check to remove inactive animated fields.",
+	"TMFX.app.savePreset.autoDestroy.label": "Auto-Destroy",
+	"TMFX.app.savePreset.autoDestroy.hint": "Check to auto-destroy/remove filter once a looping animation finishes.",
 	"TMFX.app.savePreset.confirm.title": "Overwrite Preset",
 	"TMFX.app.savePreset.confirm.message": "A preset with the same name already exists. Would you like to overwrite it?",
 	"TMFX.save": "Save"

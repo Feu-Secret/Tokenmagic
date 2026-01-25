@@ -217,6 +217,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	_onDragStart(event) {
 		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
 		const dragData = {
+			type: 'TMFX-Filter',
 			filterId,
 			filterType,
 			filterInternalId,
@@ -227,26 +228,23 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
 	}
 
+	/**
+	 * Handles drop event on the app window
+	 * @param {*} event
+	 * @returns
+	 */
 	async _onWindowDrop(event) {
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-		if (data.presetName && data.library) {
-			return this._onAddPreset(data);
-		} else if (this._document.id !== data.placeableId || this._document.parent.id !== data.sceneId) {
-			return this._onAddFilter(data);
-		}
+		if (data.type === 'TMFX-Preset') return this._onAddPreset(data);
+		else if (data.type === 'TMFX-Filter') return this._onAddFilter(data);
+		else if (data.type === 'Macro') return this._onAddMacro(data);
 	}
 
-	async _onAddPreset({ presetName, library }) {
-		const preset = TokenMagic.getPresets(library).find((p) => p.name === presetName);
-		if (!preset?.params?.length) return;
-
-		if (preset.defaultTexture && this._document.documentName === 'MeasuredTemplate') {
-			await this._document.update({ texture: preset.defaultTexture });
-		}
-
-		await TokenMagic.addFilters(this._document, preset.params);
-	}
-
+	/**
+	 * Handles drop event on a filter entry
+	 * @param {*} event
+	 * @returns
+	 */
 	async _onFilterDrop(event) {
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 		if (!data.filterId || !data.filterType || !data.filterInternalId) return;
@@ -259,7 +257,20 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		return this._onUpdateFilterRank(data, { filterId, filterType, filterInternalId });
 	}
 
+	async _onAddPreset({ name, library }) {
+		const preset = TokenMagic.getPresets(library).find((p) => p.name === name);
+		if (!preset?.params?.length) return;
+
+		if (preset.defaultTexture && this._document.documentName === 'MeasuredTemplate') {
+			await this._document.update({ texture: preset.defaultTexture });
+		}
+
+		await TokenMagic.addFilters(this._document, preset.params);
+	}
+
 	async _onAddFilter({ filterId, filterType, filterInternalId, placeableId, documentName, sceneId } = {}) {
+		if (this._document.id === placeableId && this._document.parent.id === sceneId) return;
+
 		const scene = game.scenes.get(sceneId);
 		const document = scene?.getEmbeddedDocument(documentName, placeableId);
 		if (!document) return;
@@ -294,6 +305,20 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			},
 		]);
 		this.render(true);
+	}
+
+	async _onAddMacro({ uuid }) {
+		const macro = await fromUuid(uuid);
+		if (!macro?.documentName === 'Macro') return;
+
+		try {
+			const paramArray = eval(macro.command.match(/\[[\s\S]*?\]/)?.[0]);
+			if (paramArray.every((p) => typeof p === 'object' && p.filterId && p.filterType)) {
+				window.TokenMagic.addFilters(this._document, paramArray);
+			}
+		} catch (e) {
+			console.warn('No filter parameter array found within macro: ' + macro.name);
+		}
 	}
 
 	static async _onEdit(event) {
@@ -344,7 +369,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			module.presetSearch({
 				position: {
 					top: this.position.top,
-					left: this.position.left + this.position.width,
+					left: this.position.left + this.position.width + 15,
 				},
 			});
 		});
@@ -696,27 +721,27 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		this._initAnimParams();
 	}
 
-	standardControls = ['active', 'loopDuration', 'val1', 'val2', 'loops', 'syncShift'];
+	static standardControls = ['active', 'loopDuration', 'val1', 'val2', 'loops', 'syncShift'];
 
-	keywordControls = {
+	static keywordControls = {
 		move: ['active', 'speed'],
-		cosOscillation: this.standardControls,
-		sinOscillation: this.standardControls,
-		syncCosOscillation: this.standardControls,
-		syncSinOscillation: this.standardControls,
+		cosOscillation: AnimationEditor.standardControls,
+		sinOscillation: AnimationEditor.standardControls,
+		syncCosOscillation: AnimationEditor.standardControls,
+		syncSinOscillation: AnimationEditor.standardControls,
 		chaoticOscillation: ['active', 'loopDuration', 'val1', 'val2', 'chaosFactor', 'loops', 'syncShift'],
 		syncChaoticOscillation: ['active', 'loopDuration', 'val1', 'val2', 'chaosFactor', 'loops', 'syncShift'],
-		halfCosOscillation: this.standardControls,
+		halfCosOscillation: AnimationEditor.standardControls,
 		rotation: ['active', 'loopDuration', 'loops', 'syncShift', 'clockwise'],
 		syncRotation: ['active', 'loopDuration', 'loops', 'syncShift', 'clockwise'],
 		randomNumber: ['active', 'val1', 'val2', 'wantInteger'],
 		randomNumberPerLoop: ['active', 'val1', 'val2', 'loops', 'wantInteger'],
 	};
 
-	colorKeywordControls = {
-		colorOscillation: this.standardControls,
-		syncColorOscillation: this.standardControls,
-		halfColorOscillation: this.standardControls,
+	static colorKeywordControls = {
+		colorOscillation: AnimationEditor.standardControls,
+		syncColorOscillation: AnimationEditor.standardControls,
+		halfColorOscillation: AnimationEditor.standardControls,
 		randomColorPerLoop: ['active', 'loopDuration', 'loops'],
 	};
 
@@ -795,7 +820,8 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 			'tmfx-control',
 		);
 
-		const keyControls = this._control.type === 'color' ? this.colorKeywordControls : this.keywordControls;
+		const keyControls =
+			this._control.type === 'color' ? AnimationEditor.colorKeywordControls : AnimationEditor.keywordControls;
 
 		const animOptions = {};
 		Object.keys(keyControls).forEach((k) => {
@@ -1120,6 +1146,7 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 
 		this._filterRandomized = true;
 		this._filterAnimated = true;
+		this._autoDestroy = false;
 	}
 
 	_prepareParams() {
@@ -1140,9 +1167,27 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 					}
 				});
 			}
+
+			if (this._autoDestroy && this._paramHasFiniteLoops(param)) param.autoDestroy = true;
+			else delete param.autoDestroy;
 		});
 
 		return params;
+	}
+
+	/**
+	 * Returns true if the provided parameter has an activated animated property with
+	 * a finite loop value
+	 * @param {object} param
+	 * @returns
+	 */
+	_paramHasFiniteLoops(param) {
+		return Object.values(param.animated ?? {}).some(
+			(anim) =>
+				(!anim.hasOwnProperty('active') || anim.active) &&
+				anim.loops &&
+				AnimationEditor.keywordControls[anim.animType]?.includes('loops'),
+		);
 	}
 
 	/** @override */
@@ -1187,6 +1232,7 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 				context.filterAnimated = this._filterAnimated;
 				context.texture = this._texture;
 				context.documentName = this._document.documentName;
+				context.displayAutoDestroy = this._originalParams.some((param) => this._paramHasFiniteLoops(param));
 				if (this._displayMacro) context.macro = this._genMacro();
 				break;
 			case 'footer':
@@ -1208,12 +1254,15 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 	 * Process form data
 	 */
 	static async _onSubmit(event, form, formData) {
-		const { name, filterRandomized, filterAnimated, texture } = foundry.utils.expandObject(formData.object);
+		const { name, filterRandomized, filterAnimated, autoDestroy, texture } = foundry.utils.expandObject(
+			formData.object,
+		);
 
 		this._name = name;
 		this._filterRandomized = filterRandomized;
 		this._filterAnimated = filterAnimated;
 		this._texture = texture;
+		this._autoDestroy = autoDestroy;
 
 		if (this._displayMacro) this.element.querySelector('textarea').value = this._genMacro();
 	}
