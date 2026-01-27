@@ -1199,6 +1199,6 @@ export const ANIM_PARAM_CONTROLS = {
 	wantInteger: { type: 'boolean', order: 40 },
 	chaosFactor: { type: 'range', min: 0, max: 1, step: 0.01, order: 50 },
 	syncShift: { type: 'range', min: 0, max: 1, step: 0.01, order: 60 },
-	clockwise: { type: 'boolean', order: 70 },
+	clockWise: { type: 'boolean', order: 70 },
 	loops: { type: 'number', step: 1, min: 0, order: 80 },
 };

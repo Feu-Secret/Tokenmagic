@@ -1,3 +1,41 @@
+# Token Magic FX - Update v0.7.4
+
+**Filter Editor**
+
+- UI to edit and manage Filters/Presets
+- Accessed through
+  - Token, Tile, and Drawing HUD's new left menu button
+  - Token, Tile, Drawing, Template, and Region document sheet header button `TMFX Editor`
+  - API: `TokenMagic.filterEditor()`
+- New setting: `Always display HUD's FX Editor Control`
+  - When disabled the new button will only appear if an effect is applied to the placeable
+
+**Other**
+
+- Switched bundler from `Parcel` to `Webpack`
+- Fixed a bug which caused MeasuredTemplate `texture` field to be cleared unnecessarily #297
+- Fixed `anchorX` and `anchorY` properties not getting applied to `spiderweb` filter
+
+**API**
+
+- Preset Toggler access changed to `TokenMagic.presetToggler()`
+- Preset Search can be accessed through `TokenMagic.presetSearch()`
+  - The code for all apps is dynamically loaded only when first opened
+- The following APIs now support both `placeable` and `document` arguments
+  - TokenMagic.addFilters(placeable/document, ...)
+  - TokenMagic.addUpdateFilters(placeable/document, ...)
+  - TokenMagic.updateFiltersByPlaceable(placeable/document, ...)
+  - TokenMagic.deleteFilters(placeable/document, ...)
+  - TokenMagic.hasFilterType(placeable/document, ...)
+  - TokenMagic.hasFilterId(placeable/document, ...)
+- The following APIs now support optional `filterType` and `filterInternalId` arguments
+  - TokenMagic.deleteFiltersOnTargeted(filterId, filterType, filterInternalId)
+  - TokenMagic.deleteFiltersOnSelected(filterId, filterType, filterInternalId)
+  - TokenMagic.deleteFilters(..., filterId, filterType, filterInternalId)
+  - TokenMagic.addUpdateFilters(..., paramsArray)
+  - TokenMagic.addUpdateFiltersOnSelected(paramsArray)
+  - TokenMagic.addUpdateFiltersOnTargeted(paramsArray)
+
 # Token Magic FX - Update v0.6.5.0
 
 - Source files have been bundled to reduce number of requests
@@ -40,7 +78,6 @@
 # Token Magic FX - Update v0.6.2-beta
 
 - New filters under `TokenMagic Portfolio`
-
   - 40 - Ascii (ascii)
   - 41 - Dot Shade (dot)
   - 42 - CRT Monitor (crt)
@@ -49,7 +86,6 @@
   - G - Randomization Example
 
 - New properties
-
   - Added `alpha`, `alphaDiscard`, and `repeat` properties to the `FilterSprite` filter
   - Added `alpha` property to `FilterGlow`
   - Added `randomized` property to all filters (more information on the module page)
@@ -58,7 +94,6 @@
     - e.g. `users: { exclude: ['Player2', 'UTH9wXZFkTza6igr'] }
 
 - Fixes
-
   - Fixed `top` option in `FilterSprite` discouloring underlayed semi-transparent sprites
   - Fixed `FilterSprite` video `loop` property not having effect
   - Fixed `FilterSprite` throwing errors on initial assignment of a video

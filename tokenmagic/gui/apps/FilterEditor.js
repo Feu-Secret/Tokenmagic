@@ -11,7 +11,6 @@ const { deepClone, getType, isEmpty, mergeObject, diffObject } = foundry.utils;
  * Twist filter 'offset' {x: 0, y: 0} // ignore for now
  * zoomblur filter 'center' [672.5, 552.5] (not normalized/static like the bulge filter)
  * Pixelate/Ascii filters respond to camera movement
- * Perhaps during preset creation detect if finite loop animation exists and prompt for auto destroy flag?
  */
 
 export function filterEditor(placeable, sourceBounds) {
@@ -740,8 +739,8 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 		chaoticOscillation: ['active', 'loopDuration', 'val1', 'val2', 'chaosFactor', 'loops', 'syncShift'],
 		syncChaoticOscillation: ['active', 'loopDuration', 'val1', 'val2', 'chaosFactor', 'loops', 'syncShift'],
 		halfCosOscillation: AnimationEditor.standardControls,
-		rotation: ['active', 'loopDuration', 'loops', 'syncShift', 'clockwise'],
-		syncRotation: ['active', 'loopDuration', 'loops', 'syncShift', 'clockwise'],
+		rotation: ['active', 'loopDuration', 'loops', 'syncShift', 'clockWise'],
+		syncRotation: ['active', 'loopDuration', 'loops', 'syncShift', 'clockWise'],
 		randomNumber: ['active', 'val1', 'val2', 'wantInteger'],
 		randomNumberPerLoop: ['active', 'val1', 'val2', 'loops', 'wantInteger'],
 	};
@@ -769,7 +768,7 @@ class AnimationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 				wantInteger: false,
 				chaosFactor: 0.25,
 				syncShift: 0,
-				clockwise: true,
+				clockWise: true,
 			},
 			animated ?? {},
 		);

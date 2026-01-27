@@ -1466,6 +1466,11 @@ export function TokenMagic() {
 				module.presetToggler();
 			});
 		},
+		presetSearch: (options) => {
+			import('../gui/apps/PresetSearch.js').then((module) => {
+				module.presetSearch(options);
+			});
+		},
 		filterEditor: (placeable, sourceBounds) => {
 			import('../gui/apps/FilterEditor.js').then((module) => {
 				module.filterEditor(placeable, sourceBounds);
@@ -2235,7 +2240,7 @@ Hooks.on('getHeaderControlsDocumentSheetV2', (config, controls) => {
 Hooks.on('dropCanvasData', async (canvas, data, event) => {
 	const { type, x, y } = data;
 	if (type === 'TMFX-Filter' || type === 'TMFX-Preset') {
-		const placeable = canvas.activeLayer.placeables.find((p) => p.bounds.contains(x, y));
+		const placeable = canvas.activeLayer?.placeables?.find((p) => p.visible && p.bounds?.contains(x, y));
 		if (placeable && Object.values(PlaceableType).includes(placeable.document.documentName)) {
 			import('../gui/apps/FilterEditor.js').then((module) => {
 				module.handleTMFXDropEvent(placeable.document, data);

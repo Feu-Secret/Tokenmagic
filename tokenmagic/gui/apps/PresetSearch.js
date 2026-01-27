@@ -3,11 +3,7 @@ import { FILTER_PARAM_CONTROLS } from './data/fxControls';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
-// TODO
-// drag listener
-// delete
-
-export function presetSearch(options) {
+export function presetSearch(options = {}) {
 	const activeInstance = foundry.applications.instances.get(PresetSearch.DEFAULT_OPTIONS.id);
 	if (activeInstance) {
 		activeInstance.close();
