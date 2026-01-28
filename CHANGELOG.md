@@ -1,3 +1,11 @@
+# Token Magic FX - Update v0.7.5
+
+**Filter Editor**
+
+- Slight style changes and improvements when using `Light` applications theme
+- Fixed rank sorting failing when two or more filters shared the same rank
+- Rank sorting will now take immediate effect upon change
+
 # Token Magic FX - Update v0.7.4
 
 **Filter Editor**

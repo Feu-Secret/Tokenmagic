@@ -106,7 +106,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	/** @override */
 	static DEFAULT_OPTIONS = {
-		window: { resizable: true },
+		window: { resizable: true, contentClasses: ['standard-form'] },
 		classes: ['tokenmagic', 'selector', 'flexcol'],
 		actions: {
 			select: FilterSelector._onEdit,
@@ -134,13 +134,14 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	};
 
 	static getFilter(document, { filterId, filterType, filterInternalId }) {
-		const filters = document.getFlag('tokenmagic', 'filters');
-		return filters?.find(
-			(f) =>
-				f.tmFilters.tmFilterId === filterId &&
-				f.tmFilters.tmFilterType === filterType &&
-				f.tmFilters.tmFilterInternalId === filterInternalId,
-		)?.tmFilters.tmParams;
+		return document
+			.getFlag('tokenmagic', 'filters')
+			?.find(
+				(f) =>
+					f.tmFilters.tmFilterId === filterId &&
+					f.tmFilters.tmFilterType === filterType &&
+					f.tmFilters.tmFilterInternalId === filterInternalId,
+			)?.tmFilters.tmParams;
 	}
 
 	/** @override */
@@ -290,9 +291,29 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	async _onUpdateFilterRank(fromFilter, toFilter) {
-		const filters = this._document.getFlag('tokenmagic', 'filters');
+		const filters = deepClone(this._document.getFlag('tokenmagic', 'filters'));
 		if (!filters || !filters.length) return;
 
+		// First make sure there are no duplicate ranks
+		const paramArray = filters.map((f) => f.tmFilters.tmParams).sort((f1, f2) => f1.rank - f2.rank);
+		let resort = false;
+		for (let i = 0; i < paramArray.length - 1; i++) {
+			if (paramArray[i].rank === paramArray[i + 1].rank) {
+				resort = true;
+				break;
+			}
+		}
+		if (resort) {
+			const updates = [];
+			const minRank = paramArray[0].rank;
+			for (let i = 1; i < paramArray.length; i++) {
+				const { filterId, filterType, filterInternalId } = paramArray[i];
+				updates.push({ filterId, filterType, filterInternalId, rank: minRank + i });
+			}
+			await TokenMagic.updateFiltersByPlaceable(this._document, updates);
+		}
+
+		// Swap filters
 		const fromParams = FilterSelector.getFilter(this._document, fromFilter);
 		const toParams = FilterSelector.getFilter(this._document, toFilter);
 		if (!fromParams || !toParams) return;
@@ -311,6 +332,11 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				rank: fromParams.rank,
 			},
 		]);
+
+		// Sort filters based on new ranks
+		const sprite = this._document.object?._TMFXgetSprite();
+		if (sprite) sprite.filters = sprite.filters.sort((f1, f2) => f1.rank - f2.rank);
+
 		this.render(true);
 	}
 

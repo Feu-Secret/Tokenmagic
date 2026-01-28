@@ -8,7 +8,7 @@
             <span class="subtext">{{subtext}}</span>
         </a>
         {{#each controls}}
-        <a class="control{{#if class}} {{class}}{{/if}}{{#if active}} active{{/if}}" data-action="{{action}}" data-tooltip="{{tooltip}}"><i class="{{icon}}"></i></a>
+        <button type="button" class="control{{#if class}} {{class}}{{/if}}{{#if active}} active{{/if}}" data-action="{{action}}" data-tooltip="{{tooltip}}"><i class="{{icon}}"></i></button>
         {{/each}}
     </li>
     {{/each}}
