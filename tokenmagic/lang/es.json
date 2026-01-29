@@ -1,7 +1,6 @@
 {
 	"I18N.LANGUAGE": "Español",
 	"I18N.MAINTAINERS": "@Viriato139ac#0342",
-
 	"TMFX.TokenMagic": "TokenMagic",
 	"TMFX.preset.add.success": "FX añadido con éxito a la biblioteca de parámetros predeterminados",
 	"TMFX.preset.add.permission.failure": "No tiene permisos para añadir el FX a la biblioteca de parámetros predeterminados",

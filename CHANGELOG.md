@@ -1,3 +1,12 @@
+# Token Magic FX - Update v0.7.5.1
+
+**Filter Editor**
+
+- Displayed filter order has been reversed; top of the list now represents the last filter to be applied
+  - Hopefully this lends to better intuition on how filters are layered on top of each other
+  - `A filter affects all other filters below it`
+- `Brazilian Portuguese` localization, courtesy of @Kharmans
+
 # Token Magic FX - Update v0.7.5
 
 **Filter Editor**

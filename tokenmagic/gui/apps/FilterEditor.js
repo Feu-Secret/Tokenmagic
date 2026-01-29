@@ -228,7 +228,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 					],
 				};
 			})
-			.sort((f1, f2) => f1.rank - f2.rank);
+			.sort((f1, f2) => f1.rank - f2.rank)
+			.reverse();
 
 		return Object.assign(context, { filters: this._filters });
 	}
