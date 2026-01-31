@@ -62,6 +62,7 @@
 	"TMFX.app.filterSelector.controls.save": "Save as Preset",
 	"TMFX.app.filterSelector.controls.macro": "Display as a Macro",
 	"TMFX.app.filterSelector.controls.randomize": "Re-roll Randomized Fields",
+	"TMFX.app.filterSelector.controls.clone": "Clone",
 	"TMFX.app.filterEditor.title": "Filter",
 	"TMFX.app.animationEditor.title": "Animate",
 	"TMFX.app.randomizationEditor.title": "Randomize",
@@ -87,5 +88,8 @@
 	"TMFX.app.savePreset.autoDestroy.hint": "Check to auto-destroy/remove filter once a looping animation finishes.",
 	"TMFX.app.savePreset.confirm.title": "Overwrite Preset",
 	"TMFX.app.savePreset.confirm.message": "A preset with the same name already exists. Would you like to overwrite it?",
+	"TMFX.app.searchPreset.controls.templateToggle": "Toggle Template Presets",
+	"TMFX.app.editPreset.option.library": "Library",
+	"TMFX.app.editPreset.option.defaultTexture": "Default Texture",
 	"TMFX.save": "Save"
 }

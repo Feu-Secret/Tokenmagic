@@ -1,3 +1,20 @@
+# Token Magic FX - Update v0.7.6
+
+**Filter Editor**
+
+- `Clone` context menu option has been added
+  - Clones/Duplicates selected filter
+- Scroll position is now retained when deleting presets
+- Filters/Presets dragged onto canvas will now apply to top-most placeable based on `elevation` and `sort`
+- New control added to `Preset Search`; `Edit`
+  - Opens a form to change preset name and/or default texture
+- Searches within `Preset Search` app in addition to name will now also match against filter types contained within the preset params
+
+**Misc**
+
+- New default presets have been added:
+  - `DungeonDraft Tint`, `Replace Color`, `Dot Shade`, `CRT Monitor`, `RGB Split`, `Criss-Cross`, `Star Mask`
+
 # Token Magic FX - Update v0.7.5.1
 
 **Filter Editor**

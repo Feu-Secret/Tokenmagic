@@ -1,0 +1,173 @@
+[
+    {
+        "name": "DungeonDraft Tint",
+        "library": "tmfx-main",
+        "params": [
+            {
+                "filterType": "ddTint",
+                "filterId": "DungeonDraft Tint",
+                "tint": [
+                    0,
+                    1,
+                    0
+                ],
+                "rank": 10001,
+                "enabled": true
+            }
+        ]
+    },
+    {
+        "name": "Replace Color",
+        "library": "tmfx-main",
+        "params": [
+            {
+                "filterType": "replaceColor",
+                "filterId": "Replace Color",
+                "originalColor": [
+                    1,
+                    0,
+                    0
+                ],
+                "newColor": [
+                    0,
+                    1,
+                    0
+                ],
+                "epsilon": 0.7,
+                "rank": 10001,
+                "enabled": true,
+                "animated": {}
+            }
+        ]
+    },
+    {
+        "name": "Dot Shade",
+        "library": "tmfx-main",
+        "params": [
+            {
+                "filterType": "dot",
+                "filterId": "Dot Shade",
+                "scale": 0.76,
+                "angle": 0,
+                "grayscale": true,
+                "rank": 10002,
+                "enabled": true
+            }
+        ]
+    },
+    {
+        "name": "CRT Monitor",
+        "library": "tmfx-main",
+        "params": [
+            {
+                "filterType": "crt",
+                "filterId": "CRT Monitor",
+                "curvature": 4,
+                "lineWidth": 5,
+                "lineContrast": 0.25,
+                "verticalLine": false,
+                "noise": 0.3,
+                "noiseSize": 1,
+                "vignetting": 0,
+                "vignettingAlpha": 1,
+                "vignettingBlur": 0.3,
+                "animated": {
+                    "seed": {
+                        "active": true,
+                        "animType": "randomNumber",
+                        "val1": 0,
+                        "val2": 1
+                    },
+                    "time": {
+                        "active": true,
+                        "speed": -0.01,
+                        "animType": "move"
+                    }
+                },
+                "enabled": true,
+                "rank": 10003
+            },
+            {
+                "filterType": "outline",
+                "filterId": "CRT Monitor",
+                "color": 0,
+                "thickness": 0,
+                "zOrder": 321,
+                "enabled": true,
+                "rank": 10004
+            }
+        ]
+    },
+    {
+        "name": "RGB Split",
+        "library": "tmfx-main",
+        "params": [
+            {
+                "filterType": "rgbSplit",
+                "filterId": "RGB Split",
+                "redX": -10,
+                "redY": 0,
+                "greenX": 0,
+                "greenY": 10,
+                "blueX": 0,
+                "blueY": 0,
+                "enabled": true,
+                "rank": 10005
+            }
+        ]
+    },
+    {
+        "name": "Criss-Cross",
+        "library": "tmfx-main",
+        "params": [
+            {
+                "filterType": "sprite",
+                "filterId": "Criss-Cross",
+                "imagePath": "modules/tokenmagic/fx/assets/box.webp",
+                "repeat": true,
+                "alphaDiscard": true,
+                "colorize": true,
+                "color": 16688682,
+                "inverse": true,
+                "gridPadding": 1,
+                "maintainAspectRatio": false,
+                "maintainScale": false,
+                "scaleX": 0.16,
+                "scaleY": 0.16,
+                "translationX": 0,
+                "translationY": 0,
+                "rotation": 45,
+                "alpha": 1,
+                "top": true,
+                "animated": {},
+                "rank": 10006,
+                "enabled": true,
+                "play": true,
+                "loop": true
+            }
+        ]
+    },
+    {
+        "name": "Star Mask",
+        "library": "tmfx-main",
+        "params": [
+            {
+                "filterType": "spriteMask",
+                "filterId": "Star Mask",
+                "imagePath": "modules/tokenmagic/fx/assets/star.webp",
+                "repeat": false,
+                "gridPadding": 1,
+                "maintainAspectRatio": false,
+                "maintainScale": false,
+                "scaleX": 1,
+                "scaleY": 1,
+                "translationX": 0,
+                "translationY": 0,
+                "rotation": 0,
+                "alpha": 1,
+                "rank": 10000,
+                "enabled": true
+            }
+        ]
+    }
+]

@@ -443,6 +443,27 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			});
 			this._hooks.push({ hook, id });
 		}
+
+		this._createContextMenu(this._getFilterContextOptions, '.filter', {
+			hookName: 'getFilterContextOptions',
+		});
+	}
+
+	_getFilterContextOptions() {
+		return [
+			{
+				id: 'clone',
+				name: 'TMFX.app.filterSelector.controls.clone',
+				icon: '<i class="fa-solid fa-clone"></i>',
+				callback: (element) => this._onCloneFilter(element),
+			},
+		];
+	}
+
+	_onCloneFilter(element) {
+		const { filterId, filterType, filterInternalId } = element.dataset;
+		const filter = FilterSelector.getFilter(this._document, { filterId, filterType, filterInternalId });
+		if (filter) TokenMagic.addFilters(this._document, [deepClone(filter)]);
 	}
 
 	/**

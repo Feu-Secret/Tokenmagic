@@ -25,12 +25,13 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 			resizable: true,
 		},
 		position: {
-			width: 300,
+			width: 350,
 			height: 500,
 		},
 		classes: ['tokenmagic', 'search', 'flexcol'],
 		actions: {
 			delete: PresetSearch._onDeletePreset,
+			edit: PresetSearch._onEditPreset,
 			toggleTemplates: PresetSearch._onToggleTemplates,
 		},
 	};
@@ -45,7 +46,7 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 		},
 		presets: {
 			template: `modules/tokenmagic/templates/apps/filter-editor/filter-list.hbs`,
-			scrollable: ['.filter-list'],
+			scrollable: [''],
 		},
 	};
 
@@ -60,7 +61,7 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 				context.controls = [
 					{
 						action: 'toggleTemplates',
-						tooltip: 'Toggle Template presets',
+						tooltip: game.i18n.localize('TMFX.app.searchPreset.controls.templateToggle'),
 						icon: 'fa-fw fa-solid fa-ruler-combined',
 						active: Boolean(this._templates),
 					},
@@ -88,16 +89,23 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 			if (terms.length) {
 				presets = presets.filter((p) => {
 					const name = p.name.toLocaleLowerCase();
-					return terms.every((t) => name.includes(t));
+					const filterTypes = p.params.map((param) => param.filterType.toLocaleLowerCase());
+					return terms.every((t) => name.includes(t) || filterTypes.some((type) => type.includes(t)));
 				});
 			}
 		}
 
 		const controls = [
 			{
+				class: 'edit',
+				action: 'edit',
+				tooltip: game.i18n.localize('SIDEBAR.Edit'),
+				icon: 'fa-solid fa-pen-to-square',
+			},
+			{
 				class: 'delete',
 				action: 'delete',
-				tooltip: 'Delete',
+				tooltip: game.i18n.localize('SIDEBAR.Delete'),
 				icon: 'fa-solid fa-trash',
 			},
 		];
@@ -167,6 +175,89 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 		if (confirmation) {
 			await TokenMagic.deletePreset({ name, library });
 			this.render({ parts: ['presets'] });
+		}
+	}
+
+	static async _onEditPreset(event, element) {
+		const { filterId: name, filterType: library } = element.closest('.filter').dataset;
+		const preset = TokenMagic.getPresets(library).find((p) => p.name === name);
+		if (preset) new PresetEdit({ preset, parentApp: this }).render(true);
+	}
+}
+
+export class PresetEdit extends HandlebarsApplicationMixin(ApplicationV2) {
+	constructor({ preset, parentApp }) {
+		super({});
+		this._preset = foundry.utils.deepClone(preset);
+		this._parentApp = parentApp;
+	}
+
+	/** @override */
+	static DEFAULT_OPTIONS = {
+		id: 'tmfx-preset-edit',
+		tag: 'form',
+		window: {
+			resizable: false,
+			contentClasses: ['standard-form'],
+		},
+		form: {
+			handler: PresetEdit._onSubmit,
+			submitOnChange: false,
+			closeOnSubmit: true,
+		},
+		position: {
+			width: 450,
+			height: 'auto',
+		},
+		classes: ['tokenmagic', 'flexcol'],
+		actions: {
+			delete: PresetSearch._onDeletePreset,
+			edit: PresetSearch._onEditPreset,
+			toggleTemplates: PresetSearch._onToggleTemplates,
+		},
+	};
+
+	get title() {
+		return this._preset.name;
+	}
+
+	/** @override */
+	static PARTS = {
+		main: {
+			template: `modules/tokenmagic/templates/apps/preset-search/preset-edit.hbs`,
+		},
+		footer: { template: 'templates/generic/form-footer.hbs' },
+	};
+
+	/** @override */
+	async _preparePartContext(partId, context, options) {
+		context.partId = partId;
+		switch (partId) {
+			case 'main':
+				context.name = this._preset.name;
+				context.library = this._preset.library;
+				context.defaultTexture = this._preset.defaultTexture;
+				context.params = JSON.stringify(this._preset.params, null, 2);
+				break;
+			case 'footer':
+				context.buttons = [
+					{ type: 'submit', icon: 'fa-solid fa-floppy-disk', label: game.i18n.localize('TMFX.save'), action: 'save' },
+				];
+				break;
+		}
+		return context;
+	}
+
+	static async _onSubmit(event, form, formData) {
+		const name = formData.object.name.trim();
+		const defaultTexture = formData.object.defaultTexture?.trim();
+		if (this._preset.name === name && this._preset.defaultTexture === defaultTexture) return;
+		if (!name) return;
+
+		await TokenMagic.deletePreset({ name: this._preset.name, library: this._preset.library }, true);
+		await TokenMagic.addPreset({ name, library: this._preset.library, defaultTexture }, this._preset.params, true);
+		if (this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
+			this._parentApp.render({ parts: ['presets'] });
 		}
 	}
 }

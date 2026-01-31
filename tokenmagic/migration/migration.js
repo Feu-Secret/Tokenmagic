@@ -12,6 +12,7 @@ export const DataVersion = {
 	V040b: '0.4.0b',
 	V041: '0.4.1',
 	V043: '0.4.3',
+	V044: '0.4.4',
 };
 
 // migration function - will evolve constantly
@@ -37,6 +38,9 @@ export async function tmfxDataMigration() {
 		}
 		if (dataVersionNow < DataVersion.V043) {
 			await updatePresetsV043();
+		}
+		if (dataVersionNow < DataVersion.V044) {
+			await updatePresetsV044();
 		}
 	}
 }
@@ -170,6 +174,27 @@ async function updatePresetsV043() {
 			log(`Migration 0.4.3 - Migration successful!`);
 		} catch (e) {
 			error(`Migration 0.4.3 - Migration failed.`);
+			error(e);
+		}
+	}
+}
+
+async function updatePresetsV044() {
+	var presets = game.settings.get('tokenmagic', 'presets');
+
+	if (!(presets == null)) {
+		log(`Migration 0.4.4 - Launching presets data migration...`);
+
+		try {
+			await game.settings.set('tokenmagic', 'presets', presets);
+			log(`Migration 0.4.4 - updating template presets...`);
+			await Magic.importPresetLibraryFromPath('modules/tokenmagic/import/TMFX-update-presets-v044.json', {
+				overwrite: true,
+			});
+			await game.settings.set('tokenmagic', 'migration', DataVersion.V044);
+			log(`Migration 0.4.4 - Migration successful!`);
+		} catch (e) {
+			error(`Migration 0.4.4 - Migration failed.`);
 			error(e);
 		}
 	}

@@ -2240,10 +2240,21 @@ Hooks.on('getHeaderControlsDocumentSheetV2', (config, controls) => {
 Hooks.on('dropCanvasData', async (canvas, data, event) => {
 	const { type, x, y } = data;
 	if (type === 'TMFX-Filter' || type === 'TMFX-Preset') {
-		const placeable = canvas.activeLayer?.placeables?.find((p) => p.visible && p.bounds?.contains(x, y));
-		if (placeable && Object.values(PlaceableType).includes(placeable.document.documentName)) {
+		const placeables = canvas.activeLayer?.placeables
+			?.filter((p) => p.visible && p.bounds?.contains(x, y))
+			.map((p) => p.document)
+			.sort(
+				(p1, p2) =>
+					p1.elevation - p2.elevation ||
+					p1.sort - p2.sort ||
+					p1.zIndex - p2.zIndex ||
+					p1._lastSortedIndex - p2._lastSortedIndex,
+			);
+		console.log(placeables);
+		const placeable = placeables?.[placeables.length - 1];
+		if (placeable && Object.values(PlaceableType).includes(placeable.documentName)) {
 			import('../gui/apps/FilterEditor.js').then((module) => {
-				module.handleTMFXDropEvent(placeable.document, data);
+				module.handleTMFXDropEvent(placeable, data);
 			});
 		}
 	}
