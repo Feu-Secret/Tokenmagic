@@ -2199,16 +2199,18 @@ Hooks.on('preCreateMeasuredTemplate', (document) => {
 /* -------------------------------------------- */
 
 Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
-	if (!game.user.isGM) return;
+	if (!game.user.isGM || !hud.document._TMFXgetPlaceableType?.()) return;
 
 	const alwaysDisplay = game.settings.get('tokenmagic', 'alwaysDisplayEditorControl');
 	if (!alwaysDisplay && !hud.object.document.getFlag('tokenmagic', 'filters')?.length) {
 		return;
 	}
 
+	const leftColumn = form.querySelector('.placeable-hud .col.left');
+	if (!leftColumn) return;
+
 	const button = document.createElement('button');
 	button.classList.add('control-icon');
-	//if (foundry.utils.getProperty(data, 'flags.tokenmagic.filters')?.length) button.classList.add('active');
 
 	button.dataset.action = 'tmfx-editor';
 	button.dataset.tooltip = game.i18n.localize('TMFX.hud.title');
@@ -2218,10 +2220,11 @@ Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
 
 	button.appendChild(icon);
 	button.addEventListener('click', (event) => {
-		window.TokenMagic.filterEditor(hud.object, event.target.closest('.col.left').getBoundingClientRect());
+		if (event.pointerType)
+			window.TokenMagic.filterEditor(hud.object, event.target.closest('.col.left').getBoundingClientRect());
 	});
 
-	form.querySelector('.placeable-hud .col.left').appendChild(button);
+	leftColumn.appendChild(button);
 });
 
 Hooks.on('getHeaderControlsDocumentSheetV2', (config, controls) => {

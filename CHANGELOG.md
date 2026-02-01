@@ -1,3 +1,8 @@
+# Token Magic FX - Update v0.7.6.1
+
+- Fixed errors thrown during `renderBasePlaceableHUD`
+- Placeable HUD button clicks are now proofed to make sure they're not programmatically dispatched #299
+
 # Token Magic FX - Update v0.7.6
 
 **Filter Editor**
