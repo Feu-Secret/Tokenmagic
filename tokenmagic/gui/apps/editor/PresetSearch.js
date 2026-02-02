@@ -1,5 +1,5 @@
-import { PresetsLibrary } from '../../fx/presets/defaultpresets';
-import { FILTER_PARAM_CONTROLS } from './data/fxControls';
+import { PresetsLibrary } from '../../../fx/presets/defaultpresets';
+import { FILTER_PARAM_CONTROLS } from '../data/fxControls';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 

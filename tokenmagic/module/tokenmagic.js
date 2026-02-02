@@ -1462,17 +1462,17 @@ export function TokenMagic() {
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
 		presetToggler: () => {
-			import('../gui/apps/PresetToggler.js').then((module) => {
+			import('../gui/apps/editor/PresetToggler.js').then((module) => {
 				module.presetToggler();
 			});
 		},
 		presetSearch: (options) => {
-			import('../gui/apps/PresetSearch.js').then((module) => {
+			import('../gui/apps/editor/PresetSearch.js').then((module) => {
 				module.presetSearch(options);
 			});
 		},
 		filterEditor: (placeable, sourceBounds) => {
-			import('../gui/apps/FilterEditor.js').then((module) => {
+			import('../gui/apps/editor/FilterEditor.js').then((module) => {
 				module.filterEditor(placeable, sourceBounds);
 			});
 		},
@@ -2253,10 +2253,9 @@ Hooks.on('dropCanvasData', async (canvas, data, event) => {
 					p1.zIndex - p2.zIndex ||
 					p1._lastSortedIndex - p2._lastSortedIndex,
 			);
-		console.log(placeables);
 		const placeable = placeables?.[placeables.length - 1];
 		if (placeable && Object.values(PlaceableType).includes(placeable.documentName)) {
-			import('../gui/apps/FilterEditor.js').then((module) => {
+			import('../gui/apps/editor/FilterEditor.js').then((module) => {
 				module.handleTMFXDropEvent(placeable, data);
 			});
 		}

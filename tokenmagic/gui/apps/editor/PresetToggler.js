@@ -1,5 +1,4 @@
-import { PresetsLibrary } from '../../fx/presets/defaultpresets';
-import { PlaceableType } from '../../module/constants';
+import { PlaceableType } from '../../../module/constants';
 import { PresetSearch } from './PresetSearch';
 
 export function presetToggler() {
