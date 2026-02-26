@@ -143,6 +143,12 @@
       "name": "日本語",
       "path": "lang/ja.json",
       "flags": {}
+    },
+        {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json",
+      "flags": {}
     }
   ],
   "relationships": {
