@@ -62,6 +62,7 @@
   	"TMFX.app.filterSelector.controls.save": "Salvar como Predefinição",
   	"TMFX.app.filterSelector.controls.macro": "Exibir como Macro",
   	"TMFX.app.filterSelector.controls.randomize": "Rerrolar Campos Aleatórios",
+	"TMFX.app.filterSelector.controls.clone": "Clonar",
   	"TMFX.app.filterEditor.title": "Filtro",
   	"TMFX.app.animationEditor.title": "Animar",
   	"TMFX.app.randomizationEditor.title": "Aleatorizar",
@@ -87,5 +88,8 @@
   	"TMFX.app.savePreset.autoDestroy.hint": "Marque para destruir/remover automaticamente o filtro assim que uma animação em loop terminar.",
   	"TMFX.app.savePreset.confirm.title": "Substituir Predefinição",
   	"TMFX.app.savePreset.confirm.message": "Já existe uma predefinição com o mesmo nome. Deseja sobrescrevê-la?",
+	"TMFX.app.searchPreset.controls.templateToggle": "Toggle Template Presets",
+    "TMFX.app.editPreset.option.library": "Biblioteca",
+    "TMFX.app.editPreset.option.defaultTexture": "Textura Padrão",
 	"TMFX.save": "Salvar"
 }
