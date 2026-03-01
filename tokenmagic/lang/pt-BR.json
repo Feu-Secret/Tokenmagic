@@ -88,7 +88,7 @@
   	"TMFX.app.savePreset.autoDestroy.hint": "Marque para destruir/remover automaticamente o filtro assim que uma animação em loop terminar.",
   	"TMFX.app.savePreset.confirm.title": "Substituir Predefinição",
   	"TMFX.app.savePreset.confirm.message": "Já existe uma predefinição com o mesmo nome. Deseja sobrescrevê-la?",
-	"TMFX.app.searchPreset.controls.templateToggle": "Toggle Template Presets",
+	"TMFX.app.searchPreset.controls.templateToggle": "Alternar Predefinições de Modelos",
     "TMFX.app.editPreset.option.library": "Biblioteca",
     "TMFX.app.editPreset.option.defaultTexture": "Textura Padrão",
 	"TMFX.save": "Salvar"
