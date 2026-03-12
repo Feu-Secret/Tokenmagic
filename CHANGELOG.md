@@ -1,3 +1,15 @@
+# Token Magic FX - Update v0.7.6.2
+
+**TMFX Editor**
+
+- Fixed HUD button erroneously responding to key-up events
+- Filter images no longer interfere with drag events
+- Added `Gallery` and `Upload to Gallery` header buttons
+  - `Gallery` opens a collection of community member submitted presets
+    - These presets can be dragged and dropped onto `TMFX Editor` windows or directly onto placeables
+  - `Upload to Gallery` allows to submit filters within the `TMFX Editor` for manual review
+    - If approved the filter will appear in the community `Gallery`
+
 # Token Magic FX - Update v0.7.6.1
 
 - Fixed errors thrown during `renderBasePlaceableHUD`

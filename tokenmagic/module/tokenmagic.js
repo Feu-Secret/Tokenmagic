@@ -2210,6 +2210,7 @@ Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
 	if (!leftColumn) return;
 
 	const button = document.createElement('button');
+	button.type = 'button';
 	button.classList.add('control-icon');
 
 	button.dataset.action = 'tmfx-editor';
@@ -2241,8 +2242,12 @@ Hooks.on('getHeaderControlsDocumentSheetV2', (config, controls) => {
 });
 
 Hooks.on('dropCanvasData', async (canvas, data, event) => {
-	const { type, x, y } = data;
-	if (type === 'TMFX-Filter' || type === 'TMFX-Preset') {
+	const { type, x, y, subtype } = data;
+	if (
+		type === 'TMFX Filter' ||
+		type === 'TMFX Preset' ||
+		(type === 'CommunityGalleryEntry' && subtype === 'TMFX Preset')
+	) {
 		const placeables = canvas.activeLayer?.placeables
 			?.filter((p) => p.visible && p.bounds?.contains(x, y))
 			.map((p) => p.document)

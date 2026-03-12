@@ -51,6 +51,7 @@
     object-position: 50% 0;
     border: none;
 	border-radius: 5px;
+	pointer-events: none;
  }
 
 .tokenmagic.application .filter .name {
