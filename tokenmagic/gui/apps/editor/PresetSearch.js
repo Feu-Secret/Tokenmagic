@@ -1,5 +1,6 @@
 import { PresetsLibrary } from '../../../fx/presets/defaultpresets';
 import { FILTER_PARAM_CONTROLS } from '../data/fxControls';
+import { submitPresetToGallery } from './FilterEditor';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
@@ -147,7 +148,7 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	_onDragStart(event) {
 		const { filterId: name, filterType: library } = event.target.closest('.filter').dataset;
-		const dragData = { type: 'TMFX-Preset', name, library };
+		const dragData = { type: 'TMFX Preset', name, library };
 		event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
 	}
 
@@ -199,6 +200,14 @@ export class PresetEdit extends HandlebarsApplicationMixin(ApplicationV2) {
 		window: {
 			resizable: false,
 			contentClasses: ['standard-form'],
+			controls: [
+				{
+					icon: 'fa-solid fa-cloud-arrow-up',
+					label: 'Upload to Gallery',
+					action: 'upload',
+					visible: game.user.isGM,
+				},
+			],
 		},
 		form: {
 			handler: PresetEdit._onSubmit,
@@ -214,6 +223,7 @@ export class PresetEdit extends HandlebarsApplicationMixin(ApplicationV2) {
 			delete: PresetSearch._onDeletePreset,
 			edit: PresetSearch._onEditPreset,
 			toggleTemplates: PresetSearch._onToggleTemplates,
+			upload: PresetEdit._onUpload,
 		},
 	};
 
@@ -259,5 +269,9 @@ export class PresetEdit extends HandlebarsApplicationMixin(ApplicationV2) {
 		if (this._parentApp.state === ApplicationV2.RENDER_STATES.RENDERED) {
 			this._parentApp.render({ parts: ['presets'] });
 		}
+	}
+
+	static async _onUpload(event, element) {
+		submitPresetToGallery(this._preset);
 	}
 }

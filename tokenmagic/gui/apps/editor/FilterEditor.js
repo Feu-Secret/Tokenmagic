@@ -29,13 +29,13 @@ export function filterEditor(placeable, sourceBounds) {
 }
 
 /**
- * Handle TMFX-Filter and TMFX-Preset drop event over a document or FilterSelector app
+ * Handle TMFX Filter and TMFX Preset drop event over a document or FilterSelector app
  * @param {*} document
  * @param {*} data
  * @returns
  */
 export async function handleTMFXDropEvent(document, data) {
-	if (data.type === 'TMFX-Preset') {
+	if (data.type === 'TMFX Preset') {
 		const { name, library } = data;
 		const preset = TokenMagic.getPresets(library).find((p) => p.name === name);
 		if (!preset?.params?.length) return;
@@ -45,7 +45,7 @@ export async function handleTMFXDropEvent(document, data) {
 		}
 
 		await TokenMagic.addFilters(document, preset.params);
-	} else if (data.type === 'TMFX-Filter') {
+	} else if (data.type === 'TMFX Filter') {
 		const { filterId, filterType, filterInternalId, placeableId, documentName, sceneId } = data;
 		if (document.id === placeableId && document.parent.id === sceneId) {
 			return;
@@ -59,7 +59,39 @@ export async function handleTMFXDropEvent(document, data) {
 		if (!filter) return;
 
 		await TokenMagic.addUpdateFilters(document, [filter]);
+	} else if (data.type === 'CommunityGalleryEntry' && data.subtype === 'TMFX Preset') {
+		handleFoundryGalleryDropEvent(document, data);
 	}
+}
+
+async function handleFoundryGalleryDropEvent(document, data) {
+	try {
+		const response = await fetch(data.src);
+		const entry = await response.json();
+		const preset = entry.data;
+
+		if (preset.defaultTexture && document.documentName === 'MeasuredTemplate') {
+			await document.update({ texture: preset.defaultTexture });
+		}
+
+		await TokenMagic.addFilters(document, preset.params);
+	} catch (e) {}
+}
+
+export async function submitPresetToGallery(preset) {
+	const tags = new Set();
+	preset.params.forEach((p) => tags.add(p.filterType));
+
+	const { default: Gallery } = await import(
+		/* webpackIgnore: true */ 'https://gallery.aedif.net/foundry-app/gallery.js'
+	);
+	Gallery.submit({
+		title: preset.name,
+		data: preset,
+		tags: Array.from(tags),
+		dependencies: ['tokenmagic'],
+		type: 'TMFX Preset',
+	});
 }
 
 /**
@@ -106,7 +138,24 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	/** @override */
 	static DEFAULT_OPTIONS = {
-		window: { resizable: true, contentClasses: ['standard-form'] },
+		window: {
+			resizable: true,
+			contentClasses: ['standard-form'],
+			controls: [
+				{
+					icon: 'fa-solid fa-cloud',
+					label: 'Gallery',
+					action: 'gallery',
+					visible: game.user.isGM,
+				},
+				{
+					icon: 'fa-solid fa-cloud-arrow-up',
+					label: 'Upload to Gallery',
+					action: 'upload',
+					visible: game.user.isGM,
+				},
+			],
+		},
 		classes: ['tokenmagic', 'selector', 'flexcol'],
 		actions: {
 			select: FilterSelector._onEdit,
@@ -116,6 +165,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			macro: FilterSelector._onSave,
 			preset: FilterSelector._onSave,
 			randomize: FilterSelector._onRandomize,
+			upload: FilterSelector._onUpload,
+			gallery: FilterSelector._onGallery,
 		},
 		position: {
 			width: 300,
@@ -252,7 +303,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	_onDragStart(event) {
 		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
 		const dragData = {
-			type: 'TMFX-Filter',
+			type: 'TMFX Filter',
 			filterId,
 			filterType,
 			filterInternalId,
@@ -270,7 +321,8 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	 */
 	async _onWindowDrop(event) {
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-		if (data.type === 'TMFX-Preset' || data.type === 'TMFX-Filter') return handleTMFXDropEvent(this._document, data);
+		if (data.type === 'TMFX Preset' || data.type === 'TMFX Filter' || data.type === 'CommunityGalleryEntry')
+			return handleTMFXDropEvent(this._document, data);
 		else if (data.type === 'Macro') return this._onAddMacro(data);
 	}
 
@@ -411,12 +463,58 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static _onSave(event) {
 		const action = event.target.closest('a').dataset.action;
-		new SavePreset(this._document, action === 'macro').render(true);
+		new SavePreset(this._document, { displayMacro: action === 'macro' }).render(true);
 	}
 
 	static _onRandomize() {
 		const paramArray = getCloneFilterParams(this._document);
 		if (paramArray?.length) window.TokenMagic.updateFiltersByPlaceable(this._document, paramArray);
+	}
+
+	static async _onUpload() {
+		let filterId = getCloneFilterParams(this._document)?.[0]?.filterId;
+		if (!filterId) return;
+
+		// Let the user assign a FilterID
+		filterId = await foundry.applications.api.DialogV2.prompt({
+			window: { title: 'Filter Name/ID' },
+			position: { width: 420 },
+			content: `
+		    <p>Define a unique name for your filter. It can differ from the 'Title' you will upload it under.</p>
+		    <input class="dark" type="text" autocomplete="off" value="${filterId}" autofocus>
+		  `,
+			ok: {
+				label: 'Confirm',
+				callback: (event, button) => button.form.querySelector('input').value,
+			},
+		});
+		if (!filterId) return;
+
+		filterId = filterId.trim();
+		if (filterId.length < 3) {
+			ui.notifications.warn('Filter name/id should be 3 characters or longer.');
+			return;
+		}
+
+		try {
+			const sp = new SavePreset(this._document, { name: filterId });
+			const params = sp._prepareParams();
+
+			if (this._document.documentName === 'MeasuredTemplate') {
+				const preset = { name: filterId, params, library: PresetsLibrary.TEMPLATE };
+				if (this._document.texture) preset.defaultTexture = this._document.texture;
+				submitPresetToGallery(preset);
+			} else submitPresetToGallery({ name: filterId, params, library: PresetsLibrary.MAIN });
+		} catch (e) {
+			return;
+		}
+	}
+
+	static async _onGallery() {
+		const { default: Gallery } = await import(
+			/* webpackIgnore: true */ 'https://gallery.aedif.net/foundry-app/gallery.js'
+		);
+		Gallery.browse({ filter: '@"TMFX Preset"' });
 	}
 
 	/** @override */
@@ -1188,7 +1286,7 @@ class RandomizationEditor extends HandlebarsApplicationMixin(ApplicationV2) {
 }
 
 class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
-	constructor(document, displayMacro = false) {
+	constructor(document, { name, displayMacro = false } = {}) {
 		super();
 		this._document = document;
 		this._displayMacro = displayMacro;
@@ -1196,7 +1294,7 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 		this._originalParams = getCloneFilterParams(document);
 		if (!this._originalParams?.length) throw Error('Document does not contain filters.');
 
-		this._name = this._originalParams[0].filterId;
+		this._name = name ?? this._originalParams[0].filterId;
 		if (FilterType[this._name]) this._name = 'NewFilter';
 
 		this._filterRandomized = true;
@@ -1206,6 +1304,10 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	_prepareParams() {
 		const params = deepClone(this._originalParams);
+
+		// Remove unnecessary parameters
+		const toDelete = ['placeableId', 'placeableType', 'filterInternalId', 'filterOwner', 'updateId'];
+
 		params.forEach((param) => {
 			param.filterId = this._name;
 			if (this._filterAnimated && param.animated) {
@@ -1222,6 +1324,10 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 					}
 				});
 			}
+
+			toDelete.forEach((k) => {
+				delete param[k];
+			});
 
 			if (this._autoDestroy && this._paramHasFiniteLoops(param)) param.autoDestroy = true;
 			else delete param.autoDestroy;
