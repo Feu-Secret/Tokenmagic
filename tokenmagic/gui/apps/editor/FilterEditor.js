@@ -37,8 +37,9 @@ export function filterEditor(placeable, sourceBounds) {
 export async function handleTMFXDropEvent(document, data) {
 	if (data.type === 'TMFX Preset') {
 		const { name, library } = data;
-		const preset = TokenMagic.getPresets(library).find((p) => p.name === name);
+		let preset = TokenMagic.getPresets(library).find((p) => p.name === name);
 		if (!preset?.params?.length) return;
+		preset = deepClone(preset);
 
 		if (preset.defaultTexture && document.documentName === 'MeasuredTemplate') {
 			await document.update({ texture: preset.defaultTexture });
@@ -1444,6 +1445,7 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 			await TokenMagic.deletePreset({ name, library }, true);
 		}
 
+		console.log('PARAMs', params);
 		await TokenMagic.addPreset({ name, library, defaultTexture }, params);
 		this.close(true);
 	}

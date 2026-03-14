@@ -272,6 +272,6 @@ export class PresetEdit extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	static async _onUpload(event, element) {
-		submitPresetToGallery(this._preset);
+		submitPresetToGallery(deepClone(this._preset));
 	}
 }

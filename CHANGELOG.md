@@ -1,3 +1,9 @@
+# Token Magic FX - Update v0.7.6.3
+
+- Fixed Presets applied through the Filter Editor becoming mutated
+- Courtesy of @LunarShade
+  - Fixed the exception that's thrown when trying to add an override with an empty override list
+
 # Token Magic FX - Update v0.7.6.2
 
 **TMFX Editor**
