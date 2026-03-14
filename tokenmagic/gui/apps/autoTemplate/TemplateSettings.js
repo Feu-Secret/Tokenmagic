@@ -89,6 +89,8 @@ export class TemplateSettings extends HandlebarsApplicationMixin(ApplicationV2) 
 
 		let idx;
 
+		autoTemplateSettings.overrides ??= [];
+
 		const lastKey = Object.keys(autoTemplateSettings.overrides)
 			.map((k) => Number(k))
 			.sort()
