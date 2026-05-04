@@ -2198,6 +2198,89 @@ Hooks.on('preCreateMeasuredTemplate', (document) => {
 
 /* -------------------------------------------- */
 
+// Foundry v14 / PF2e v8 places spell areas as Regions instead of MeasuredTemplates.
+// This handler mirrors preCreateMeasuredTemplate for regions: it lets the system
+// auto-template object inject tmfx options based on the pf2e origin flag, then
+// converts those options into the persisted filter flags used at render time.
+Hooks.on('preCreateRegion', (document) => {
+	if (game.Levels3DPreview?._active) return;
+
+	const templates = TokenMagicSettings.getSystemTemplates();
+	if (templates?.enabled) {
+		templates.preCreateRegion?.(document);
+	}
+
+	const opt = document.flags?.tokenmagic?.options;
+	if (!opt) return;
+
+	let tmfxPreset = opt.tmfxPreset;
+	let tmfxTint = opt.tmfxTint;
+	let tmfxOpacity = opt.tmfxTextureAlpha;
+	const hasPreset = !!tmfxPreset;
+	const hasTint = tmfxTint !== undefined && tmfxTint !== null && tmfxTint !== '';
+
+	if (hasTint && typeof tmfxTint !== 'number') {
+		tmfxTint = Color.from(tmfxTint).valueOf();
+	}
+
+	let tmfxFiltersData = null;
+	if (hasPreset) {
+		const pstSearch = {
+			name: tmfxPreset,
+			library: PresetsLibrary.TEMPLATE,
+			anchorX: 0.5,
+			anchorY: 0.5,
+		};
+		if (hasTint) pstSearch.color = tmfxTint;
+
+		const preset = Magic.getPreset(pstSearch);
+		if (preset instanceof Array && preset.length) {
+			const newFilters = [];
+			let persist = true;
+			for (const params of preset) {
+				if (!params.filterType || !FilterType.hasOwnProperty(params.filterType)) {
+					persist = false;
+					break;
+				}
+				if (!params.filterId) {
+					persist = false;
+					break;
+				}
+				if (typeof params.enabled !== 'boolean') params.enabled = true;
+				params.placeableId = null;
+				params.filterInternalId = foundry.utils.randomID();
+				params.filterOwner = game.data.userId;
+				params.placeableType = PlaceableType.REGION;
+
+				newFilters.push({
+					tmFilters: {
+						tmFilterId: params.filterId,
+						tmFilterInternalId: params.filterInternalId,
+						tmFilterType: params.filterType,
+						tmFilterOwner: params.filterOwner,
+						tmParams: params,
+					},
+				});
+			}
+			if (persist) tmfxFiltersData = newFilters;
+		}
+	}
+
+	const alpha = typeof tmfxOpacity === 'number' && Number.isFinite(tmfxOpacity) ? tmfxOpacity : 0.5;
+
+	document.updateSource({
+		flags: {
+			tokenmagic: {
+				filters: tmfxFiltersData,
+				regionData: { alpha },
+				options: null,
+			},
+		},
+	});
+});
+
+/* -------------------------------------------- */
+
 Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
 	if (!game.user.isGM || !hud.document._TMFXgetPlaceableType?.()) return;
 

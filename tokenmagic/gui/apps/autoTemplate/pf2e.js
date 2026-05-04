@@ -172,6 +172,62 @@ export class AutoTemplatePF2E extends TemplateSettings {
 		}
 		return template;
 	}
+
+	// In Foundry v14 / PF2e v8 spell areas are placed as Regions instead of MeasuredTemplates.
+	// flags.pf2e.origin keeps the same shape; flags.pf2e.areaShape carries one of the pf2e
+	// EFFECT_AREA_SHAPES values which is mapped onto the legacy template type used by the
+	// auto-template settings (circle/cone/rect/ray).
+	preCreateRegion(region) {
+		if (region.flags?.tokenmagic?.options || region.flags?.tokenmagic?.filters) return region;
+
+		const origin = region.flags?.pf2e?.origin;
+		if (!origin) return region;
+
+		const areaShape = region.flags?.pf2e?.areaShape;
+		const legacyType = AREA_SHAPE_TO_TEMPLATE_TYPE[areaShape] ?? 'circle';
+
+		const settings = game.settings.get('tokenmagic', 'autoTemplateSettings');
+		const updated = settings.overrides
+			? fromOverrides(Object.values(settings.overrides), origin, region)
+			: false;
+		if (!updated) {
+			fromCategoriesForType(settings.categories, origin, region, legacyType);
+		}
+		return region;
+	}
+}
+
+const AREA_SHAPE_TO_TEMPLATE_TYPE = {
+	burst: 'circle',
+	emanation: 'circle',
+	cylinder: 'circle',
+	cone: 'cone',
+	cube: 'rect',
+	square: 'rect',
+	line: 'ray',
+};
+
+function fromCategoriesForType(categories = {}, origin, document, type) {
+	if (!origin.traits?.length) {
+		return false;
+	}
+
+	let config, dmgSettings;
+	for (const trait of origin.traits) {
+		dmgSettings = categories[trait.toLowerCase()] || {};
+		config = dmgSettings[type];
+		if (config && config.preset !== emptyPreset) {
+			break;
+		}
+	}
+	if (!config) {
+		return false;
+	}
+	fromConfig(
+		foundry.utils.mergeObject(config, { opacity: dmgSettings.opacity, tint: dmgSettings.tint }, true, true),
+		document
+	);
+	return true;
 }
 
 function fromConfig(config, template) {
