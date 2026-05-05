@@ -856,8 +856,11 @@ export function TokenMagic() {
 		if (placeableType === PlaceableType.TEMPLATE) {
 			let updateData = placeable.document.getFlag('tokenmagic', 'templateData');
 			if (!(updateData == null)) {
-				placeable.document.tmfxTextureAlpha = placeable._TMFXgetSprite().alpha = updateData.opacity;
-				placeable.document.tmfxTint = updateData.tint;
+				const sprite = placeable._TMFXgetSprite();
+				if (sprite) {
+					placeable.document.tmfxTextureAlpha = sprite.alpha = updateData.opacity;
+					placeable.document.tmfxTint = updateData.tint;
+				}
 			}
 		} else if (placeableType === PlaceableType.REGION) {
 			const sprite = placeable._TMFXgetSprite();
