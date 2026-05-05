@@ -1,16 +1,21 @@
-<section style="overflow: auto">
+<section style="overflow: auto; flex: 1; display: flex;">
     <ol class="filter-list plain flexcol">
-    {{#each filters}}
-    <li class="filter flexrow{{#if active}} active{{/if}}" data-filter-id="{{filterId}}" data-filter-type="{{filterType}}" data-filter-internal-id="{{filterInternalId}}" draggable="true">
-        <img class="thumbnail" src="{{thumbnail}}" loading="lazy">
-        <a class="name ellipsis" data-action="select" >
-            <span>{{label}}</span>
-            <span class="subtext">{{subtext}}</span>
-        </a>
-        {{#each controls}}
-        <button type="button" class="control{{#if class}} {{class}}{{/if}}{{#if active}} active{{/if}}" data-action="{{action}}" data-tooltip="{{tooltip}}"><i class="{{icon}}"></i></button>
+        {{#each filterGroups}}
+        {{#if label}}
+        <div class="group-label" data-placeable-id="{{placeableId}}" draggable="true">{{label}}</div>
+        {{/if}}
+        {{#each filters}}
+        <li class="filter flexrow{{#if active}} active{{/if}}" data-filter-id="{{filterId}}" data-filter-type="{{filterType}}" data-filter-internal-id="{{filterInternalId}}" data-placeable-id="{{placeableId}}" draggable="true">
+            <img class="thumbnail" src="{{thumbnail}}" loading="lazy">
+            <a class="name ellipsis" data-action="select" >
+                <span>{{label}}</span>
+                <span class="subtext">{{subtext}}</span>
+            </a>
+            {{#each controls}}
+            <button type="button" class="control{{#if class}} {{class}}{{/if}}{{#if active}} active{{/if}}" data-action="{{action}}" data-tooltip="{{tooltip}}"><i class="{{icon}}"></i></button>
+            {{/each}}
+        </li>
         {{/each}}
-    </li>
-    {{/each}}
+        {{/each}}
     </ol>
 </section>

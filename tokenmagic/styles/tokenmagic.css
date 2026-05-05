@@ -20,6 +20,13 @@
  * ==== APP Common ====
  * ==================== */ 
 
+ .tokenmagic.application .group-label {
+	text-align: center;
+	border-top: 1px solid darkgray;
+	background: black;
+    margin-top: 5px;
+ }
+
  .tokenmagic.application .filter-list {
 	flex: 1;
     overflow: hidden auto;

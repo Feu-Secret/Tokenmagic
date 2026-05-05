@@ -2221,8 +2221,9 @@ Hooks.on('renderBasePlaceableHUD', (hud, form, data, options) => {
 
 	button.appendChild(icon);
 	button.addEventListener('click', (event) => {
-		if (event.pointerType)
-			window.TokenMagic.filterEditor(hud.object, event.target.closest('.col.left').getBoundingClientRect());
+		if (event.pointerType) {
+			window.TokenMagic.filterEditor(null, event.target.closest('.col.left').getBoundingClientRect());
+		}
 	});
 
 	leftColumn.appendChild(button);
@@ -2246,6 +2247,7 @@ Hooks.on('dropCanvasData', async (canvas, data, event) => {
 	if (
 		type === 'TMFX Filter' ||
 		type === 'TMFX Preset' ||
+		type === 'TMFX Group' ||
 		(type === 'CommunityGalleryEntry' && subtype === 'TMFX Preset')
 	) {
 		const placeables = canvas.activeLayer?.placeables
@@ -2261,7 +2263,7 @@ Hooks.on('dropCanvasData', async (canvas, data, event) => {
 		const placeable = placeables?.[placeables.length - 1];
 		if (placeable && Object.values(PlaceableType).includes(placeable.documentName)) {
 			import('../gui/apps/editor/FilterEditor.js').then((module) => {
-				module.handleTMFXDropEvent(placeable, data);
+				module.handleTMFXDropEvent([placeable], data);
 			});
 		}
 	}

@@ -14,18 +14,18 @@ const { deepClone, getType, isEmpty, mergeObject, diffObject } = foundry.utils;
  */
 
 export function filterEditor(placeable, sourceBounds) {
-	placeable = placeable ?? TokenMagic.getControlledPlaceables()[0];
-	if (!placeable) return;
+	const placeables = placeable ? [placeable] : TokenMagic.getControlledPlaceables();
+	if (!placeables.length) return;
 
-	const document = placeable.document ?? placeable;
-	const appId = FilterSelector.genId(document);
+	const documents = placeables.map((p) => p.document ?? p);
+	const appId = FilterSelector.genId(documents);
 
 	const activeInstance = foundry.applications.instances.get(appId);
 	if (activeInstance) {
 		activeInstance.close();
 		return;
 	}
-	new FilterSelector(document, sourceBounds).render(true);
+	new FilterSelector(documents, sourceBounds).render(true);
 }
 
 /**
@@ -34,7 +34,7 @@ export function filterEditor(placeable, sourceBounds) {
  * @param {*} data
  * @returns
  */
-export async function handleTMFXDropEvent(document, data) {
+export async function handleTMFXDropEvent(documents, data) {
 	if (data.type === 'TMFX Preset') {
 		const { name, library } = data;
 		let preset = TokenMagic.getPresets(library).find((p) => p.name === name);
@@ -42,15 +42,16 @@ export async function handleTMFXDropEvent(document, data) {
 		preset = deepClone(preset);
 
 		if (preset.defaultTexture && document.documentName === 'MeasuredTemplate') {
-			await document.update({ texture: preset.defaultTexture });
+			for (const document of documents) {
+				await document.update({ texture: preset.defaultTexture }); // TODO, update as single operation
+			}
 		}
 
-		await TokenMagic.addFilters(document, preset.params);
+		for (const document of documents) {
+			await TokenMagic.addFilters(document, preset.params);
+		}
 	} else if (data.type === 'TMFX Filter') {
 		const { filterId, filterType, filterInternalId, placeableId, documentName, sceneId } = data;
-		if (document.id === placeableId && document.parent.id === sceneId) {
-			return;
-		}
 
 		const scene = game.scenes.get(sceneId);
 		const originDocument = scene?.getEmbeddedDocument(documentName, placeableId);
@@ -59,23 +60,43 @@ export async function handleTMFXDropEvent(document, data) {
 		const filter = deepClone(FilterSelector.getFilter(originDocument, { filterId, filterType, filterInternalId }));
 		if (!filter) return;
 
-		await TokenMagic.addUpdateFilters(document, [filter]);
+		for (const document of documents) {
+			if (document.id === placeableId && document.parent.id === sceneId) continue;
+			await TokenMagic.addUpdateFilters(document, [deepClone(filter)]);
+		}
+	} else if (data.type === 'TMFX Group') {
+		const { placeableId, sceneId, documentName } = data;
+
+		const scene = game.scenes.get(sceneId);
+		const originDocument = scene?.getEmbeddedDocument(documentName, placeableId);
+		if (!originDocument) return;
+
+		const filters = deepClone(FilterSelector.getFilters(originDocument));
+		if (!filters?.length) return;
+
+		for (const document of documents) {
+			if (document.id === placeableId && document.parent.id === sceneId) continue;
+			await TokenMagic.addUpdateFilters(document, deepClone(filters));
+		}
 	} else if (data.type === 'CommunityGalleryEntry' && data.subtype === 'TMFX Preset') {
-		handleFoundryGalleryDropEvent(document, data);
+		handleFoundryGalleryDropEvent(documents, data);
 	}
 }
 
-async function handleFoundryGalleryDropEvent(document, data) {
+async function handleFoundryGalleryDropEvent(documents, data) {
 	try {
 		const response = await fetch(data.src);
 		const entry = await response.json();
 		const preset = entry.data;
 
 		if (preset.defaultTexture && document.documentName === 'MeasuredTemplate') {
-			await document.update({ texture: preset.defaultTexture });
+			for (const document of documents) {
+				await document.update({ texture: preset.defaultTexture }); // TODO, update as single operation
+			}
 		}
-
-		await TokenMagic.addFilters(document, preset.params);
+		for (const document of documents) {
+			await TokenMagic.addFilters(document, preset.params);
+		}
 	} catch (e) {}
 }
 
@@ -105,14 +126,14 @@ function genLabel(text) {
 }
 
 class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
-	static genId(document) {
-		return `tmfx-filter-selector-${document.id}`;
+	static singleInstance = true;
+
+	static genId(documents) {
+		return this.singleInstance ? 'tmfx-filter-selector' : `tmfx-filter-selector-${documents[0].id}`;
 	}
 
-	constructor(document, sourceBounds) {
-		const options = {
-			id: FilterSelector.genId(document),
-		};
+	constructor(documents, sourceBounds, options = {}) {
+		options.id = FilterSelector.genId(documents);
 
 		// If bounds of the triggering element are provided lets position this
 		// window relative to center right
@@ -126,15 +147,11 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 
 		super(options);
-		this._document = document;
+		this._documents = documents;
 	}
 
 	get title() {
-		let title =
-			game.i18n.localize('TMFX.TokenMagic') + ' ' + game.i18n.localize('TMFX.app.filterSelector.window.title');
-		if (this._document.documentName === 'Token' && this._document.name.trim()) title += ` [ ${this._document.name} ]`;
-		else title += ` [ ${this._document.documentName} ]`;
-		return title;
+		return game.i18n.localize('TMFX.TokenMagic') + ' ' + game.i18n.localize('TMFX.app.filterSelector.window.title');
 	}
 
 	/** @override */
@@ -196,6 +213,17 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			)?.tmFilters.tmParams;
 	}
 
+	static getFilters(document) {
+		return document.getFlag('tokenmagic', 'filters')?.map((f) => f.tmFilters.tmParams);
+	}
+
+	/** @override */
+	async _prepareContext(options) {
+		const context = await super._prepareContext(options);
+		this._paramArray = this._getFilterParams();
+		return context;
+	}
+
 	/** @override */
 	async _preparePartContext(partId, context, options) {
 		context.partId = partId;
@@ -210,11 +238,22 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		return context;
 	}
 
+	_getFilterParams() {
+		const params = [];
+		for (const document of this._documents) {
+			const filters = document.getFlag('tokenmagic', 'filters') ?? [];
+			for (const filter of filters) {
+				const tmParams = deepClone(filter.tmFilters.tmParams);
+				tmParams.placeableId = document.id; // Need to make sure the placeableId is correct
+				params.push(tmParams);
+			}
+		}
+		return params;
+	}
+
 	_prepareHeaderContext(context, options) {
-		const filters = this._document.getFlag('tokenmagic', 'filters');
-		const hasFilters = filters?.length;
-		const hasActiveRandomizedFields = filters?.some((f) => {
-			const params = f.tmFilters.tmParams;
+		const hasFilters = this._paramArray.length;
+		const hasActiveRandomizedFields = this._paramArray.some((params) => {
 			if (params.hasOwnProperty('enabled') && !params.enabled) return false;
 
 			if (isEmpty(params.randomized)) return false;
@@ -249,41 +288,48 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	async _prepareFiltersContext(context, options) {
-		this._paramArray = (this._document.getFlag('tokenmagic', 'filters') ?? []).map(
-			(filter) => filter.tmFilters.tmParams,
-		);
-		this._filters = this._paramArray
-			.map((param) => {
-				const { filterId, filterType, rank, enabled, filterInternalId } = param;
-				return {
-					filterId,
-					filterType,
-					filterInternalId,
-					label: filterId,
-					subtext: filterType,
-					rank,
-					thumbnail: FILTER_PARAM_CONTROLS[filterType]?._thumb ?? FILTER_PARAM_CONTROLS.common._thumb,
-					controls: [
-						{
-							class: 'toggle',
-							action: 'toggle',
-							icon: 'fa-sharp fa-solid fa-power-off',
-							tooltip: game.i18n.localize('CONTROLS.CommonOnOff'),
-							active: enabled || enabled == undefined,
-						},
-						{
-							class: 'delete',
-							action: 'delete',
-							tooltip: game.i18n.localize('SIDEBAR.Delete'),
-							icon: 'fa-solid fa-trash',
-						},
-					],
-				};
-			})
-			.sort((f1, f2) => f1.rank - f2.rank)
-			.reverse();
+		const groups = {};
 
-		return Object.assign(context, { filters: this._filters });
+		for (const { filterId, filterType, rank, enabled, filterInternalId, placeableId } of this._paramArray) {
+			const filter = {
+				filterId,
+				filterType,
+				filterInternalId,
+				placeableId,
+				label: filterId,
+				subtext: filterType,
+				rank,
+				thumbnail: FILTER_PARAM_CONTROLS[filterType]?._thumb ?? FILTER_PARAM_CONTROLS.common._thumb,
+				controls: [
+					{
+						class: 'toggle',
+						action: 'toggle',
+						icon: 'fa-sharp fa-solid fa-power-off',
+						tooltip: game.i18n.localize('CONTROLS.CommonOnOff'),
+						active: enabled || enabled == undefined,
+					},
+					{
+						class: 'delete',
+						action: 'delete',
+						tooltip: game.i18n.localize('SIDEBAR.Delete'),
+						icon: 'fa-solid fa-trash',
+					},
+				],
+			};
+			if (!groups[placeableId]) {
+				const document = this._documents.find((d) => d.id === placeableId);
+				groups[placeableId] = { label: document.name || document.documentName, placeableId, filters: [] };
+			}
+			groups[placeableId].filters.push(filter);
+		}
+
+		const filterGroups = [];
+		for (const [placeableId, group] of Object.entries(groups)) {
+			group.filters.sort((f1, f2) => f1.rank - f2.rank).reverse();
+			filterGroups.push(group);
+		}
+
+		return Object.assign(context, { filterGroups });
 	}
 
 	/** @override */
@@ -299,18 +345,34 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 			element.addEventListener('dragstart', this._onDragStart.bind(this));
 			element.addEventListener('drop', this._onFilterDrop.bind(this));
 		});
+		this.element.querySelectorAll('.group-label').forEach((element) => {
+			element.addEventListener('dragstart', this._onDragStartGroup.bind(this));
+		});
 	}
 
 	_onDragStart(event) {
-		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
+		const { filterId, filterType, filterInternalId, placeableId } = event.target.closest('.filter').dataset;
+		const document = this._documents.find((d) => d.id === placeableId);
 		const dragData = {
 			type: 'TMFX Filter',
 			filterId,
 			filterType,
 			filterInternalId,
-			placeableId: this._document.id,
-			documentName: this._document.documentName,
-			sceneId: this._document.parent.id,
+			placeableId,
+			documentName: document.documentName,
+			sceneId: document.parent.id,
+		};
+		event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+	}
+
+	_onDragStartGroup(event) {
+		const { placeableId } = event.target.closest('.group-label').dataset;
+		const document = this._documents.find((d) => d.id === placeableId);
+		const dragData = {
+			type: 'TMFX Group',
+			placeableId,
+			documentName: document.documentName,
+			sceneId: document.parent.id,
 		};
 		event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
 	}
@@ -322,8 +384,13 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	 */
 	async _onWindowDrop(event) {
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-		if (data.type === 'TMFX Preset' || data.type === 'TMFX Filter' || data.type === 'CommunityGalleryEntry')
-			return handleTMFXDropEvent(this._document, data);
+		if (
+			data.type === 'TMFX Preset' ||
+			data.type === 'TMFX Filter' ||
+			data.type === 'TMFX Group' ||
+			data.type === 'CommunityGalleryEntry'
+		)
+			return handleTMFXDropEvent(this._documents, data);
 		else if (data.type === 'Macro') return this._onAddMacro(data);
 	}
 
@@ -333,19 +400,35 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	 * @returns
 	 */
 	async _onFilterDrop(event) {
+		event.stopPropagation();
+
 		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
-		if (!data.filterId || !data.filterType || !data.filterInternalId) return;
-		if (this._document.id !== data.placeableId && this._document.parent.id !== data.sceneId) return;
 
-		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
-		if (data.filterId === filterId && data.filterType === filterType && data.filterInternalId === filterInternalId)
-			return;
+		if (data.type === 'TMFX Group') {
+			const { placeableId } = event.target.closest('.filter').dataset;
+			const document = this._documents.find((d) => d.id === placeableId);
+			return handleTMFXDropEvent([document], data);
+		}
 
-		return this._onUpdateFilterRank(data, { filterId, filterType, filterInternalId });
+		if (!data.filterId || !data.filterType || !data.filterInternalId || !data.placeableId) return;
+
+		const { filterId, filterType, filterInternalId, placeableId } = event.target.closest('.filter').dataset;
+		if (data.placeableId === placeableId) {
+			if (data.filterId === filterId && data.filterType === filterType && data.filterInternalId === filterInternalId)
+				return;
+			return this._onUpdateFilterRank(
+				data,
+				{ filterId, filterType, filterInternalId },
+				this._documents.find((d) => d.id === placeableId),
+			);
+		} else {
+			const document = this._documents.find((d) => d.id === placeableId);
+			return handleTMFXDropEvent([document], data);
+		}
 	}
 
-	async _onUpdateFilterRank(fromFilter, toFilter) {
-		const filters = deepClone(this._document.getFlag('tokenmagic', 'filters'));
+	async _onUpdateFilterRank(fromFilter, toFilter, document) {
+		const filters = deepClone(document.getFlag('tokenmagic', 'filters'));
 		if (!filters || !filters.length) return;
 
 		// First make sure there are no duplicate ranks
@@ -364,15 +447,15 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 				const { filterId, filterType, filterInternalId } = paramArray[i];
 				updates.push({ filterId, filterType, filterInternalId, rank: minRank + i });
 			}
-			await TokenMagic.updateFiltersByPlaceable(this._document, updates);
+			await TokenMagic.updateFiltersByPlaceable(document, updates);
 		}
 
 		// Swap filters
-		const fromParams = FilterSelector.getFilter(this._document, fromFilter);
-		const toParams = FilterSelector.getFilter(this._document, toFilter);
+		const fromParams = FilterSelector.getFilter(document, fromFilter);
+		const toParams = FilterSelector.getFilter(document, toFilter);
 		if (!fromParams || !toParams) return;
 
-		await TokenMagic.updateFiltersByPlaceable(this._document, [
+		await TokenMagic.updateFiltersByPlaceable(document, [
 			{
 				filterId: fromParams.filterId,
 				filterType: fromParams.filterType,
@@ -388,7 +471,7 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		]);
 
 		// Sort filters based on new ranks
-		const sprite = this._document.object?._TMFXgetSprite();
+		const sprite = document.object?._TMFXgetSprite();
 		if (sprite) sprite.filters = sprite.filters.sort((f1, f2) => f1.rank - f2.rank);
 
 		this.render(true);
@@ -401,7 +484,9 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		try {
 			const paramArray = eval(macro.command.match(/\[[\s\S]*?\]/)?.[0]);
 			if (paramArray.every((p) => typeof p === 'object' && p.filterId && p.filterType)) {
-				window.TokenMagic.addFilters(this._document, paramArray);
+				for (const document of this._documents) {
+					window.TokenMagic.addFilters(document, paramArray);
+				}
 			}
 		} catch (e) {
 			console.warn('No filter parameter array found within macro: ' + macro.name);
@@ -411,18 +496,17 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	static async _onEdit(event) {
 		try {
 			const filterEl = event.target.closest('.filter');
-			const { filterId, filterType, filterInternalId } = filterEl.dataset;
+			const { filterId, filterType, filterInternalId, placeableId } = filterEl.dataset;
 			const filterIdentifier = { filterId, filterType, filterInternalId };
 
-			const appId = FilterEditor.genId(this._document, filterIdentifier);
+			const document = this._documents.find((d) => d.id === placeableId);
+
+			const appId = FilterEditor.genId(document, filterIdentifier);
 			const activeInstance = foundry.applications.instances.get(appId);
 			if (activeInstance) activeInstance.close();
 			else {
 				const { left, bottom } = filterEl.getBoundingClientRect();
-				new FilterEditor(
-					{ document: this._document, filterIdentifier },
-					{ id: appId, position: { left, top: bottom } },
-				).render(true);
+				new FilterEditor({ document, filterIdentifier }, { id: appId, position: { left, top: bottom } }).render(true);
 			}
 		} catch (e) {
 			console.log(e);
@@ -430,18 +514,15 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	static async _onDelete(event) {
-		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
-
-		await TokenMagic.deleteFilters(this._document, filterId, filterType, filterInternalId);
-
-		const appId = FilterEditor.genId(this._document, { filterId, filterType, filterInternalId });
-		const activeInstance = foundry.applications.instances.get(appId);
-		if (activeInstance) activeInstance.close();
+		const { filterId, filterType, filterInternalId, placeableId } = event.target.closest('.filter').dataset;
+		const document = this._documents.find((d) => d.id === placeableId);
+		await TokenMagic.deleteFilters(document, filterId, filterType, filterInternalId);
 	}
 
 	static async _onToggle(event) {
-		const { filterId, filterType, filterInternalId } = event.target.closest('.filter').dataset;
-		await TokenMagic.updateFiltersByPlaceable(this._document, [
+		const { filterId, filterType, filterInternalId, placeableId } = event.target.closest('.filter').dataset;
+		const document = this._documents.find((d) => d.id === placeableId);
+		await TokenMagic.updateFiltersByPlaceable(document, [
 			{
 				filterId,
 				filterType,
@@ -464,16 +545,19 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	static _onSave(event) {
 		const action = event.target.closest('a').dataset.action;
-		new SavePreset(this._document, { displayMacro: action === 'macro' }).render(true);
+		new SavePreset(this._documents[0], { displayMacro: action === 'macro' }).render(true);
 	}
 
 	static _onRandomize() {
-		const paramArray = getCloneFilterParams(this._document);
-		if (paramArray?.length) window.TokenMagic.updateFiltersByPlaceable(this._document, paramArray);
+		for (const document of this._documents) {
+			const paramArray = getCloneFilterParams(document);
+			if (paramArray?.length) window.TokenMagic.updateFiltersByPlaceable(document, paramArray);
+		}
 	}
 
 	static async _onUpload() {
-		let filterId = getCloneFilterParams(this._document)?.[0]?.filterId;
+		const document = this._documents[0];
+		let filterId = getCloneFilterParams(document)?.[0]?.filterId;
 		if (!filterId) return;
 
 		// Let the user assign a FilterID
@@ -498,12 +582,12 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		}
 
 		try {
-			const sp = new SavePreset(this._document, { name: filterId });
+			const sp = new SavePreset(document, { name: filterId });
 			const params = sp._prepareParams();
 
-			if (this._document.documentName === 'MeasuredTemplate') {
+			if (document.documentName === 'MeasuredTemplate') {
 				const preset = { name: filterId, params, library: PresetsLibrary.TEMPLATE };
-				if (this._document.texture) preset.defaultTexture = this._document.texture;
+				if (document.texture) preset.defaultTexture = document.texture;
 				submitPresetToGallery(preset);
 			} else submitPresetToGallery({ name: filterId, params, library: PresetsLibrary.MAIN });
 		} catch (e) {
@@ -524,23 +608,40 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 		this._hooks = [];
 		for (const layer of Object.values(PlaceableType)) {
 			if (!layer) continue;
-			const hook = `update${layer}`;
-			const id = Hooks.on(hook, (document, change, options, userId) => {
-				if (document.id !== this._document.id) return;
+			let hook = `update${layer}`;
+			let id = Hooks.on(hook, (document, change, options, userId) => {
+				if (!this._documents.find((d) => d.id === document.id)) return;
 				const tm = change.flags?.tokenmagic;
 				if (!tm) return;
 
-				if ('-=filters' in tm) {
+				if (tm.filters instanceof foundry.data.operators.ForcedDeletion) {
 					this.render({ parts: ['header', 'filters'] });
 				} else if (tm.filters) {
+					const paramArray = this._paramArray.filter((p) => p.placeableId === document.id);
 					const renderFieldsChanged = this._paramArrayCompare(
-						this._paramArray,
+						paramArray,
 						tm.filters.map((f) => f.tmFilters.tmParams),
 					);
 					if (renderFieldsChanged) this.render({ parts: ['header', 'filters'] });
 				}
 			});
 			this._hooks.push({ hook, id });
+
+			if (FilterSelector.singleInstance) {
+				hook = `control${layer}`;
+				id = Hooks.on(hook, (placeable, controlled) => {
+					clearTimeout(this._controlTimeout);
+					this._controlTimeout = setTimeout(() => {
+						const document = this._documents.find((d) => d.id === placeable.document.id);
+						if ((document && !controlled) || !document) {
+							const documents = window.TokenMagic.getControlledPlaceables().map((p) => p.document);
+							this._documents = documents;
+							this.render(true);
+						}
+					}, 200);
+				});
+				this._hooks.push({ hook, id });
+			}
 		}
 
 		this._createContextMenu(this._getFilterContextOptions, '.filter', {
@@ -560,9 +661,10 @@ class FilterSelector extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	_onCloneFilter(element) {
-		const { filterId, filterType, filterInternalId } = element.dataset;
-		const filter = FilterSelector.getFilter(this._document, { filterId, filterType, filterInternalId });
-		if (filter) TokenMagic.addFilters(this._document, [deepClone(filter)]);
+		const { filterId, filterType, filterInternalId, placeableId } = element.dataset;
+		const document = this._documents.find((d) => d.id === placeableId);
+		const filter = FilterSelector.getFilter(document, { filterId, filterType, filterInternalId });
+		if (filter) TokenMagic.addFilters(document, [deepClone(filter)]);
 	}
 
 	/**
@@ -1445,7 +1547,6 @@ class SavePreset extends HandlebarsApplicationMixin(ApplicationV2) {
 			await TokenMagic.deletePreset({ name, library }, true);
 		}
 
-		console.log('PARAMs', params);
 		await TokenMagic.addPreset({ name, library, defaultTexture }, params);
 		this.close(true);
 	}

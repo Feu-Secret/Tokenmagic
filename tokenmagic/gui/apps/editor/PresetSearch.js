@@ -128,7 +128,7 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 			};
 		});
 
-		context.filters = presets;
+		context.filterGroups = [{ filters: presets }];
 	}
 
 	/** @override */
