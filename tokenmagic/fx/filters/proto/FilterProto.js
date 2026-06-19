@@ -1,8 +1,10 @@
 import { getPlaceableById, getMinPadding } from '../../../module/tokenmagic.js';
 import '../../../module/proto/PlaceableObjectProto.js';
 import { PlaceableType } from '../../../module/constants.js';
+import { FilterOverrideManager } from '../../FilterOverrides.js';
 
 PIXI.Filter.prototype.setTMParams = function (params) {
+	FilterOverrideManager.applyOverrides(params);
 	this.autoDisable = false;
 	this.autoDestroy = false;
 	this.gridPadding = 0;

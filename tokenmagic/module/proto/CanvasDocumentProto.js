@@ -1,5 +1,5 @@
 import { PlaceableType } from '../constants.js';
-import { broadcast, mustBroadCast } from '../tokenmagic.js';
+import { broadcast, mustBroadCast, SocketAction } from '../tokenmagic.js';
 import { callAsyncHook } from '../utilities.js';
 import { gMaxRank } from './PlaceableObjectProto.js';
 

@@ -50,6 +50,7 @@ import { FilterCRT } from '../fx/filters/FilterCRT.js';
 import { FilterRGBSplit } from '../fx/filters/FilterRGBSplit.js';
 import { TokenMagicSettings } from './settings.js';
 import { FilterColorGradient } from '../fx/filters/FilterColorGradient.js';
+import { FilterOverrideManager } from '../fx/FilterOverrides.js';
 
 /*
 
@@ -1481,6 +1482,7 @@ export function TokenMagic() {
 		get filterTypes() {
 			return FilterType;
 		},
+		FilterOverrideManager,
 		_assignFilters: _assignFilters,
 		_loadFilters: _loadFilters,
 		_clearImgFiltersByPlaceable: _clearImgFiltersByPlaceable,
