@@ -1,4 +1,4 @@
-import { getPlaceableById, getMinPadding } from '../../../module/tokenmagic.js';
+import { getPlaceableById } from '../../../module/tokenmagic.js';
 import '../../../module/proto/PlaceableObjectProto.js';
 import { PlaceableType } from '../../../module/constants.js';
 import { FilterOverrideManager } from '../../FilterOverrides.js';
@@ -15,7 +15,7 @@ PIXI.Filter.prototype.setTMParams = function (params) {
 	foundry.utils.mergeObject(this, params);
 	if (!this.dummy) {
 		this.rawPadding = this.rawPadding ?? this.padding ?? 0;
-		this.originalPadding = Math.max(this.rawPadding, getMinPadding());
+		this.originalPadding = Math.max(this.rawPadding, game.settings.get('tokenmagic', 'minPadding'));
 		this.assignPlaceable();
 		this.activateTransform();
 		Object.defineProperty(this, 'padding', {
@@ -25,7 +25,7 @@ PIXI.Filter.prototype.setTMParams = function (params) {
 			},
 			set: function (padding) {
 				this.rawPadding = padding;
-				this.originalPadding = Math.max(padding, getMinPadding());
+				this.originalPadding = Math.max(padding, game.settings.get('tokenmagic', 'minPadding'));
 			},
 		});
 	} else {

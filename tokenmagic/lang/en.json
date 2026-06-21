@@ -84,5 +84,6 @@
 	"TMFX.app.editPreset.option.library": "Library",
 	"TMFX.app.editPreset.option.defaultColor": "Default Color",
 	"TMFX.app.editPreset.option.defaultOpacity": "Default Opacity",
-	"TMFX.save": "Save"
+	"TMFX.save": "Save",
+	"TMFX.matt.togglePreset": "TMFX Toggle Preset"
 }

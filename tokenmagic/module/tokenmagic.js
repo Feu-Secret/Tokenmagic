@@ -51,6 +51,7 @@ import { FilterRGBSplit } from '../fx/filters/FilterRGBSplit.js';
 import { TokenMagicSettings } from './settings.js';
 import { FilterColorGradient } from '../fx/filters/FilterColorGradient.js';
 import { FilterOverrideManager } from '../fx/FilterOverrides.js';
+import { exportObjectAsJson, isAdditivePaddingConfig, isTheOne, randomizeParams } from './utilities.js';
 
 /*
 
@@ -115,19 +116,6 @@ function i18n(key) {
 	return game.i18n.localize(key);
 }
 
-async function exportObjectAsJson(exportObj, exportName) {
-	let jsonStr = JSON.stringify(exportObj, null, 4);
-
-	const a = document.createElement('a');
-	const file = new Blob([jsonStr], { type: 'plain/text' });
-
-	a.href = URL.createObjectURL(file);
-	a.download = exportName + '.json';
-	a.click();
-
-	URL.revokeObjectURL(a.href);
-}
-
 export const SocketAction = {
 	SET_FLAG: 'TMFXSetFlag',
 	SET_ANIME_FLAG: 'TMFXSetAnimeFlag',
@@ -145,33 +133,12 @@ export function broadcast(placeable, flag, socketAction) {
 	game.socket.emit(moduleTM, data, (resp) => {});
 }
 
-export function isActiveModule(moduleName) {
-	return game.modules.has(moduleName) && game.modules.get(moduleName).active === true;
-}
-
-export function getMinPadding() {
-	return game.settings.get('tokenmagic', 'minPadding');
-}
-
-export function isAdditivePaddingConfig() {
-	return game.settings.get('tokenmagic', 'useAdditivePadding');
-}
-
-export function isFilterCachingDisabled() {
-	return game.settings.get('tokenmagic', 'disableCaching');
-}
-
-export function isTheOne() {
-	const theOne = game.users.find((user) => user.isGM && user.active);
-	return theOne && game.user === theOne;
-}
-
 export function mustBroadCast() {
 	return game.settings.get('tokenmagic', 'fxPlayerPermission') && !isTheOne();
 }
 
 export function autosetPaddingMode() {
-	canvas.app.renderer.filter.useMaxPadding = !isAdditivePaddingConfig();
+	canvas.app.renderer.filter.useMaxPadding = !game.settings.get('tokenmagic', 'useAdditivePadding');
 }
 
 export function isZOrderConfig() {
@@ -270,54 +237,6 @@ export function getPlaceableById(id, type) {
 	}
 
 	return placeable;
-}
-
-/**
- * Randomizes params using 'randomized' field.
- * 'randomized' is an object consisting of keys named after params to be randomized, which map either
- * to arrays or ranges which will be used to generate a random value.
- * e.g.
- * {
- *  param1: ['foo1', 'foo2', 'foo3'],
- *  param2: { list: ['foo1', 'foo2', 'foo3'], link: 'param5'},
- *  param3: { val1: 0, val2: 1, step: 0.1},
- *  param4: { val1: 0, val2: 10, step: 1, link: 'param6'},
- * }
- * 'link' will assign the same generated value to one other param.
- */
-function randomizeParams(params) {
-	if (params.randomized.hasOwnProperty('active') && !params.randomized.active) return;
-
-	for (const [param, opts] of Object.entries(params.randomized)) {
-		if (opts.hasOwnProperty('active') && !opts.active) continue;
-
-		let rVal;
-		if (Array.isArray(opts) || opts.list?.length) {
-			const list = opts.list ?? opts;
-			rVal = list[Math.floor(Math.random() * list.length)];
-		} else if (opts.color && opts.type !== 'any') {
-			rVal = Color.mix(opts.val1, opts.val2, Math.random());
-		} else {
-			if (typeof opts.val1 === 'boolean') {
-				rVal = Math.random() > 0.5;
-			} else {
-				const min = Math.min(opts.val1, opts.val2);
-				const max = Math.max(opts.val1, opts.val2);
-				const step = opts.step ?? 1;
-				const steps = Math.floor((max - min) / step) + 1;
-				const randomStep = Math.floor(Math.random() * steps);
-
-				const precision = Math.max(
-					(step.toString().split('.')[1] || '').length,
-					(min.toString().split('.')[1] || '').length,
-				);
-
-				rVal = Number((min + randomStep * step).toFixed(precision));
-			}
-		}
-		foundry.utils.setProperty(params, param, rVal);
-		if (opts.hasOwnProperty('link')) foundry.utils.setProperty(params, opts.link, rVal);
-	}
 }
 
 export function objectAssign(target, ...sources) {
@@ -1642,6 +1561,7 @@ Hooks.on('ready', () => {
 	log('Hook -> ready');
 	tmfxDataMigration();
 	initSocketListener();
+	FilterOverrideManager.init();
 	window.TokenMagic = Magic;
 
 	Hooks.on('renderRegionConfig', onRegionConfig);
@@ -1651,11 +1571,12 @@ Hooks.on('ready', () => {
 /*  Canvas Management                           */
 /* -------------------------------------------- */
 
-Hooks.once('canvasInit', (canvas) => {
-	if (!isFilterCachingDisabled()) {
+Hooks.once('canvasInit', (...args) => {
+	if (!game.settings.get('tokenmagic', 'disableCaching')) {
 		log('Init -> canvasInit -> caching shaders');
 		compilingShaders();
 	}
+	FilterOverrideManager.canvasInit(...args);
 });
 
 /* -------------------------------------------- */
@@ -2074,4 +1995,9 @@ Hooks.on('dropCanvasData', async (canvas, data, event) => {
 			});
 		}
 	}
+});
+
+// Monks Active Tiles - Register tile actions
+Hooks.on('setupTileActions', (...args) => {
+	import('../compatibility/matt.js').then((module) => module.registerActions(...args));
 });

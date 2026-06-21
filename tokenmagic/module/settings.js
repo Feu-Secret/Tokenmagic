@@ -5,6 +5,7 @@ import { AutoTemplateDND5E } from '../gui/apps/autoTemplate/dnd5e.js';
 import { AutoTemplatePF2E } from '../gui/apps/autoTemplate/pf2e.js';
 import { AutoTemplateTheWitcherTRPG } from '../gui/apps/autoTemplate/TheWitcherTRPG.js';
 import { emptyPreset } from './constants.js';
+import { FilterOverrideManager } from '../fx/FilterOverrides.js';
 
 const Magic = TokenMagic();
 
@@ -129,6 +130,23 @@ export class TokenMagicSettings {
 			config: true,
 			default: true,
 			type: Boolean,
+		});
+
+		game.settings.register('tokenmagic', 'globalOverrides', {
+			name: 'Global Filter Param Overrides',
+			scope: 'world',
+			config: false,
+			default: {},
+			type: Object,
+			onChange: () => FilterOverrideManager._loadOverrides(),
+		});
+
+		game.settings.register('tokenmagic', 'overridePresets', {
+			name: 'Override Presets',
+			scope: 'world',
+			config: false,
+			default: {},
+			type: Object,
 		});
 	}
 
