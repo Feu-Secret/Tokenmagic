@@ -119,6 +119,8 @@ function i18n(key) {
 export const SocketAction = {
 	SET_FLAG: 'TMFXSetFlag',
 	SET_ANIME_FLAG: 'TMFXSetAnimeFlag',
+	UPDATE: 'TMFXUpdatePlaceable',
+	TOGGLE_PRESET: 'TMFXTogglePreset',
 };
 
 export function broadcast(placeable, flag, socketAction) {
@@ -629,6 +631,87 @@ export function TokenMagic() {
 
 			if (workingFlags.length > 0) await document._TMFXsetAnimeFlag(workingFlags);
 			else await document._TMFXunsetAnimeFlag();
+		}
+	}
+
+	async function togglePreset(placeable, preset, { action = 'toggle', transient = false } = {}) {
+		if (typeof preset === 'string') {
+			preset =
+				getPresets(PresetsLibrary.MAIN).find((p) => p.name === preset) ??
+				getPresets(PresetsLibrary.REGION).find((p) => p.name === preset);
+			if (!preset) return;
+		}
+
+		placeable = placeable.document ?? placeable;
+
+		const { filterId } = preset.params[0];
+		const { defaultColor, defaultOpacity } = preset;
+
+		if (transient) {
+			const sprite = placeable.object?._TMFXgetSprite();
+			if (!sprite) return;
+
+			const isActive = sprite.filters?.find((f) => f.filterId === filterId);
+			if (action === 'remove' || (action === 'toggle' && isActive)) {
+				const filterIds = new Set(preset.params.map((p) => p.filterId));
+				const animations = Anime.getAnimeMap();
+				if (sprite.filters?.length) {
+					sprite.filters = sprite.filters.filter((f) => {
+						if (!transient) return true;
+						if (filterIds.has(f.filterId)) {
+							Anime.removeAnimationByFilterId(f.placeableId, f.filterId);
+							return false;
+						}
+						return true;
+					});
+				}
+			} else if (action === 'add' || (action === 'toggle' && !isActive)) {
+				sprite.filters ??= [];
+
+				for (const tmParams of preset.params) {
+					const { filterId, filterType } = tmParams;
+					if (!sprite.filters.find((f) => f.filterId === filterId && f.filterType === filterType)) {
+						const params = foundry.utils.deepClone(tmParams);
+						params.placeableId = placeable.id;
+						params.placeableType = placeable._TMFXgetPlaceableType();
+						params.filterInternalId = foundry.utils.randomID();
+						params.filterOwner = game.data.userId;
+						if (!params.hasOwnProperty('enabled')) params.enabled = true;
+
+						const filter = new FilterType[filterType](params);
+						filter.transient = true;
+						sprite.filters.push(filter);
+					}
+				}
+			}
+		} else {
+			const isActive = hasFilterId(placeable, filterId);
+			if (action === 'remove' || (action === 'toggle' && isActive)) {
+				const filterIds = new Set(preset.params.map((p) => p.filterId));
+
+				for (const filterId of filterIds) {
+					if (hasFilterId(placeable, filterId)) {
+						await deleteFilters(placeable, filterId);
+						if (placeable.documentName === 'Region' && !placeable.flags['tokenmagic']?.filters) {
+							const update = { ['flags.tokenmagic.regionData']: _del };
+							if (!game.user.isGM) broadcast(placeable, update, SocketAction.UPDATE);
+							else await placeable.update(update);
+						}
+					}
+				}
+			} else if (action === 'add' || (action === 'toggle' && !isActive)) {
+				if (!hasFilterId(placeable, filterId)) {
+					if (placeable.documentName === 'Region' && (defaultOpacity != null || defaultColor != null)) {
+						const update = {};
+						if (defaultOpacity != null) update['flags.tokenmagic.regionData.alpha'] = defaultOpacity;
+						if (defaultColor != null) update.color = defaultColor;
+
+						if (!game.user.isGM) broadcast(placeable, update, SocketAction.UPDATE);
+						else await placeable.update(update);
+					}
+					await addUpdateFilters(placeable, foundry.utils.deepClone(preset.params));
+				}
+			}
 		}
 	}
 
@@ -1380,6 +1463,7 @@ export function TokenMagic() {
 		getPreset: getPreset,
 		addPreset: addPreset,
 		deletePreset: deletePreset,
+		togglePreset: togglePreset,
 		getControlledPlaceables: getControlledPlaceables,
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
@@ -1439,12 +1523,6 @@ async function compilingShaders() {
 }
 
 function initSocketListener() {
-	// Activate the listener only for the One
-	const theOne = game.users.find((user) => user.isGM && user.active);
-	if (theOne && game.user !== theOne) {
-		return;
-	}
-
 	// Listener the listening
 	game.socket.on(moduleTM, async (data) => {
 		if (data == null || !data.hasOwnProperty('tmAction')) {
@@ -1452,6 +1530,7 @@ function initSocketListener() {
 		}
 
 		async function updateFlags(targetFlag) {
+			if (!isTheOne()) return;
 			// getting the scene coming from the socket
 			let scene = game.scenes.get(data.tmScene);
 			if (scene == null) return;
@@ -1466,6 +1545,46 @@ function initSocketListener() {
 			await scene.updateEmbeddedDocuments(data.tmPlaceableType, [updateData]);
 		}
 
+		async function deleteFlag() {
+			if (!isTheOne()) return;
+			let scene = game.scenes.get(data.tmScene);
+			if (scene == null) return;
+
+			// preparing flag data (with _del if the data is null)
+			let updateData;
+			if (data.tmFlag == null) updateData = { [`flags.tokenmagic.${targetFlag}`]: _del };
+			else updateData = { [`flags.tokenmagic.${targetFlag}`]: data.tmFlag };
+			updateData['_id'] = data.tmPlaceableId;
+		}
+
+		async function updatePlaceable() {
+			if (!isTheOne()) return;
+			let scene = game.scenes.get(data.tmScene);
+			if (scene == null) return;
+
+			let updateData = data.tmFlag;
+			for (const [k, v] of Object.entries(updateData)) {
+				if (v == null && k.startsWith('flag')) updateData[k] = _del;
+			}
+			updateData['_id'] = data.tmPlaceableId;
+
+			await scene.updateEmbeddedDocuments(data.tmPlaceableType, [updateData]);
+		}
+
+		async function _togglePreset() {
+			const { tmPlaceables, action, transient, presetName, userId } = data;
+			if (game.user.id !== userId) return;
+			for (const [sceneId, placeables] of Object.entries(tmPlaceables)) {
+				const scene = game.scenes.get(sceneId);
+				if (scene) {
+					placeables.forEach((p) => {
+						const object = canvas.scene.getEmbeddedDocument(p.placeableType, p.id);
+						if (object) globalThis.TokenMagic.togglePreset(object, presetName, { action, transient });
+					});
+				}
+			}
+		}
+
 		switch (data.tmAction) {
 			case SocketAction.SET_FLAG:
 				await updateFlags(`filters`);
@@ -1473,6 +1592,12 @@ function initSocketListener() {
 
 			case SocketAction.SET_ANIME_FLAG:
 				await updateFlags(`animeInfo`);
+				break;
+			case SocketAction.UPDATE:
+				await updatePlaceable();
+				break;
+			case SocketAction.TOGGLE_PRESET:
+				await _togglePreset();
 				break;
 		}
 	});

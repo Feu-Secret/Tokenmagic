@@ -47,7 +47,7 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 		},
 		presets: {
 			template: `modules/tokenmagic/templates/apps/filter-editor/filter-list.hbs`,
-			scrollable: [''],
+			scrollable: ['.filter-list'],
 		},
 	};
 

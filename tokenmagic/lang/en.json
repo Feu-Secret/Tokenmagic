@@ -85,5 +85,8 @@
 	"TMFX.app.editPreset.option.defaultColor": "Default Color",
 	"TMFX.app.editPreset.option.defaultOpacity": "Default Opacity",
 	"TMFX.save": "Save",
-	"TMFX.matt.togglePreset": "TMFX Toggle Preset"
+	"TMFX.matt.togglePreset": "Toggle Preset",
+	"TMFX.matt.transient.label": "Transient",
+	"TMFX.matt.transient.hint": "Select to apply the preset as a short-lived effect. It will only be shown to the triggering user and will not survive scene loads.",
+	"TMFX.matt.preset": "Preset"
 }

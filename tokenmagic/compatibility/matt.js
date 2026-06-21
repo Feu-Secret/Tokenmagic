@@ -1,7 +1,10 @@
+import { PresetsLibrary } from '../fx/presets/defaultpresets.js';
+import { SocketAction } from '../module/tokenmagic.js';
+
 export async function registerActions(MonksActiveTiles) {
 	MonksActiveTiles.registerTileGroup('tokenmagic', 'TokenMagicFX');
 
-	MonksActiveTiles.registerTileAction('tokenmagic', 'tmfx-apply-preset', {
+	MonksActiveTiles.registerTileAction('tokenmagic', 'tmfx-toggle-preset', {
 		name: game.i18n.localize('TMFX.matt.togglePreset'),
 		requiresGM: false,
 		ctrls: [
@@ -40,16 +43,26 @@ export async function registerActions(MonksActiveTiles) {
 			},
 			{
 				id: 'preset',
-				name: 'Preset Name',
-				type: 'text',
+				name: 'TMFX.matt.preset',
+				type: 'list',
+				list: 'presets',
 				required: true,
 			},
 			{
 				id: 'state',
-				name: 'Action',
+				name: 'MonksActiveTiles.Action',
 				list: 'state',
 				type: 'list',
 				defvalue: 'add',
+			},
+			{
+				id: 'transient',
+				name: 'TMFX.matt.transient.label',
+				type: 'checkbox',
+				defvalue: false,
+				get help() {
+					return game.i18n.localize('TMFX.matt.transient.hint');
+				},
 			},
 		],
 		values: {
@@ -64,39 +77,46 @@ export async function registerActions(MonksActiveTiles) {
 				tiles: 'Tiles',
 				tokens: 'Tokens',
 			},
+			get presets() {
+				return [...TokenMagic.getPresets(PresetsLibrary.MAIN), ...TokenMagic.getPresets(PresetsLibrary.REGION)].reduce(
+					(obj, p) => {
+						obj[p.name] = p.name;
+						return obj;
+					},
+					{},
+				);
+			},
 		},
 		group: 'tokenmagic',
 		fn: async (args = {}) => {
 			const { tile, tokens, action, userId, value, method, change } = args;
 
-			let entities = await MonksActiveTiles.getEntities(args, action.data?.collection || 'tokens');
+			const presetName = await MonksActiveTiles.getValue(action.data.preset, args);
+			const entities = await MonksActiveTiles.getEntities(args, action.data?.collection || 'tokens');
+			const { state, transient } = action.data;
+
 			if (entities.length) {
-				const presetName = await MonksActiveTiles.getValue(action.data.preset, args);
+				if (transient && game.user.id !== userId) {
+					const tmPlaceables = entities.reduce((acc, p) => {
+						const sceneId = p.parent.id;
+						acc[sceneId] ??= [];
+						acc[sceneId].push({ placeableType: p.documentName, id: p.id });
+						return acc;
+					}, {});
+					const data = {
+						tmAction: SocketAction.TOGGLE_PRESET,
+						tmPlaceables,
+						action: state,
+						transient,
+						presetName,
+						userId,
+					};
+					game.socket.emit('module.tokenmagic', data);
+					return;
+				}
 
-				const preset = TokenMagic.getPreset(presetName);
-				if (!preset?.length) return;
-				const { filterId } = preset[0];
-				const isActive = entities.some((c) => TokenMagic.hasFilterId(c, filterId));
-
-				const state = action.data.action;
-				if (state === 'remove' || (state === 'toggle' && isActive)) {
-					const filterIds = new Set(TokenMagic.getPreset(presetName).map((p) => p.filterId));
-					for (const placeable of entities) {
-						for (const filterId of filterIds) {
-							if (TokenMagic.hasFilterId(placeable, filterId)) {
-								await TokenMagic.deleteFilters(placeable, filterId);
-								if (placeable.documentName === 'Region' && !placeable.flags['tokenmagic']?.filters) {
-									await placeable.update({ ['flags.tokenmagic.regionData']: _del });
-								}
-							}
-						}
-					}
-				} else if (state === 'add' || (state === 'toggle' && !isActive)) {
-					for (const placeable of entities) {
-						if (!TokenMagic.hasFilterId(placeable, filterId)) {
-							await TokenMagic.addUpdateFilters(placeable, preset);
-						}
-					}
+				for (const placeable of entities) {
+					await TokenMagic.togglePreset(placeable, presetName, { action: state, transient });
 				}
 			}
 
@@ -111,7 +131,11 @@ export async function registerActions(MonksActiveTiles) {
 				action.data?.entity || ctrl?.defvalue || 'previous',
 				(action.data?.entity == 'previous' ? action.data?.collection : null) || 'tiles',
 			);
-			return `<span class="action-style">TokenMagicFX</span> <span class="details-style">"${game.i18n.localize(trigger.values.state[action.data?.state])}"</span> <span class="value-style">&lt;${action.data.preset}&gt;</span> to <span class="entity-style">${entityName}</span>`;
+
+			const state = action.data?.state;
+			const preposition = state === 'toggle' ? 'on' : state === 'remove' ? 'from' : 'to';
+
+			return `<span class="action-style">TokenMagicFX</span> <span class="details-style">"${game.i18n.localize(trigger.values.state[action.data?.state])}"</span> <span class="value-style">&lt;${action.data.preset}&gt;</span> ${preposition} <span class="entity-style">${entityName}</span>`;
 		},
 	});
 }
