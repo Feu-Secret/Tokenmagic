@@ -1,3 +1,5 @@
+import { PlaceableType } from './constants.js';
+
 /**
  * Modified Foundry's Hooks.call(...) function to support calling and awaiting of asynchronous hooks
  * @param {string} hook
@@ -92,4 +94,61 @@ export async function exportObjectAsJson(exportObj, exportName) {
 export function isTheOne() {
 	const theOne = game.users.find((user) => user.isGM && user.active);
 	return theOne && game.user === theOne;
+}
+
+export async function requestLoadFilters(placeable, startTimeout = 0) {
+	let reqTimer;
+	placeable.loadingRequest = true;
+
+	function launchRequest(placeable) {
+		reqTimer = setTimeout(() => {
+			if (placeable == null) return;
+			let check = placeable._TMFXcheckSprite();
+			if (check == null) {
+				placeable.loadingRequest = false;
+				return;
+			} else if (check) TokenMagic._singleLoadFilters(placeable);
+			else launchRequest(placeable);
+		}, 35);
+	}
+
+	function setRequestTimeOut() {
+		setTimeout(() => {
+			clearTimeout(reqTimer);
+		}, 2000);
+	}
+
+	setTimeout(() => {
+		setRequestTimeOut();
+		launchRequest(placeable);
+	}, startTimeout);
+}
+
+export function getPlaceableById(id, type) {
+	return canvas.getLayerByEmbeddedName(type)?.get(id);
+}
+
+export function log(output) {
+	console.log('%cTokenMagic %c| ' + output, 'color:#4BC470', 'color:#B3B3B3');
+}
+
+export function warn(output) {
+	console.warn('TokenMagic | ' + output);
+}
+
+export function error(output) {
+	console.error('TokenMagic | ' + output);
+}
+
+export function getControlledPlaceables() {
+	if (Object.values(PlaceableType).includes(canvas.activeLayer?.documentCollection?.documentName)) {
+		return [...canvas.activeLayer.controlled];
+	}
+	return [];
+}
+
+export function broadcast(action, args = {}) {
+	args.action = action;
+	args.senderId = game.user.id;
+	game.socket.emit('module.tokenmagic', args);
 }

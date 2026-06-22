@@ -1,8 +1,8 @@
-import { TokenMagic, log, warn, error } from '../module/tokenmagic.js';
+import { TokenMagic } from '../module/tokenmagic.js';
 import { PresetsLibrary, templatePresets } from '../fx/presets/defaultpresets.js';
 import { defaultOpacity, TEMPLATE_TO_REGION_TYPE } from '../module/constants.js';
 import { TokenMagicSettings } from '../module/settings.js';
-import { isTheOne } from '../module/utilities.js';
+import { error, isTheOne, log, warn } from '../module/util.js';
 
 const Magic = TokenMagic();
 

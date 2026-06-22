@@ -1,7 +1,7 @@
-import { getPlaceableById } from '../../../module/tokenmagic.js';
 import '../../../module/proto/PlaceableObjectProto.js';
 import { PlaceableType } from '../../../module/constants.js';
 import { FilterOverrideManager } from '../../FilterOverrides.js';
+import { getPlaceableById } from '../../../module/util.js';
 
 PIXI.Filter.prototype.setTMParams = function (params) {
 	FilterOverrideManager.applyOverrides(params);

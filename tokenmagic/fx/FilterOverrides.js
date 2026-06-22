@@ -1,5 +1,5 @@
 import { PlaceableType } from '../module/constants.js';
-import { isTheOne } from '../module/utilities.js';
+import { isTheOne } from '../module/util.js';
 
 const { ForcedDeletion } = foundry.data.operators;
 const { CanvasAnimation } = foundry.canvas.animation;
@@ -52,7 +52,7 @@ export class FilterOverrideManager {
 			duration,
 			easing,
 			startTime: game.time.serverTime,
-			id: foundry.utils.randomID(),
+			id: name ?? foundry.utils.randomID(),
 		};
 		await scene.update({
 			flags: {
@@ -236,7 +236,7 @@ export class FilterOverrideManager {
 			}
 		}
 
-		Object.assign(params, ...cascade.filter(Boolean));
+		Object.assign(params, override);
 
 		return params;
 	}

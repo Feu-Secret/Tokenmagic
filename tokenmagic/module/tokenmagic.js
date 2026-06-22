@@ -1,57 +1,27 @@
-import { FilterAdjustment } from '../fx/filters/FilterAdjustment.js';
-import { FilterAscii } from '../fx/filters/FilterAscii.js';
-import { FilterXBloom } from '../fx/filters/FilterAdvancedBloom.js';
-import { FilterDot } from '../fx/filters/FilterDot.js';
-import { FilterDistortion } from '../fx/filters/FilterDistortion.js';
-import { FilterOldFilm } from '../fx/filters/FilterOldFilm.js';
-import { FilterGlow } from '../fx/filters/FilterGlow.js';
-import { FilterOutline } from '../fx/filters/FilterOutline.js';
-import { FilterBevel } from '../fx/filters/FilterBevel.js';
-import { FilterDropShadow } from '../fx/filters/FilterDropShadow.js';
-import { FilterTwist } from '../fx/filters/FilterTwist.js';
-import { FilterZoomBlur } from '../fx/filters/FilterZoomBlur.js';
-import { FilterBlur } from '../fx/filters/FilterBlur.js';
-import { FilterShockwave } from '../fx/filters/FilterShockWave.js';
-import { FilterBulgePinch } from '../fx/filters/FilterBulgePinch.js';
-import { FilterRemoveShadow } from '../fx/filters/FilterRemoveShadow.js';
-import { FilterRays } from '../fx/filters/FilterRays.js';
-import { FilterFog } from '../fx/filters/FilterFog.js';
-import { FilterXFog } from '../fx/filters/FilterXFog.js';
-import { FilterElectric } from '../fx/filters/FilterElectric.js';
-import { FilterWaves } from '../fx/filters/FilterWaves.js';
-import { FilterFire } from '../fx/filters/FilterFire.js';
-import { FilterFumes } from '../fx/filters/FilterFumes.js';
-import { FilterFlood } from '../fx/filters/FilterFlood.js';
-import { FilterSmoke } from '../fx/filters/FilterSmoke.js';
-import { FilterForceField } from '../fx/filters/FilterForceField.js';
-import { FilterMirrorImages } from '../fx/filters/FilterMirrorImages.js';
-import { FilterXRays } from '../fx/filters/FilterXRays.js';
-import { FilterLiquid } from '../fx/filters/FilterLiquid.js';
-import { FilterGleamingGlow } from '../fx/filters/FilterGleamingGlow.js';
-import { FilterPixelate } from '../fx/filters/FilterPixelate.js';
-import { FilterSpiderWeb } from '../fx/filters/FilterSpiderWeb.js';
-import { FilterSolarRipples } from '../fx/filters/FilterSolarRipples.js';
-import { FilterGlobes } from '../fx/filters/FilterGlobes.js';
-import { FilterTransform } from '../fx/filters/FilterTransform.js';
-import { FilterSplash } from '../fx/filters/FilterSplash.js';
-import { FilterPolymorph } from '../fx/filters/FilterPolymorph.js';
-import { FilterXFire } from '../fx/filters/FilterXFire.js';
-import { FilterSprite } from '../fx/filters/FilterSprite.js';
-import { FilterSpriteMask } from '../fx/filters/FilterSpriteMask.js';
-import { FilterReplaceColor } from '../fx/filters/FilterReplaceColor.js';
-import { FilterDDTint } from '../fx/filters/FilterDDTint.js';
 import { Anime } from '../fx/Anime.js';
 import { allPresets, PresetsLibrary } from '../fx/presets/defaultpresets.js';
 import { tmfxDataMigration } from '../migration/migration.js';
 import { emptyPreset, PlaceableType } from './constants.js';
 import './proto/PlaceableObjectProto.js';
 import './proto/CanvasDocumentProto.js';
-import { FilterCRT } from '../fx/filters/FilterCRT.js';
-import { FilterRGBSplit } from '../fx/filters/FilterRGBSplit.js';
 import { TokenMagicSettings } from './settings.js';
-import { FilterColorGradient } from '../fx/filters/FilterColorGradient.js';
 import { FilterOverrideManager } from '../fx/FilterOverrides.js';
-import { exportObjectAsJson, isAdditivePaddingConfig, isTheOne, randomizeParams } from './utilities.js';
+import {
+	error,
+	exportObjectAsJson,
+	getControlledPlaceables,
+	getPlaceableById,
+	isAdditivePaddingConfig,
+	isTheOne,
+	log,
+	randomizeParams,
+	warn,
+} from './util.js';
+import './placeables/region.js';
+import './placeables/drawing.js';
+import './placeables/tile.js';
+import './placeables/token.js';
+import { FilterType } from './filters.js';
 
 /*
 
@@ -63,76 +33,8 @@ I will fix it in a future version
 
 const moduleTM = 'module.tokenmagic';
 
-// Filters Class Keys
-export const FilterType = {
-	adjustment: FilterAdjustment,
-	ascii: FilterAscii,
-	dot: FilterDot,
-	distortion: FilterDistortion,
-	crt: FilterCRT,
-	oldfilm: FilterOldFilm,
-	glow: FilterGlow,
-	outline: FilterOutline,
-	colorGradient: FilterColorGradient,
-	bevel: FilterBevel,
-	xbloom: FilterXBloom,
-	shadow: FilterDropShadow,
-	twist: FilterTwist,
-	zoomblur: FilterZoomBlur,
-	blur: FilterBlur,
-	bulgepinch: FilterBulgePinch,
-	zapshadow: FilterRemoveShadow,
-	ray: FilterRays,
-	fog: FilterFog,
-	xfog: FilterXFog,
-	electric: FilterElectric,
-	wave: FilterWaves,
-	shockwave: FilterShockwave,
-	fire: FilterFire,
-	fumes: FilterFumes,
-	smoke: FilterSmoke,
-	flood: FilterFlood,
-	images: FilterMirrorImages,
-	field: FilterForceField,
-	xray: FilterXRays,
-	liquid: FilterLiquid,
-	xglow: FilterGleamingGlow,
-	pixel: FilterPixelate,
-	web: FilterSpiderWeb,
-	ripples: FilterSolarRipples,
-	globes: FilterGlobes,
-	transform: FilterTransform,
-	splash: FilterSplash,
-	polymorph: FilterPolymorph,
-	xfire: FilterXFire,
-	sprite: FilterSprite,
-	spriteMask: FilterSpriteMask,
-	replaceColor: FilterReplaceColor,
-	ddTint: FilterDDTint,
-	rgbSplit: FilterRGBSplit,
-};
-
 function i18n(key) {
 	return game.i18n.localize(key);
-}
-
-export const SocketAction = {
-	SET_FLAG: 'TMFXSetFlag',
-	SET_ANIME_FLAG: 'TMFXSetAnimeFlag',
-	UPDATE: 'TMFXUpdatePlaceable',
-	TOGGLE_PRESET: 'TMFXTogglePreset',
-};
-
-export function broadcast(placeable, flag, socketAction) {
-	const document = placeable.document ?? placeable;
-	const data = {
-		tmAction: socketAction,
-		tmPlaceableId: document.id,
-		tmPlaceableType: document._TMFXgetPlaceableType(),
-		tmFlag: flag,
-		tmScene: document.parent.id,
-	};
-	game.socket.emit(moduleTM, data, (resp) => {});
 }
 
 export function mustBroadCast() {
@@ -149,21 +51,6 @@ export function isZOrderConfig() {
 
 export function isAnimationDisabled() {
 	return game.settings.get('tokenmagic', 'disableAnimations');
-}
-
-export function log(output) {
-	let logged = '%cTokenMagic %c| ' + output;
-	console.log(logged, 'color:#4BC470', 'color:#B3B3B3');
-}
-
-export function warn(output) {
-	let logged = 'TokenMagic | ' + output;
-	console.warn(logged);
-}
-
-export function error(output) {
-	let logged = 'TokenMagic | ' + output;
-	console.error(logged);
 }
 
 export function fixPath(path) {
@@ -201,44 +88,8 @@ export function fixPath(path) {
 	return path;
 }
 
-export function getControlledPlaceables() {
-	const authorizedLayers = [canvas.tokens, canvas.tiles, canvas.drawings, canvas.regions];
-	if (authorizedLayers.includes(canvas.activeLayer)) {
-		return [...canvas.activeLayer.controlled];
-	} else return [];
-}
-
 export function getTargetedTokens() {
-	return canvas.tokens.placeables.filter((placeable) => placeable.isTargeted);
-}
-
-export function getPlaceableById(id, type) {
-	let placeable = null;
-
-	function findPlaceable(placeables, id) {
-		let rplaceable = null;
-		if (!(placeables == null) && placeables.length > 0) {
-			rplaceable = placeables.find((n) => n.id === id);
-		}
-		return rplaceable;
-	}
-
-	switch (type) {
-		case PlaceableType.TOKEN:
-			placeable = findPlaceable(canvas.tokens.placeables, id);
-			break;
-		case PlaceableType.TILE:
-			placeable = findPlaceable(canvas.tiles.placeables, id);
-			break;
-		case PlaceableType.DRAWING:
-			placeable = findPlaceable(canvas.drawings.placeables, id);
-			break;
-		case PlaceableType.REGION:
-			placeable = findPlaceable(canvas.regions.placeables, id);
-			break;
-	}
-
-	return placeable;
+	return [...game.user.targets];
 }
 
 export function objectAssign(target, ...sources) {
@@ -694,8 +545,14 @@ export function TokenMagic() {
 					if (hasFilterId(placeable, filterId)) {
 						await deleteFilters(placeable, filterId);
 						if (placeable.documentName === 'Region' && !placeable.flags['tokenmagic']?.filters) {
-							const update = { ['flags.tokenmagic.regionData']: _del };
-							if (!game.user.isGM) broadcast(placeable, update, SocketAction.UPDATE);
+							const update = { ['flags.tokenmagic.regionData']: null };
+							if (!game.user.isGM)
+								broadcast('updatePlaceable', {
+									update,
+									placeableId: placeable.id,
+									placeableType: placeable.documentName,
+									sceneId: placeable.parent.id,
+								});
 							else await placeable.update(update);
 						}
 					}
@@ -707,7 +564,13 @@ export function TokenMagic() {
 						if (defaultOpacity != null) update['flags.tokenmagic.regionData.alpha'] = defaultOpacity;
 						if (defaultColor != null) update.color = defaultColor;
 
-						if (!game.user.isGM) broadcast(placeable, update, SocketAction.UPDATE);
+						if (!game.user.isGM)
+							broadcast('updatePlaceable', {
+								update,
+								placeableId: placeable.id,
+								placeableType: placeable.documentName,
+								sceneId: placeable.parent.id,
+							});
 						else await placeable.update(update);
 					}
 					await addUpdateFilters(placeable, foundry.utils.deepClone(preset.params));
@@ -1484,9 +1347,9 @@ export function TokenMagic() {
 		deletePreset: deletePreset,
 		togglePreset: togglePreset,
 		getActiveFilters: getActiveFilters,
-		getControlledPlaceables: getControlledPlaceables,
+		getControlledPlaceables: () => getControlledPlaceables(),
 		getTargetedTokens: getTargetedTokens,
-		getPlaceableById: getPlaceableById,
+		getPlaceableById: () => getPlaceableById(),
 		presetToggler: () => {
 			import('../gui/apps/editor/PresetToggler.js').then((module) => {
 				module.presetToggler();
@@ -1544,158 +1407,41 @@ async function compilingShaders() {
 
 function initSocketListener() {
 	// Listener the listening
-	game.socket.on(moduleTM, async (data) => {
-		if (data == null || !data.hasOwnProperty('tmAction')) {
+	game.socket.on('module.tokenmagic', async (args) => {
+		if (args == null || !args.hasOwnProperty('action')) {
 			return;
 		}
 
-		async function updateFlags(targetFlag) {
-			if (!isTheOne()) return;
-			// getting the scene coming from the socket
-			let scene = game.scenes.get(data.tmScene);
-			if (scene == null) return;
+		switch (args.action) {
+			case 'updatePlaceable':
+				if (!isTheOne()) return;
+				const { sceneId, placeableId, placeableType, update } = args;
 
-			// preparing flag data (with _del if the data is null)
-			let updateData;
-			if (data.tmFlag == null) updateData = { [`flags.tokenmagic.${targetFlag}`]: _del };
-			else updateData = { [`flags.tokenmagic.${targetFlag}`]: data.tmFlag };
-			updateData['_id'] = data.tmPlaceableId;
-
-			// updating the placeable in the scene
-			await scene.updateEmbeddedDocuments(data.tmPlaceableType, [updateData]);
-		}
-
-		async function deleteFlag() {
-			if (!isTheOne()) return;
-			let scene = game.scenes.get(data.tmScene);
-			if (scene == null) return;
-
-			// preparing flag data (with _del if the data is null)
-			let updateData;
-			if (data.tmFlag == null) updateData = { [`flags.tokenmagic.${targetFlag}`]: _del };
-			else updateData = { [`flags.tokenmagic.${targetFlag}`]: data.tmFlag };
-			updateData['_id'] = data.tmPlaceableId;
-		}
-
-		async function updatePlaceable() {
-			if (!isTheOne()) return;
-			let scene = game.scenes.get(data.tmScene);
-			if (scene == null) return;
-
-			let updateData = data.tmFlag;
-			for (const [k, v] of Object.entries(updateData)) {
-				if (v == null && k.startsWith('flag')) updateData[k] = _del;
-			}
-			updateData['_id'] = data.tmPlaceableId;
-
-			await scene.updateEmbeddedDocuments(data.tmPlaceableType, [updateData]);
-		}
-
-		async function _togglePreset() {
-			const { tmPlaceables, action, transient, presetName, userId } = data;
-			if (game.user.id !== userId) return;
-			for (const [sceneId, placeables] of Object.entries(tmPlaceables)) {
 				const scene = game.scenes.get(sceneId);
-				if (scene) {
-					placeables.forEach((p) => {
-						const object = canvas.scene.getEmbeddedDocument(p.placeableType, p.id);
-						if (object) globalThis.TokenMagic.togglePreset(object, presetName, { action, transient });
-					});
+				if (scene == null) return;
+
+				for (const [k, v] of Object.entries(update)) {
+					if (v == null && k.startsWith('flag')) update[k] = _del;
 				}
-			}
-		}
+				update['_id'] = placeableId;
 
-		switch (data.tmAction) {
-			case SocketAction.SET_FLAG:
-				await updateFlags(`filters`);
+				await scene.updateEmbeddedDocuments(placeableType, [update]);
 				break;
-
-			case SocketAction.SET_ANIME_FLAG:
-				await updateFlags(`animeInfo`);
-				break;
-			case SocketAction.UPDATE:
-				await updatePlaceable();
-				break;
-			case SocketAction.TOGGLE_PRESET:
-				await _togglePreset();
+			case 'togglePreset':
+				const { placeables, toggleAction, transient, presetName, userIds } = args;
+				if (!userIds.includes(game.user.id)) return;
+				for (const [sceneId, placeableArr] of Object.entries(placeables)) {
+					const scene = game.scenes.get(sceneId);
+					if (scene) {
+						placeableArr.forEach((p) => {
+							const object = canvas.scene.getEmbeddedDocument(p.placeableType, p.id);
+							if (object) globalThis.TokenMagic.togglePreset(object, presetName, { action: toggleAction, transient });
+						});
+					}
+				}
 				break;
 		}
 	});
-}
-
-async function requestLoadFilters(placeable, startTimeout = 0) {
-	let reqTimer;
-	placeable.loadingRequest = true;
-
-	function launchRequest(placeable) {
-		reqTimer = setTimeout(() => {
-			if (placeable == null) return;
-			let check = placeable._TMFXcheckSprite();
-			if (check == null) {
-				placeable.loadingRequest = false;
-				return;
-			} else if (check) Magic._singleLoadFilters(placeable);
-			else launchRequest(placeable);
-		}, 35);
-	}
-
-	function setRequestTimeOut() {
-		setTimeout(() => {
-			clearTimeout(reqTimer);
-		}, 2000);
-	}
-
-	setTimeout(() => {
-		setRequestTimeOut();
-		launchRequest(placeable);
-	}, startTimeout);
-}
-
-function getAnchor(direction, angle, shapeType) {
-	if (shapeType === 'circle' || shapeType === 'rect') return { x: 0.5, y: 0.5 };
-
-	// Compute emanation anchor point from the orthonormal bounding rect containing the polygon.
-	// Not complete (to rework later), but ok with cardinal and half-cardinal directions
-	let dirRad = (direction * Math.PI) / 180;
-	let angleRad = (angle * Math.PI) / 180;
-
-	let cosRa1 = Math.cos(dirRad - angleRad / 2);
-	let rsinRa1 = -Math.sin(dirRad - angleRad / 2);
-	let cosRa2 = Math.cos(dirRad + angleRad / 2);
-	let rsinRa2 = -Math.sin(dirRad + angleRad / 2);
-
-	let x = 0,
-		y = 1;
-
-	if (cosRa1 < 0 && cosRa2 < 0) {
-		x = 1;
-	} else if (cosRa1 < 0 || cosRa2 < 0) {
-		x = (Math.sin(-dirRad - Math.PI / 2) + 1) / 2;
-	}
-
-	if (rsinRa1 < 0 && rsinRa2 < 0) {
-		y = 0;
-	} else if (rsinRa1 < 0 || rsinRa2 < 0) {
-		y = (Math.cos(-dirRad - Math.PI / 2) + 1) / 2;
-	}
-
-	return { x: x, y: y };
-}
-
-async function onRegionConfig(regionConfig, html) {
-	if (html.querySelector('[name="flags.tokenmagic.regionData.alpha"]')) return;
-
-	const region = regionConfig.document;
-
-	let tmfxRegionData = region.getFlag('tokenmagic', 'regionData');
-	let alpha = tmfxRegionData?.alpha ?? region.object?._TMFXgetSprite()?.alpha ?? 0.5;
-
-	const alphaRangePicker = await foundry.applications.handlebars.renderTemplate(
-		'modules/tokenmagic/templates/settings/regionAlpha.hbs',
-		{ alpha },
-	);
-
-	$(html).find('[name="color"]').closest('.form-group').after(alphaRangePicker);
 }
 
 /* -------------------------------------------- */
@@ -1708,8 +1454,6 @@ Hooks.on('ready', () => {
 	initSocketListener();
 	FilterOverrideManager.init();
 	window.TokenMagic = Magic;
-
-	Hooks.on('renderRegionConfig', onRegionConfig);
 });
 
 /* -------------------------------------------- */
@@ -1772,301 +1516,6 @@ Hooks.on('deleteScene', (document) => {
 
 Hooks.on('closeSettingsConfig', () => {
 	autosetPaddingMode();
-});
-
-/* -------------------------------------------- */
-/*  Tokens Management                           */
-/* -------------------------------------------- */
-
-Hooks.on('createToken', (document) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-
-	if (document.flags?.tokenmagic?.filters) {
-		let placeable = getPlaceableById(document._id, PlaceableType.TOKEN);
-		requestLoadFilters(placeable, 250);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('deleteToken', (_, document) => {
-	if (!(document == null || !document._id)) {
-		Anime.removeAnimation(document._id);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('updateToken', (document, options) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-
-	if (['img', 'tint', 'height', 'width', 'name'].some((k) => k in options)) {
-		let placeable = getPlaceableById(document._id, PlaceableType.TOKEN);
-		Anime.removeAnimation(document._id); // removing animations on this placeable
-		Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
-		requestLoadFilters(placeable, 250);
-	} else {
-		Magic._updateFilters(document, options, PlaceableType.TOKEN);
-	}
-});
-
-/* -------------------------------------------- */
-/*  Tiles Management                            */
-/* -------------------------------------------- */
-
-Hooks.on('createTile', (document) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-
-	if (document.flags?.tokenmagic?.filters) {
-		const placeable = getPlaceableById(document._id, PlaceableType.TILE);
-		requestLoadFilters(placeable, 250);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('deleteTile', (_, document) => {
-	if (!(document == null || !document._id)) {
-		Anime.removeAnimation(document._id);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('updateTile', (document, options) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-
-	if (options.texture?.src || options.overhead) {
-		const placeable = getPlaceableById(document._id, PlaceableType.TILE);
-		Anime.removeAnimation(document._id); // removing animations on this placeable
-		Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
-		requestLoadFilters(placeable, 250);
-	} else {
-		Magic._updateFilters(document, options, PlaceableType.TILE);
-	}
-});
-
-/* -------------------------------------------- */
-/*  Drawings Management                         */
-/* -------------------------------------------- */
-
-Hooks.on('createDrawing', (document) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-
-	if (document.flags?.tokenmagic?.filters) {
-		let placeable = getPlaceableById(document._id, PlaceableType.DRAWING);
-		requestLoadFilters(placeable, 250);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('deleteDrawing', (_, document) => {
-	if (!(document == null || !document._id)) {
-		Anime.removeAnimation(document._id);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('updateDrawing', (document, options) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-
-	if (!options.flags?.tokenmagic || options.x || options.y) {
-		let placeable = getPlaceableById(document._id, PlaceableType.DRAWING);
-		Anime.removeAnimation(document._id); // removing animations on this placeable
-		Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
-		requestLoadFilters(placeable, 250);
-	} else {
-		Magic._updateFilters(document, options, PlaceableType.DRAWING);
-	}
-});
-
-/* -------------------------------------------- */
-/*  Regions Management                         */
-/* -------------------------------------------- */
-
-Hooks.on('createRegion', (document) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-
-	if (document.flags?.tokenmagic?.filters) {
-		let placeable = getPlaceableById(document._id, PlaceableType.REGION);
-		requestLoadFilters(placeable, 250);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('deleteRegion', (_, document) => {
-	if (!(document == null || !document._id)) {
-		Anime.removeAnimation(document._id);
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('updateRegion', (document, options) => {
-	if (document.parent.id !== game.user.viewedScene) return;
-	const placeable = document.object;
-	if (!placeable) return;
-
-	if (
-		options.flags?.tokenmagic instanceof foundry.data.operators.ForcedDeletion ||
-		options.flags?.tokenmagic?.filters instanceof foundry.data.operators.ForcedDeletion ||
-		options.shapes
-	) {
-		Anime.removeAnimation(document._id); // removing animations on this placeable
-		Magic._clearImgFiltersByPlaceable(placeable); // clearing the filters (owned by tokenmagic)
-		requestLoadFilters(placeable, 250);
-	} else {
-		if (!placeable.loadingRequest) {
-			Magic._updateFilters(document, options, PlaceableType.REGION);
-
-			const sprite = placeable._TMFXgetSprite();
-			if (sprite) {
-				const filters = document.getFlag('tokenmagic', 'filters');
-				if (filters) sprite.setShaderClass(foundry.canvas.rendering.shaders.RegionShader);
-				else sprite.setShaderClass(foundry.canvas.rendering.shaders.HighlightRegionShader);
-				sprite.alpha = document.getFlag('tokenmagic', 'regionData')?.alpha ?? 0.5;
-			}
-		}
-	}
-});
-
-/* -------------------------------------------- */
-
-Hooks.on('preCreateRegion', (document) => {
-	// Do nothing if we're on a 3D Canvas scene
-	if (game.Levels3DPreview?._active) return;
-
-	// Apply auto-preset if needed
-	const templates = TokenMagicSettings.getSystemTemplates();
-	if (templates?.enabled) {
-		templates.preCreateRegion?.(document);
-	}
-
-	const hasFlags = document.flags;
-	let hasPreset = false;
-	let hasTint = false;
-	let hasOpacity = false;
-	let hasFlagsNoOptions = false;
-	let hasRegionColor = false;
-	let regionOpacity;
-	let tmfxTint;
-
-	if (hasFlags && document.flags.tokenmagic?.options) {
-		const opt = document.flags.tokenmagic.options;
-		if (opt.tmfxPreset) {
-			document.tmfxPreset = opt.tmfxPreset;
-			hasPreset = true;
-		}
-		if (opt.tmfxTint) {
-			tmfxTint = opt.tmfxTint;
-			hasTint = true;
-		}
-		if (opt.tmfxRegionOpacity) {
-			regionOpacity = opt.tmfxRegionOpacity;
-			hasOpacity = true;
-		}
-		if (opt.tmfxRegionColor) {
-			document.color = Color.fromString(opt.tmfxRegionColor);
-			document.updateSource({ color: opt.tmfxRegionColor });
-			hasRegionColor = true;
-		}
-	} else hasFlagsNoOptions = true;
-
-	let hasTexture = document.texture && document.texture !== '';
-	let newFilters = [];
-
-	let tmfxBaseFlags = { tokenmagic: { filters: null, templateData: null, options: null } };
-	if (hasFlags && hasFlagsNoOptions) {
-		// the measured template comes with tokenmagic flags ? It is a copy ! We do nothing.
-		if (document.flags.tokenmagic) {
-			return;
-		}
-		document.flags = foundry.utils.mergeObject(document.flags, tmfxBaseFlags, true, true);
-	}
-
-	// normalizing color to value if needed
-	if (hasTint && typeof tmfxTint !== 'number') {
-		tmfxTint = Color.from(tmfxTint).valueOf();
-	}
-
-	let tmfxFiltersData = null;
-
-	// FX to add ?
-	if (hasPreset) {
-		// Constructing the preset search object
-		let pstSearch = {
-			name: document.tmfxPreset,
-			library: PresetsLibrary.REGION,
-		};
-
-		// Adding tint if needed
-		if (hasTint) pstSearch.color = tmfxTint;
-
-		// Retrieving the preset
-		let preset = Magic.getPreset(pstSearch);
-
-		if (!(preset == null) && preset instanceof Array) {
-			let { defaultOpacity, defaultColor } = Magic._getPresetTemplateDefaults(pstSearch.name);
-
-			if (!(defaultColor == null) && !hasRegionColor) {
-				document.updateSource({ color: defaultColor });
-			}
-
-			let persist = true;
-
-			// Constructing the filter flag parameters
-			for (const params of preset) {
-				if (!params.filterType || !FilterType.hasOwnProperty(params.filterType)) {
-					// one invalid ? all rejected.
-					persist = false;
-					break;
-				}
-
-				// getPreset MUST provide a filter id
-				if (!params.filterId) {
-					persist = false;
-					break;
-				}
-
-				if (!params.enabled || !(typeof params.enabled === 'boolean')) {
-					params.enabled = true;
-				}
-
-				params.placeableId = null;
-				params.filterInternalId = foundry.utils.randomID();
-				params.filterOwner = game.data.userId;
-				params.placeableType = PlaceableType.REGION;
-
-				newFilters.push({
-					tmFilters: {
-						tmFilterId: params.filterId,
-						tmFilterInternalId: params.filterInternalId,
-						tmFilterType: params.filterType,
-						tmFilterOwner: params.filterOwner,
-						tmParams: params,
-					},
-				});
-			}
-
-			if (persist) tmfxFiltersData = newFilters;
-		}
-	} else {
-		document.tmfxPreset = emptyPreset;
-	}
-
-	if (!hasOpacity) regionOpacity = 1;
-
-	let tmfxFlags = {
-		regionData: {
-			opacity: regionOpacity,
-		},
-		filters: tmfxFiltersData,
-		options: null,
-	};
-	document.updateSource({ flags: { tokenmagic: tmfxFlags } });
 });
 
 /* -------------------------------------------- */

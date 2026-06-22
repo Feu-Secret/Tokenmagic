@@ -1,4 +1,5 @@
 import { PlaceableType } from '../../../module/constants';
+import { getControlledPlaceables } from '../../../module/util';
 import { PresetSearch } from './PresetSearch';
 
 export function presetToggler() {
@@ -58,7 +59,7 @@ class PresetToggler extends PresetSearch {
 	 * @param {HTMLElement} element
 	 */
 	static async _onTogglePreset(event, element) {
-		const controlled = TokenMagic.getControlledPlaceables();
+		const controlled = getControlledPlaceables();
 		if (!controlled.length) return;
 
 		const { filterId: name, filterType: library } = event.target.closest('.filter').dataset;

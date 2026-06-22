@@ -1,4 +1,5 @@
 import { PresetsLibrary } from '../../../fx/presets/defaultpresets';
+import { getControlledPlaceables } from '../../../module/util';
 import { FILTER_PARAM_CONTROLS } from '../data/fxControls';
 import { submitPresetToGallery } from './FilterEditor';
 
@@ -76,7 +77,7 @@ export class PresetSearch extends HandlebarsApplicationMixin(ApplicationV2) {
 	}
 
 	async _preparePresetContext(context, options) {
-		const controlled = TokenMagic.getControlledPlaceables();
+		const controlled = getControlledPlaceables();
 		const library = this._regions ? PresetsLibrary.REGION : PresetsLibrary.MAIN;
 
 		this._presets = TokenMagic.getPresets(library);

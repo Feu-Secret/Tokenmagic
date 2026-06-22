@@ -1,6 +1,7 @@
 import { PresetsLibrary } from '../../../fx/presets/defaultpresets.js';
 import { PlaceableType } from '../../../module/constants.js';
-import { FilterType } from '../../../module/tokenmagic.js';
+import { FilterType } from '../../../module/filters.js';
+import { getControlledPlaceables } from '../../../module/util.js';
 import { ANIM_PARAM_CONTROLS, FILTER_PARAM_CONTROLS } from '../data/fxControls.js';
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
@@ -14,7 +15,7 @@ const { deepClone, getType, isEmpty, mergeObject, diffObject } = foundry.utils;
  */
 
 export function filterEditor(placeable, sourceBounds) {
-	const placeables = placeable ? [placeable] : TokenMagic.getControlledPlaceables();
+	const placeables = placeable ? [placeable] : getControlledPlaceables();
 	if (!placeables.length) return;
 
 	const documents = placeables.map((p) => p.document ?? p);

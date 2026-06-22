@@ -1,5 +1,5 @@
 import { PresetsLibrary } from '../fx/presets/defaultpresets.js';
-import { SocketAction } from '../module/tokenmagic.js';
+import { broadcast } from '../module/util.js';
 
 export async function registerActions(MonksActiveTiles) {
 	MonksActiveTiles.registerTileGroup('tokenmagic', 'TokenMagicFX');
@@ -97,21 +97,20 @@ export async function registerActions(MonksActiveTiles) {
 
 			if (entities.length) {
 				if (transient && game.user.id !== userId) {
-					const tmPlaceables = entities.reduce((acc, p) => {
+					const placeables = entities.reduce((acc, p) => {
 						const sceneId = p.parent.id;
 						acc[sceneId] ??= [];
 						acc[sceneId].push({ placeableType: p.documentName, id: p.id });
 						return acc;
 					}, {});
-					const data = {
-						tmAction: SocketAction.TOGGLE_PRESET,
-						tmPlaceables,
-						action: state,
+
+					broadcast('togglePreset', {
+						placeables,
+						toggleAction: state,
 						transient,
 						presetName,
-						userId,
-					};
-					game.socket.emit('module.tokenmagic', data);
+						userIds: [userId], // TODO, provide user targets as an option
+					});
 					return;
 				}
 
