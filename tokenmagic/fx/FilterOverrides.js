@@ -5,7 +5,6 @@ const { ForcedDeletion } = foundry.data.operators;
 const { CanvasAnimation } = foundry.canvas.animation;
 
 export class FilterOverrideManager {
-	static #presets = new Map();
 	static #overrides = {};
 
 	/**
@@ -76,7 +75,7 @@ export class FilterOverrideManager {
 		for (const [id, descriptor] of Object.entries(animated)) {
 			if (CanvasAnimation.animations[id]) continue;
 			const { filterId, filterType, to, duration, easing, startTime } = descriptor;
-			const filters = this.getFilters(filterId, filterType);
+			const filters = TokenMagic.getActiveFilters({ filterId, filterType }).map((f) => f.filter);
 
 			const animation = [];
 			const time = game.time.serverTime - startTime;
@@ -148,30 +147,7 @@ export class FilterOverrideManager {
 		}
 	}
 
-	/**
-	 * Retrieves matching filters from the active scene
-	 * @param {string} filterId
-	 * @param {string} filterType
-	 * @returns
-	 */
-	static getFilters({ filterId = '*', filterType = '*', placeableType = '*' } = {}) {
-		const results = [];
-		for (const documentName of Object.values(PlaceableType)) {
-			if (placeableType !== '*' && documentName !== placeableType) continue;
-
-			const layer = canvas.getLayerByEmbeddedName(documentName);
-			layer?.placeables.forEach((p) => {
-				p._TMFXgetSprite()?.filters?.forEach((f) => {
-					if ((f.filterId === filterId || filterId === '*') && (f.filterType === filterType || filterType === '*')) {
-						results.push(this.#buildFilterContext(f));
-					}
-				});
-			});
-		}
-		return results;
-	}
-
-	static #buildFilterContext(filter) {
+	static buildFilterContext(filter) {
 		const placeable = filter.targetPlaceable;
 		return {
 			filter: filter,
@@ -229,6 +205,20 @@ export class FilterOverrideManager {
 		if (!foundry.utils.isEmpty(update)) return scene.update(update);
 	}
 
+	static clearAllSceneOverrides(scene = canvas.scene) {
+		if (!scene) return;
+		return scene.unsetFlag('tokenmagic', 'overrides');
+	}
+
+	static clearAllGlobalOverrides() {
+		return game.settings.set('tokenmagic', 'globalOverrides', {});
+	}
+
+	/**
+	 * Applies overrides onto the provided parameters
+	 * @param {object} params
+	 * @returns
+	 */
 	static applyOverrides(params) {
 		const { filterId, filterType } = params;
 
@@ -256,7 +246,7 @@ export class FilterOverrideManager {
 			if (canvas.scene?.id !== scene.id || !change.flags?.tokenmagic) return;
 
 			if (change.flags.tokenmagic.overrides) {
-				this._loadOverrides();
+				this.#loadOverrides();
 				for (const [filterId, byType] of Object.entries(this.#overrides)) {
 					for (let [filterType, properties] of Object.entries(byType)) {
 						properties = { ...properties };
@@ -278,13 +268,29 @@ export class FilterOverrideManager {
 	}
 
 	static canvasInit(canvas) {
-		this._loadOverrides();
+		this.#loadOverrides();
 		this.#cleanupAnimations();
 	}
 
-	static _loadOverrides() {
+	static #loadOverrides() {
 		const sceneOverrides = canvas.scene.getFlag('tokenmagic', 'overrides') ?? {};
 		const globalOverrides = game.settings.get('tokenmagic', 'globalOverrides');
 		this.#overrides = foundry.utils.mergeObject(sceneOverrides, globalOverrides, { inplace: false });
+	}
+
+	static onGlobalOverrideChange() {
+		this.#loadOverrides();
+
+		for (const [filterId, byType] of Object.entries(this.#overrides)) {
+			for (let [filterType, properties] of Object.entries(byType)) {
+				properties = { ...properties };
+				for (const [k, v] of Object.entries(properties)) {
+					if (typeof v === 'string' && v.startsWith('#')) {
+						properties[k] = Color.fromString(v);
+					}
+				}
+				this.updateActiveFilters({ filterId, filterType, properties });
+			}
+		}
 	}
 }

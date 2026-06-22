@@ -138,7 +138,7 @@ export class TokenMagicSettings {
 			config: false,
 			default: {},
 			type: Object,
-			onChange: () => FilterOverrideManager._loadOverrides(),
+			onChange: () => FilterOverrideManager.onGlobalOverrideChange(),
 		});
 
 		game.settings.register('tokenmagic', 'overridePresets', {

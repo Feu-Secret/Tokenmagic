@@ -634,6 +634,7 @@ export function TokenMagic() {
 		}
 	}
 
+	// Toggle a preset on a placeable in parameter
 	async function togglePreset(placeable, preset, { action = 'toggle', transient = false } = {}) {
 		if (typeof preset === 'string') {
 			preset =
@@ -713,6 +714,24 @@ export function TokenMagic() {
 				}
 			}
 		}
+	}
+
+	// Retrieve filters on the active scene that match the criteria
+	function getActiveFilters({ filterId = '*', filterType = '*', placeableType = '*' } = {}) {
+		const results = [];
+		for (const documentName of Object.values(PlaceableType)) {
+			if (placeableType !== '*' && documentName !== placeableType) continue;
+
+			const layer = canvas.getLayerByEmbeddedName(documentName);
+			layer?.placeables.forEach((p) => {
+				p._TMFXgetSprite()?.filters?.forEach((f) => {
+					if ((f.filterId === filterId || filterId === '*') && (f.filterType === filterType || filterType === '*')) {
+						results.push(FilterOverrideManager.buildFilterContext(f));
+					}
+				});
+			});
+		}
+		return results;
 	}
 
 	function hasFilterType(placeable, filterType) {
@@ -1464,6 +1483,7 @@ export function TokenMagic() {
 		addPreset: addPreset,
 		deletePreset: deletePreset,
 		togglePreset: togglePreset,
+		getActiveFilters: getActiveFilters,
 		getControlledPlaceables: getControlledPlaceables,
 		getTargetedTokens: getTargetedTokens,
 		getPlaceableById: getPlaceableById,
