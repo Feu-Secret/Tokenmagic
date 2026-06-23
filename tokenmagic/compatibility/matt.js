@@ -56,13 +56,24 @@ export async function registerActions(MonksActiveTiles) {
 				defvalue: 'add',
 			},
 			{
+				type: 'line',
+				get help() {
+					return game.i18n.localize('TMFX.matt.transient.hint');
+				},
+			},
+			{
 				id: 'transient',
 				name: 'TMFX.matt.transient.label',
 				type: 'checkbox',
 				defvalue: false,
-				get help() {
-					return game.i18n.localize('TMFX.matt.transient.hint');
-				},
+			},
+			{
+				id: 'showto',
+				name: 'MonksActiveTiles.ctrl.for',
+				list: 'showto',
+				type: 'list',
+				subtype: 'for',
+				defvalue: 'trigger',
 			},
 		],
 		values: {
@@ -86,6 +97,15 @@ export async function registerActions(MonksActiveTiles) {
 					{},
 				);
 			},
+			showto: {
+				everyone: 'MonksActiveTiles.for.all',
+				players: 'MonksActiveTiles.for.players',
+				gm: 'MonksActiveTiles.for.gm',
+				trigger: 'MonksActiveTiles.for.triggering',
+				token: 'MonksActiveTiles.for.token',
+				owner: 'MonksActiveTiles.for.owner',
+				previous: 'MonksActiveTiles.for.current',
+			},
 		},
 		group: 'tokenmagic',
 		fn: async (args = {}) => {
@@ -96,21 +116,29 @@ export async function registerActions(MonksActiveTiles) {
 			const { state, transient } = action.data;
 
 			if (entities.length) {
-				if (transient && game.user.id !== userId) {
-					const placeables = entities.reduce((acc, p) => {
-						const sceneId = p.parent.id;
-						acc[sceneId] ??= [];
-						acc[sceneId].push({ placeableType: p.documentName, id: p.id });
-						return acc;
-					}, {});
+				if (transient) {
+					const showUsers = MonksActiveTiles.getForPlayers(action.data.showto || 'trigger', args);
 
-					broadcast('togglePreset', {
-						placeables,
-						toggleAction: state,
-						transient,
-						presetName,
-						userIds: [userId], // TODO, provide user targets as an option
-					});
+					if (showUsers.includes(game.user.id)) {
+						for (const placeable of entities) {
+							await TokenMagic.togglePreset(placeable, presetName, { action: state, transient });
+						}
+					} else if (showUsers.length) {
+						const placeables = entities.reduce((acc, p) => {
+							const sceneId = p.parent.id;
+							acc[sceneId] ??= [];
+							acc[sceneId].push({ placeableType: p.documentName, id: p.id });
+							return acc;
+						}, {});
+
+						broadcast('togglePreset', {
+							placeables,
+							toggleAction: state,
+							transient,
+							presetName,
+							userIds: showUsers,
+						});
+					}
 					return;
 				}
 
@@ -134,7 +162,13 @@ export async function registerActions(MonksActiveTiles) {
 			const state = action.data?.state;
 			const preposition = state === 'toggle' ? 'on' : state === 'remove' ? 'from' : 'to';
 
-			return `<span class="action-style">TokenMagicFX</span> <span class="details-style">"${game.i18n.localize(trigger.values.state[action.data?.state])}"</span> <span class="value-style">&lt;${action.data.preset}&gt;</span> ${preposition} <span class="entity-style">${entityName}</span>`;
+			let forUser = '';
+			if (action.data?.transient) {
+				const showto = action.data.showto.name ?? trigger.values.showto[action.data.showto];
+				forUser = `, ${game.i18n.localize('MonksActiveTiles.ctrl.for')} <span class="action-style">${game.i18n.localize(showto)}</span>`;
+			}
+
+			return `<span class="action-style">TMFX</span> <span class="details-style">"${game.i18n.localize(trigger.values.state[action.data?.state])}"</span> <span class="value-style">&lt;${action.data.preset}&gt;</span> ${preposition} <span class="entity-style">${entityName}</span>${forUser}`;
 		},
 	});
 }

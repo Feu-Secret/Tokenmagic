@@ -1,3 +1,28 @@
+# Token Magic FX - Update v0.8.4
+
+- Fixed errors thrown when `Permissive mode` setting is enabled
+- New API: `TokenMagic.togglePreset(placeable, presetName, { action = 'toggle', transient = false})`
+  - Toggles a preset on the provided placeable/document
+  - Args:
+    - `placeable` to toggle the preset on
+    - `presetName` name of the preset to be toggled
+    - `action` (toggle|add|remove) the way the preset should be applied
+      - **add**: applies the preset
+      - **remove**: removes the preset
+      - **toggle**: removes the preset if already active, otherwise applies it
+    - `transient` sets the affect as short-lived, it will not survive scene reload and will only be applied to the triggering user
+- New API: `TokenMagic.FilterOverrideManager`
+  - Manages scene-wide/global overrides of filter properties
+  - Work in progress, more information will be available in the next release
+  - Key methods:
+    - `TokenMagic.FilterOverrideManager.setOverride(...)`
+    - `TokenMagic.FilterOverrideManager.animate(...)`
+- MATT Compatibility
+  - Added a new action `Toggle Preset`
+    - Allows toggling of TMFX presets on selected entities
+    - Additionally it allows for the effect to be applied as `transient`; short-lived and shown only to the selected users
+      - Useful for making client side only effects, such as button highlights
+
 # Token Magic FX - Update v0.8.3
 
 - Fixed Drop Shadow Filter no longer rendering on Foundry version 14.363

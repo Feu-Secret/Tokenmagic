@@ -87,6 +87,6 @@
 	"TMFX.save": "Save",
 	"TMFX.matt.togglePreset": "Toggle Preset",
 	"TMFX.matt.transient.label": "Transient",
-	"TMFX.matt.transient.hint": "Select to apply the preset as a short-lived effect. It will only be shown to the triggering user and will not survive scene loads.",
+	"TMFX.matt.transient.hint": "Check to set the preset as a transient/short-lived effect. It will not survive scene reloads and will only be shown to the selected user/s.",
 	"TMFX.matt.preset": "Preset"
 }
