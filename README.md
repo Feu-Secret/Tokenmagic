@@ -422,8 +422,8 @@ Useful when you want to control an alternance between val1 and val2 by using `lo
 
 **Keywords:** `"rotation"` `"syncRotation"`
 **Mandatory properties:** `active` `loopDuration`
-**Optional properties:** `loops` `syncShift` `clockwise`
-You need to rotate something? it's for you. A full turn in loopDuration. You can set a counter-clockwise rotation with `clockwise: false`. You want to synchronize all your rotations? Use syncRotation. You need to rotate 45 ° and return to 0 ° and vice versa? Use a cosOscillation.
+**Optional properties:** `loops` `syncShift` `clockWise`
+You need to rotate something? it's for you. A full turn in loopDuration. You can set a counter-clockwise rotation with `clockWise: false`. You want to synchronize all your rotations? Use syncRotation. You need to rotate 45 ° and return to 0 ° and vice versa? Use a cosOscillation.
 
 **Keywords:** `"randomNumber"`
 **Mandatory properties:** `active` `val1` `val2`
